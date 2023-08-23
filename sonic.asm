@@ -1091,6 +1091,13 @@ ClearScreen:
 
 
 SoundDriverLoad:
+		move.l	#sampbank,-(sp)
+		move.l	#seqbank,-(sp)
+		move.l	#envbank,-(sp)
+		move.l	#patchbank,-(sp)
+		jsr		(gemsinit).l
+		addi.l	#16,sp
+		rts
 		nop	
 		stopZ80
 		resetZ80
@@ -2111,6 +2118,9 @@ GM_Title:
 		bsr.w	PaletteFadeOut
 		disable_ints
 		bsr.w	SoundDriverLoad
+		move.l	#0,-(sp)
+		jsr		(gemsstartsong).l
+		addq.l	4,sp
 		lea	(vdp_control_port).l,a6
 		move.w	#$8004,(a6)	; 8-colour mode
 		move.w	#$8200+(vram_fg>>10),(a6) ; set foreground nametable address
@@ -9331,6 +9341,7 @@ ObjPos_Null:	dc.b $FF, $FF, 0, 0, 0,	0
 		endif
 
 ; SoundDriver:	include "s1.sounddriver.asm"
+SoundDriver:	include "GEMS68K.asm"
 
 ; end of 'ROM'
 		even
