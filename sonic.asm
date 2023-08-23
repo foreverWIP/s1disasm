@@ -595,7 +595,7 @@ VBlank:
 		jsr	VBla_Index(pc,d0.w)
 
 VBla_Music:
-		jsr	(UpdateMusic).l
+		; jsr	(UpdateMusic).l
 
 VBla_Exit:
 		addq.l	#1,(v_vbla_count).w
@@ -915,7 +915,7 @@ loc_119E:
 		clr.b	($FFFFF64F).w
 		movem.l	d0-a6,-(sp)
 		bsr.w	Demo_Time
-		jsr	(UpdateMusic).l
+		; jsr	(UpdateMusic).l
 		movem.l	(sp)+,d0-a6
 		rte	
 ; End of function HBlank
@@ -1094,9 +1094,9 @@ SoundDriverLoad:
 		nop	
 		stopZ80
 		resetZ80
-		lea	(Kos_Z80).l,a0	; load sound driver
-		lea	(z80_ram).l,a1	; target Z80 RAM
-		bsr.w	KosDec		; decompress
+		; lea	(Kos_Z80).l,a0	; load sound driver
+		; lea	(z80_ram).l,a1	; target Z80 RAM
+		; bsr.w	KosDec		; decompress
 		resetZ80a
 		nop	
 		nop	
@@ -9330,7 +9330,7 @@ ObjPos_Null:	dc.b $FF, $FF, 0, 0, 0,	0
 		endm
 		endif
 
-SoundDriver:	include "s1.sounddriver.asm"
+; SoundDriver:	include "s1.sounddriver.asm"
 
 ; end of 'ROM'
 		even
