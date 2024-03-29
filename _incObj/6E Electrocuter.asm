@@ -27,7 +27,7 @@ Elec_Main:	; Routine 0
 		move.w	d0,elec_freq(a0)
 
 Elec_Shock:	; Routine 2
-		move.w	(v_framecount).w,d0
+		move.w	v_framecount,d0
 		and.w	elec_freq(a0),d0 ; is it time to zap?
 		bne.s	.animate	; if not, branch
 

@@ -26,7 +26,7 @@ Smash_Main:	; Routine 0
 		move.b	obSubtype(a0),obFrame(a0)
 
 Smash_Solid:	; Routine 2
-		move.w	(v_player+obVelX).w,smash_speed(a0) ; load Sonic's horizontal speed
+		move.w	v_player+obVelX,smash_speed(a0) ; load Sonic's horizontal speed
 		move.w	#$1B,d1
 		move.w	#$20,d2
 		move.w	#$20,d3

@@ -14,7 +14,7 @@ Over_Index:	dc.w Over_ChkPLC-Over_Index
 ; ===========================================================================
 
 Over_ChkPLC:	; Routine 0
-		tst.l	(v_plc_buffer).w ; are the pattern load cues empty?
+		tst.l	v_plc_buffer ; are the pattern load cues empty?
 		beq.s	Over_Main	; if yes, branch
 		rts	
 ; ===========================================================================
@@ -52,7 +52,7 @@ Over_SetWait:
 ; ===========================================================================
 
 Over_Wait:	; Routine 4
-		move.b	(v_jpadpress1).w,d0
+		move.b	v_jpadpress1,d0
 		andi.b	#btnABC,d0	; is button A, B or C pressed?
 		bne.s	Over_ChgMode	; if yes, branch
 		btst	#0,obFrame(a0)
@@ -64,20 +64,20 @@ Over_Wait:	; Routine 4
 ; ===========================================================================
 
 Over_ChgMode:
-		tst.b	(f_timeover).w	; is time over flag set?
+		tst.b	f_timeover	; is time over flag set?
 		bne.s	Over_ResetLvl	; if yes, branch
-		move.b	#id_Continue,(v_gamemode).w ; set mode to $14 (continue screen)
-		tst.b	(v_continues).w	; do you have any continues?
+		move.b	#id_Continue,v_gamemode ; set mode to $14 (continue screen)
+		tst.b	v_continues	; do you have any continues?
 		bne.s	Over_Display	; if yes, branch
-		move.b	#id_Sega,(v_gamemode).w ; set mode to 0 (Sega screen)
+		move.b	#id_Sega,v_gamemode ; set mode to 0 (Sega screen)
 		bra.s	Over_Display
 ; ===========================================================================
 
 Over_ResetLvl:
 		if Revision<>0
-			clr.l	(v_lamp_time).w
+			clr.l	v_lamp_time
 		endif
-		move.w	#1,(f_restart).w ; restart level
+		move.w	#1,f_restart ; restart level
 
 Over_Display:
 		bra.w	DisplaySprite

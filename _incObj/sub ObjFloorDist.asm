@@ -25,13 +25,13 @@ ObjFloorDist2:
 		move.b	obHeight(a0),d0
 		ext.w	d0
 		add.w	d0,d2
-		lea	(v_anglebuffer).w,a4
+		lea	v_anglebuffer,a4
 		move.b	#0,(a4)
 		movea.w	#$10,a3		; height of a 16x16 tile
 		move.w	#0,d6
 		moveq	#$D,d5		; bit to test for solidness
 		bsr.w	FindFloor
-		move.b	(v_anglebuffer).w,d3
+		move.b	v_anglebuffer,d3
 		btst	#0,d3
 		beq.s	locret_14E4E
 		move.b	#0,d3

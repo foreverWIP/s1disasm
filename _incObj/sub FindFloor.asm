@@ -34,7 +34,7 @@ FindFloor:
 ; ===========================================================================
 
 .issolid:
-		movea.l	(v_collindex).w,a2
+		movea.l	v_collindex,a2
 		move.b	(a2,d0.w),d0	; get collision block number
 		andi.w	#$FF,d0
 		beq.s	.isblank	; branch if 0
@@ -115,7 +115,7 @@ FindFloor2:
 ; ===========================================================================
 
 .issolid:
-		movea.l	(v_collindex).w,a2
+		movea.l	v_collindex,a2
 		move.b	(a2,d0.w),d0
 		andi.w	#$FF,d0
 		beq.s	.isblank2

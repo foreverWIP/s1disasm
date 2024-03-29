@@ -6,13 +6,13 @@
 
 
 Sonic_JumpDirection:
-		move.w	(v_sonspeedmax).w,d6
-		move.w	(v_sonspeedacc).w,d5
+		move.w	v_sonspeedmax,d6
+		move.w	v_sonspeedacc,d5
 		asl.w	#1,d5
 		btst	#4,obStatus(a0)
 		bne.s	Obj01_ResetScr2
 		move.w	obVelX(a0),d0
-		btst	#bitL,(v_jpadhold2).w ; is left being pressed?
+		btst	#bitL,v_jpadhold2 ; is left being pressed?
 		beq.s	loc_13278	; if not, branch
 		bset	#0,obStatus(a0)
 		sub.w	d5,d0
@@ -23,7 +23,7 @@ Sonic_JumpDirection:
 		move.w	d1,d0
 
 loc_13278:
-		btst	#bitR,(v_jpadhold2).w ; is right being pressed?
+		btst	#bitR,v_jpadhold2 ; is right being pressed?
 		beq.s	Obj01_JumpMove	; if not, branch
 		bclr	#0,obStatus(a0)
 		add.w	d5,d0
@@ -35,13 +35,13 @@ Obj01_JumpMove:
 		move.w	d0,obVelX(a0)	; change Sonic's horizontal speed
 
 Obj01_ResetScr2:
-		cmpi.w	#$60,(v_lookshift).w ; is the screen in its default position?
+		cmpi.w	#$60,v_lookshift ; is the screen in its default position?
 		beq.s	loc_132A4	; if yes, branch
 		bcc.s	loc_132A0
-		addq.w	#4,(v_lookshift).w
+		addq.w	#4,v_lookshift
 
 loc_132A0:
-		subq.w	#2,(v_lookshift).w
+		subq.w	#2,v_lookshift
 
 loc_132A4:
 		cmpi.w	#-$400,obVelY(a0) ; is Sonic moving faster than -$400 upwards?

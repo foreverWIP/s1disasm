@@ -53,7 +53,7 @@ Saw_Action:	; Routine 2
 .type01:
 		move.w	#$60,d1
 		moveq	#0,d0
-		move.b	(v_oscillate+$E).w,d0
+		move.b	v_oscillate+$E,d0
 		btst	#0,obStatus(a0)
 		beq.s	.noflip01
 		neg.w	d0
@@ -72,7 +72,7 @@ Saw_Action:	; Routine 2
 .sameframe01:
 		tst.b	obRender(a0)
 		bpl.s	.nosound01
-		move.w	(v_framecount).w,d0
+		move.w	v_framecount,d0
 		andi.w	#$F,d0
 		bne.s	.nosound01
 		move.w	#sfx_Saw,d0
@@ -85,7 +85,7 @@ Saw_Action:	; Routine 2
 .type02:
 		move.w	#$30,d1
 		moveq	#0,d0
-		move.b	(v_oscillate+6).w,d0
+		move.b	v_oscillate+6,d0
 		btst	#0,obStatus(a0)
 		beq.s	.noflip02
 		neg.w	d0
@@ -103,7 +103,7 @@ Saw_Action:	; Routine 2
 .sameframe02:
 		tst.b	obRender(a0)
 		bpl.s	.nosound02
-		move.b	(v_oscillate+6).w,d0
+		move.b	v_oscillate+6,d0
 		cmpi.b	#$18,d0
 		bne.s	.nosound02
 		move.w	#sfx_Saw,d0
@@ -117,12 +117,12 @@ Saw_Action:	; Routine 2
 		tst.b	saw_here(a0)	; has the saw appeared already?
 		bne.s	.here03		; if yes, branch
 
-		move.w	(v_player+obX).w,d0
+		move.w	v_player+obX,d0
 		subi.w	#$C0,d0
 		bcs.s	.nosaw03x
 		sub.w	obX(a0),d0
 		bcs.s	.nosaw03x
-		move.w	(v_player+obY).w,d0
+		move.w	v_player+obY,d0
 		subi.w	#$80,d0
 		cmp.w	obY(a0),d0
 		bhs.s	.nosaw03y
@@ -158,11 +158,11 @@ Saw_Action:	; Routine 2
 .type04:
 		tst.b	saw_here(a0)
 		bne.s	.here04
-		move.w	(v_player+obX).w,d0
+		move.w	v_player+obX,d0
 		addi.w	#$E0,d0
 		sub.w	obX(a0),d0
 		bcc.s	.nosaw04x
-		move.w	(v_player+obY).w,d0
+		move.w	v_player+obY,d0
 		subi.w	#$80,d0
 		cmp.w	obY(a0),d0
 		bhs.s	.nosaw04y

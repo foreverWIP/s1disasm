@@ -8,7 +8,7 @@ Bri_MoveSonic:
 		lsl.w	#object_size_bits,d0
 		addi.l	#v_objspace&$FFFFFF,d0
 		movea.l	d0,a2
-		lea	(v_player).w,a1
+		lea	v_player,a1
 		move.w	obY(a2),d0
 		subq.w	#8,d0
 		moveq	#0,d1

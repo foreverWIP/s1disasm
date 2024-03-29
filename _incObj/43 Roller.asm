@@ -41,7 +41,7 @@ Roll_Action:	; Routine 2
 		bsr.w	AnimateSprite
 		move.w	obX(a0),d0
 		andi.w	#$FF80,d0
-		move.w	(v_screenposx).w,d1
+		move.w	v_screenposx,d1
 		subi.w	#$80,d1
 		andi.w	#$FF80,d1
 		sub.w	d1,d0
@@ -51,7 +51,7 @@ Roll_Action:	; Routine 2
 ; ===========================================================================
 
 Roll_ChkGone:
-		lea	(v_objstate).w,a2
+		lea	v_objstate,a2
 		moveq	#0,d0
 		move.b	obRespawnNo(a0),d0
 		beq.s	Roll_Delete
@@ -67,7 +67,7 @@ Roll_Index2:	dc.w Roll_RollChk-Roll_Index2
 ; ===========================================================================
 
 Roll_RollChk:
-		move.w	(v_player+obX).w,d0
+		move.w	v_player+obX,d0
 		subi.w	#$100,d0
 		bcs.s	loc_E0D2
 		sub.w	obX(a0),d0	; check	distance between Roller	and Sonic
@@ -142,7 +142,7 @@ locret_E150:
 Roll_Stop:
 		tst.b	objoff_32(a0)
 		bmi.s	locret_E188
-		move.w	(v_player+obX).w,d0
+		move.w	v_player+obX,d0
 		subi.w	#$30,d0
 		sub.w	obX(a0),d0
 		bcc.s	locret_E188

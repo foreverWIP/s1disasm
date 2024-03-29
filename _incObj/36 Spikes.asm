@@ -79,11 +79,11 @@ Spik_Upright:
 		bpl.s	Spik_Display
 
 Spik_Hurt:
-		tst.b	(v_invinc).w	; is Sonic invincible?
+		tst.b	v_invinc	; is Sonic invincible?
 		bne.s	Spik_Display	; if yes, branch
 		move.l	a0,-(sp)
 		movea.l	a0,a2
-		lea	(v_player).w,a0
+		lea	v_player,a0
 		cmpi.b	#4,obRoutine(a0)
 		bhs.s	loc_CF20
 	if Revision<>2

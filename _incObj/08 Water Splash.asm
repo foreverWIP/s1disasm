@@ -20,10 +20,10 @@ Spla_Main:	; Routine 0
 		move.b	#1,obPriority(a0)
 		move.b	#$10,obActWid(a0)
 		move.w	#make_art_tile(ArtTile_LZ_Splash,2,0),obGfx(a0)
-		move.w	(v_player+obX).w,obX(a0) ; copy x-position from Sonic
+		move.w	v_player+obX,obX(a0) ; copy x-position from Sonic
 
 Spla_Display:	; Routine 2
-		move.w	(v_waterpos1).w,obY(a0) ; copy y-position from water height
+		move.w	v_waterpos1,obY(a0) ; copy y-position from water height
 		lea	(Ani_Splash).l,a1
 		jsr	(AnimateSprite).l
 		jmp	(DisplaySprite).l

@@ -6,19 +6,19 @@
 
 
 Sonic_Move:
-		move.w	(v_sonspeedmax).w,d6
-		move.w	(v_sonspeedacc).w,d5
-		move.w	(v_sonspeeddec).w,d4
-		tst.b	(f_slidemode).w
+		move.w	v_sonspeedmax,d6
+		move.w	v_sonspeedacc,d5
+		move.w	v_sonspeeddec,d4
+		tst.b	f_slidemode
 		bne.w	loc_12FEE
 		tst.w	objoff_3E(a0)
 		bne.w	Sonic_ResetScr
-		btst	#bitL,(v_jpadhold2).w ; is left being pressed?
+		btst	#bitL,v_jpadhold2 ; is left being pressed?
 		beq.s	.notleft	; if not, branch
 		bsr.w	Sonic_MoveLeft
 
 .notleft:
-		btst	#bitR,(v_jpadhold2).w ; is right being pressed?
+		btst	#bitR,v_jpadhold2 ; is right being pressed?
 		beq.s	.notright	; if not, branch
 		bsr.w	Sonic_MoveRight
 
@@ -36,7 +36,7 @@ Sonic_Move:
 		moveq	#0,d0
 		move.b	standonobject(a0),d0
 		lsl.w	#object_size_bits,d0
-		lea	(v_objspace).w,a1
+		lea	v_objspace,a1
 		lea	(a1,d0.w),a1
 		tst.b	obStatus(a1)
 		bmi.s	Sonic_LookUp
@@ -79,36 +79,36 @@ loc_12F70:
 ; ===========================================================================
 
 Sonic_LookUp:
-		btst	#bitUp,(v_jpadhold2).w ; is up being pressed?
+		btst	#bitUp,v_jpadhold2 ; is up being pressed?
 		beq.s	Sonic_Duck	; if not, branch
 		move.b	#id_LookUp,obAnim(a0) ; use "looking up" animation
-		cmpi.w	#$C8,(v_lookshift).w
+		cmpi.w	#$C8,v_lookshift
 		beq.s	loc_12FC2
-		addq.w	#2,(v_lookshift).w
+		addq.w	#2,v_lookshift
 		bra.s	loc_12FC2
 ; ===========================================================================
 
 Sonic_Duck:
-		btst	#bitDn,(v_jpadhold2).w ; is down being pressed?
+		btst	#bitDn,v_jpadhold2 ; is down being pressed?
 		beq.s	Sonic_ResetScr	; if not, branch
 		move.b	#id_Duck,obAnim(a0) ; use "ducking" animation
-		cmpi.w	#8,(v_lookshift).w
+		cmpi.w	#8,v_lookshift
 		beq.s	loc_12FC2
-		subq.w	#2,(v_lookshift).w
+		subq.w	#2,v_lookshift
 		bra.s	loc_12FC2
 ; ===========================================================================
 
 Sonic_ResetScr:
-		cmpi.w	#$60,(v_lookshift).w ; is screen in its default position?
+		cmpi.w	#$60,v_lookshift ; is screen in its default position?
 		beq.s	loc_12FC2	; if yes, branch
 		bcc.s	loc_12FBE
-		addq.w	#4,(v_lookshift).w ; move screen back to default
+		addq.w	#4,v_lookshift ; move screen back to default
 
 loc_12FBE:
-		subq.w	#2,(v_lookshift).w ; move screen back to default
+		subq.w	#2,v_lookshift ; move screen back to default
 
 loc_12FC2:
-		move.b	(v_jpadhold2).w,d0
+		move.b	v_jpadhold2,d0
 		andi.b	#btnL+btnR,d0	; is left/right	pressed?
 		bne.s	loc_12FEE	; if yes, branch
 		move.w	obInertia(a0),d0

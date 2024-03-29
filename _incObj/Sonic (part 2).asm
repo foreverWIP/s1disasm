@@ -25,13 +25,13 @@ loc_1380C:
 
 
 Sonic_HurtStop:
-		move.w	(v_limitbtm2).w,d0
+		move.w	v_limitbtm2,d0
 	if FixBugs
 		; The original code does not consider that the camera boundary
 		; may be in the middle of lowering itself, which is why going
 		; down the S-tunnel in Green Hill Zone Act 1 fast enough can
 		; kill Sonic.
-		move.w	(v_limitbtm1).w,d1
+		move.w	v_limitbtm1,d1
 		cmp.w	d0,d1
 		blo.s	.skip
 		move.w	d1,d0
@@ -71,21 +71,21 @@ Sonic_Death:	; Routine 6
 
 
 GameOver:
-		move.w	(v_limitbtm2).w,d0
+		move.w	v_limitbtm2,d0
 		addi.w	#$100,d0
 		cmp.w	obY(a0),d0
 		bhs.w	locret_13900
 		move.w	#-$38,obVelY(a0)
 		addq.b	#2,obRoutine(a0)
-		clr.b	(f_timecount).w	; stop time counter
-		addq.b	#1,(f_lifecount).w ; update lives counter
-		subq.b	#1,(v_lives).w	; subtract 1 from number of lives
+		clr.b	f_timecount	; stop time counter
+		addq.b	#1,f_lifecount ; update lives counter
+		subq.b	#1,v_lives	; subtract 1 from number of lives
 		bne.s	loc_138D4
 		move.w	#0,objoff_3A(a0)
-		move.b	#id_GameOverCard,(v_gameovertext1).w ; load GAME object
-		move.b	#id_GameOverCard,(v_gameovertext2).w ; load OVER object
-		move.b	#1,(v_gameovertext2+obFrame).w ; set OVER object to correct frame
-		clr.b	(f_timeover).w
+		move.b	#id_GameOverCard,v_gameovertext1 ; load GAME object
+		move.b	#id_GameOverCard,v_gameovertext2 ; load OVER object
+		move.b	#1,v_gameovertext2+obFrame ; set OVER object to correct frame
+		clr.b	f_timeover
 
 loc_138C2:
 		move.w	#bgm_GameOver,d0
@@ -96,13 +96,13 @@ loc_138C2:
 
 loc_138D4:
 		move.w	#60,objoff_3A(a0)	; set time delay to 1 second
-		tst.b	(f_timeover).w	; is TIME OVER tag set?
+		tst.b	f_timeover	; is TIME OVER tag set?
 		beq.s	locret_13900	; if not, branch
 		move.w	#0,objoff_3A(a0)
-		move.b	#id_GameOverCard,(v_gameovertext1).w ; load TIME object
-		move.b	#id_GameOverCard,(v_gameovertext2).w ; load OVER object
-		move.b	#2,(v_gameovertext1+obFrame).w
-		move.b	#3,(v_gameovertext2+obFrame).w
+		move.b	#id_GameOverCard,v_gameovertext1 ; load TIME object
+		move.b	#id_GameOverCard,v_gameovertext2 ; load OVER object
+		move.b	#2,v_gameovertext1+obFrame
+		move.b	#3,v_gameovertext2+obFrame
 		bra.s	loc_138C2
 ; ===========================================================================
 
@@ -119,7 +119,7 @@ Sonic_ResetLevel:; Routine 8
 		beq.s	locret_13914
 		subq.w	#1,objoff_3A(a0)	; subtract 1 from time delay
 		bne.s	locret_13914
-		move.w	#1,(f_restart).w ; restart the level
+		move.w	#1,f_restart ; restart the level
 
 locret_13914:
 		rts	

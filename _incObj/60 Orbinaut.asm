@@ -20,12 +20,12 @@ orb_parent = objoff_3C		; address of parent object
 Orb_Main:	; Routine 0
 		move.l	#Map_Orb,obMap(a0)
 		move.w	#make_art_tile(ArtTile_SBZ_Orbinaut,0,0),obGfx(a0)	; SBZ specific code
-		cmpi.b	#id_SBZ,(v_zone).w ; check if level is SBZ
+		cmpi.b	#id_SBZ,v_zone ; check if level is SBZ
 		beq.s	.isscrap
 		move.w	#make_art_tile(ArtTile_SLZ_Orbinaut,1,0),obGfx(a0) ; SLZ specific code
 
 .isscrap:
-		cmpi.b	#id_LZ,(v_zone).w ; check if level is LZ
+		cmpi.b	#id_LZ,v_zone ; check if level is LZ
 		bne.s	.notlabyrinth
 		move.w	#make_art_tile(ArtTile_LZ_Orbinaut,0,0),obGfx(a0)	; LZ specific code
 
@@ -83,7 +83,7 @@ Orb_Main:	; Routine 0
 ; ===========================================================================
 
 Orb_ChkSonic:	; Routine 2
-		move.w	(v_player+obX).w,d0
+		move.w	v_player+obX,d0
 		sub.w	obX(a0),d0	; is Sonic to the right of the orbinaut?
 		bcc.s	.isright	; if yes, branch
 		neg.w	d0
@@ -91,7 +91,7 @@ Orb_ChkSonic:	; Routine 2
 .isright:
 		cmpi.w	#$A0,d0		; is Sonic within $A0 pixels of	orbinaut?
 		bhs.s	.animate	; if not, branch
-		move.w	(v_player+obY).w,d0
+		move.w	v_player+obY,d0
 		sub.w	obY(a0),d0	; is Sonic above the orbinaut?
 		bcc.s	.isabove	; if yes, branch
 		neg.w	d0
@@ -99,7 +99,7 @@ Orb_ChkSonic:	; Routine 2
 .isabove:
 		cmpi.w	#$50,d0		; is Sonic within $50 pixels of	orbinaut?
 		bhs.s	.animate	; if not, branch
-		tst.w	(v_debuguse).w	; is debug mode	on?
+		tst.w	v_debuguse	; is debug mode	on?
 		bne.s	.animate	; if yes, branch
 		move.b	#1,obAnim(a0)	; use "angry" animation
 
@@ -117,7 +117,7 @@ Orb_ChkDel:
 		bra.w	DisplaySprite
 
 .chkgone:
-		lea	(v_objstate).w,a2
+		lea	v_objstate,a2
 		moveq	#0,d0
 		move.b	obRespawnNo(a0),d0
 		beq.s	loc_11E34

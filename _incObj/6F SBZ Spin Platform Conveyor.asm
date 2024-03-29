@@ -14,7 +14,7 @@ SpinC_Display:
 ; ===========================================================================
 
 loc_1629A:
-		cmpi.b	#2,(v_act).w	; check if act is 3
+		cmpi.b	#2,v_act	; check if act is 3
 		bne.s	SpinC_Act1or2	; if not, branch
 		cmpi.w	#-$80,d0
 		bhs.s	SpinC_Display
@@ -23,7 +23,7 @@ SpinC_Act1or2:
 		move.b	objoff_2F(a0),d0
 		bpl.s	SpinC_Delete
 		andi.w	#$7F,d0
-		lea	(v_obj63).w,a2
+		lea	v_obj63,a2
 		bclr	#0,(a2,d0.w)
 
 SpinC_Delete:
@@ -56,7 +56,7 @@ SpinC_Main:	; Routine 0
 		lsl.w	#2,d1
 		move.b	d1,objoff_38(a0)
 		move.b	#4,objoff_3A(a0)
-		tst.b	(f_conveyrev).w
+		tst.b	f_conveyrev
 		beq.s	loc_16356
 		move.b	#1,objoff_3B(a0)
 		neg.b	objoff_3A(a0)
@@ -95,7 +95,7 @@ loc_16378:
 loc_16380:
 		move.b	d0,objoff_2F(a0)
 		andi.w	#$7F,d0
-		lea	(v_obj63).w,a2
+		lea	v_obj63,a2
 		bset	#0,(a2,d0.w)
 		beq.s	loc_1639A
 		jmp	(DeleteObject).l
@@ -148,7 +148,7 @@ loc_163D8:	; Routine 2
 loc_16404:
 		btst	#3,obStatus(a0)
 		beq.s	loc_16420
-		lea	(v_player).w,a1
+		lea	v_player,a1
 		bclr	#3,obStatus(a1)
 		bclr	#3,obStatus(a0)
 		clr.b	obSolid(a0)

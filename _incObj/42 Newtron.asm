@@ -41,7 +41,7 @@ Newt_Action:	; Routine 2
 
 .chkdistance:
 		bset	#0,obStatus(a0)
-		move.w	(v_player+obX).w,d0
+		move.w	v_player+obX,d0
 		sub.w	obX(a0),d0
 		bcc.s	.sonicisright
 		neg.w	d0
@@ -68,7 +68,7 @@ Newt_Action:	; Routine 2
 		cmpi.b	#4,obFrame(a0)	; has "appearing" animation finished?
 		bhs.s	.fall		; is yes, branch
 		bset	#0,obStatus(a0)
-		move.w	(v_player+obX).w,d0
+		move.w	v_player+obX,d0
 		sub.w	obX(a0),d0
 		bcc.s	.sonicisright2
 		bclr	#0,obStatus(a0)

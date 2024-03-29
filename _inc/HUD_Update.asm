@@ -5,35 +5,35 @@
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
 
 HUD_Update:
-		tst.w	(f_debugmode).w	; is debug mode	on?
+		tst.w	f_debugmode	; is debug mode	on?
 		bne.w	HudDebug	; if yes, branch
-		tst.b	(f_scorecount).w ; does the score need updating?
+		tst.b	f_scorecount ; does the score need updating?
 		beq.s	.chkrings	; if not, branch
 
-		clr.b	(f_scorecount).w
+		clr.b	f_scorecount
 		locVRAM	(ArtTile_HUD+$1A)*$20,d0	; set VRAM address
-		move.l	(v_score).w,d1	; load score
+		move.l	v_score,d1	; load score
 		bsr.w	Hud_Score
 
 .chkrings:
-		tst.b	(f_ringcount).w	; does the ring	counter	need updating?
+		tst.b	f_ringcount	; does the ring	counter	need updating?
 		beq.s	.chktime	; if not, branch
 		bpl.s	.notzero
 		bsr.w	Hud_LoadZero	; reset rings to 0 if Sonic is hit
 
 .notzero:
-		clr.b	(f_ringcount).w
+		clr.b	f_ringcount
 		locVRAM	(ArtTile_HUD+$30)*$20,d0	; set VRAM address
 		moveq	#0,d1
-		move.w	(v_rings).w,d1	; load number of rings
+		move.w	v_rings,d1	; load number of rings
 		bsr.w	Hud_Rings
 
 .chktime:
-		tst.b	(f_timecount).w	; does the time	need updating?
+		tst.b	f_timecount	; does the time	need updating?
 		beq.s	.chklives	; if not, branch
-		tst.w	(f_pause).w	; is the game paused?
+		tst.w	f_pause	; is the game paused?
 		bne.s	.chklives	; if yes, branch
-		lea	(v_time).w,a1
+		lea	v_time,a1
 		cmpi.l	#(9*$10000)+(59*$100)+59,(a1)+ ; is the time 9:59:59?
 		beq.s	TimeOver	; if yes, branch
 
@@ -53,29 +53,29 @@ HUD_Update:
 .updatetime:
 		locVRAM	(ArtTile_HUD+$28)*$20,d0
 		moveq	#0,d1
-		move.b	(v_timemin).w,d1 ; load	minutes
+		move.b	v_timemin,d1 ; load	minutes
 		bsr.w	Hud_Mins
 		locVRAM	(ArtTile_HUD+$2C)*$20,d0
 		moveq	#0,d1
-		move.b	(v_timesec).w,d1 ; load	seconds
+		move.b	v_timesec,d1 ; load	seconds
 		bsr.w	Hud_Secs
 
 .chklives:
-		tst.b	(f_lifecount).w ; does the lives counter need updating?
+		tst.b	f_lifecount ; does the lives counter need updating?
 		beq.s	.chkbonus	; if not, branch
-		clr.b	(f_lifecount).w
+		clr.b	f_lifecount
 		bsr.w	Hud_Lives
 
 .chkbonus:
-		tst.b	(f_endactbonus).w ; do time/ring bonus counters need updating?
+		tst.b	f_endactbonus ; do time/ring bonus counters need updating?
 		beq.s	.finish		; if not, branch
-		clr.b	(f_endactbonus).w
+		clr.b	f_endactbonus
 		locVRAM	ArtTile_Bonuses*$20
 		moveq	#0,d1
-		move.w	(v_timebonus).w,d1 ; load time bonus
+		move.w	v_timebonus,d1 ; load time bonus
 		bsr.w	Hud_TimeRingBonus
 		moveq	#0,d1
-		move.w	(v_ringbonus).w,d1 ; load ring bonus
+		move.w	v_ringbonus,d1 ; load ring bonus
 		bsr.w	Hud_TimeRingBonus
 
 .finish:
@@ -83,48 +83,48 @@ HUD_Update:
 ; ===========================================================================
 
 TimeOver:
-		clr.b	(f_timecount).w
-		lea	(v_player).w,a0
+		clr.b	f_timecount
+		lea	v_player,a0
 		movea.l	a0,a2
 		bsr.w	KillSonic
-		move.b	#1,(f_timeover).w
+		move.b	#1,f_timeover
 		rts	
 ; ===========================================================================
 
 HudDebug:
 		bsr.w	HudDb_XY
-		tst.b	(f_ringcount).w	; does the ring	counter	need updating?
+		tst.b	f_ringcount	; does the ring	counter	need updating?
 		beq.s	.objcounter	; if not, branch
 		bpl.s	.notzero
 		bsr.w	Hud_LoadZero	; reset rings to 0 if Sonic is hit
 
 .notzero:
-		clr.b	(f_ringcount).w
+		clr.b	f_ringcount
 		locVRAM	(ArtTile_HUD+$30)*$20,d0	; set VRAM address
 		moveq	#0,d1
-		move.w	(v_rings).w,d1	; load number of rings
+		move.w	v_rings,d1	; load number of rings
 		bsr.w	Hud_Rings
 
 .objcounter:
 		locVRAM	(ArtTile_HUD+$2C)*$20,d0	; set VRAM address
 		moveq	#0,d1
-		move.b	(v_spritecount).w,d1 ; load "number of objects" counter
+		move.b	v_spritecount,d1 ; load "number of objects" counter
 		bsr.w	Hud_Secs
-		tst.b	(f_lifecount).w ; does the lives counter need updating?
+		tst.b	f_lifecount ; does the lives counter need updating?
 		beq.s	.chkbonus	; if not, branch
-		clr.b	(f_lifecount).w
+		clr.b	f_lifecount
 		bsr.w	Hud_Lives
 
 .chkbonus:
-		tst.b	(f_endactbonus).w ; does the ring/time bonus counter need updating?
+		tst.b	f_endactbonus ; does the ring/time bonus counter need updating?
 		beq.s	.finish		; if not, branch
-		clr.b	(f_endactbonus).w
+		clr.b	f_endactbonus
 		locVRAM	ArtTile_Bonuses*$20		; set VRAM address
 		moveq	#0,d1
-		move.w	(v_timebonus).w,d1 ; load time bonus
+		move.w	v_timebonus,d1 ; load time bonus
 		bsr.w	Hud_TimeRingBonus
 		moveq	#0,d1
-		move.w	(v_ringbonus).w,d1 ; load ring bonus
+		move.w	v_ringbonus,d1 ; load ring bonus
 		bsr.w	Hud_TimeRingBonus
 
 .finish:
@@ -199,13 +199,13 @@ Hud_TilesZero:	dc.b $FF, $FF, 0, 0
 
 HudDb_XY:
 		locVRAM	(ArtTile_HUD+$18)*$20		; set VRAM address
-		move.w	(v_screenposx).w,d1 ; load camera x-position
+		move.w	v_screenposx,d1 ; load camera x-position
 		swap	d1
-		move.w	(v_player+obX).w,d1 ; load Sonic's x-position
+		move.w	v_player+obX,d1 ; load Sonic's x-position
 		bsr.s	HudDb_XY2
-		move.w	(v_screenposy).w,d1 ; load camera y-position
+		move.w	v_screenposy,d1 ; load camera y-position
 		swap	d1
-		move.w	(v_player+obY).w,d1 ; load Sonic's y-position
+		move.w	v_player+obY,d1 ; load Sonic's y-position
 ; End of function HudDb_XY
 
 

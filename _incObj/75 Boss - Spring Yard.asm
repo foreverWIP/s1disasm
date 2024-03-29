@@ -113,7 +113,7 @@ loc_19202:
 		jsr	(PlaySound_Special).l	; play boss damage sound
 
 loc_1923A:
-		lea	(v_pal_dry+$22).w,a1
+		lea	v_pal_dry+$22,a1
 		moveq	#0,d0
 		tst.w	(a1)
 		bne.s	loc_19248
@@ -169,7 +169,7 @@ loc_192AE:
 		bgt.s	loc_192E8
 		tst.b	objoff_3D(a0)
 		bne.s	loc_192E8
-		move.w	(v_player+obX).w,d1
+		move.w	v_player+obX,d1
 		subi.w	#boss_syz_x,d1
 		asr.w	#5,d1
 		cmp.b	objoff_34(a0),d1
@@ -346,10 +346,10 @@ loc_19446:
 BossSpringYard_FindBlocks:
 		clr.w	objoff_36(a0)
 	if FixBugs
-		lea	(v_lvlobjspace).w,a1
+		lea	v_lvlobjspace,a1
 		moveq	#(v_lvlobjend-v_lvlobjspace)/object_size-1,d0
 	else
-		lea	(v_objspace+object_size*1).w,a1 ; Nonsensical starting point, since dynamic object allocations begin at v_lvlobjspace.
+		lea	v_objspace+object_size*1,a1 ; Nonsensical starting point, since dynamic object allocations begin at v_lvlobjspace.
 		moveq	#(v_objend-(v_objspace+object_size*1))/object_size/2-1,d0	; Nonsensical length, it only covers the first half of object RAM.
 	endif
 		moveq	#id_BossBlock,d1
@@ -387,9 +387,9 @@ loc_1947E:
 		bclr	#7,obStatus(a0)
 		clr.w	obVelX(a0)
 		move.w	#-1,objoff_3C(a0)
-		tst.b	(v_bossstatus).w
+		tst.b	v_bossstatus
 		bne.s	loc_194A8
-		move.b	#1,(v_bossstatus).w
+		move.b	#1,v_bossstatus
 
 loc_194A8:
 		bra.w	loc_19202
@@ -435,9 +435,9 @@ loc_194EE:
 loc_194F2:
 		move.w	#$400,obVelX(a0)
 		move.w	#-$40,obVelY(a0)
-		cmpi.w	#boss_syz_end,(v_limitright2).w
+		cmpi.w	#boss_syz_end,v_limitright2
 		bhs.s	loc_1950C
-		addq.w	#2,(v_limitright2).w
+		addq.w	#2,v_limitright2
 		bra.s	loc_19512
 ; ===========================================================================
 
@@ -516,7 +516,7 @@ loc_19574:
 ; ===========================================================================
 
 loc_1957E:
-		cmpi.b	#4,(v_player+obRoutine).w
+		cmpi.b	#4,v_player+obRoutine
 		blo.s	locret_19588
 		moveq	#4,d1
 

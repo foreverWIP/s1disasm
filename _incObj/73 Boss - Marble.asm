@@ -108,7 +108,7 @@ loc_1833E:
 		jsr	(PlaySound_Special).l	; play boss damage sound
 
 loc_18374:
-		lea	(v_pal_dry+$22).w,a1
+		lea	v_pal_dry+$22,a1
 		moveq	#0,d0
 		tst.w	(a1)
 		bne.s	loc_18382
@@ -264,9 +264,9 @@ loc_18500:
 		clr.w	obVelX(a0)
 		addq.b	#2,ob2ndRout(a0)
 		move.w	#-$26,objoff_3C(a0)
-		tst.b	(v_bossstatus).w
+		tst.b	v_bossstatus
 		bne.s	locret_1852A
-		move.b	#1,(v_bossstatus).w
+		move.b	#1,v_bossstatus
 		clr.w	obVelY(a0)
 
 locret_1852A:
@@ -317,9 +317,9 @@ loc_1857A:
 loc_18582:
 		move.w	#$500,obVelX(a0)
 		move.w	#-$40,obVelY(a0)
-		cmpi.w	#boss_mz_end,(v_limitright2).w
+		cmpi.w	#boss_mz_end,v_limitright2
 		bhs.s	loc_1859C
-		addq.w	#2,(v_limitright2).w
+		addq.w	#2,v_limitright2
 		bra.s	loc_185A2
 ; ===========================================================================
 
@@ -369,7 +369,7 @@ loc_185DA:
 ; ===========================================================================
 
 loc_185E4:
-		cmpi.b	#4,(v_player+obRoutine).w
+		cmpi.b	#4,v_player+obRoutine
 		blo.s	loc_185EE
 		moveq	#4,d1
 

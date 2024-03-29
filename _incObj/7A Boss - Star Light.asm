@@ -56,9 +56,9 @@ BossStarLight_LoadBoss:
 
 loc_1895C:
 	if FixBugs
-		lea	(v_lvlobjspace).w,a1
+		lea	v_lvlobjspace,a1
 	else
-		lea	(v_objspace+object_size*1).w,a1 ; Nonsensical starting point, since dynamic object allocations begin at v_lvlobjspace.
+		lea	v_objspace+object_size*1,a1 ; Nonsensical starting point, since dynamic object allocations begin at v_lvlobjspace.
 	endif
 		lea	objoff_2A(a0),a2
 		moveq	#id_Seesaw,d0
@@ -138,7 +138,7 @@ loc_189FE:
 		jsr	(PlaySound_Special).l	; play boss damage sound
 
 loc_18A28:
-		lea	(v_pal_dry+$22).w,a1
+		lea	v_pal_dry+$22,a1
 		moveq	#0,d0
 		tst.w	(a1)
 		bne.s	loc_18A36
@@ -229,10 +229,10 @@ BossStarLight_MakeBall:
 		move.w	(a1,d0.w),d0
 		movea.l	d0,a2
 	if FixBugs
-		lea	(v_lvlobjspace).w,a1
+		lea	v_lvlobjspace,a1
 		moveq	#(v_lvlobjend-v_lvlobjspace)/object_size-1,d1
 	else
-		lea	(v_objspace+object_size*1).w,a1 ; Nonsensical starting point, since dynamic object allocations begin at v_lvlobjspace.
+		lea	v_objspace+object_size*1,a1 ; Nonsensical starting point, since dynamic object allocations begin at v_lvlobjspace.
 		moveq	#(v_objend-(v_objspace+object_size*1))/object_size/2-1,d1	; Nonsensical length, it only covers the first half of object RAM.
 	endif
 
@@ -278,9 +278,9 @@ loc_18B52:
 		bclr	#7,obStatus(a0)
 		clr.w	obVelX(a0)
 		move.b	#-$18,objoff_3C(a0)
-		tst.b	(v_bossstatus).w
+		tst.b	v_bossstatus
 		bne.s	loc_18B7C
-		move.b	#1,(v_bossstatus).w
+		move.b	#1,v_bossstatus
 
 loc_18B7C:
 		bra.w	loc_189FE
@@ -326,9 +326,9 @@ loc_18BC2:
 loc_18BC6:
 		move.w	#$400,obVelX(a0)
 		move.w	#-$40,obVelY(a0)
-		cmpi.w	#boss_slz_end,(v_limitright2).w
+		cmpi.w	#boss_slz_end,v_limitright2
 		bhs.s	loc_18BE0
-		addq.w	#2,(v_limitright2).w
+		addq.w	#2,v_limitright2
 		bra.s	loc_18BE8
 ; ===========================================================================
 
@@ -372,7 +372,7 @@ loc_18C06:
 ; ===========================================================================
 
 loc_18C10:
-		cmpi.b	#4,(v_player+obRoutine).w
+		cmpi.b	#4,v_player+obRoutine
 		blo.s	loc_18C1A
 		moveq	#4,d1
 

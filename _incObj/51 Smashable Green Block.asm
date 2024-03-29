@@ -28,8 +28,8 @@ Smab_Solid:	; Routine 2
 sonicAniFrame = objoff_32		; Sonic's current animation number
 .count = objoff_34		; number of blocks hit + previous stuff
 
-		move.w	(v_itembonus).w,objoff_34(a0)
-		move.b	(v_player+obAnim).w,sonicAniFrame(a0) ; load Sonic's animation number
+		move.w	v_itembonus,objoff_34(a0)
+		move.b	v_player+obAnim,sonicAniFrame(a0) ; load Sonic's animation number
 		move.w	#$1B,d1
 		move.w	#$10,d2
 		move.w	#$11,d3
@@ -45,7 +45,7 @@ sonicAniFrame = objoff_32		; Sonic's current animation number
 .smash:
 		cmpi.b	#id_Roll,sonicAniFrame(a0) ; is Sonic rolling/jumping?
 		bne.s	.notspinning	; if not, branch
-		move.w	.count(a0),(v_itembonus).w
+		move.w	.count(a0),v_itembonus
 		bset	#2,obStatus(a1)
 		move.b	#$E,obHeight(a1)
 		move.b	#7,obWidth(a1)
@@ -66,8 +66,8 @@ sonicAniFrame = objoff_32		; Sonic's current animation number
 		_move.b	#id_Points,obID(a1) ; load points object
 		move.w	obX(a0),obX(a1)
 		move.w	obY(a0),obY(a1)
-		move.w	(v_itembonus).w,d2
-		addq.w	#2,(v_itembonus).w ; increment bonus counter
+		move.w	v_itembonus,d2
+		addq.w	#2,v_itembonus ; increment bonus counter
 		cmpi.w	#6,d2		; have fewer than 3 blocks broken?
 		blo.s	.bonus		; if yes, branch
 		moveq	#6,d2		; set cap for points
@@ -75,7 +75,7 @@ sonicAniFrame = objoff_32		; Sonic's current animation number
 .bonus:
 		moveq	#0,d0
 		move.w	Smab_Scores(pc,d2.w),d0
-		cmpi.w	#$20,(v_itembonus).w ; have 16 blocks been smashed?
+		cmpi.w	#$20,v_itembonus ; have 16 blocks been smashed?
 		blo.s	.givepoints	; if not, branch
 		move.w	#1000,d0	; give higher points for 16th block
 		moveq	#10,d2

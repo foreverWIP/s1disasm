@@ -25,7 +25,7 @@ Bump_Hit:	; Routine 2
 		tst.b	obColProp(a0)	; has Sonic touched the	bumper?
 		beq.w	.display	; if not, branch
 		clr.b	obColProp(a0)
-		lea	(v_player).w,a1
+		lea	v_player,a1
 		move.w	obX(a0),d1
 		move.w	obY(a0),d2
 		sub.w	obX(a1),d1
@@ -45,7 +45,7 @@ Bump_Hit:	; Routine 2
 		move.b	#1,obAnim(a0)	; use "hit" animation
 		move.w	#sfx_Bumper,d0
 		jsr	(PlaySound_Special).l	; play bumper sound
-		lea	(v_objstate).w,a2
+		lea	v_objstate,a2
 		moveq	#0,d0
 		move.b	obRespawnNo(a0),d0
 		beq.s	.addscore
@@ -71,7 +71,7 @@ Bump_Hit:	; Routine 2
 ; ===========================================================================
 
 .resetcount:
-		lea	(v_objstate).w,a2
+		lea	v_objstate,a2
 		moveq	#0,d0
 		move.b	obRespawnNo(a0),d0
 		beq.s	.delete

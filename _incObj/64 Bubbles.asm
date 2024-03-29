@@ -55,7 +55,7 @@ Bub_Animate:	; Routine 2
 		move.b	#1,bub_inhalable(a0) ; set "inhalable" flag
 
 Bub_ChkWater:	; Routine 4
-		move.w	(v_waterpos1).w,d0
+		move.w	v_waterpos1,d0
 		cmp.w	obY(a0),d0	; is bubble underwater?
 		blo.s	.wobble		; if yes, branch
 
@@ -82,7 +82,7 @@ Bub_ChkWater:	; Routine 4
 		bsr.w	ResumeMusic	; cancel countdown music
 		move.w	#sfx_Bubble,d0
 		jsr	(PlaySound_Special).l	; play collecting bubble sound
-		lea	(v_player).w,a1
+		lea	v_player,a1
 		clr.w	obVelX(a1)
 		clr.w	obVelY(a1)
 		clr.w	obInertia(a1)	; stop Sonic
@@ -128,7 +128,7 @@ Bub_Delete:	; Routine 8
 Bub_BblMaker:	; Routine $A
 		tst.w	objoff_36(a0)
 		bne.s	.loc_12874
-		move.w	(v_waterpos1).w,d0
+		move.w	v_waterpos1,d0
 		cmp.w	obY(a0),d0	; is bubble maker underwater?
 		bhs.w	.chkdel		; if not, branch
 		tst.b	obRender(a0)
@@ -210,7 +210,7 @@ Bub_BblMaker:	; Routine $A
 
 .chkdel:
 		out_of_range.w	DeleteObject
-		move.w	(v_waterpos1).w,d0
+		move.w	v_waterpos1,d0
 		cmp.w	obY(a0),d0
 		blo.w	DisplaySprite
 		rts	
@@ -224,9 +224,9 @@ Bub_BblTypes:	dc.b 0,	1, 0, 0, 0, 0, 1, 0, 0,	0, 0, 1, 0, 1, 0, 0, 1,	0
 ; ===========================================================================
 
 Bub_ChkSonic:
-		tst.b	(f_playerctrl).w
+		tst.b	f_playerctrl
 		bmi.s	.loc_12998
-		lea	(v_player).w,a1
+		lea	v_player,a1
 		move.w	obX(a1),d0
 		move.w	obX(a0),d1
 		subi.w	#$10,d1

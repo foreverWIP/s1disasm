@@ -41,16 +41,16 @@ Bas_Action:	; Routine 2
 		move.w	#$80,d2
 		bsr.w	.chkdistance	; is Sonic < $80 pixels from basaran?
 		bcc.s	.nodrop		; if not, branch
-		move.w	(v_player+obY).w,d0
+		move.w	v_player+obY,d0
 		move.w	d0,objoff_36(a0)
 		sub.w	obY(a0),d0
 		bcs.s	.nodrop
 		cmpi.w	#$80,d0		; is Sonic < $80 pixels from basaran?
 		bhs.s	.nodrop		; if not, branch
-		tst.w	(v_debuguse).w	; is debug mode	on?
+		tst.w	v_debuguse	; is debug mode	on?
 		bne.s	.nodrop		; if yes, branch
 
-		move.b	(v_vbla_byte).w,d0
+		move.b	v_vbla_byte,d0
 		add.b	d7,d0
 		andi.b	#7,d0
 		bne.s	.nodrop
@@ -95,7 +95,7 @@ Bas_Action:	; Routine 2
 ; ===========================================================================
 
 .flapsound:
-		move.b	(v_vbla_byte).w,d0
+		move.b	v_vbla_byte,d0
 		andi.b	#$F,d0
 		bne.s	.nosound
 		move.w	#sfx_Basaran,d0
@@ -103,7 +103,7 @@ Bas_Action:	; Routine 2
 
 .nosound:
 		bsr.w	SpeedToPos
-		move.w	(v_player+obX).w,d0
+		move.w	v_player+obX,d0
 		sub.w	obX(a0),d0
 		bcc.s	.isright	; if Sonic is right of basaran, branch
 		neg.w	d0
@@ -111,7 +111,7 @@ Bas_Action:	; Routine 2
 .isright:
 		cmpi.w	#$80,d0		; is Sonic within $80 pixels of basaran?
 		blo.s	.dontflyup	; if yes, branch
-		move.b	(v_vbla_byte).w,d0
+		move.b	v_vbla_byte,d0
 		add.b	d7,d0
 		andi.b	#7,d0
 		bne.s	.dontflyup
@@ -150,7 +150,7 @@ Bas_Action:	; Routine 2
 .chkdistance:
 		move.w	#$100,d1
 		bset	#0,obStatus(a0)
-		move.w	(v_player+obX).w,d0
+		move.w	v_player+obX,d0
 		sub.w	obX(a0),d0
 		bcc.s	.right		; if Sonic is right of basaran, branch
 		neg.w	d0
