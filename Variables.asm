@@ -97,6 +97,7 @@ v_endeggman	= v_objspace+object_size*2	; object variable space for Eggman after 
 v_tryagain	= v_objspace+object_size*3	; object variable space for the "TRY AGAIN" text ($40 bytes)
 v_eggmanchaos	= v_objspace+object_size*32	; object variable space for the emeralds juggled by Eggman ($180 bytes)
 
+		if NeoGeo=0
 v_snddriver_ram:	ds.b	$5C0		; start of RAM for the sound driver data
 			ds.b	$40		; unused
 
@@ -181,6 +182,8 @@ v_1up_ram_copy:		= v_spcsfx_track_ram_end
 ; =================================================================================
 ; From here on, no longer relative to sound driver RAM
 ; =================================================================================
+		else
+		endif
 
 v_gamemode:		ds.b	1		; game mode (00=Sega; 04=Title; 08=Demo; 0C=Level; 10=SS; 14=Cont; 18=End; 1C=Credit; +8C=PreLevel)
 			ds.b	1		; unused
@@ -462,9 +465,11 @@ v_limitbtmdb:		ds.w	1		; level bottom boundary, buffered for debug mode
 v_timingvariables_end:
 
 v_chunk0collision:	ds.w	1		; very subtly (and perhaps unintentionally) used by FindNearestTile when encountering chunk 0
+		if NeoGeo=0
 	if v_chunk0collision<>ramaddr($FFFFFF00)
 		fatal "v_chunk0collision needs to be at address $FFFFFF00 so that FindNearestTile works correctly."
 	endif
+		endif
 			ds.b	$E		; unused
 v_screenposx_dup:	ds.l	1		; screen position x (duplicate)
 v_screenposy_dup:	ds.l	1		; screen position y (duplicate)

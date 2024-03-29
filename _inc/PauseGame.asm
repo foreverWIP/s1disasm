@@ -16,7 +16,9 @@ PauseGame:
 
 Pause_StopGame:
 		move.w	#1,f_pause	; freeze time
+		if NeoGeo=0
 		move.b	#1,v_snddriver_ram+f_pausemusic ; pause music
+		endif
 
 Pause_Loop:
 		move.b	#$10,v_vbla_routine
@@ -41,7 +43,9 @@ Pause_ChkStart:
 		beq.s	Pause_Loop	; if not, branch
 
 Pause_EndMusic:
-		move.b	#$80,v_snddriver_ram+f_pausemusic	; unpause the music
+		if NeoGeo=0
+		move.b	#$80,v_snddriver_ram+f_pausemusic	; unpause the Music
+		endif
 
 Unpause:
 		move.w	#0,f_pause	; unpause the game
@@ -52,6 +56,8 @@ Pause_DoNothing:
 
 Pause_SlowMo:
 		move.w	#1,f_pause
+		if NeoGeo=0
 		move.b	#$80,v_snddriver_ram+f_pausemusic	; Unpause the music
+		endif
 		rts	
 ; End of function PauseGame

@@ -38,9 +38,17 @@ FindNearestTile:
 		andi.w	#$1E,d0
 		add.w	d0,d1
 
+		if NeoGeo=0
 .blanktile:
 		movea.l	d1,a1
 		rts	
+		else
+		movea.l	d1,a1
+		rts	
+.blanktile:
+		movea.l	#$0,a1
+		rts	
+		endif
 ; ===========================================================================
 
 .specialtile:

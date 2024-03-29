@@ -9,7 +9,9 @@
 
 
 PlaySound:
+		if NeoGeo=0
 		move.b	d0,v_snddriver_ram+v_soundqueue0
+		endif
 		rts	
 ; End of function PlaySound
 
@@ -21,7 +23,9 @@ PlaySound:
 
 
 PlaySound_Special:
+		if NeoGeo=0
 		move.b	d0,v_snddriver_ram+v_soundqueue1
+		endif
 		rts	
 ; End of function PlaySound_Special
 
@@ -31,5 +35,7 @@ PlaySound_Special:
 ; ---------------------------------------------------------------------------
 
 PlaySound_Unused:
+		if NeoGeo=0
 		move.b	d0,v_snddriver_ram+v_soundqueue2
+		endif
 		rts	
