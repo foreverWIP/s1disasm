@@ -5,8 +5,8 @@ FindWall:
 		bsr.w	FindNearestTile
 		if NeoGeo=1
 		cmpa.l	0,a1
-		endif
 		beq.s	loc_14B1E
+		endif
 		move.w	(a1),d0
 		move.w	d0,d4
 		andi.w	#$7FF,d0
