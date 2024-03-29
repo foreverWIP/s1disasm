@@ -9,6 +9,8 @@
 
 	cpu 68000
 
+NeoGeo		  = 1	; change to 1 to build for Neo Geo
+
 EnableSRAM	  = 0	; change to 1 to enable SRAM
 BackupSRAM	  = 1
 AddressSRAM	  = 3	; 0 = odd+even; 2 = even only; 3 = odd only
@@ -152,11 +154,13 @@ ErrorTrap:
 ; ===========================================================================
 
 EntryPoint:
+		if NeoGeo=0
 		tst.l	(z80_port_1_control).l ; test port A & B control registers
 		bne.s	PortA_Ok
 		tst.w	(z80_expansion_control).l ; test port C control register
 
 PortA_Ok:
+		endif
 		bne.s	SkipSetup ; Skip the VDP and Z80 setup code if port A, B or C is ok...?
 		lea	SetupValues(pc),a5	; Load setup values array address.
 		movem.w	(a5)+,d5-d7
@@ -181,6 +185,7 @@ VDPInitLoop:
 		
 		move.l	(a5)+,(a4)
 		move.w	d0,(a3)		; clear	the VRAM
+		if NeoGeo=0
 		move.w	d7,(a1)		; stop the Z80
 		move.w	d7,(a2)		; reset	the Z80
 
@@ -196,6 +201,7 @@ Z80InitLoop:
 		move.w	d0,(a2)
 		move.w	d0,(a1)		; start	the Z80
 		move.w	d7,(a2)		; reset	the Z80
+		endif
 
 ClrRAMLoop:
 		move.l	d0,-(a6)	; clear 4 bytes of RAM
@@ -215,10 +221,12 @@ ClrVSRAMLoop:
 		dbf	d4,ClrVSRAMLoop	; repeat until the entire VSRAM is clear
 		moveq	#3,d5
 
+		if NeoGeo=0
 PSGInitLoop:
 		move.b	(a5)+,$11(a3)	; reset	the PSG
 		dbf	d5,PSGInitLoop	; repeat for other channels
 		move.w	d0,(a2)
+		endif
 		movem.l	(a6),d0-a6	; clear all registers
 		disable_ints
 
@@ -230,9 +238,15 @@ SetupValues:	dc.w $8000		; VDP register start number
 		dc.w $3FFF		; size of RAM/4
 		dc.w $100		; VDP register diff
 
+		if NeoGeo=0
 		dc.l z80_ram		; start	of Z80 RAM
 		dc.l z80_bus_request	; Z80 bus request
 		dc.l z80_reset		; Z80 reset
+		else
+		dc.l 0
+		dc.l 0
+		dc.l 0
+		endif
 		dc.l vdp_data_port	; VDP data
 		dc.l vdp_control_port	; VDP control
 
@@ -260,6 +274,7 @@ SetupValues:	dc.w $8000		; VDP register start number
 		dc.b $80		; VDP $97 - DMA fill VRAM
 		dc.l $40000080		; VRAM address 0
 
+		if NeoGeo=0
 	; Z80 instructions (not the sound driver; that gets loaded later)
     if (*)+$26 < $10000
     save
@@ -298,6 +313,9 @@ zStartupCodeEndLoc:
 	message "Warning: using pre-assembled Z80 startup code."
 	dc.w $AF01,$D91F,$1127,$0021,$2600,$F977,$EDB0,$DDE1,$FDE1,$ED47,$ED4F,$D1E1,$F108,$D9C1,$D1E1,$F1F9,$F3ED,$5636,$E9E9
     endif
+		else
+	dc.w $0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000
+		endif
 
 		dc.w $8104		; VDP display mode
 		dc.w $8F02		; VDP increment
@@ -309,6 +327,7 @@ zStartupCodeEndLoc:
 
 GameProgram:
 		tst.w	(vdp_control_port).l
+			if NeoGeo=0
 		btst	#6,(z80_expansion_control+1).l
 		beq.s	CheckSumCheck
 		cmpi.l	#'init',v_init ; has checksum routine already run?
@@ -328,6 +347,7 @@ CheckSumCheck:
 		cmp.w	(a1),d1		; compare checksum in header to ROM
 		bne.w	CheckSumError	; if they don't match, branch
 
+			endif
 CheckSumOk:
 		lea	v_crossresetram,a6
 		moveq	#0,d7
@@ -336,9 +356,13 @@ CheckSumOk:
 		move.l	d7,(a6)+
 		dbf	d6,.clearRAM	; clear RAM ($FE00-$FFFF)
 
+		if NeoGeo=0
 		move.b	(z80_version).l,d0
 		andi.b	#$C0,d0
 		move.b	d0,v_megadrive ; get region setting
+		else
+		move.b	#$0,v_megadrive ; get region setting
+		endif
 		move.l	#'init',v_init ; set flag so checksum won't run again
 
 GameInit:
@@ -596,7 +620,9 @@ VBlank:
 		jsr	VBla_Index(pc,d0.w)
 
 VBla_Music:
+		if NeoGeo=0
 		jsr	(UpdateMusic).l
+		endif
 
 VBla_Exit:
 		addq.l	#1,v_vbla_count
@@ -916,7 +942,9 @@ loc_119E:
 		clr.b	f_doupdatesinhblank
 		movem.l	d0-a6,-(sp)
 		bsr.w	Demo_Time
+		if NeoGeo=0
 		jsr	(UpdateMusic).l
+		endif
 		movem.l	(sp)+,d0-a6
 		rte	
 ; End of function HBlank
@@ -929,6 +957,7 @@ loc_119E:
 
 
 JoypadInit:
+		if NeoGeo=0
 		stopZ80
 		waitZ80
 		moveq	#$40,d0
@@ -936,6 +965,7 @@ JoypadInit:
 		move.b	d0,(z80_port_2_control+1).l	; init port 2 (joypad 2)
 		move.b	d0,(z80_expansion_control+1).l	; init port 3 (expansion/extra)
 		startZ80
+		endif
 		rts	
 ; End of function JoypadInit
 
@@ -946,6 +976,7 @@ JoypadInit:
 
 
 ReadJoypads:
+		if NeoGeo=0
 		lea	v_jpadhold1,a0 ; address where joypad states are written
 		lea	(z80_port_1_data+1).l,a1	; first	joypad port
 		bsr.s	.read		; do the first joypad
@@ -970,6 +1001,7 @@ ReadJoypads:
 		move.b	d0,(a0)+
 		and.b	d0,d1
 		move.b	d1,(a0)+
+		endif
 		rts	
 ; End of function ReadJoypads
 
@@ -1065,6 +1097,7 @@ ClearScreen:
 
 ; SoundDriverLoad:
 DACDriverLoad:
+		if NeoGeo=0
 		nop	
 		stopZ80
 		resetZ80
@@ -1078,6 +1111,7 @@ DACDriverLoad:
 		nop	
 		resetZ80
 		startZ80
+		endif
 		rts	
 ; End of function DACDriverLoad
 
@@ -9220,7 +9254,9 @@ ObjPos_Null:	dc.b $FF, $FF, 0, 0, 0,	0
 		endm
 		endif
 
+		if NeoGeo=0
 SoundDriver:	include "s1.sounddriver.asm"
+		endif
 
 ; end of 'ROM'
 		even
