@@ -899,6 +899,7 @@ HBlank:
 		beq.s	.nochg		; if not, branch
 		move.w	#0,f_hbla_pal
 		movem.l	a0-a1,-(sp)
+		if NeoGeo<>1
 		lea	(vdp_data_port).l,a1
 		lea	v_pal_water,a0 ; get palette from RAM
 		move.l	#$C0000000,4(a1) ; set VDP to CRAM write
@@ -935,6 +936,12 @@ HBlank:
 		move.l	(a0)+,(a1)
 		move.l	(a0)+,(a1)
 		move.w	#$8A00+223,4(a1) ; reset HBlank register
+		else
+		writeCRAM	v_pal_water,$80,0
+		move.w	#$5000,REG_LSPCMODE
+		move.w	#1,REG_TIMERHIGH
+		move.w	#$8C00,REG_TIMERLOW
+		endif
 		movem.l	(sp)+,a0-a1
 		tst.b	f_doupdatesinhblank
 		bne.s	loc_119E

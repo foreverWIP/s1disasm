@@ -32,6 +32,7 @@ writeVRAM:	macro source,length,destination
 ; ---------------------------------------------------------------------------
 
 writeCRAM:	macro source,length,destination
+		if NeoGeo<>1
 		lea	(vdp_control_port).l,a5
 		move.l	#$94000000+(((length>>1)&$FF00)<<8)+$9300+((length>>1)&$FF),(a5)
 		move.l	#$96000000+(((source>>1)&$FF00)<<8)+$9500+((source>>1)&$FF),(a5)
@@ -39,6 +40,21 @@ writeCRAM:	macro source,length,destination
 		move.w	#$C000+(destination&$3FFF),(a5)
 		move.w	#$80+((destination&$C000)>>14),v_vdp_buffer2
 		move.w	v_vdp_buffer2,(a5)
+		else
+		lea		(source).l,a0
+		lea		(PALETTES).l,a1
+		move.w	#(length)/2-1,d1
+
+.loop:
+		move.b	1(a0),d0 ; 000000gr
+		andi.b	#$F0,d0 ; 000000g0
+		or.b	(a0)+,d0 ; 000000gb
+		ror.l	#8,d0 ; gb000000
+		move.b	(a0)+,d0 ; gb0000gr
+		rol.l	#8,d0 ; 0000grgb
+		andi.w	#$FFF,d0 ; 00000rgb
+		dbf	d1,.loop
+		endif
 		endm
 
 ; ---------------------------------------------------------------------------
