@@ -3,7 +3,7 @@
 
 FindWall:
 		bsr.w	FindNearestTile
-		if NeoGeo=1
+		if NeoGeo<>0
 		cmpa.l	0,a1
 		beq.s	loc_14B1E
 		endif
@@ -88,7 +88,7 @@ loc_14BA6:
 
 FindWall2:
 		bsr.w	FindNearestTile
-		if NeoGeo=1
+		if NeoGeo<>0
 		cmpa.l	0,a1
 		beq.s	loc_14BC6
 		endif

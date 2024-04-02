@@ -35,7 +35,11 @@ SolidObject:
 
 .stand:
 		move.w	d4,d2
+		if NeoGeo=0
 		bsr.w	MvSonicOnPtfm
+		else
+		jsr		(MvSonicOnPtfm).l
+		endif
 		moveq	#0,d4
 		rts	
 ; ===========================================================================
@@ -64,7 +68,11 @@ SolidObject71:
 
 .stand:
 		move.w	d4,d2
+		if NeoGeo=0
 		bsr.w	MvSonicOnPtfm
+		else
+		jsr		(MvSonicOnPtfm).l
+		endif
 		moveq	#0,d4
 		rts	
 ; ===========================================================================

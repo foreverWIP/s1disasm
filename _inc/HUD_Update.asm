@@ -35,7 +35,11 @@ HUD_Update:
 		bne.s	.chklives	; if yes, branch
 		lea	v_time,a1
 		cmpi.l	#(9*$10000)+(59*$100)+59,(a1)+ ; is the time 9:59:59?
+		if NeoGeo=0
 		beq.s	TimeOver	; if yes, branch
+		else
+		beq.w	TimeOver	; if yes, branch
+		endif
 
 		addq.b	#1,-(a1)	; increment 1/60s counter
 		cmpi.b	#60,(a1)	; check if passed 60

@@ -10,14 +10,21 @@ vdp_data_port:		equ $C00000
 vdp_control_port:	equ $C00004
 vdp_counter:		equ $C00008
 
-        if NeoGeo=0
+        if NeoGeo<>1
 psg_input:		equ $C00011
 
 ; Z80 addresses
 z80_ram:		equ $A00000	; start of Z80 RAM
-z80_dac_timpani_pitch:	equ z80_ram+zTimpani_Pitch
-z80_dac_status:		equ z80_ram+zDAC_Status
-z80_dac_sample:		equ z80_ram+zDAC_Sample
+
+        if NeoGeo=2
+z80_dac_timpani_pitch:	equ z80_ram
+z80_dac_status:		equ z80_ram
+z80_dac_sample:		equ z80_ram
+        else
+z80_dac_timpani_pitch:	equ z80_ram+$EA
+z80_dac_status:		equ z80_ram+$1FFD
+z80_dac_sample:		equ z80_ram+$1FFF
+        endif
 z80_ram_end:		equ $A02000	; end of non-reserved Z80 RAM
 z80_version:		equ $A10001
 z80_port_1_data:	equ $A10002

@@ -124,7 +124,11 @@ loc_EC70:
 		move.w	v_limitright2,d1
 		addi.w	#$128,d1
 		cmp.w	d1,d0
+		if NeoGeo=0
 		blo.s	locret_ECEE
+		else
+		blo.w	locret_ECEE
+		endif
 
 loc_EC86:
 		addq.b	#2,obRoutine(a0)

@@ -205,7 +205,11 @@ loc_1AE0:
 		subq.b	#1,(a1)
 		bmi.s	loc_1AEA
 		addq.l	#2,a1
+		if NeoGeo=0
 		addq.l	#6,a2
+		else
+		adda.l	#10,a2
+		endif
 		bra.s	loc_1B06
 ; ===========================================================================
 
@@ -221,8 +225,13 @@ loc_1AF6:
 		move.b	d0,(a1)+
 		andi.w	#$F,d0
 		add.w	d0,d0
+		if NeoGeo=0
 		movea.w	(a2)+,a0
 		movea.w	(a2)+,a3
+		else
+		movea.l	(a2)+,a0
+		movea.l	(a2)+,a3
+		endif
 		move.w	(a0,d0.w),(a3)
 
 loc_1B06:

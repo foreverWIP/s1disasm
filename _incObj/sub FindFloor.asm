@@ -17,10 +17,12 @@
 
 
 FindFloor:
-		bsr.s	FindNearestTile
-		if NeoGeo=1
+		if NeoGeo<>0
+		jsr		(FindNearestTile).l
 		cmpa.l	0,a1
 		beq.s	.isblank
+		else
+		bsr.s	FindNearestTile
 		endif
 		move.w	(a1),d0		; get value for solidness, orientation and 16x16 tile number
 		move.w	d0,d4
@@ -103,7 +105,7 @@ FindFloor:
 
 FindFloor2:
 		bsr.w	FindNearestTile
-		if NeoGeo=1
+		if NeoGeo<>0
 		cmpa.l	0,a1
 		beq.s	.isblank2
 		endif

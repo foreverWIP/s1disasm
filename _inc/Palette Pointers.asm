@@ -2,10 +2,18 @@
 ; Palette pointers
 ; ---------------------------------------------------------------------------
 
+		if NeoGeo=0
 palp:	macro paladdress,ramaddress,colours
 	dc.l paladdress
 	dc.w ramaddress, (colours>>1)-1
 	endm
+		else
+palp:	macro paladdress,ramaddress,colours
+	dc.l paladdress
+	dc.l ramaddress
+	dc.w (colours>>1)-1
+	endm
+		endif
 
 PalPointers:
 
@@ -22,7 +30,11 @@ ptr_Pal_MZ:		palp	Pal_MZ,v_pal_dry+$20,$30		; 6 - MZ
 ptr_Pal_SLZ:		palp	Pal_SLZ,v_pal_dry+$20,$30		; 7 - SLZ
 ptr_Pal_SYZ:		palp	Pal_SYZ,v_pal_dry+$20,$30		; 8 - SYZ
 ptr_Pal_SBZ1:		palp	Pal_SBZ1,v_pal_dry+$20,$30		; 9 - SBZ1
+		if NeoGeo=0
 			zonewarning Pal_Levels,8
+		else
+			zonewarning Pal_Levels,10
+		endif
 ptr_Pal_Special:	palp	Pal_Special,v_pal_dry,$40		; $A (10) - special stage
 ptr_Pal_LZWater:	palp	Pal_LZWater,v_pal_dry,$40		; $B (11) - LZ underwater
 ptr_Pal_SBZ3:		palp	Pal_SBZ3,v_pal_dry+$20,$30		; $C (12) - SBZ3
@@ -36,6 +48,28 @@ ptr_Pal_Ending:		palp	Pal_Ending,v_pal_dry,$40		; $13 (19) - ending sequence
 			even
 
 
+		if NeoGeo<>0
+palid_SegaBG:		equ (ptr_Pal_SegaBG-PalPointers)/10
+palid_Title:		equ (ptr_Pal_Title-PalPointers)/10
+palid_LevelSel:		equ (ptr_Pal_LevelSel-PalPointers)/10
+palid_Sonic:		equ (ptr_Pal_Sonic-PalPointers)/10
+palid_GHZ:		equ (ptr_Pal_GHZ-PalPointers)/10
+palid_LZ:		equ (ptr_Pal_LZ-PalPointers)/10
+palid_MZ:		equ (ptr_Pal_MZ-PalPointers)/10
+palid_SLZ:		equ (ptr_Pal_SLZ-PalPointers)/10
+palid_SYZ:		equ (ptr_Pal_SYZ-PalPointers)/10
+palid_SBZ1:		equ (ptr_Pal_SBZ1-PalPointers)/10
+palid_Special:		equ (ptr_Pal_Special-PalPointers)/10
+palid_LZWater:		equ (ptr_Pal_LZWater-PalPointers)/10
+palid_SBZ3:		equ (ptr_Pal_SBZ3-PalPointers)/10
+palid_SBZ3Water:	equ (ptr_Pal_SBZ3Water-PalPointers)/10
+palid_SBZ2:		equ (ptr_Pal_SBZ2-PalPointers)/10
+palid_LZSonWater:	equ (ptr_Pal_LZSonWater-PalPointers)/10
+palid_SBZ3SonWat:	equ (ptr_Pal_SBZ3SonWat-PalPointers)/10
+palid_SSResult:		equ (ptr_Pal_SSResult-PalPointers)/10
+palid_Continue:		equ (ptr_Pal_Continue-PalPointers)/10
+palid_Ending:		equ (ptr_Pal_Ending-PalPointers)/10
+		else
 palid_SegaBG:		equ (ptr_Pal_SegaBG-PalPointers)/8
 palid_Title:		equ (ptr_Pal_Title-PalPointers)/8
 palid_LevelSel:		equ (ptr_Pal_LevelSel-PalPointers)/8
@@ -56,3 +90,4 @@ palid_SBZ3SonWat:	equ (ptr_Pal_SBZ3SonWat-PalPointers)/8
 palid_SSResult:		equ (ptr_Pal_SSResult-PalPointers)/8
 palid_Continue:		equ (ptr_Pal_Continue-PalPointers)/8
 palid_Ending:		equ (ptr_Pal_Ending-PalPointers)/8
+		endif

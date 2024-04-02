@@ -304,10 +304,18 @@ LZWindTunnels:
 	if FixBugs
 		blo.w	.chknext
 	else
+		if NeoGeo=0
 		blo.s	.chknext
+		else
+		blo.w	.chknext
+		endif
 	endif
 		cmp.w	6(a2),d2
+		if NeoGeo=0
 		bhs.s	.chknext	; branch if Sonic is outside a range
+		else
+		bhs.w	.chknext	; branch if Sonic is outside a range
+		endif
 	if FixBugs
 		; d0 is overwritten but later used as if it wasn't!
 		move.w	d0,d1

@@ -7,7 +7,12 @@ ramaddr function x,(-(x&$80000000)<<1)|x
 	phase ramaddr ( $FFFF0000 )
 v_ram_start:
 
+		if NeoGeo=0
 v_256x256:		ds.b	$52*$200	; 256x256 tile mappings ($52 chunks)
+		else
+v_256x256:		ds.l	1
+v_scratcharea:	ds.b	$5800-4
+		endif
 v_256x256_end:
 
 v_lvllayout:		ds.b	$400		; level and background layouts

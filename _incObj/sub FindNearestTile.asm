@@ -21,7 +21,11 @@ FindNearestTile:
 		lsr.w	#8,d1
 		andi.w	#$7F,d1
 		add.w	d1,d0		; combine
+		if NeoGeo=0
 		moveq	#-1,d1
+		else
+		moveq	#0,d1
+		endif
 		lea	v_lvllayout,a1
 		move.b	(a1,d0.w),d1	; get 256x256 tile number
 		beq.s	.blanktile	; branch if 0 (this causes $FFFFFF00 (v_chunk0collision) to be returned in a1!)
@@ -38,17 +42,14 @@ FindNearestTile:
 		andi.w	#$1E,d0
 		add.w	d0,d1
 
-		if NeoGeo=0
-.blanktile:
-		movea.l	d1,a1
-		rts	
-		else
-		movea.l	d1,a1
-		rts	
-.blanktile:
-		movea.l	#$0,a1
-		rts	
+		if NeoGeo<>0
+		lea		(v_256x256).l,a1
+		add.l	(a1),d1
 		endif
+
+.blanktile:
+		movea.l	d1,a1
+		rts	
 ; ===========================================================================
 
 .specialtile:
@@ -71,6 +72,10 @@ FindNearestTile:
 		lsr.w	#3,d0
 		andi.w	#$1E,d0
 		add.w	d0,d1
+		if NeoGeo<>0
+		lea		(v_256x256).l,a1
+		add.l	(a1),d1
+		endif
 		movea.l	d1,a1
 		rts	
 ; End of function FindNearestTile

@@ -785,7 +785,11 @@ loc_666C:
 		bhs.s	loc_6696
 		move.w	#$600,d1
 		cmpi.w	#6,d0
+		if NeoGeo=0
 		bgt.s	loc_66F6
+		else
+		bgt.w	loc_66F6
+		endif
 		cmpi.w	#-6,d0
 		blt.s	loc_66C0
 		bra.s	loc_66AE

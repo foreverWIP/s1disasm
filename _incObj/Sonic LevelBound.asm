@@ -47,9 +47,17 @@ Sonic_LevelBound:
 
 .bottom:
 		cmpi.w	#(id_SBZ<<8)+1,v_zone ; is level SBZ2 ?
+		if NeoGeo=0
 		bne.w	KillSonic	; if not, kill Sonic
+		else
+		jne		(KillSonic).l	; if not, kill Sonic
+		endif
 		cmpi.w	#$2000,v_player+obX
+		if NeoGeo=0
 		blo.w	KillSonic
+		else
+		jlo		(KillSonic).l
+		endif
 		clr.b	v_lastlamp	; clear	lamppost counter
 		move.w	#1,f_restart ; restart the level
 		move.w	#(id_LZ<<8)+3,v_zone ; set level to SBZ3 (LZ4)

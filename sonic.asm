@@ -9,7 +9,8 @@
 
 	cpu 68000
 
-NeoGeo		  = 1	; change to 1 to build for Neo Geo
+NeoGeo		  = 2	; change to 1 to build for Neo Geo
+					; change to 2 to enable smaller code changes for Neo Geo while still being playable on Mega Drive
 
 EnableSRAM	  = 0	; change to 1 to enable SRAM
 BackupSRAM	  = 1
@@ -154,7 +155,7 @@ ErrorTrap:
 ; ===========================================================================
 
 EntryPoint:
-		if NeoGeo=0
+		if NeoGeo<>1
 		tst.l	(z80_port_1_control).l ; test port A & B control registers
 		bne.s	PortA_Ok
 		tst.w	(z80_expansion_control).l ; test port C control register
@@ -433,7 +434,11 @@ AddressError:
 IllegalInstr:
 		move.b	#6,v_errortype
 		addq.l	#2,2(sp)
+		if NeoGeo=0
 		bra.s	loc_462
+		else
+		jmp		(loc_462).l
+		endif
 
 ZeroDivide:
 		move.b	#8,v_errortype
@@ -957,7 +962,7 @@ loc_119E:
 
 
 JoypadInit:
-		if NeoGeo=0
+		if NeoGeo<>1
 		stopZ80
 		waitZ80
 		moveq	#$40,d0
@@ -976,7 +981,7 @@ JoypadInit:
 
 
 ReadJoypads:
-		if NeoGeo=0
+		if NeoGeo<>1
 		lea	v_jpadhold1,a0 ; address where joypad states are written
 		lea	(z80_port_1_data+1).l,a1	; first	joypad port
 		bsr.s	.read		; do the first joypad
@@ -1305,7 +1310,11 @@ sub_1642:
 ; sub_165E:
 ProcessDPLC2:
 		tst.w	v_plc_patternsleft
+		if NeoGeo=0
 		beq.s	locret_16DA
+		else
+		jeq		(locret_16DA).l
+		endif
 		move.w	#3,v_plc_framepatternsleft
 		moveq	#0,d0
 		move.w	v_plc_buffer+4,d0
@@ -1926,11 +1935,20 @@ Pal_Sega2:	binclude	"palette/Sega2.bin"
 
 PalLoad1:
 		lea	(PalPointers).l,a1
+		if NeoGeo=0
 		lsl.w	#3,d0
+		else
+		mulu.w	#10,d0
+		endif
 		adda.w	d0,a1
 		movea.l	(a1)+,a2	; get palette data address
+		if NeoGeo=0
 		movea.w	(a1)+,a3	; get target RAM address
 		adda.w	#v_pal_dry_dup-v_pal_dry,a3		; skip to "main" RAM address
+		else
+		movea.l	(a1)+,a3	; get target RAM address
+		adda.l	#v_pal_dry_dup-v_pal_dry,a3		; skip to "main" RAM address
+		endif
 		move.w	(a1)+,d7	; get length of palette data
 
 .loop:
@@ -1945,10 +1963,18 @@ PalLoad1:
 
 PalLoad2:
 		lea	(PalPointers).l,a1
+		if NeoGeo=0
 		lsl.w	#3,d0
+		else
+		mulu.w	#10,d0
+		endif
 		adda.w	d0,a1
 		movea.l	(a1)+,a2	; get palette data address
+		if NeoGeo=0
 		movea.w	(a1)+,a3	; get target RAM address
+		else
+		movea.l	(a1)+,a3	; get target RAM address
+		endif
 		move.w	(a1)+,d7	; get length of palette
 
 .loop:
@@ -1966,11 +1992,20 @@ PalLoad2:
 
 PalLoad3_Water:
 		lea	(PalPointers).l,a1
+		if NeoGeo=0
 		lsl.w	#3,d0
+		else
+		mulu.w	#10,d0
+		endif
 		adda.w	d0,a1
 		movea.l	(a1)+,a2	; get palette data address
+		if NeoGeo=0
 		movea.w	(a1)+,a3	; get target RAM address
 		suba.w	#v_pal_dry-v_pal_water,a3		; skip to "main" RAM address
+		else
+		movea.l	(a1)+,a3	; get target RAM address
+		suba.l	#v_pal_dry-v_pal_water,a3		; skip to "main" RAM address
+		endif
 		move.w	(a1)+,d7	; get length of palette data
 
 .loop:
@@ -1985,11 +2020,20 @@ PalLoad3_Water:
 
 PalLoad4_Water:
 		lea	(PalPointers).l,a1
+		if NeoGeo=0
 		lsl.w	#3,d0
+		else
+		mulu.w	#10,d0
+		endif
 		adda.w	d0,a1
 		movea.l	(a1)+,a2	; get palette data address
+		if NeoGeo=0
 		movea.w	(a1)+,a3	; get target RAM address
 		suba.w	#v_pal_dry-v_pal_water_dup,a3
+		else
+		movea.l	(a1)+,a3	; get target RAM address
+		suba.l	#v_pal_dry-v_pal_water_dup,a3
+		endif
 		move.w	(a1)+,d7	; get length of palette data
 
 .loop:
@@ -2074,18 +2118,31 @@ GM_Sega:
 		locVRAM	0
 		lea	(Nem_SegaLogo).l,a0 ; load Sega	logo patterns
 		bsr.w	NemDec
+		if NeoGeo=0
 		lea	(v_256x256&$FFFFFF).l,a1
+		else
+		lea	(v_scratcharea&$FFFFFF).l,a1
+		endif
 		lea	(Eni_SegaLogo).l,a0 ; load Sega	logo mappings
 		move.w	#0,d0
 		bsr.w	EniDec
 
+		if NeoGeo=0
 		copyTilemap	v_256x256&$FFFFFF,$E510,$17,7
 		copyTilemap	(v_256x256+$180)&$FFFFFF,$C000,$27,$1B
+		else
+		copyTilemap	v_scratcharea&$FFFFFF,$E510,$17,7
+		copyTilemap	(v_scratcharea+$180)&$FFFFFF,$C000,$27,$1B
+		endif
 
 		if Revision<>0
 			tst.b   v_megadrive	; is console Japanese?
 			bmi.s   .loadpal
+			if NeoGeo=0
 			copyTilemap	(v_256x256+$A40)&$FFFFFF,$C53A,2,1 ; hide "TM" with a white rectangle
+			else
+			copyTilemap	(v_scratcharea+$A40)&$FFFFFF,$C53A,2,1 ; hide "TM" with a white rectangle
+			endif
 		endif
 
 .loadpal:
@@ -2154,12 +2211,20 @@ GM_Title:
 		locVRAM	ArtTile_Sonic_Team_Font*$20
 		lea	(Nem_CreditText).l,a0 ;	load alphabet
 		bsr.w	NemDec
+		if NeoGeo=0
 		lea	(v_256x256&$FFFFFF).l,a1
+		else
+		lea	(v_scratcharea&$FFFFFF).l,a1
+		endif
 		lea	(Eni_JapNames).l,a0 ; load mappings for	Japanese credits
 		move.w	#0,d0
 		bsr.w	EniDec
 
+		if NeoGeo=0
 		copyTilemap	v_256x256&$FFFFFF,$C000,$27,$1B
+		else
+		copyTilemap	v_scratcharea&$FFFFFF,$C000,$27,$1B
+		endif
 
 		clearRAM v_pal_dry_dup,v_pal_dry_dup+16*4*2
 
@@ -2201,8 +2266,13 @@ Tit_LoadText:
 		move.w	#0,d0
 		bsr.w	EniDec
 		lea	(Blk256_GHZ).l,a0 ; load GHZ 256x256 mappings
+		if NeoGeo=0
 		lea	(v_256x256&$FFFFFF).l,a1
 		bsr.w	KosDec
+		else
+		move.l	a0,(v_256x256&$FFFFFF).l
+		lea		(v_256x256&$FFFFFF).l,a1
+		endif
 		bsr.w	LevelLayoutLoad
 		bsr.w	PaletteFadeOut
 		disable_ints
@@ -2213,12 +2283,20 @@ Tit_LoadText:
 		lea	v_lvllayout+$40,a4
 		move.w	#$6000,d2
 		bsr.w	DrawChunks
+		if NeoGeo=0
 		lea	(v_256x256&$FFFFFF).l,a1
+		else
+		lea	(v_scratcharea&$FFFFFF).l,a1
+		endif
 		lea	(Eni_Title).l,a0 ; load	title screen mappings
 		move.w	#0,d0
 		bsr.w	EniDec
 
+		if NeoGeo=0
 		copyTilemap	v_256x256&$FFFFFF,$C206,$21,$15
+		else
+		copyTilemap	v_scratcharea&$FFFFFF,$C206,$21,$15
+		endif
 
 		locVRAM	ArtTile_Level*$20
 		lea	(Nem_GHZ_1st).l,a0 ; load GHZ patterns
@@ -2416,7 +2494,12 @@ LevSel_Credits:
 
 LevSel_Level_SS:
 		add.w	d0,d0
+		if NeoGeo=0
 		move.w	LevSel_Ptrs(pc,d0.w),d0 ; load level number
+		else
+		lea		(LevSel_Ptrs).l,a0
+		move.w	(a0,d0.w),d0 ; load level number
+		endif
 		bmi.w	LevelSelect
 		cmpi.w	#id_SS*$100,d0	; check	if level is 0700 (Special Stage)
 		bne.s	LevSel_Level	; if not, branch
@@ -3479,9 +3562,17 @@ loc_491C:
 
 PalCycle_SS:
 		tst.w	f_pause
+		if NeoGeo=0
 		bne.s	locret_49E6
+		else
+		bne.w	locret_49E6
+		endif
 		subq.w	#1,v_palss_time
+		if NeoGeo=0
 		bpl.s	locret_49E6
+		else
+		bpl.w	locret_49E6
+		endif
 		lea	(vdp_control_port).l,a6
 		move.w	v_palss_num,d0
 		addq.w	#1,v_palss_num
@@ -3949,7 +4040,11 @@ End_MoveSonic:
 		move.b	v_sonicend,d0
 		bne.s	End_MoveSon2
 		cmpi.w	#$90,v_player+obX ; has Sonic passed $90 on x-axis?
+		if NeoGeo=0
 		bhs.s	End_MoveSonExit	; if not, branch
+		else
+		bhs.w	End_MoveSonExit	; if not, branch
+		endif
 
 		addq.b	#2,v_sonicend
 		move.b	#1,f_lockctrl ; lock player's controls
@@ -4592,7 +4687,12 @@ locj_6E28:
 			lsr.w	#4,d0
 			move.b	(a0,d0.w),d0
 			lea	(locj_6FE4).l,a3
+			if NeoGeo=0
 			movea.w	(a3,d0.w),a3
+			else
+			lsl.w	#1,d0
+			movea.l	(a3,d0.l),a3
+			endif
 			beq.s	locj_6E5E
 			moveq	#-16,d5
 			movem.l	d4/d5,-(sp)
@@ -4685,7 +4785,12 @@ locj_6F66:
 			andi.w	#$7F0,d0
 			lsr.w	#4,d0
 			move.b	(a0,d0.w),d0
+			if NeoGeo<>0
+			lsl.w	#1,d0
+			movea.l	locj_6FE4(pc,d0.w),a3
+			else
 			movea.w	locj_6FE4(pc,d0.w),a3
+			endif
 			beq.s	locj_6F9A
 			moveq	#-16,d5
 			movem.l	d4/d5,-(sp)
@@ -4725,7 +4830,11 @@ locj_6FC8:
 			bra.w	locj_6FEC
 ;===============================================================================			
 locj_6FE4:
+		if NeoGeo=0
 			dc.w v_bgscreenposx_dup, v_bgscreenposx_dup, v_bg2screenposx_dup, v_bg3screenposx_dup
+		else
+			dc.l v_bgscreenposx_dup, v_bgscreenposx_dup, v_bg2screenposx_dup, v_bg3screenposx_dup
+		endif
 locj_6FEC:
 			moveq	#((224+16+16)/16)-1,d6
 			move.l	#$800000,d7
@@ -4734,7 +4843,12 @@ locj_6FF4:
 			move.b	(a0)+,d0
 			btst	d0,(a2)
 			beq.s	locj_701C
+			if NeoGeo=0
 			movea.w	locj_6FE4(pc,d0.w),a3
+			else
+			lsl.w	#1,d0
+			movea.l	locj_6FE4(pc,d0.l),a3
+			endif
 			movem.l	d4/d5/a0,-(sp)
 			movem.l	d4/d5,-(sp)
 			bsr.w	GetBlockData
@@ -4954,7 +5068,11 @@ GetBlockData_2:
 		andi.w	#$7F,d0
 		; Get chunk from level layout
 		add.w	d3,d0
+		if NeoGeo=0
 		moveq	#-1,d3
+		else
+		moveq	#0,d3
+		endif
 		move.b	(a4,d0.w),d3
 		beq.s	locret_6C1E	; If chunk 00, just return a pointer to the first block (expected to be empty)
 		; Turn chunk ID into index into chunk table
@@ -4969,6 +5087,10 @@ GetBlockData_2:
 		; Get block metadata from chunk
 		add.w	d4,d3
 		add.w	d5,d3
+		if NeoGeo<>0
+		lea		(v_256x256).l,a0
+		add.l	(a0),d3
+		endif
 		movea.l	d3,a0
 		move.w	(a0),d3
 		; Turn block ID into address
@@ -5137,11 +5259,20 @@ locj_728C:
 			rts
 ;-------------------------------------------------------------------------------
 locj_72B2:
+		if NeoGeo=0
 			dc.w v_bgscreenposx, v_bgscreenposx, v_bg2screenposx, v_bg3screenposx
+		else
+			dc.l v_bgscreenposx, v_bgscreenposx, v_bg2screenposx, v_bg3screenposx
+		endif
 locj_72Ba:
 			lsr.w	#4,d0
 			move.b	(a0,d0.w),d0
+			if NeoGeo<>0
+			lsl.w	#1,d0
+			movea.l	locj_72B2(pc,d0.w),a3
+			else
 			movea.w	locj_72B2(pc,d0.w),a3
+			endif
 			beq.s	locj_72da
 			moveq	#-16,d5
 			movem.l	d4/d5,-(sp)
@@ -5180,8 +5311,13 @@ LevelDataLoad:
 		move.w	#0,d0
 		bsr.w	EniDec
 		movea.l	(a2)+,a0
+		if NeoGeo<>0
+		move.l	a0,(v_256x256&$FFFFFF).l
+		endif
 		lea	(v_256x256&$FFFFFF).l,a1 ; RAM address for 256x256 mappings
+		if NeoGeo=0
 		bsr.w	KosDec
+		endif
 		bsr.w	LevelLayoutLoad
 		move.w	(a2)+,d0
 		move.w	(a2),d0
@@ -8285,7 +8421,12 @@ SS_LoadData:
 		move.w	(a1)+,v_player+obY
 
 		; Load layout data
+		if NeoGeo=0
 		movea.l	SS_LayoutIndex(pc,d0.w),a0
+		else
+		lea		(SS_LayoutIndex).l,a0
+		movea.l	(a0,d0.l),a0
+		endif
 		lea	(v_ssbuffer2&$FFFFFF).l,a1
 		move.w	#0,d0
 		jsr	(EniDec).l
@@ -8825,44 +8966,76 @@ Nem_GHZ_1st:	binclude	"artnem/8x8 - GHZ1.nem"	; GHZ primary patterns
 		even
 Nem_GHZ_2nd:	binclude	"artnem/8x8 - GHZ2.nem"	; GHZ secondary patterns
 		even
+		if NeoGeo=0
 Blk256_GHZ:	binclude	"map256/GHZ.kos"
+		else
+Blk256_GHZ:	binclude	"map256/GHZ.unc"
+		endif
 		even
 Blk16_LZ:	binclude	"map16/LZ.eni"
 		even
 Nem_LZ:		binclude	"artnem/8x8 - LZ.nem"	; LZ primary patterns
 		even
+		if NeoGeo=0
 Blk256_LZ:	binclude	"map256/LZ.kos"
+		else
+Blk256_LZ:	binclude	"map256/LZ.unc"
+		endif
 		even
 Blk16_MZ:	binclude	"map16/MZ.eni"
 		even
 Nem_MZ:		binclude	"artnem/8x8 - MZ.nem"	; MZ primary patterns
 		even
+		if NeoGeo=0
 Blk256_MZ:	if Revision=0
 		binclude	"map256/MZ.kos"
 		else
 		binclude	"map256/MZ (JP1).kos"
+		endif
+		else
+Blk256_MZ:	if Revision=0
+		binclude	"map256/MZ.unc"
+		else
+		binclude	"map256/MZ (JP1).unc"
+		endif
 		endif
 		even
 Blk16_SLZ:	binclude	"map16/SLZ.eni"
 		even
 Nem_SLZ:	binclude	"artnem/8x8 - SLZ.nem"	; SLZ primary patterns
 		even
+		if NeoGeo=0
 Blk256_SLZ:	binclude	"map256/SLZ.kos"
+		else
+Blk256_SLZ:	binclude	"map256/SLZ.unc"
+		endif
 		even
 Blk16_SYZ:	binclude	"map16/SYZ.eni"
 		even
 Nem_SYZ:	binclude	"artnem/8x8 - SYZ.nem"	; SYZ primary patterns
 		even
+		if NeoGeo=0
 Blk256_SYZ:	binclude	"map256/SYZ.kos"
+		else
+Blk256_SYZ:	binclude	"map256/SYZ.unc"
+		endif
 		even
 Blk16_SBZ:	binclude	"map16/SBZ.eni"
 		even
 Nem_SBZ:	binclude	"artnem/8x8 - SBZ.nem"	; SBZ primary patterns
 		even
+		if NeoGeo=0
 Blk256_SBZ:	if Revision=0
 		binclude	"map256/SBZ.kos"
 		else
 		binclude	"map256/SBZ (JP1).kos"
+		endif
+		else
+Blk256_SBZ:	if Revision=0
+		binclude	"map256/SBZ.unc"
+		else
+		binclude	"map256/SBZ (JP1).unc"
+		endif
 		endif
 		even
 ; ---------------------------------------------------------------------------

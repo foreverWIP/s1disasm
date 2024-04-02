@@ -470,7 +470,11 @@ BossSpringYard_FaceMain:	; Routine 4
 		move.b	(a0),d0
 		cmp.b	(a1),d0
 		bne.s	BossSpringYard_FaceDelete
+		if NeoGeo=0
 		bra.s	loc_195BE
+		else
+		bra.w	loc_195BE
+		endif
 ; ===========================================================================
 
 BossSpringYard_FaceDelete:
