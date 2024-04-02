@@ -4,7 +4,11 @@ ramaddr function x,(-(x&$80000000)<<1)|x
 
 ; Variables (v) and Flags (f)
 
+		if NeoGeo<>1
 	phase ramaddr ( $FFFF0000 )
+		else
+	phase ramaddr ( $00100000 )
+		endif
 v_ram_start:
 
 		if NeoGeo=0
@@ -522,9 +526,11 @@ v_megadrive:		ds.b	1		; Megadrive machine type
 f_debugmode:		ds.w	1		; debug mode flag
 v_init:			ds.l	1		; 'init' text string
 v_ram_end:
+	if NeoGeo<>1
     if * > 0	; Don't declare more space than the RAM can contain!
 	fatal "The RAM variable declarations are too large by $\{*} bytes."
     endif
+	endif
 	dephase
 
 ; Special stage
