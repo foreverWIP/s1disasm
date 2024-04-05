@@ -8,7 +8,9 @@
 AnimateLevelGfx:
 		tst.w	f_pause	; is the game paused?
 		bne.s	.ispaused	; if yes, branch
+		if NeoGeo<>1
 		lea	(vdp_data_port).l,a6
+		endif
 		bsr.w	AniArt_GiantRing
 		moveq	#0,d0
 		move.b	v_zone,d0
@@ -40,7 +42,9 @@ AniArt_GHZ_Waterfall:
 		bpl.s	AniArt_GHZ_Bigflower ; branch if not 0
 
 		move.b	#5,v_lani0_time ; time to display each frame
+		if NeoGeo<>1
 		lea	(Art_GhzWater).l,a1 ; load waterfall patterns
+		endif
 		move.b	v_lani0_frame,d0
 		addq.b	#1,v_lani0_frame ; increment frame counter
 		andi.w	#1,d0		; there are only 2 frames
@@ -48,7 +52,7 @@ AniArt_GHZ_Waterfall:
 		lea	.size*$20(a1),a1 ; use graphics for frame 1
 
 .isframe0:
-		locVRAM	ArtTile_GHZ_Waterfall*$20		; VRAM address
+		locVRAMTile	ArtTile_GHZ_Waterfall		; VRAM address
 		move.w	#.size-1,d1	; number of 8x8	tiles
 		bra.w	LoadTiles
 ; ===========================================================================
@@ -61,7 +65,9 @@ AniArt_GHZ_Bigflower:
 		bpl.s	AniArt_GHZ_Smallflower
 
 		move.b	#$F,v_lani1_time
+		if NeoGeo<>1
 		lea	(Art_GhzFlower1).l,a1 ;	load big flower	patterns
+		endif
 		move.b	v_lani1_frame,d0
 		addq.b	#1,v_lani1_frame
 		andi.w	#1,d0
@@ -69,7 +75,7 @@ AniArt_GHZ_Bigflower:
 		lea	.size*$20(a1),a1
 
 .isframe0:
-		locVRAM	ArtTile_GHZ_Big_Flower_1*$20
+		locVRAMTile	ArtTile_GHZ_Big_Flower_1
 		move.w	#.size-1,d1
 		bra.w	LoadTiles
 ; ===========================================================================
@@ -95,8 +101,10 @@ AniArt_GHZ_Smallflower:
 		move.w	d0,d1
 		add.w	d0,d0
 		add.w	d1,d0		; multiply that by 3 (i.e. frame num times 12 * $20)
-		locVRAM	ArtTile_GHZ_Small_Flower*$20
+		locVRAMTile	ArtTile_GHZ_Small_Flower
+		if NeoGeo<>1
 		lea	(Art_GhzFlower2).l,a1 ;	load small flower patterns
+		endif
 		lea	(a1,d0.w),a1	; jump to appropriate tile
 		move.w	#.size-1,d1
 		bsr.w	LoadTiles
@@ -120,7 +128,9 @@ AniArt_MZ_Lava:
 		bpl.s	AniArt_MZ_Magma	; branch if not 0
 
 		move.b	#$13,v_lani0_time ; time to display each frame
+		if NeoGeo<>1
 		lea	(Art_MzLava1).l,a1 ; load lava surface patterns
+		endif
 		moveq	#0,d0
 		move.b	v_lani0_frame,d0
 		addq.b	#1,d0		; increment frame counter
@@ -132,7 +142,7 @@ AniArt_MZ_Lava:
 		move.b	d0,v_lani0_frame
 		mulu.w	#.size*$20,d0
 		adda.w	d0,a1		; jump to appropriate tile
-		locVRAM	ArtTile_MZ_Animated_Lava*$20
+		locVRAMTile	ArtTile_MZ_Animated_Lava
 		move.w	#.size-1,d1
 		bsr.w	LoadTiles
 
@@ -143,10 +153,12 @@ AniArt_MZ_Magma:
 		move.b	#1,v_lani1_time ; time between each gfx change
 		moveq	#0,d0
 		move.b	v_lani0_frame,d0 ; get surface lava frame number
+		if NeoGeo<>1
 		lea	(Art_MzLava2).l,a4 ; load magma gfx
+		endif
 		ror.w	#7,d0		; multiply frame num by $200
 		adda.w	d0,a4		; jump to appropriate tile
-		locVRAM	ArtTile_MZ_Animated_Magma*$20
+		locVRAMTile	ArtTile_MZ_Animated_Magma
 		moveq	#0,d3
 		move.b	v_lani1_frame,d3
 		addq.b	#1,v_lani1_frame ; increment frame counter (unused)
@@ -176,14 +188,16 @@ AniArt_MZ_Torch:
 		bpl.w	.end		; branch if not 0
 		
 		move.b	#7,v_lani2_time ; time to display each frame
+		if NeoGeo<>1
 		lea	(Art_MzTorch).l,a1 ; load torch	patterns
+		endif
 		moveq	#0,d0
 		move.b	v_lani3_frame,d0
 		addq.b	#1,v_lani3_frame ; increment frame counter
 		andi.b	#3,v_lani3_frame ; there are 3 frames
 		mulu.w	#.size*$20,d0
 		adda.w	d0,a1		; jump to appropriate tile
-		locVRAM	ArtTile_MZ_Torch*$20
+		locVRAMTile	ArtTile_MZ_Torch
 		move.w	#.size-1,d1
 		bra.w	LoadTiles
 
@@ -210,8 +224,10 @@ AniArt_SBZ:
 		bpl.s	.chk_smokepuff2 ; branch if not 0
 		
 		move.b	#7,v_lani0_time ; time to display each frame
+		if NeoGeo<>1
 		lea	(Art_SbzSmoke).l,a1 ; load smoke patterns
-		locVRAM	ArtTile_SBZ_Smoke_Puff_1*$20
+		endif
+		locVRAMTile	ArtTile_SBZ_Smoke_Puff_1
 		move.b	v_lani0_frame,d0
 		addq.b	#1,v_lani0_frame ; increment frame counter
 		andi.w	#7,d0
@@ -229,7 +245,9 @@ AniArt_SBZ:
 .clearsky:
 		move.w	#(.size/2)-1,d1
 		bsr.w	LoadTiles
+		if NeoGeo<>1
 		lea	(Art_SbzSmoke).l,a1
+		endif
 		move.w	#(.size/2)-1,d1
 		bra.w	LoadTiles	; load blank tiles for no smoke puff
 ; ===========================================================================
@@ -247,8 +265,10 @@ AniArt_SBZ:
 		bpl.s	.end		; branch if not 0
 		
 		move.b	#7,v_lani1_time ; time to display each frame
+		if NeoGeo<>1
 		lea	(Art_SbzSmoke).l,a1 ; load smoke patterns
-		locVRAM	ArtTile_SBZ_Smoke_Puff_2*$20
+		endif
+		locVRAMTile	ArtTile_SBZ_Smoke_Puff_2
 		move.b	v_lani1_frame,d0
 		addq.b	#1,v_lani1_frame ; increment frame counter
 		andi.w	#7,d0
@@ -282,7 +302,9 @@ AniArt_Ending_BigFlower:
 		bpl.s	AniArt_Ending_SmallFlower ; branch if not 0
 		
 		move.b	#7,v_lani1_time
+		if NeoGeo<>1
 		lea	(Art_GhzFlower1).l,a1 ;	load big flower	patterns
+		endif
 		lea	v_256x256_end-$1000,a2 ; load 2nd big flower from RAM
 		move.b	v_lani1_frame,d0
 		addq.b	#1,v_lani1_frame ; increment frame counter
@@ -292,11 +314,11 @@ AniArt_Ending_BigFlower:
 		lea	.size*$20(a2),a2
 
 .isframe0:
-		locVRAM	ArtTile_GHZ_Big_Flower_1*$20
+		locVRAMTile	ArtTile_GHZ_Big_Flower_1
 		move.w	#.size-1,d1
 		bsr.w	LoadTiles
 		movea.l	a2,a1
-		locVRAM	ArtTile_GHZ_Big_Flower_2*$20
+		locVRAMTile	ArtTile_GHZ_Big_Flower_2
 		move.w	#.size-1,d1
 		bra.w	LoadTiles
 ; ===========================================================================
@@ -317,8 +339,10 @@ AniArt_Ending_SmallFlower:
 		move.w	d0,d1
 		add.w	d0,d0
 		add.w	d1,d0		; multiply by 3
-		locVRAM	ArtTile_GHZ_Small_Flower*$20
+		locVRAMTile	ArtTile_GHZ_Small_Flower
+		if NeoGeo<>1
 		lea	(Art_GhzFlower2).l,a1 ;	load small flower patterns
+		endif
 		lea	(a1,d0.w),a1	; jump to appropriate tile
 		move.w	#.size-1,d1
 		bra.w	LoadTiles
@@ -340,7 +364,7 @@ AniArt_Ending_Flower3:
 		move.b	AniArt_Ending_Flower3_sequence(pc,d0.w),d0 ; get actual frame num from sequence data
 		lsl.w	#8,d0		; multiply by $100
 		add.w	d0,d0		; multiply by 2
-		locVRAM	ArtTile_GHZ_Flower_3*$20
+		locVRAMTile	ArtTile_GHZ_Flower_3
 		lea	v_256x256_end-$1000+$400,a1 ; load	special	flower patterns	(from RAM)
 		lea	(a1,d0.w),a1	; jump to appropriate tile
 		move.w	#.size-1,d1
@@ -363,7 +387,7 @@ AniArt_Ending_Flower4:
 		move.b	AniArt_Ending_Flower3_sequence(pc,d0.w),d0 ; get actual frame num from sequence data
 		lsl.w	#8,d0		; multiply by $100
 		add.w	d0,d0		; multiply by 2
-		locVRAM	ArtTile_GHZ_Flower_4*$20
+		locVRAMTile	ArtTile_GHZ_Flower_4
 		lea	v_256x256_end-$1000+$A00,a1 ; load	special	flower patterns	(from RAM)
 		lea	(a1,d0.w),a1	; jump to appropriate tile
 		move.w	#.size-1,d1
@@ -563,6 +587,7 @@ AniArt_GiantRing:
 
 .size		= 14
 
+		if NeoGeo<>1
 		tst.w	v_gfxbigring	; Is there any of the art left to load?
 		bne.s	.loadTiles		; If so, get to work
 		rts	
@@ -585,5 +610,8 @@ AniArt_GiantRing:
 
 		move.w	#.size-1,d1
 		bra.w	LoadTiles
+		else
+		rts
+		endif
 
 ; End of function AniArt_GiantRing

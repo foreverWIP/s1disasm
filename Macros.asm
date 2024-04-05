@@ -4,11 +4,21 @@
 ; ---------------------------------------------------------------------------
 
 locVRAM:	macro loc,controlport
+		if NeoGeo<>1
 		if ("controlport"=="")
 		move.l	#($40000000+(((loc)&$3FFF)<<16)+(((loc)&$C000)>>14)),(vdp_control_port).l
 		else
 		move.l	#($40000000+(((loc)&$3FFF)<<16)+(((loc)&$C000)>>14)),controlport
 		endif
+		else
+		move.w	loc,REG_VRAMADDR
+		nop
+		nop
+		endif
+		endm
+
+locVRAMTile:	macro loc,controlport
+		locVRAM	loc*$20,controlport
 		endm
 
 ; ---------------------------------------------------------------------------
@@ -17,6 +27,7 @@ locVRAM:	macro loc,controlport
 ; ---------------------------------------------------------------------------
 
 writeVRAM:	macro source,length,destination
+		if NeoGeo<>1
 		lea	(vdp_control_port).l,a5
 		move.l	#$94000000+(((length>>1)&$FF00)<<8)+$9300+((length>>1)&$FF),(a5)
 		move.l	#$96000000+(((source>>1)&$FF00)<<8)+$9500+((source>>1)&$FF),(a5)
@@ -24,6 +35,18 @@ writeVRAM:	macro source,length,destination
 		move.w	#$4000+((destination)&$3FFF),(a5)
 		move.w	#$80+(((destination)&$C000)>>14),v_vdp_buffer2
 		move.w	v_vdp_buffer2,(a5)
+		else
+		move.w	destination,REG_VRAMADDR
+		nop
+		nop
+		move.w	(length/2)-1,d0
+		lea		(source).l,a5
+.loop:
+		move.w	(a5)+,REG_VRAMRW
+		nop
+		nop
+		dbf		d0,.loop
+		endif
 		endm
 
 ; ---------------------------------------------------------------------------
@@ -53,6 +76,7 @@ writeCRAM:	macro source,length,destination
 		move.b	(a0)+,d0 ; gb0000gr
 		rol.l	#8,d0 ; 0000grgb
 		andi.w	#$FFF,d0 ; 00000rgb
+		move.w	d0,(a1)+
 		dbf	d1,.loop
 		endif
 		endm
@@ -63,6 +87,7 @@ writeCRAM:	macro source,length,destination
 ; ---------------------------------------------------------------------------
 
 fillVRAM:	macro byte,length,loc
+		if NeoGeo<>1
 		lea	(vdp_control_port).l,a5
 		move.w	#$8F01,(a5) ; Set increment to 1, since DMA fill writes bytes
 		move.l	#$94000000+((((length)-1)&$FF00)<<8)+$9300+(((length)-1)&$FF),(a5)
@@ -73,6 +98,17 @@ fillVRAM:	macro byte,length,loc
 		btst	#1,d1
 		bne.s	.wait
 		move.w	#$8F02,(a5) ; Set increment back to 2, since the VDP usually operates on words
+		else
+		move.w	loc,REG_VRAMADDR
+		nop
+		nop
+		move.w	(length/2)-1,d0
+.loop:
+		move.w	byte,REG_VRAMRW
+		nop
+		nop
+		dbf		d0,.loop
+		endif
 		endm
 
 ; ---------------------------------------------------------------------------
@@ -171,8 +207,18 @@ disable_ints:	macro
 ; ---------------------------------------------------------------------------
 
 enable_ints:	macro
+		if NeoGeo<>1
 		move	#$2300,sr
+		else
+		move	#$2000,sr
+		endif
 		endm
+
+		if NeoGeo=1
+kickWatchdog:	macro
+		move.b  d0,REG_DIPSW
+		endm
+		endif
 
 ; ---------------------------------------------------------------------------
 ; long conditional jumps

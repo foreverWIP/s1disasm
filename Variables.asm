@@ -7,7 +7,7 @@ ramaddr function x,(-(x&$80000000)<<1)|x
 		if NeoGeo<>1
 	phase ramaddr ( $FFFF0000 )
 		else
-	phase ramaddr ( $00100000 )
+	phase ramaddr ( RAMSTART )
 		endif
 v_ram_start:
 

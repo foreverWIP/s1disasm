@@ -5,8 +5,13 @@
 LevelHeaders:
 
 lhead:	macro plc1,lvlgfx,plc2,sixteen,twofivesix,music,pal
+		if NeoGeo<>1
 	dc.l (plc1<<24)+lvlgfx
 	dc.l (plc2<<24)+sixteen
+		else
+	dc.l 0
+	dc.l sixteen
+		endif
 	dc.l twofivesix
 	dc.b 0, music, pal, pal
 	endm

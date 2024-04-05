@@ -16,9 +16,13 @@ Hud_1:		dc.l 1
 
 
 Hud_Mins:
+		if NeoGeo<>1
 		lea	(Hud_1).l,a2
 		moveq	#0,d6
 		bra.s	loc_1C9BA
+		else
+		rts
+		endif
 ; End of function Hud_Mins
 
 
@@ -26,6 +30,7 @@ Hud_Mins:
 
 
 Hud_Secs:
+		if NeoGeo<>1
 		lea	(Hud_10).l,a2
 		moveq	#1,d6
 
@@ -72,6 +77,7 @@ loc_1C9D6:
 		move.l	(a3)+,(a6)
 		addi.l	#$400000,d0
 		dbf	d6,Hud_TimeLoop
+		endif
 
 		rts	
 ; End of function Hud_Secs
@@ -84,6 +90,7 @@ loc_1C9D6:
 
 
 Hud_TimeRingBonus:
+		if NeoGeo<>1
 		lea	(Hud_1000).l,a2
 		moveq	#3,d6
 		moveq	#0,d4
@@ -130,6 +137,7 @@ loc_1CA30:
 
 loc_1CA5A:
 		dbf	d6,Hud_BonusLoop ; repeat 3 more times
+		endif
 
 		rts	
 ; ===========================================================================
@@ -138,10 +146,14 @@ Hud_ClrBonus:
 		moveq	#$F,d5
 
 Hud_ClrBonusLoop:
+		if NeoGeo<>1
 		move.l	#0,(a6)
 		dbf	d5,Hud_ClrBonusLoop
 
 		bra.s	loc_1CA5A
+		else
+		rts
+		endif
 ; End of function Hud_TimeRingBonus
 
 ; ---------------------------------------------------------------------------
@@ -152,7 +164,8 @@ Hud_ClrBonusLoop:
 
 
 Hud_Lives:
-		locVRAM	(ArtTile_Lives_Counter+9)*$20,d0	; set VRAM address
+		if NeoGeo<>1
+		locVRAMTile	(ArtTile_Lives_Counter+9),d0	; set VRAM address
 		moveq	#0,d1
 		move.b	v_lives,d1	; load number of lives
 		lea	(Hud_10).l,a2
@@ -197,11 +210,12 @@ loc_1CAA6:
 loc_1CABC:
 		addi.l	#$400000,d0
 		dbf	d6,Hud_LivesLoop ; repeat 1 more time
-
+		endif
 		rts	
 ; ===========================================================================
 
 Hud_ClrLives:
+		if NeoGeo<>1
 		tst.w	d6
 		beq.s	loc_1CAA6
 		moveq	#7,d5
@@ -210,4 +224,7 @@ Hud_ClrLivesLoop:
 		move.l	#0,(a6)
 		dbf	d5,Hud_ClrLivesLoop
 		bra.s	loc_1CABC
+		else
+		rts
+		endif
 ; End of function Hud_Lives

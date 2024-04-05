@@ -57,6 +57,7 @@ NG_VBL:                             ; Label defined in header.asm
 .getvbl:
     move.w  #4,REG_IRQACK           ; Acknowledge v-blank interrupt
     move.b  d0,REG_DIPSW            ; Kick watchdog
+    jsr     (VBlank).l
     rte                             ; Return from interrupt
 
 JT_USER:

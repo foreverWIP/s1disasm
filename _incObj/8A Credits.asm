@@ -26,7 +26,11 @@ Cred_Main:	; Routine 0
 		cmpi.b	#id_Title,v_gamemode ; is the mode #4 (title screen)?
 		bne.s	Cred_Display	; if not, branch
 
+		if NeoGeo<>1
 		move.w	#make_art_tile(ArtTile_Sonic_Team_Font,0,0),obGfx(a0)
+		else
+		move.w	#make_art_tile(ArtTile_Credits_Font,0,0),obGfx(a0)
+		endif
 		move.b	#$A,obFrame(a0)	; display "SONIC TEAM PRESENTS"
 		tst.b	f_creditscheat ; is hidden credits cheat on?
 		beq.s	Cred_Display	; if not, branch

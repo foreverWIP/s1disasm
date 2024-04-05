@@ -41,8 +41,13 @@ ptr_PLC_EggmanSBZ2:	dc.w PLC_EggmanSBZ2-ArtLoadCues
 ptr_PLC_FZBoss:		dc.w PLC_FZBoss-ArtLoadCues
 
 plcm:	macro gfx,vram
+		if NeoGeo<>1
 	dc.l gfx
 	dc.w (vram)*$20
+		else
+	dc.l 0
+	dc.w vram
+		endif
 	endm
 
 ; ---------------------------------------------------------------------------
@@ -97,7 +102,11 @@ PLC_GHZ2:	dc.w ((PLC_GHZ2end-PLC_GHZ2-2)/6)-1
 		plcm	Nem_Bridge,    ArtTile_GHZ_Bridge             ; bridge
 		plcm	Nem_SpikePole, ArtTile_GHZ_Spike_Pole         ; spiked pole
 		plcm	Nem_Ball,      ArtTile_GHZ_Giant_Ball         ; giant ball
+		if NeoGeo<>1
 		plcm	Nem_GhzWall1,  ArtTile_GHZ_SLZ_Smashable_Wall ; breakable wall
+		else
+		plcm	Nem_GhzWall1,  ArtTile_GHZ_Smashable_Wall ; breakable wall
+		endif
 		plcm	Nem_GhzWall2,  ArtTile_GHZ_Edge_Wall          ; normal wall
 PLC_GHZ2end:
 ; ---------------------------------------------------------------------------
@@ -165,7 +174,11 @@ PLC_SLZ:	dc.w ((PLC_SLZ2-PLC_SLZ-2)/6)-1
 		plcm	Nem_Orbinaut,  ArtTile_SLZ_Orbinaut             ; orbinaut enemy
 		plcm	Nem_MzFire,    ArtTile_SLZ_Fireball             ; fireballs
 		plcm	Nem_SlzBlock,  ArtTile_SLZ_Collapsing_Floor     ; block
+		if NeoGeo<>1
 		plcm	Nem_SlzWall,   ArtTile_GHZ_SLZ_Smashable_Wall+4 ; breakable wall
+		else
+		plcm	Nem_SlzWall,   ArtTile_SLZ_Smashable_Wall		; breakable wall
+		endif
 		plcm	Nem_Spikes,    ArtTile_Spikes                   ; spikes
 		plcm	Nem_HSpring,   ArtTile_Spring_Horizontal        ; horizontal spring
 		plcm	Nem_VSpring,   ArtTile_Spring_Vertical          ; vertical spring
@@ -290,6 +303,7 @@ PLC_SpeStageend:
 		plcm	Nem_SSZone4,    ArtTile_SS_Zone_4            ; ZONE 4 block
 		plcm	Nem_SSZone5,    ArtTile_SS_Zone_5            ; ZONE 5 block
 		plcm	Nem_SSZone6,    ArtTile_SS_Zone_6            ; ZONE 6 block
+		if NeoGeo<>1
 ; ---------------------------------------------------------------------------
 ; Pattern load cues - GHZ animals
 ; ---------------------------------------------------------------------------
@@ -332,6 +346,50 @@ PLC_SBZAnimals:	dc.w ((PLC_SBZAnimalsend-PLC_SBZAnimals-2)/6)-1
 		plcm	Nem_Rabbit,  ArtTile_Animal_1 ; rabbit
 		plcm	Nem_Chicken, ArtTile_Animal_2 ; chicken
 PLC_SBZAnimalsend:
+		else
+; ---------------------------------------------------------------------------
+; Pattern load cues - GHZ animals
+; ---------------------------------------------------------------------------
+PLC_GHZAnimals:	dc.w ((PLC_GHZAnimalsend-PLC_GHZAnimals-2)/6)-1
+		plcm	Nem_Rabbit, ArtTile_Animal_Rabbit ; rabbit
+		plcm	Nem_Flicky, ArtTile_Animal_Flicky ; flicky
+PLC_GHZAnimalsend:
+; ---------------------------------------------------------------------------
+; Pattern load cues - LZ animals
+; ---------------------------------------------------------------------------
+PLC_LZAnimals:	dc.w ((PLC_LZAnimalsend-PLC_LZAnimals-2)/6)-1
+		plcm	Nem_Penguin, ArtTile_Animal_Penguin ; penguin
+		plcm	Nem_Seal,    ArtTile_Animal_Seal ; seal
+PLC_LZAnimalsend:
+; ---------------------------------------------------------------------------
+; Pattern load cues - MZ animals
+; ---------------------------------------------------------------------------
+PLC_MZAnimals:	dc.w ((PLC_MZAnimalsend-PLC_MZAnimals-2)/6)-1
+		plcm	Nem_Squirrel, ArtTile_Animal_Squirrel ; squirrel
+		plcm	Nem_Seal,     ArtTile_Animal_Seal ; seal
+PLC_MZAnimalsend:
+; ---------------------------------------------------------------------------
+; Pattern load cues - SLZ animals
+; ---------------------------------------------------------------------------
+PLC_SLZAnimals:	dc.w ((PLC_SLZAnimalsend-PLC_SLZAnimals-2)/6)-1
+		plcm	Nem_Pig,    ArtTile_Animal_Pig ; pig
+		plcm	Nem_Flicky, ArtTile_Animal_Flicky ; flicky
+PLC_SLZAnimalsend:
+; ---------------------------------------------------------------------------
+; Pattern load cues - SYZ animals
+; ---------------------------------------------------------------------------
+PLC_SYZAnimals:	dc.w ((PLC_SYZAnimalsend-PLC_SYZAnimals-2)/6)-1
+		plcm	Nem_Pig,     ArtTile_Animal_Pig ; pig
+		plcm	Nem_Chicken, ArtTile_Animal_Chicken ; chicken
+PLC_SYZAnimalsend:
+; ---------------------------------------------------------------------------
+; Pattern load cues - SBZ animals
+; ---------------------------------------------------------------------------
+PLC_SBZAnimals:	dc.w ((PLC_SBZAnimalsend-PLC_SBZAnimals-2)/6)-1
+		plcm	Nem_Rabbit,  ArtTile_Animal_Rabbit ; rabbit
+		plcm	Nem_Chicken, ArtTile_Animal_Chicken ; chicken
+PLC_SBZAnimalsend:
+		endif
 ; ---------------------------------------------------------------------------
 ; Pattern load cues - special stage results screen
 ; ---------------------------------------------------------------------------

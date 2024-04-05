@@ -30,6 +30,7 @@ Sonic_LoadGfx:
 		lsl.w	#8,d2
 		move.b	(a2)+,d2
 		lsl.w	#5,d2
+		if NeoGeo<>1
 		lea	(Art_Sonic).l,a1
 		adda.l	d2,a1
 
@@ -40,6 +41,7 @@ Sonic_LoadGfx:
 		dbf	d0,.loadtile	; repeat for number of tiles
 
 		dbf	d1,.readentry	; repeat for number of entries
+		endif
 
 .nochange:
 		rts	

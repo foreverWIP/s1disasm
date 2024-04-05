@@ -54,206 +54,16 @@ ErrorTrap:
 
 EntryPoint:
 		if NeoGeo<>1
-		tst.l	(z80_port_1_control).l ; test port A & B control registers
-		bne.s	PortA_Ok
-		tst.w	(z80_expansion_control).l ; test port C control register
-
-PortA_Ok:
-		endif
-		bne.s	SkipSetup ; Skip the VDP and Z80 setup code if port A, B or C is ok...?
-		lea	SetupValues(pc),a5	; Load setup values array address.
-		movem.w	(a5)+,d5-d7
-		movem.l	(a5)+,a0-a4
-		move.b	-$10FF(a1),d0	; get hardware version (from $A10001)
-		andi.b	#$F,d0
-		beq.s	SkipSecurity	; If the console has no TMSS, skip the security stuff.
-		move.l	#'SEGA',$2F00(a1) ; move "SEGA" to TMSS register ($A14000)
-
-SkipSecurity:
-		move.w	(a4),d0	; clear write-pending flag in VDP to prevent issues if the 68k has been reset in the middle of writing a command long word to the VDP.
-		moveq	#0,d0	; clear d0
-		movea.l	d0,a6	; clear a6
-		move.l	a6,usp	; set usp to $0
-
-		moveq	#$17,d1
-VDPInitLoop:
-		move.b	(a5)+,d5	; add $8000 to value
-		move.w	d5,(a4)		; move value to	VDP register
-		add.w	d7,d5		; next register
-		dbf	d1,VDPInitLoop
-		
-		move.l	(a5)+,(a4)
-		move.w	d0,(a3)		; clear	the VRAM
-		if NeoGeo=0
-		move.w	d7,(a1)		; stop the Z80
-		move.w	d7,(a2)		; reset	the Z80
-
-WaitForZ80:
-		btst	d0,(a1)		; has the Z80 stopped?
-		bne.s	WaitForZ80	; if not, branch
-
-		moveq	#$25,d2
-Z80InitLoop:
-		move.b	(a5)+,(a0)+
-		dbf	d2,Z80InitLoop
-		
-		move.w	d0,(a2)
-		move.w	d0,(a1)		; start	the Z80
-		move.w	d7,(a2)		; reset	the Z80
-		endif
-
-ClrRAMLoop:
-		move.l	d0,-(a6)	; clear 4 bytes of RAM
-		dbf	d6,ClrRAMLoop	; repeat until the entire RAM is clear
-		move.l	(a5)+,(a4)	; set VDP display mode and increment mode
-		move.l	(a5)+,(a4)	; set VDP to CRAM write
-
-		moveq	#$1F,d3	; set repeat times
-ClrCRAMLoop:
-		move.l	d0,(a3)	; clear 2 palettes
-		dbf	d3,ClrCRAMLoop	; repeat until the entire CRAM is clear
-		move.l	(a5)+,(a4)	; set VDP to VSRAM write
-
-		moveq	#$13,d4
-ClrVSRAMLoop:
-		move.l	d0,(a3)	; clear 4 bytes of VSRAM.
-		dbf	d4,ClrVSRAMLoop	; repeat until the entire VSRAM is clear
-		moveq	#3,d5
-
-		if NeoGeo=0
-PSGInitLoop:
-		move.b	(a5)+,$11(a3)	; reset	the PSG
-		dbf	d5,PSGInitLoop	; repeat for other channels
-		move.w	d0,(a2)
-		endif
-		movem.l	(a6),d0-a6	; clear all registers
-		disable_ints
-
-SkipSetup:
-		bra.s	GameProgram	; begin game
-
-; ===========================================================================
-SetupValues:	dc.w $8000		; VDP register start number
-		dc.w $3FFF		; size of RAM/4
-		dc.w $100		; VDP register diff
-
-		if NeoGeo=0
-		dc.l z80_ram		; start	of Z80 RAM
-		dc.l z80_bus_request	; Z80 bus request
-		dc.l z80_reset		; Z80 reset
-		else
-		dc.l 0
-		dc.l 0
-		dc.l 0
-		endif
-		dc.l vdp_data_port	; VDP data
-		dc.l vdp_control_port	; VDP control
-
-		dc.b 4			; VDP $80 - 8-colour mode
-		dc.b $14		; VDP $81 - Megadrive mode, DMA enable
-		dc.b ($C000>>10)	; VDP $82 - foreground nametable address
-		dc.b ($F000>>10)	; VDP $83 - window nametable address
-		dc.b ($E000>>13)	; VDP $84 - background nametable address
-		dc.b ($D800>>9)		; VDP $85 - sprite table address
-		dc.b 0			; VDP $86 - unused
-		dc.b 0			; VDP $87 - background colour
-		dc.b 0			; VDP $88 - unused
-		dc.b 0			; VDP $89 - unused
-		dc.b 255		; VDP $8A - HBlank register
-		dc.b 0			; VDP $8B - full screen scroll
-		dc.b $81		; VDP $8C - 40 cell display
-		dc.b ($DC00>>10)	; VDP $8D - hscroll table address
-		dc.b 0			; VDP $8E - unused
-		dc.b 1			; VDP $8F - VDP increment
-		dc.b 1			; VDP $90 - 64 cell hscroll size
-		dc.b 0			; VDP $91 - window h position
-		dc.b 0			; VDP $92 - window v position
-		dc.w $FFFF		; VDP $93/94 - DMA length
-		dc.w 0			; VDP $95/96 - DMA source
-		dc.b $80		; VDP $97 - DMA fill VRAM
-		dc.l $40000080		; VRAM address 0
-
-		if NeoGeo=0
-	; Z80 instructions (not the sound driver; that gets loaded later)
-    if (*)+$26 < $10000
-    save
-    CPU Z80 ; start assembling Z80 code
-    phase 0 ; pretend we're at address 0
-	xor	a	; clear a to 0
-	ld	bc,((z80_ram_end-z80_ram)-zStartupCodeEndLoc)-1 ; prepare to loop this many times
-	ld	de,zStartupCodeEndLoc+1	; initial destination address
-	ld	hl,zStartupCodeEndLoc	; initial source address
-	ld	sp,hl	; set the address the stack starts at
-	ld	(hl),a	; set first byte of the stack to 0
-	ldir		; loop to fill the stack (entire remaining available Z80 RAM) with 0
-	pop	ix	; clear ix
-	pop	iy	; clear iy
-	ld	i,a	; clear i
-	ld	r,a	; clear r
-	pop	de	; clear de
-	pop	hl	; clear hl
-	pop	af	; clear af
-	ex	af,af'	; swap af with af'
-	exx		; swap bc/de/hl with their shadow registers too
-	pop	bc	; clear bc
-	pop	de	; clear de
-	pop	hl	; clear hl
-	pop	af	; clear af
-	ld	sp,hl	; clear sp
-	di		; clear iff1 (for interrupt handler)
-	im	1	; interrupt handling mode = 1
-	ld	(hl),0E9h ; replace the first instruction with a jump to itself
-	jp	(hl)	  ; jump to the first instruction (to stay there forever)
-zStartupCodeEndLoc:
-    dephase ; stop pretending
-	restore
-    padding off ; unfortunately our flags got reset so we have to set them again...
-    else ; due to an address range limitation I could work around but don't think is worth doing so:
-	message "Warning: using pre-assembled Z80 startup code."
-	dc.w $AF01,$D91F,$1127,$0021,$2600,$F977,$EDB0,$DDE1,$FDE1,$ED47,$ED4F,$D1E1,$F108,$D9C1,$D1E1,$F1F9,$F3ED,$5636,$E9E9
-    endif
-		else
-	dc.w $0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000
-		endif
-
-		dc.w $8104		; VDP display mode
-		dc.w $8F02		; VDP increment
-		dc.l $C0000000		; CRAM write mode
-		dc.l $40000010		; VSRAM address 0
-
-		dc.b $9F, $BF, $DF, $FF	; values for PSG channel volumes
-; ===========================================================================
-
-GameProgram:
-		tst.w	(vdp_control_port).l
-			if NeoGeo=0
-		btst	#6,(z80_expansion_control+1).l
-		beq.s	CheckSumCheck
-		cmpi.l	#'init',v_init ; has checksum routine already run?
-		beq.w	GameInit	; if yes, branch
-
-CheckSumCheck:
-		movea.l	#EndOfHeader,a0	; start	checking bytes after the header	($200)
-		movea.l	#RomEndLoc,a1	; stop at end of ROM
-		move.l	(a1),d0
-		moveq	#0,d1
-
-.loop:
-		add.w	(a0)+,d1
-		cmp.l	a0,d0
-		bhs.s	.loop
-		movea.l	#Checksum,a1	; read the checksum
-		cmp.w	(a1),d1		; compare checksum in header to ROM
-		bne.w	CheckSumError	; if they don't match, branch
-
-			endif
-CheckSumOk:
+		include "initmd.asm"
 		lea	v_crossresetram,a6
 		moveq	#0,d7
 		move.w	#(v_ram_end-v_crossresetram)/4-1,d6
 .clearRAM:
 		move.l	d7,(a6)+
 		dbf	d6,.clearRAM	; clear RAM ($FE00-$FFFF)
+		else
+		include "initng.asm"
+		endif
 
 		if NeoGeo=0
 		move.b	(z80_version).l,d0
@@ -308,6 +118,7 @@ ptr_GM_Credits:	bra.w	GM_Credits	; Credits ($1C)
 		rts	
 ; ===========================================================================
 
+		if NeoGeo<>1
 CheckSumError:
 		bsr.w	VDPSetupGame
 		move.l	#$C0000000,(vdp_control_port).l ; set VDP to CRAM write
@@ -489,12 +300,14 @@ ErrorWaitForC:
 		bne.w	ErrorWaitForC	; if not, branch
 		rts	
 ; End of function ErrorWaitForC
+		endif
 
+		if NeoGeo<>1
 ; ===========================================================================
 
 Art_Text:	binclude	"artunc/menutext.bin" ; text used in level select and debug mode
 		even
-
+		endif
 ; ===========================================================================
 ; ---------------------------------------------------------------------------
 ; Vertical interrupt
@@ -504,9 +317,11 @@ VBlank:
 		movem.l	d0-a6,-(sp)
 		tst.b	v_vbla_routine
 		beq.s	VBla_00
+		if NeoGeo<>1
 		move.w	(vdp_control_port).l,d0
 		move.l	#$40000010,(vdp_control_port).l
 		move.l	v_scrposy_vdp,(vdp_data_port).l ; send screen y-axis pos. to VSRAM
+		endif
 		btst	#6,v_megadrive ; is Megadrive PAL?
 		beq.s	.notPAL		; if not, branch
 
@@ -551,8 +366,12 @@ VBla_00:
 		cmpi.b	#id_LZ,v_zone ; is level LZ ?
 		bne.w	VBla_Music	; if not, branch
 
+		if NeoGeo<>1
 		move.w	(vdp_control_port).l,d0
 		btst	#6,v_megadrive ; is Megadrive PAL?
+		else
+		moveq	#0,d0 ; is Megadrive PAL?
+		endif
 		beq.s	.notPAL		; if not, branch
 
 		move.w	#$700,d0
@@ -593,7 +412,9 @@ VBla_14:
 VBla_04:
 		bsr.w	sub_106E
 		bsr.w	LoadTilesAsYouMove_BGOnly
+		if NeoGeo<>1
 		bsr.w	sub_1642
+		endif
 		tst.w	v_demolength
 		beq.w	.end
 		subq.w	#1,v_demolength
@@ -724,7 +545,9 @@ VBla_0C:
 		bsr.w	LoadTilesAsYouMove
 		jsr	(AnimateLevelGfx).l
 		jsr	(HUD_Update).l
+		if NeoGeo<>1
 		bsr.w	sub_1642
+		endif
 		rts	
 ; ===========================================================================
 
@@ -738,7 +561,9 @@ VBla_0E:
 VBla_12:
 		bsr.w	sub_106E
 		move.w	v_hbla_hreg,(a5)
+		if NeoGeo<>1
 		bra.w	sub_1642
+		endif
 ; ===========================================================================
 
 VBla_16:
@@ -920,6 +745,7 @@ ReadJoypads:
 
 
 VDPSetupGame:
+		if NeoGeo<>1
 		lea	(vdp_control_port).l,a0
 		lea	(vdp_data_port).l,a1
 		lea	(VDPSetupArray).l,a2
@@ -945,6 +771,7 @@ VDPSetupGame:
 		move.l	d1,-(sp)
 		fillVRAM	0,$10000,0
 		move.l	(sp)+,d1
+		endif
 		rts	
 ; End of function VDPSetupGame
 
@@ -1042,6 +869,7 @@ DACDriverLoad:
 
 
 TilemapToVRAM:
+		if NeoGeo<>1
 		lea	(vdp_data_port).l,a6
 		move.l	#$800000,d4
 
@@ -1054,10 +882,14 @@ Tilemap_Cell:
 		dbf	d3,Tilemap_Cell	; next tile
 		add.l	d4,d0		; goto next line
 		dbf	d2,Tilemap_Line	; next line
+		else
+		endif
 		rts	
 ; End of function TilemapToVRAM
 
+		if NeoGeo<>1
 		include	"_inc/Nemesis Decompression.asm"
+		endif
 
 
 ; ---------------------------------------------------------------------------
@@ -1162,6 +994,7 @@ ClearPLC:
 
 
 RunPLC:
+		if NeoGeo<>1
 		tst.l	v_plc_buffer
 		beq.s	Rplc_Exit
 		tst.w	v_plc_patternsleft
@@ -1191,6 +1024,7 @@ loc_160E:
 		move.l	d6,v_plc_shiftvalue
 
 Rplc_Exit:
+		endif
 		rts	
 ; End of function RunPLC
 
@@ -1205,7 +1039,11 @@ sub_1642:
 		moveq	#0,d0
 		move.w	v_plc_buffer+4,d0
 		addi.w	#$120,v_plc_buffer+4
+		if NeoGeo<>1
 		bra.s	loc_1676
+		else
+		rts
+		endif
 ; End of function sub_1642
 
 
@@ -1214,6 +1052,7 @@ sub_1642:
 
 ; sub_165E:
 ProcessDPLC2:
+		if NeoGeo<>1
 		tst.w	v_plc_patternsleft
 		if NeoGeo=0
 		beq.s	locret_16DA
@@ -1256,6 +1095,7 @@ loc_16AA:
 		move.l	d2,v_plc_previousrow
 		move.l	d5,v_plc_dataword
 		move.l	d6,v_plc_shiftvalue
+		endif
 
 locret_16DA:
 		rts	
@@ -1309,14 +1149,18 @@ Qplc_Loop:
 		lsr.w	#2,d0
 		ori.w	#$4000,d0
 		swap	d0
+		if NeoGeo<>1
 		move.l	d0,(vdp_control_port).l ; converted VRAM address to VDP format
 		bsr.w	NemDec		; decompress
+		endif
 		dbf	d1,Qplc_Loop	; repeat for length of PLC
 		rts	
 ; End of function QuickPLC
 
 		include	"_inc/Enigma Decompression.asm"
+		if NeoGeo<>1
 		include	"_inc/Kosinski Decompression.asm"
+		endif
 
 		include	"_inc/PaletteCycle.asm"
 
@@ -1371,7 +1215,9 @@ PalFadeIn_Alt:				; start position and size are already set
 		move.b	#$12,v_vbla_routine
 		bsr.w	WaitForVBla
 		bsr.s	FadeIn_FromBlack
+		if NeoGeo<>1
 		bsr.w	RunPLC
+		endif
 		dbf	d4,.mainloop
 		rts	
 ; End of function PaletteFadeIn
@@ -1466,7 +1312,9 @@ PaletteFadeOut:
 		move.b	#$12,v_vbla_routine
 		bsr.w	WaitForVBla
 		bsr.s	FadeOut_ToBlack
+		if NeoGeo<>1
 		bsr.w	RunPLC
+		endif
 		dbf	d4,.mainloop
 		rts	
 ; End of function PaletteFadeOut
@@ -1560,7 +1408,9 @@ PaletteWhiteIn:
 		move.b	#$12,v_vbla_routine
 		bsr.w	WaitForVBla
 		bsr.s	WhiteIn_FromWhite
+		if NeoGeo<>1
 		bsr.w	RunPLC
+		endif
 		dbf	d4,.mainloop
 		rts	
 ; End of function PaletteWhiteIn
@@ -1654,7 +1504,9 @@ PaletteWhiteOut:
 		move.b	#$12,v_vbla_routine
 		bsr.w	WaitForVBla
 		bsr.s	WhiteOut_ToWhite
+		if NeoGeo<>1
 		bsr.w	RunPLC
+		endif
 		dbf	d4,.mainloop
 		rts	
 ; End of function PaletteWhiteOut
@@ -2006,23 +1858,31 @@ WaitForVBla:
 GM_Sega:
 		move.b	#bgm_Stop,d0
 		bsr.w	PlaySound_Special ; stop music
+		if NeoGeo<>1
 		bsr.w	ClearPLC
+		endif
 		bsr.w	PaletteFadeOut
+		if NeoGeo<>1
 		lea	(vdp_control_port).l,a6
 		move.w	#$8004,(a6)	; use 8-colour mode
 		move.w	#$8200+(vram_fg>>10),(a6) ; set foreground nametable address
 		move.w	#$8400+(vram_bg>>13),(a6) ; set background nametable address
 		move.w	#$8700,(a6)	; set background colour (palette entry 0)
 		move.w	#$8B00,(a6)	; full-screen vertical scrolling
+		endif
 		clr.b	f_wtr_state
 		disable_ints
+		if NeoGeo<>1
 		move.w	v_vdp_buffer1,d0
 		andi.b	#$BF,d0
 		move.w	d0,(vdp_control_port).l
+		endif
 		bsr.w	ClearScreen
+		if NeoGeo<>1
 		locVRAM	0
 		lea	(Nem_SegaLogo).l,a0 ; load Sega	logo patterns
 		bsr.w	NemDec
+		endif
 		if NeoGeo=0
 		lea	(v_256x256&$FFFFFF).l,a1
 		else
@@ -2057,9 +1917,11 @@ GM_Sega:
 		move.w	#0,v_pcyc_time
 		move.w	#0,v_pal_buffer+$12
 		move.w	#0,v_pal_buffer+$10
+		if NeoGeo<>1
 		move.w	v_vdp_buffer1,d0
 		ori.b	#$40,d0
 		move.w	d0,(vdp_control_port).l
+		endif
 
 Sega_WaitPal:
 		move.b	#2,v_vbla_routine
@@ -2093,10 +1955,13 @@ Sega_GotoTitle:
 GM_Title:
 		move.b	#bgm_Stop,d0
 		bsr.w	PlaySound_Special ; stop music
+		if NeoGeo<>1
 		bsr.w	ClearPLC
+		endif
 		bsr.w	PaletteFadeOut
 		disable_ints
 		bsr.w	DACDriverLoad
+		if NeoGeo<>1
 		lea	(vdp_control_port).l,a6
 		move.w	#$8004,(a6)	; 8-colour mode
 		move.w	#$8200+(vram_fg>>10),(a6) ; set foreground nametable address
@@ -2105,17 +1970,20 @@ GM_Title:
 		move.w	#$9200,(a6)	; window vertical position
 		move.w	#$8B03,(a6)
 		move.w	#$8720,(a6)	; set background colour (palette line 2, entry 0)
+		endif
 		clr.b	f_wtr_state
 		bsr.w	ClearScreen
 
 		clearRAM v_objspace,v_objend
 
+		if NeoGeo<>1
 		locVRAM	0
 		lea	(Nem_JapNames).l,a0 ; load Japanese credits
 		bsr.w	NemDec
-		locVRAM	ArtTile_Sonic_Team_Font*$20
+		locVRAMTile	ArtTile_Sonic_Team_Font
 		lea	(Nem_CreditText).l,a0 ;	load alphabet
 		bsr.w	NemDec
+		endif
 		if NeoGeo=0
 		lea	(v_256x256&$FFFFFF).l,a1
 		else
@@ -2140,23 +2008,25 @@ GM_Title:
 		jsr	(BuildSprites).l
 		bsr.w	PaletteFadeIn
 		disable_ints
-		locVRAM	ArtTile_Title_Foreground*$20
+		if NeoGeo<>1
+		locVRAMTile	ArtTile_Title_Foreground
 		lea	(Nem_TitleFg).l,a0 ; load title	screen patterns
 		bsr.w	NemDec
-		locVRAM	ArtTile_Title_Sonic*$20
+		locVRAMTile	ArtTile_Title_Sonic
 		lea	(Nem_TitleSonic).l,a0 ;	load Sonic title screen	patterns
 		bsr.w	NemDec
-		locVRAM	ArtTile_Title_Trademark*$20
+		locVRAMTile	ArtTile_Title_Trademark
 		lea	(Nem_TitleTM).l,a0 ; load "TM" patterns
 		bsr.w	NemDec
 		lea	(vdp_data_port).l,a6
-		locVRAM	ArtTile_Level_Select_Font*$20,4(a6)
+		locVRAMTile	ArtTile_Level_Select_Font,4(a6)
 		lea	(Art_Text).l,a5	; load level select font
 		move.w	#$28F,d1
 
 Tit_LoadText:
 		move.w	(a5)+,(a6)
 		dbf	d1,Tit_LoadText	; load level select font
+		endif
 
 		move.b	#0,v_lastlamp ; clear lamppost counter
 		move.w	#0,v_debuguse ; disable debug item placement mode
@@ -2182,8 +2052,10 @@ Tit_LoadText:
 		bsr.w	PaletteFadeOut
 		disable_ints
 		bsr.w	ClearScreen
+		if NeoGeo<>1
 		lea	(vdp_control_port).l,a5
 		lea	(vdp_data_port).l,a6
+		endif
 		lea	v_bgscreenposx,a3
 		lea	v_lvllayout+$40,a4
 		move.w	#$6000,d2
@@ -2203,9 +2075,11 @@ Tit_LoadText:
 		copyTilemap	v_scratcharea&$FFFFFF,$C206,$21,$15
 		endif
 
-		locVRAM	ArtTile_Level*$20
+		if NeoGeo<>1
+		locVRAMTile	ArtTile_Level
 		lea	(Nem_GHZ_1st).l,a0 ; load GHZ patterns
 		bsr.w	NemDec
+		endif
 		moveq	#palid_Title,d0	; load title screen palette
 		bsr.w	PalLoad1
 		move.b	#bgm_Title,d0
@@ -2239,13 +2113,17 @@ Tit_LoadText:
 		jsr	(ExecuteObjects).l
 		bsr.w	DeformLayers
 		jsr	(BuildSprites).l
+		if NeoGeo<>1
 		moveq	#plcid_Main,d0
 		bsr.w	NewPLC
+		endif
 		move.w	#0,v_title_dcount
 		move.w	#0,v_title_ccount
+		if NeoGeo<>1
 		move.w	v_vdp_buffer1,d0
 		ori.b	#$40,d0
 		move.w	d0,(vdp_control_port).l
+		endif
 		bsr.w	PaletteFadeIn
 
 Tit_MainLoop:
@@ -2255,7 +2133,9 @@ Tit_MainLoop:
 		bsr.w	DeformLayers
 		jsr	(BuildSprites).l
 		bsr.w	PalCycle_Title
+		if NeoGeo<>1
 		bsr.w	RunPLC
+		endif
 		move.w	v_player+obX,d0
 		addq.w	#2,d0
 		move.w	d0,v_player+obX ; move Sonic to the right
@@ -2335,7 +2215,9 @@ Tit_ChkLevSel:
 
 		move.l	d0,v_scrposy_vdp
 		disable_ints
+		if NeoGeo<>1
 		lea	(vdp_data_port).l,a6
+		endif
 		locVRAM	$E000
 		move.w	#$3FF,d1
 
@@ -2353,7 +2235,9 @@ LevelSelect:
 		move.b	#4,v_vbla_routine
 		bsr.w	WaitForVBla
 		bsr.w	LevSelControls
+		if NeoGeo<>1
 		bsr.w	RunPLC
+		endif
 		tst.l	v_plc_buffer
 		bne.s	LevelSelect
 		andi.b	#btnABC+btnStart,v_jpadpress1 ; is A, B, C, or Start pressed?
@@ -2519,7 +2403,9 @@ loc_33B6:
 		bsr.w	WaitForVBla
 		bsr.w	DeformLayers
 		bsr.w	PaletteCycle
+		if NeoGeo<>1
 		bsr.w	RunPLC
+		endif
 		move.w	v_player+obX,d0
 		addq.w	#2,d0
 		move.w	d0,v_player+obX
@@ -2654,6 +2540,7 @@ textpos:	= ($40000000+(($E210&$3FFF)<<16)+(($E210&$C000)>>14))
 					; $E210 is a VRAM address
 
 		lea	(LevelMenuText).l,a1
+		if NeoGeo<>1
 		lea	(vdp_data_port).l,a6
 		move.l	#textpos,d4	; text position on screen
 		move.w	#$E680,d3	; VRAM setting (4th palette, $680th tile)
@@ -2695,6 +2582,7 @@ LevSel_DrawSnd:
 		bsr.w	LevSel_ChgSnd	; draw 1st digit
 		move.b	d2,d0
 		bsr.w	LevSel_ChgSnd	; draw 2nd digit
+		endif
 		rts	
 ; End of function LevSelTextLoad
 
@@ -2774,14 +2662,18 @@ GM_Level:
 		bsr.w	PlaySound_Special ; fade out music
 
 Level_NoMusicFade:
+		if NeoGeo<>1
 		bsr.w	ClearPLC
+		endif
 		bsr.w	PaletteFadeOut
 		tst.w	f_demo	; is an ending sequence demo running?
 		bmi.s	Level_ClrRam	; if yes, branch
 		disable_ints
-		locVRAM	ArtTile_Title_Card*$20
+		if NeoGeo<>1
+		locVRAMTile	ArtTile_Title_Card
 		lea	(Nem_TitleCard).l,a0 ; load title card patterns
 		bsr.w	NemDec
+		endif
 		enable_ints
 		moveq	#0,d0
 		move.b	v_zone,d0
@@ -2790,12 +2682,14 @@ Level_NoMusicFade:
 		lea	(a2,d0.w),a2
 		moveq	#0,d0
 		move.b	(a2),d0
+		if NeoGeo<>1
 		beq.s	loc_37FC
 		bsr.w	AddPLC		; load level patterns
 
 loc_37FC:
 		moveq	#plcid_Main2,d0
 		bsr.w	AddPLC		; load standard	patterns
+		endif
 
 Level_ClrRam:
 		clearRAM v_objspace,v_objend
@@ -2805,6 +2699,7 @@ Level_ClrRam:
 
 		disable_ints
 		bsr.w	ClearScreen
+		if NeoGeo<>1
 		lea	(vdp_control_port).l,a6
 		move.w	#$8B03,(a6)	; line scroll mode
 		move.w	#$8200+(vram_fg>>10),(a6) ; set foreground nametable address
@@ -2815,10 +2710,13 @@ Level_ClrRam:
 		move.w	#$8720,(a6)		; set background colour (line 3; colour 0)
 		move.w	#$8A00+223,v_hbla_hreg ; set palette change position (for water)
 		move.w	v_hbla_hreg,(a6)
+		endif
 		cmpi.b	#id_LZ,v_zone ; is level LZ?
 		bne.s	Level_LoadPal	; if not, branch
 
+		if NeoGeo<>1
 		move.w	#$8014,(a6)	; enable H-interrupts
+		endif
 		moveq	#0,d0
 		move.b	v_act,d0
 		add.w	d0,d0
@@ -2875,7 +2773,9 @@ Level_TtlCardLoop:
 		bsr.w	WaitForVBla
 		jsr	(ExecuteObjects).l
 		jsr	(BuildSprites).l
+		if NeoGeo<>1
 		bsr.w	RunPLC
+		endif
 		move.w	v_ttlcardact+obX,d0
 		cmp.w	v_ttlcardact+card_mainX,d0 ; has title card sequence finished?
 		bne.s	Level_TtlCardLoop ; if not, branch
@@ -2996,12 +2896,14 @@ Level_DelayLoop:
 ; ===========================================================================
 
 Level_ClrCardArt:
+		if NeoGeo<>1
 		moveq	#plcid_Explode,d0
 		jsr	(AddPLC).l	; load explosion gfx
 		moveq	#0,d0
 		move.b	v_zone,d0
 		addi.w	#plcid_GHZAnimals,d0
 		jsr	(AddPLC).l	; load animal gfx (level no. + $15)
+		endif
 
 Level_StartGame:
 		bclr	#7,v_gamemode ; subtract $80 from mode to end pre-level stuff
@@ -3034,7 +2936,9 @@ Level_SkipScroll:
 		jsr	(BuildSprites).l
 		jsr	(ObjPosLoad).l
 		bsr.w	PaletteCycle
+		if NeoGeo<>1
 		bsr.w	RunPLC
+		endif
 		bsr.w	OscillateNumDo
 		bsr.w	SynchroAnimate
 		bsr.w	SignpostArtLoad
@@ -3200,8 +3104,10 @@ SignpostArtLoad:
 		cmp.w	v_limitleft2,d1
 		beq.s	.exit
 		move.w	d1,v_limitleft2 ; move left boundary to current screen position
+		if NeoGeo<>1
 		moveq	#plcid_Signpost,d0
 		bra.w	NewPLC		; load signpost	patterns
+		endif
 
 .exit:
 		rts	
@@ -3223,6 +3129,7 @@ GM_Special:
 		bsr.w	PlaySound_Special ; play special stage entry sound
 		bsr.w	PaletteWhiteOut
 		disable_ints
+		if NeoGeo<>1
 		lea	(vdp_control_port).l,a6
 		move.w	#$8B03,(a6)	; line scroll mode
 		move.w	#$8004,(a6)	; 8-colour mode
@@ -3231,12 +3138,15 @@ GM_Special:
 		move.w	v_vdp_buffer1,d0
 		andi.b	#$BF,d0
 		move.w	d0,(vdp_control_port).l
+		endif
 		bsr.w	ClearScreen
 		enable_ints
 		fillVRAM	0,$7000,$5000
 		bsr.w	SS_BGLoad
+		if NeoGeo<>1
 		moveq	#plcid_SpecialStage,d0
 		bsr.w	QuickPLC	; load special stage patterns
+		endif
 
 		clearRAM v_objspace,v_objend
 		clearRAM v_levelvariables,v_levelvariables_end
@@ -3274,9 +3184,11 @@ GM_Special:
 		move.b	#1,f_debugmode ; enable debug mode
 
 SS_NoDebug:
+		if NeoGeo<>1
 		move.w	v_vdp_buffer1,d0
 		ori.b	#$40,d0
 		move.w	d0,(vdp_control_port).l
+		endif
 		bsr.w	PaletteWhiteIn
 
 ; ---------------------------------------------------------------------------
@@ -3337,22 +3249,28 @@ loc_47D4:
 		bne.s	SS_FinLoop
 
 		disable_ints
+		if NeoGeo<>1
 		lea	(vdp_control_port).l,a6
 		move.w	#$8200+(vram_fg>>10),(a6) ; set foreground nametable address
 		move.w	#$8400+(vram_bg>>13),(a6) ; set background nametable address
 		move.w	#$9001,(a6)		; 64-cell hscroll size
+		endif
 		bsr.w	ClearScreen
-		locVRAM	ArtTile_Title_Card*$20
+		if NeoGeo<>1
+		locVRAMTile	ArtTile_Title_Card
 		lea	(Nem_TitleCard).l,a0 ; load title card patterns
 		bsr.w	NemDec
+		endif
 		jsr	(Hud_Base).l
 		enable_ints
 		moveq	#palid_SSResult,d0
 		bsr.w	PalLoad2	; load results screen palette
+		if NeoGeo<>1
 		moveq	#plcid_Main,d0
 		bsr.w	NewPLC
 		moveq	#plcid_SSResult,d0
 		bsr.w	AddPLC		; load results screen patterns
+		endif
 		move.b	#1,f_scorecount ; update score counter
 		move.b	#1,f_endactbonus ; update ring bonus counter
 		move.w	v_rings,d0
@@ -3371,7 +3289,9 @@ SS_NormalExit:
 		bsr.w	WaitForVBla
 		jsr	(ExecuteObjects).l
 		jsr	(BuildSprites).l
+		if NeoGeo<>1
 		bsr.w	RunPLC
+		endif
 		tst.w	f_restart
 		beq.s	SS_NormalExit
 		tst.l	v_plc_buffer
@@ -3401,9 +3321,11 @@ SS_ToLevel:	cmpi.b	#id_Level,v_gamemode
 
 SS_BGLoad:
 		lea	(v_ssbuffer1&$FFFFFF).l,a1
+		if NeoGeo<>1
 		lea	(Eni_SSBg1).l,a0 ; load	mappings for the birds and fish
 		move.w	#$4051,d0
 		bsr.w	EniDec
+		endif
 		locVRAM	$5000,d3
 		lea	((v_ssbuffer1+$80)&$FFFFFF).l,a2
 		moveq	#7-1,d7
@@ -3450,9 +3372,11 @@ loc_491C:
 		adda.w	#$80,a2
 		dbf	d7,loc_48BE
 		lea	(v_ssbuffer1&$FFFFFF).l,a1
+		if NeoGeo<>1
 		lea	(Eni_SSBg2).l,a0 ; load	mappings for the clouds
 		move.w	#$4000,d0
 		bsr.w	EniDec
+		endif
 		copyTilemap	v_ssbuffer1&$FFFFFF,$C000,$3F,$1F
 		copyTilemap	v_ssbuffer1&$FFFFFF,$D000,$3F,$3F
 		rts	
@@ -3478,7 +3402,9 @@ PalCycle_SS:
 		else
 		bpl.w	locret_49E6
 		endif
+		if NeoGeo<>1
 		lea	(vdp_control_port).l,a6
+		endif
 		move.w	v_palss_num,d0
 		addq.w	#1,v_palss_num
 		andi.w	#$1F,d0
@@ -3503,8 +3429,10 @@ loc_4992:
 		move.w	#$8400,d0
 		move.b	(a0)+,d0
 		move.w	d0,(a6)
+		if NeoGeo<>1
 		move.l	#$40000010,(vdp_control_port).l
 		move.l	v_scrposy_vdp,(vdp_data_port).l
+		endif
 		moveq	#0,d0
 		move.b	(a0)+,d0
 		bmi.s	loc_49E8
@@ -3688,23 +3616,27 @@ GM_Continue:
 		disable_ints
 		move.w	v_vdp_buffer1,d0
 		andi.b	#$BF,d0
+		if NeoGeo<>1
 		move.w	d0,(vdp_control_port).l
 		lea	(vdp_control_port).l,a6
 		move.w	#$8004,(a6)	; 8 colour mode
 		move.w	#$8700,(a6)	; background colour
+		endif
 		bsr.w	ClearScreen
 
 		clearRAM v_objspace,v_objend
 
-		locVRAM	ArtTile_Title_Card*$20
+		if NeoGeo<>1
+		locVRAMTile	ArtTile_Title_Card
 		lea	(Nem_TitleCard).l,a0 ; load title card patterns
 		bsr.w	NemDec
-		locVRAM	ArtTile_Continue_Sonic*$20
+		locVRAMTile	ArtTile_Continue_Sonic
 		lea	(Nem_ContSonic).l,a0 ; load Sonic patterns
 		bsr.w	NemDec
-		locVRAM	ArtTile_Mini_Sonic*$20
+		locVRAMTile	ArtTile_Mini_Sonic
 		lea	(Nem_MiniSonic).l,a0 ; load continue screen patterns
 		bsr.w	NemDec
+		endif
 		moveq	#10,d1
 		jsr	(ContScrCounter).l	; run countdown	(start from 10)
 		moveq	#palid_Continue,d0
@@ -3723,9 +3655,11 @@ GM_Continue:
 		move.b	#4,v_continueicon+obRoutine
 		jsr	(ExecuteObjects).l
 		jsr	(BuildSprites).l
+		if NeoGeo<>1
 		move.w	v_vdp_buffer1,d0
 		ori.b	#$40,d0
 		move.w	d0,(vdp_control_port).l
+		endif
 		bsr.w	PaletteFadeIn
 
 ; ---------------------------------------------------------------------------
@@ -3790,10 +3724,13 @@ GM_Ending:
 		clearRAM v_timingandscreenvariables,v_timingandscreenvariables_end
 
 		disable_ints
+		if NeoGeo<>1
 		move.w	v_vdp_buffer1,d0
 		andi.b	#$BF,d0
 		move.w	d0,(vdp_control_port).l
+		endif
 		bsr.w	ClearScreen
+		if NeoGeo<>1
 		lea	(vdp_control_port).l,a6
 		move.w	#$8B03,(a6)	; line scroll mode
 		move.w	#$8200+(vram_fg>>10),(a6) ; set foreground nametable address
@@ -3804,6 +3741,7 @@ GM_Ending:
 		move.w	#$8720,(a6)		; set background colour (line 3; colour 0)
 		move.w	#$8A00+223,v_hbla_hreg ; set palette change position (for water)
 		move.w	v_hbla_hreg,(a6)
+		endif
 		move.w	#30,v_air
 		move.w	#id_EndZ<<8,v_zone ; set level number to 0600 (extra flowers)
 		cmpi.b	#6,v_emeralds ; do you have all 6 emeralds?
@@ -3811,8 +3749,10 @@ GM_Ending:
 		move.w	#(id_EndZ<<8)+1,v_zone ; set level number to 0601 (no flowers)
 
 End_LoadData:
+		if NeoGeo<>1
 		moveq	#plcid_Ending,d0
 		bsr.w	QuickPLC	; load ending sequence patterns
+		endif
 		jsr	(Hud_Base).l
 		bsr.w	LevelSizeLoad
 		bsr.w	DeformLayers
@@ -3821,9 +3761,11 @@ End_LoadData:
 		bsr.w	LoadTilesFromStart
 		move.l	#Col_GHZ,v_collindex ; load collision index
 		enable_ints
+		if NeoGeo<>1
 		lea	(Kos_EndFlowers).l,a0 ;	load extra flower patterns
 		lea	v_256x256_end-$1000,a1 ; RAM address to buffer the patterns
 		bsr.w	KosDec
+		endif
 		moveq	#palid_Sonic,d0
 		bsr.w	PalLoad1	; load Sonic's palette
 		move.w	#bgm_Ending,d0
@@ -3860,9 +3802,11 @@ End_LoadSonic:
 		move.w	#1800,v_demolength
 		move.b	#$18,v_vbla_routine
 		bsr.w	WaitForVBla
+		if NeoGeo<>1
 		move.w	v_vdp_buffer1,d0
 		ori.b	#$40,d0
 		move.w	d0,(vdp_control_port).l
+		endif
 		move.w	#$3F,v_pfade_start
 		bsr.w	PaletteFadeIn
 
@@ -3923,8 +3867,10 @@ End_SlowFade:
 		beq.w	End_AllEmlds
 		clr.w	f_restart
 		move.w	#$2E2F,v_lvllayout+$80 ; modify level layout
+		if NeoGeo<>1
 		lea	(vdp_control_port).l,a5
 		lea	(vdp_data_port).l,a6
+		endif
 		lea	v_screenposx,a3
 		lea	v_lvllayout,a4
 		move.w	#$4000,d2
@@ -4003,8 +3949,11 @@ Map_ESth:	include	"_maps/Ending Sequence STH.asm"
 ; ---------------------------------------------------------------------------
 
 GM_Credits:
+		if NeoGeo<>1
 		bsr.w	ClearPLC
+		endif
 		bsr.w	PaletteFadeOut
+		if NeoGeo<>1
 		lea	(vdp_control_port).l,a6
 		move.w	#$8004,(a6)		; 8-colour mode
 		move.w	#$8200+(vram_fg>>10),(a6) ; set foreground nametable address
@@ -4013,14 +3962,17 @@ GM_Credits:
 		move.w	#$9200,(a6)		; window vertical position
 		move.w	#$8B03,(a6)		; line scroll mode
 		move.w	#$8720,(a6)		; set background colour (line 3; colour 0)
+		endif
 		clr.b	f_wtr_state
 		bsr.w	ClearScreen
 
 		clearRAM v_objspace,v_objend
 
-		locVRAM	ArtTile_Credits_Font*$20
+		if NeoGeo<>1
+		locVRAMTile	ArtTile_Credits_Font
 		lea	(Nem_CreditText).l,a0 ;	load credits alphabet patterns
 		bsr.w	NemDec
+		endif
 
 		clearRAM v_pal_dry_dup,v_pal_dry_dup+16*4*2
 
@@ -4037,19 +3989,23 @@ GM_Credits:
 		lea	(a2,d0.w),a2
 		moveq	#0,d0
 		move.b	(a2),d0
+		if NeoGeo<>1
 		beq.s	Cred_SkipObjGfx
 		bsr.w	AddPLC		; load object graphics
 
 Cred_SkipObjGfx:
 		moveq	#plcid_Main2,d0
 		bsr.w	AddPLC		; load standard	level graphics
+		endif
 		move.w	#120,v_demolength ; display a credit for 2 seconds
 		bsr.w	PaletteFadeIn
 
 Cred_WaitLoop:
 		move.b	#4,v_vbla_routine
 		bsr.w	WaitForVBla
+		if NeoGeo<>1
 		bsr.w	RunPLC
+		endif
 		tst.w	v_demolength ; have 2 seconds elapsed?
 		bne.s	Cred_WaitLoop	; if not, branch
 		tst.l	v_plc_buffer ; have level gfx finished decompressing?
@@ -4122,8 +4078,11 @@ EndDemo_LampVar:
 ; ---------------------------------------------------------------------------
 
 TryAgainEnd:
+		if NeoGeo<>1
 		bsr.w	ClearPLC
+		endif
 		bsr.w	PaletteFadeOut
+		if NeoGeo<>1
 		lea	(vdp_control_port).l,a6
 		move.w	#$8004,(a6)	; use 8-colour mode
 		move.w	#$8200+(vram_fg>>10),(a6) ; set foreground nametable address
@@ -4132,13 +4091,16 @@ TryAgainEnd:
 		move.w	#$9200,(a6)	; window vertical position
 		move.w	#$8B03,(a6)	; line scroll mode
 		move.w	#$8720,(a6)	; set background colour (line 3; colour 0)
+		endif
 		clr.b	f_wtr_state
 		bsr.w	ClearScreen
 
 		clearRAM v_objspace,v_objend
 
+		if NeoGeo<>1
 		moveq	#plcid_TryAgain,d0
 		bsr.w	QuickPLC	; load "TRY AGAIN" or "END" patterns
+		endif
 
 		clearRAM v_pal_dry_dup,v_pal_dry_dup+16*4*2
 
@@ -4211,8 +4173,10 @@ Demo_EndGHZ2:	binclude	"demodata/Ending - GHZ2.bin"
 
 ; sub_6886:
 LoadTilesAsYouMove_BGOnly:
+		if NeoGeo<>1
 		lea	(vdp_control_port).l,a5
 		lea	(vdp_data_port).l,a6
+		endif
 		lea	v_bg1_scroll_flags,a2
 		lea	v_bgscreenposx,a3
 		lea	v_lvllayout+$40,a4
@@ -4231,8 +4195,10 @@ LoadTilesAsYouMove_BGOnly:
 
 
 LoadTilesAsYouMove:
+		if NeoGeo<>1
 		lea	(vdp_control_port).l,a5
 		lea	(vdp_data_port).l,a6
+		endif
 		; First, update the background
 		lea	v_bg1_scroll_flags_dup,a2	; Scroll block 1 scroll flags
 		lea	v_bgscreenposx_dup,a3	; Scroll block 1 X coordinate
@@ -5071,8 +5037,10 @@ Calc_VRAM_Pos_Unknown:
 
 
 LoadTilesFromStart:
+		if NeoGeo<>1
 		lea	(vdp_control_port).l,a5
 		lea	(vdp_data_port).l,a6
+		endif
 		lea	v_screenposx,a3
 		lea	v_lvllayout,a4
 		move.w	#$4000,d2
@@ -5245,11 +5213,13 @@ LevelDataLoad:
 		movea.l	(sp)+,a2
 		addq.w	#4,a2		; read number for 2nd PLC
 		moveq	#0,d0
+		if NeoGeo<>1
 		move.b	(a2),d0
 		beq.s	.skipPLC	; if 2nd PLC is 0 (i.e. the ending sequence), branch
 		bsr.w	AddPLC		; load pattern load cues
 
 .skipPLC:
+		endif
 		rts	
 ; End of function LevelDataLoad
 
@@ -8466,6 +8436,7 @@ AddPoints:
 
 
 ContScrCounter:
+		if NeoGeo<>1
 		locVRAM	$DF80
 		lea	(vdp_data_port).l,a6
 		lea	(Hud_10).l,a2
@@ -8505,6 +8476,7 @@ loc_1C962:
 		move.l	(a3)+,(a6)
 		move.l	(a3)+,(a6)
 		dbf	d6,ContScr_Loop	; repeat 1 more	time
+		endif
 
 		rts	
 ; End of function ContScrCounter
@@ -8513,10 +8485,12 @@ loc_1C962:
 
 		include	"_inc/HUD (part 2).asm"
 
+		if NeoGeo<>1
 Art_Hud:	binclude	"artunc/HUD Numbers.bin" ; 8x16 pixel numbers on HUD
 		even
 Art_LivesNums:	binclude	"artunc/Lives Counter Numbers.bin" ; 8x8 pixel numbers on lives counter
 		even
+		endif
 
 		include	"_incObj/DebugMode.asm"
 		include	"_inc/DebugList.asm"
@@ -8525,35 +8499,44 @@ Art_LivesNums:	binclude	"artunc/Lives Counter Numbers.bin" ; 8x8 pixel numbers o
 
 		align	$200
 		if Revision=0
+		if NeoGeo<>1
 Nem_SegaLogo:	binclude	"artnem/Sega Logo.nem"	; large Sega logo
 		even
+		endif
 Eni_SegaLogo:	binclude	"tilemaps/Sega Logo.eni" ; large Sega logo (mappings)
 		even
 		else
 		rept $300
 			dc.b	$FF
 		endm
+		if NeoGeo<>1
 Nem_SegaLogo:	binclude	"artnem/Sega Logo (JP1).nem" ; large Sega logo
 			even
+		endif
 Eni_SegaLogo:	binclude	"tilemaps/Sega Logo (JP1).eni" ; large Sega logo (mappings)
 			even
 		endif
 Eni_Title:	binclude	"tilemaps/Title Screen.eni" ; title screen foreground (mappings)
 		even
+		if NeoGeo<>1
 Nem_TitleFg:	binclude	"artnem/Title Screen Foreground.nem"
 		even
 Nem_TitleSonic:	binclude	"artnem/Title Screen Sonic.nem"
 		even
 Nem_TitleTM:	binclude	"artnem/Title Screen TM.nem"
 		even
+		endif
 Eni_JapNames:	binclude	"tilemaps/Hidden Japanese Credits.eni" ; Japanese credits (mappings)
 		even
+		if NeoGeo<>1
 Nem_JapNames:	binclude	"artnem/Hidden Japanese Credits.nem"
 		even
+		endif
 
 Map_Sonic:	include	"_maps/Sonic.asm"
 SonicDynPLC:	include	"_maps/Sonic - Dynamic Gfx Script.asm"
 
+		if NeoGeo<>1
 ; ---------------------------------------------------------------------------
 ; Uncompressed graphics	- Sonic
 ; ---------------------------------------------------------------------------
@@ -8582,9 +8565,11 @@ Nem_Warp:	binclude	"artnem/Unused - SStage Flash.nem" ; entry to special stage f
 Nem_Goggle:	binclude	"artnem/Unused - Goggles.nem" ; unused goggles
 		even
 		endif
+		endif
 
 Map_SSWalls:	include	"_maps/SS Walls.asm"
 
+		if NeoGeo<>1
 ; ---------------------------------------------------------------------------
 ; Compressed graphics - special stage
 ; ---------------------------------------------------------------------------
@@ -8862,15 +8847,18 @@ Nem_Flicky:	binclude	"artnem/Animal Flicky.nem"
 		even
 Nem_Squirrel:	binclude	"artnem/Animal Squirrel.nem"
 		even
+		endif
 ; ---------------------------------------------------------------------------
 ; Compressed graphics - primary patterns and block mappings
 ; ---------------------------------------------------------------------------
 Blk16_GHZ:	binclude	"map16/GHZ.eni"
 		even
+		if NeoGeo<>1
 Nem_GHZ_1st:	binclude	"artnem/8x8 - GHZ1.nem"	; GHZ primary patterns
 		even
 Nem_GHZ_2nd:	binclude	"artnem/8x8 - GHZ2.nem"	; GHZ secondary patterns
 		even
+		endif
 		if NeoGeo=0
 Blk256_GHZ:	binclude	"map256/GHZ.kos"
 		else
@@ -8879,8 +8867,10 @@ Blk256_GHZ:	binclude	"map256/GHZ.unc"
 		even
 Blk16_LZ:	binclude	"map16/LZ.eni"
 		even
+		if NeoGeo<>1
 Nem_LZ:		binclude	"artnem/8x8 - LZ.nem"	; LZ primary patterns
 		even
+		endif
 		if NeoGeo=0
 Blk256_LZ:	binclude	"map256/LZ.kos"
 		else
@@ -8889,8 +8879,10 @@ Blk256_LZ:	binclude	"map256/LZ.unc"
 		even
 Blk16_MZ:	binclude	"map16/MZ.eni"
 		even
+		if NeoGeo<>1
 Nem_MZ:		binclude	"artnem/8x8 - MZ.nem"	; MZ primary patterns
 		even
+		endif
 		if NeoGeo=0
 Blk256_MZ:	if Revision=0
 		binclude	"map256/MZ.kos"
@@ -8907,8 +8899,10 @@ Blk256_MZ:	if Revision=0
 		even
 Blk16_SLZ:	binclude	"map16/SLZ.eni"
 		even
+		if NeoGeo<>1
 Nem_SLZ:	binclude	"artnem/8x8 - SLZ.nem"	; SLZ primary patterns
 		even
+		endif
 		if NeoGeo=0
 Blk256_SLZ:	binclude	"map256/SLZ.kos"
 		else
@@ -8917,8 +8911,10 @@ Blk256_SLZ:	binclude	"map256/SLZ.unc"
 		even
 Blk16_SYZ:	binclude	"map16/SYZ.eni"
 		even
+		if NeoGeo<>1
 Nem_SYZ:	binclude	"artnem/8x8 - SYZ.nem"	; SYZ primary patterns
 		even
+		endif
 		if NeoGeo=0
 Blk256_SYZ:	binclude	"map256/SYZ.kos"
 		else
@@ -8927,8 +8923,10 @@ Blk256_SYZ:	binclude	"map256/SYZ.unc"
 		even
 Blk16_SBZ:	binclude	"map16/SBZ.eni"
 		even
+		if NeoGeo<>1
 Nem_SBZ:	binclude	"artnem/8x8 - SBZ.nem"	; SBZ primary patterns
 		even
+		endif
 		if NeoGeo=0
 Blk256_SBZ:	if Revision=0
 		binclude	"map256/SBZ.kos"
@@ -8943,6 +8941,7 @@ Blk256_SBZ:	if Revision=0
 		endif
 		endif
 		even
+		if NeoGeo<>1
 ; ---------------------------------------------------------------------------
 ; Compressed graphics - bosses and ending sequence
 ; ---------------------------------------------------------------------------
@@ -8988,6 +8987,7 @@ Nem_EndStH:	binclude	"artnem/Ending - StH Logo.nem"
 		dc.b $FF
 		endm
 		endif
+		endif
 ; ---------------------------------------------------------------------------
 ; Collision data
 ; ---------------------------------------------------------------------------
@@ -9030,6 +9030,7 @@ SS_5:		binclude	"sslayout/5 (JP1).eni"
 SS_6:		binclude	"sslayout/6 (JP1).eni"
 		endif
 		even
+		if NeoGeo<>1
 ; ---------------------------------------------------------------------------
 ; Animated uncompressed graphics
 ; ---------------------------------------------------------------------------
@@ -9047,6 +9048,7 @@ Art_MzTorch:	binclude	"artunc/MZ Background Torch.bin"
 		even
 Art_SbzSmoke:	binclude	"artunc/SBZ Background Smoke.bin"
 		even
+		endif
 
 ; ---------------------------------------------------------------------------
 ; Level	layout index
@@ -9174,9 +9176,10 @@ Level_End:	binclude	"levels/ending.bin"
 		even
 byte_6A320:	dc.b 0,	0, 0, 0
 
-
+		if NeoGeo<>1
 Art_BigRing:	binclude	"artunc/Giant Ring.bin"
 		even
+		endif
 
 		align	$100
 
