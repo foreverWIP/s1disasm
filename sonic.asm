@@ -565,7 +565,7 @@ ErrorWaitForC:
 
 ; ===========================================================================
 
-Art_Text:	binclude	"artunc/menutext.bin" ; text used in level select and debug mode
+Art_Text:	binclude	"artunc/menutext.unc" ; text used in level select and debug mode
 Art_Text_End:	even
 
 ; ===========================================================================
@@ -606,7 +606,7 @@ VBla_Exit:
 VBla_Index:	dc.w VBla_00-VBla_Index, VBla_02-VBla_Index
 		dc.w VBla_04-VBla_Index, VBla_06-VBla_Index
 		dc.w VBla_08-VBla_Index, VBla_0A-VBla_Index
-		dc.w VBla_0C-VBla_Index, VBla_0E-VBla_Index
+		dc.w VBla_0C-VBla_Index, VBla_00-VBla_Index
 		dc.w VBla_10-VBla_Index, VBla_12-VBla_Index
 		dc.w VBla_14-VBla_Index, VBla_16-VBla_Index
 		dc.w VBla_0C-VBla_Index
@@ -796,13 +796,6 @@ VBla_0C:
 		jsr	(AnimateLevelGfx).l
 		jsr	(HUD_Update).l
 		bsr.w	sub_1642
-		rts	
-; ===========================================================================
-
-VBla_0E:
-		bsr.w	sub_106E
-		addq.b	#1,(v_vbla_0e_counter).w ; Unused besides this one write...
-		move.b	#$E,(v_vbla_routine).w
 		rts	
 ; ===========================================================================
 
@@ -1378,7 +1371,6 @@ Pal_LZCyc1:	binclude	"palette/Cycle - LZ Waterfall.bin"
 Pal_LZCyc2:	binclude	"palette/Cycle - LZ Conveyor Belt.bin"
 Pal_LZCyc3:	binclude	"palette/Cycle - LZ Conveyor Belt Underwater.bin"
 Pal_SBZ3Cyc:	binclude	"palette/Cycle - SBZ3 Waterfall.bin"
-Pal_MZCyc:	binclude	"palette/Cycle - MZ (Unused).bin"
 Pal_SLZCyc:	binclude	"palette/Cycle - SLZ.bin"
 Pal_SYZCyc1:	binclude	"palette/Cycle - SYZ1.bin"
 Pal_SYZCyc2:	binclude	"palette/Cycle - SYZ2.bin"
@@ -2157,7 +2149,6 @@ Tit_LoadText:
 		move.b	#0,(v_lastlamp).w ; clear lamppost counter
 		move.w	#0,(v_debuguse).w ; disable debug item placement mode
 		move.w	#0,(f_demo).w	; disable debug mode
-		move.w	#0,(v_unused2).w ; unused variable
 		move.w	#(id_GHZ<<8),(v_zone).w	; set level to GHZ (00)
 		move.w	#0,(v_pcyc_time).w ; disable palette cycling
 		bsr.w	LevelSizeLoad
@@ -2910,7 +2901,6 @@ Level_SkipClr:
 		move.b	d0,(v_shield).w	; clear shield
 		move.b	d0,(v_invinc).w	; clear invincibility
 		move.b	d0,(v_shoes).w	; clear speed shoes
-		move.b	d0,(v_unused1).w
 		move.w	d0,(v_debuguse).w
 		move.w	d0,(f_restart).w
 		move.w	d0,(v_framecount).w
@@ -3887,7 +3877,6 @@ End_LoadSonic:
 		move.b	d0,(v_shield).w
 		move.b	d0,(v_invinc).w
 		move.b	d0,(v_shoes).w
-		move.b	d0,(v_unused1).w
 		move.w	d0,(v_debuguse).w
 		move.w	d0,(f_restart).w
 		move.w	d0,(v_framecount).w
@@ -4536,46 +4525,6 @@ locret_6A80:
 		rts	
 ; End of function DrawBGScrollBlock2
 
-; ===========================================================================
-
-; Abandoned unused scroll block code.
-; This would have drawn a scroll block that started at 208 pixels down, and was 48 pixels long.
-		tst.b	(a2)
-		beq.s	locret_6AD6
-		bclr	#2,(a2)
-		beq.s	loc_6AAC
-		; Draw new tiles on the left
-		move.w	#224-16,d4	; Note that full screen coverage is normally 224+16+16. This is exactly three blocks less.
-		move.w	4(a3),d1
-		andi.w	#-16,d1
-		sub.w	d1,d4
-		move.w	d4,-(sp)
-		moveq	#-16,d5
-		bsr.w	Calc_VRAM_Pos_Unknown
-		move.w	(sp)+,d4
-		moveq	#-16,d5
-		moveq	#3-1,d6	; Draw only three rows
-		bsr.w	DrawBlocks_TB_2
-
-loc_6AAC:
-		bclr	#3,(a2)
-		beq.s	locret_6AD6
-		; Draw new tiles on the right
-		move.w	#224-16,d4
-		move.w	4(a3),d1
-		andi.w	#-16,d1
-		sub.w	d1,d4
-		move.w	d4,-(sp)
-		move.w	#320,d5
-		bsr.w	Calc_VRAM_Pos_Unknown
-		move.w	(sp)+,d4
-		move.w	#320,d5
-		moveq	#3-1,d6
-		bsr.w	DrawBlocks_TB_2
-
-locret_6AD6:
-		rts	
-
 		else
 
 			tst.b	(a2)
@@ -4929,32 +4878,6 @@ DrawFlipXY:
 ; End of function DrawBlocks
 
 ; ===========================================================================
-; unused garbage
-		if Revision=0
-; This is interesting. It draws a block, but not before
-; incrementing its palette lines by 1. This may have been
-; a debug function to discolour mirrored tiles, to test
-; if they're loading properly.
-		rts	
-		move.l	d0,(a5)
-		move.w	#$2000,d5
-		move.w	(a1)+,d4
-		add.w	d5,d4
-		move.w	d4,(a6)
-		move.w	(a1)+,d4
-		add.w	d5,d4
-		move.w	d4,(a6)
-		add.l	d7,d0
-		move.l	d0,(a5)
-		move.w	(a1)+,d4
-		add.w	d5,d4
-		move.w	d4,(a6)
-		move.w	(a1)+,d4
-		add.w	d5,d4
-		move.w	d4,(a6)
-		rts
-		endif
-
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
 
 ; Gets address of block at a certain coordinate
@@ -5538,7 +5461,6 @@ Map_Swing_SLZ:	include	"_maps/Swinging Platforms (SLZ).asm"
 		include	"_incObj/17 Spiked Pole Helix.asm"
 Map_Hel:	include	"_maps/Spiked Pole Helix.asm"
 		include	"_incObj/18 Platforms.asm"
-Map_Plat_Unused:include	"_maps/Platforms (unused).asm"
 Map_Plat_GHZ:	include	"_maps/Platforms (GHZ).asm"
 Map_Plat_SYZ:	include	"_maps/Platforms (SYZ).asm"
 Map_Plat_SLZ:	include	"_maps/Platforms (SLZ).asm"
@@ -5656,9 +5578,6 @@ Map_CFlo:	include	"_maps/Collapsing Floors.asm"
 
 		include	"_incObj/1C Scenery.asm"
 Map_Scen:	include	"_maps/Scenery.asm"
-
-		include	"_incObj/1D Unused Switch.asm"
-Map_Swi:	include	"_maps/Unused Switch.asm"
 
 		include	"_incObj/2A SBZ Small Door.asm"
 		include	"_anim/SBZ Small Door.asm"
@@ -7097,24 +7016,6 @@ loc_12EA6:
 		include	"_incObj/Sonic JumpDirection.asm"
 
 ; ===========================================================================
-; ---------------------------------------------------------------------------
-; Unused subroutine to squash Sonic
-; ---------------------------------------------------------------------------
-		move.b	obAngle(a0),d0
-		addi.b	#$20,d0
-		andi.b	#$C0,d0
-		bne.s	locret_13302
-		bsr.w	Sonic_DontRunOnWalls
-		tst.w	d1
-		bpl.s	locret_13302
-		move.w	#0,obInertia(a0) ; stop Sonic moving
-		move.w	#0,obVelX(a0)
-		move.w	#0,obVelY(a0)
-		move.b	#id_Warp3,obAnim(a0) ; use "warping" animation
-
-locret_13302:
-		rts	
-
 		include	"_incObj/Sonic LevelBound.asm"
 		include	"_incObj/Sonic Roll.asm"
 		include	"_incObj/Sonic Jump.asm"
@@ -7175,12 +7076,9 @@ ResumeMusic:
 Map_Drown:	include	"_maps/Drowning Countdown.asm"
 
 		include	"_incObj/38 Shield and Invincibility.asm"
-		include	"_incObj/4A Special Stage Entry (Unused).asm"
 		include	"_incObj/08 Water Splash.asm"
 		include	"_anim/Shield and Invincibility.asm"
 Map_Shield:	include	"_maps/Shield and Invincibility.asm"
-		include	"_anim/Special Stage Entry (Unused).asm"
-Map_Vanish:	include	"_maps/Special Stage Entry (Unused).asm"
 		include	"_anim/Water Splash.asm"
 Map_Splash:	include	"_maps/Water Splash.asm"
 
@@ -8554,9 +8452,9 @@ loc_1C962:
 
 		include	"_inc/HUD (part 2).asm"
 
-Art_Hud:	binclude	"artunc/HUD Numbers.bin" ; 8x16 pixel numbers on HUD
+Art_Hud:	binclude	"artunc/HUD Numbers.unc" ; 8x16 pixel numbers on HUD
 		even
-Art_LivesNums:	binclude	"artunc/Lives Counter Numbers.bin" ; 8x8 pixel numbers on lives counter
+Art_LivesNums:	binclude	"artunc/Lives Counter Numbers.unc" ; 8x8 pixel numbers on lives counter
 		even
 
 		include	"_incObj/DebugMode.asm"
@@ -8598,31 +8496,15 @@ SonicDynPLC:	include	"_maps/Sonic - Dynamic Gfx Script.asm"
 ; ---------------------------------------------------------------------------
 ; Uncompressed graphics	- Sonic
 ; ---------------------------------------------------------------------------
-Art_Sonic:	binclude	"artunc/Sonic.bin"	; Sonic
+Art_Sonic:	binclude	"artunc/Sonic.unc"	; Sonic
 		even
 ; ---------------------------------------------------------------------------
 ; Compressed graphics - various
 ; ---------------------------------------------------------------------------
-		if Revision=0
-Nem_Smoke:	binclude	"artnem/Unused - Smoke.nem"
-		even
-Nem_SyzSparkle:	binclude	"artnem/Unused - SYZ Sparkles.nem"
-		even
-		endif
 Nem_Shield:	binclude	"artnem/Shield.nem"
 		even
 Nem_Stars:	binclude	"artnem/Invincibility Stars.nem"
 		even
-		if Revision=0
-Nem_LzSonic:	binclude	"artnem/Unused - LZ Sonic.nem" ; Sonic holding his breath
-		even
-Nem_UnkFire:	binclude	"artnem/Unused - Fireball.nem" ; unused fireball
-		even
-Nem_Warp:	binclude	"artnem/Unused - SStage Flash.nem" ; entry to special stage flash
-		even
-Nem_Goggle:	binclude	"artnem/Unused - Goggles.nem" ; unused goggles
-		even
-		endif
 
 Map_SSWalls:	include	"_maps/SS Walls.asm"
 
@@ -8682,13 +8564,9 @@ Nem_Swing:	binclude	"artnem/GHZ Swinging Platform.nem"
 		even
 Nem_Bridge:	binclude	"artnem/GHZ Bridge.nem"
 		even
-Nem_GhzUnkBlock:binclude	"artnem/Unused - GHZ Block.nem"
-		even
 Nem_Ball:	binclude	"artnem/GHZ Giant Ball.nem"
 		even
 Nem_Spikes:	binclude	"artnem/Spikes.nem"
-		even
-Nem_GhzLog:	binclude	"artnem/Unused - GHZ Log.nem"
 		even
 Nem_SpikePole:	binclude	"artnem/GHZ Spiked Log.nem"
 		even
@@ -8742,15 +8620,11 @@ Nem_MzSwitch:	binclude	"artnem/MZ Switch.nem"
 		even
 Nem_MzGlass:	binclude	"artnem/MZ Green Glass Block.nem"
 		even
-Nem_UnkGrass:	binclude	"artnem/Unused - Grass.nem"
-		even
 Nem_MzFire:	binclude	"artnem/Fireballs.nem"
 		even
 Nem_Lava:	binclude	"artnem/MZ Lava.nem"
 		even
 Nem_MzBlock:	binclude	"artnem/MZ Green Pushable Block.nem"
-		even
-Nem_MzUnkBlock:	binclude	"artnem/Unused - MZ Background.nem"
 		even
 ; ---------------------------------------------------------------------------
 ; Compressed graphics - SLZ stuff
@@ -8821,8 +8695,6 @@ Nem_BallHog:	binclude	"artnem/Enemy Ball Hog.nem"
 Nem_Crabmeat:	binclude	"artnem/Enemy Crabmeat.nem"
 		even
 Nem_Buzz:	binclude	"artnem/Enemy Buzz Bomber.nem"
-		even
-Nem_UnkExplode:	binclude	"artnem/Unused - Explosion.nem"
 		even
 Nem_Burrobot:	binclude	"artnem/Enemy Burrobot.nem"
 		even
@@ -8975,10 +8847,6 @@ Nem_EndSonic:	binclude	"artnem/Ending - Sonic.nem"
 		even
 Nem_TryAgain:	binclude	"artnem/Ending - Try Again.nem"
 		even
-Nem_EndEggman:	if Revision=0
-		binclude	"artnem/Unused - Eggman Ending.nem"
-		endif
-		even
 Kos_EndFlowers:	binclude	"artkos/Flowers at Ending.kos" ; ending sequence animated flowers
 		even
 Nem_EndFlower:	binclude	"artnem/Ending - Flowers.nem"
@@ -9042,19 +8910,19 @@ SS_6:		binclude	"sslayout/6 (JP1).eni"
 ; ---------------------------------------------------------------------------
 ; Animated uncompressed graphics
 ; ---------------------------------------------------------------------------
-Art_GhzWater:	binclude	"artunc/GHZ Waterfall.bin"
+Art_GhzWater:	binclude	"artunc/GHZ Waterfall.unc"
 		even
-Art_GhzFlower1:	binclude	"artunc/GHZ Flower Large.bin"
+Art_GhzFlower1:	binclude	"artunc/GHZ Flower Large.unc"
 		even
-Art_GhzFlower2:	binclude	"artunc/GHZ Flower Small.bin"
+Art_GhzFlower2:	binclude	"artunc/GHZ Flower Small.unc"
 		even
-Art_MzLava1:	binclude	"artunc/MZ Lava Surface.bin"
+Art_MzLava1:	binclude	"artunc/MZ Lava Surface.unc"
 		even
-Art_MzLava2:	binclude	"artunc/MZ Lava.bin"
+Art_MzLava2:	binclude	"artunc/MZ Animated Lava.unc"
 		even
-Art_MzTorch:	binclude	"artunc/MZ Background Torch.bin"
+Art_MzTorch:	binclude	"artunc/MZ Background Torch.unc"
 		even
-Art_SbzSmoke:	binclude	"artunc/SBZ Background Smoke.bin"
+Art_SbzSmoke:	binclude	"artunc/SBZ Background Smoke.unc"
 		even
 
 ; ---------------------------------------------------------------------------
@@ -9184,7 +9052,7 @@ Level_End:	binclude	"levels/ending.bin"
 byte_6A320:	dc.b 0,	0, 0, 0
 
 
-Art_BigRing:	binclude	"artunc/Giant Ring.bin"
+Art_BigRing:	binclude	"artunc/Giant Ring.unc"
 		even
 
 		align	$100

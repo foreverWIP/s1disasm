@@ -29,7 +29,7 @@ ptr_Obj19:		dc.l Obj19
 ptr_CollapseLedge:	dc.l CollapseLedge
 ptr_WaterSurface:	dc.l WaterSurface
 ptr_Scenery:		dc.l Scenery
-ptr_MagicSwitch:	dc.l MagicSwitch
+ptr_MagicSwitch:	dc.l NullObject
 ptr_BallHog:		dc.l BallHog
 ptr_Crabmeat:		dc.l Crabmeat
 ptr_Cannonball:		dc.l Cannonball		; $20
@@ -74,7 +74,7 @@ ptr_MarbleBrick:	dc.l MarbleBrick
 ptr_Bumper:		dc.l Bumper
 ptr_BossBall:		dc.l BossBall		; $48
 ptr_WaterSound:		dc.l WaterSound
-ptr_VanishSonic:	dc.l VanishSonic
+ptr_VanishSonic:	dc.l NullObject
 ptr_GiantRing:		dc.l GiantRing
 ptr_GeyserMaker:	dc.l GeyserMaker
 ptr_LavaGeyser:		dc.l LavaGeyser
