@@ -239,19 +239,6 @@ nullsub_2:
 
 ; ===========================================================================
 ; ---------------------------------------------------------------------------
-; unused subroutine to limit Sonic's upward vertical speed
-; ---------------------------------------------------------------------------
-		move.w	#-$400,d1
-		cmp.w	obVelY(a0),d1
-		ble.s	locret_1BBB4
-		move.b	(v_jpadhold2).w,d0
-		andi.b	#btnABC,d0
-		bne.s	locret_1BBB4
-		move.w	d1,obVelY(a0)
-
-locret_1BBB4:
-		rts	
-; ---------------------------------------------------------------------------
 ; Subroutine to	fix the	camera on Sonic's position (special stage)
 ; ---------------------------------------------------------------------------
 

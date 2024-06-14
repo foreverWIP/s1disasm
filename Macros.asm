@@ -27,6 +27,21 @@ writeVRAM:	macro source,destination
 		endm
 
 ; ---------------------------------------------------------------------------
+; DMA copy data from 68K (ROM/RAM) to the VRAM
+; input: source, length, destination
+; ---------------------------------------------------------------------------
+
+writeVRAMSized:	macro source,destination,size
+		lea	(vdp_control_port).l,a5
+		move.l	#$94000000+((((size)>>1)&$FF00)<<8)+$9300+(((size)>>1)&$FF),(a5)
+		move.l	#$96000000+(((source>>1)&$FF00)<<8)+$9500+((source>>1)&$FF),(a5)
+		move.w	#$9700+((((source>>1)&$FF0000)>>16)&$7F),(a5)
+		move.w	#$4000+((destination)&$3FFF),(a5)
+		move.w	#$80+(((destination)&$C000)>>14),(v_vdp_buffer2).w
+		move.w	(v_vdp_buffer2).w,(a5)
+		endm
+
+; ---------------------------------------------------------------------------
 ; DMA copy data from 68K (ROM/RAM) to the CRAM
 ; input: source, length, destination
 ; ---------------------------------------------------------------------------
@@ -298,3 +313,12 @@ SonicDplcVer = 1
 
 pcmLoopCounter function sampleRate,baseCycles, 1+(53693175/15/(sampleRate)-(baseCycles)+(13/2))/13
 dpcmLoopCounter function sampleRate, pcmLoopCounter(sampleRate,301/2) ; 301 is the number of cycles zPlayPCMLoop takes.
+
+includemegaart: macro symbolname,filename
+Mega_symbolname	label	*
+		binclude	"artunc/filename.unc"
+Mega_symbolname_end	label	*
+Mega_symbolname_uncsize:	equ Mega_symbolname_end-Mega_symbolname
+		!org	Mega_symbolname
+		binclude	"artmeg/filename.meg"
+		endm
