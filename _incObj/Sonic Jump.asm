@@ -33,7 +33,7 @@ loc_1341C:
 		add.w	d0,obVelY(a0)	; make Sonic jump
 		bset	#1,obStatus(a0)
 		bclr	#5,obStatus(a0)
-		addq.l	#4,sp
+		move.b	#1,(v_sonic_jumped).w
 		move.b	#1,objoff_3C(a0)
 		clr.b	stick_to_convex(a0)
 		move.w	#sfx_Jump,d0

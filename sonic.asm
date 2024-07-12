@@ -7047,6 +7047,11 @@ MusicList2:
 
 Sonic_MdNormal:
 		bsr.w	Sonic_Jump
+		tst.b	(v_sonic_jumped).w
+		beq.s	.didntjump
+		clr.b	(v_sonic_jumped).w
+		rts
+.didntjump:
 		bsr.w	Sonic_SlopeResist
 		bsr.w	Sonic_Move
 		bsr.w	Sonic_Roll
@@ -7074,6 +7079,11 @@ loc_12E5C:
 
 Sonic_MdRoll:
 		bsr.w	Sonic_Jump
+		tst.b	(v_sonic_jumped).w
+		beq.s	.didntjump
+		clr.b	(v_sonic_jumped).w
+		rts
+.didntjump:
 		bsr.w	Sonic_RollRepel
 		bsr.w	Sonic_RollSpeed
 		bsr.w	Sonic_LevelBound

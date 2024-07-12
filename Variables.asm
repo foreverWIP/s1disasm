@@ -26,6 +26,7 @@ v_kos_buffer:
 			ds.b	2
 v_obj_deleted:
 			ds.b	1
+v_sonic_jumped:
 			ds.b	$1d		; unused
 v_tracksonic:		ds.b	$100		; position tracking data for Sonic
 v_hscrolltablebuffer:	ds.b	$380		; scrolling table data
