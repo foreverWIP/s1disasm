@@ -139,6 +139,11 @@ Bom_Action:	; Routine 2
 
 Bom_Display:	; Routine 4
 		bsr.s	loc_11B70
+		tst.b	(v_early_return).w
+		beq.s	.display
+		clr.b	(v_early_return).w
+		rts
+.display:
 		lea	(Ani_Bomb).l,a1
 		bsr.w	AnimateSprite
 		bra.w	RememberState
@@ -152,11 +157,7 @@ loc_11B70:
 ; ===========================================================================
 
 loc_11B7C:
-	if FixBugs
-		; Avoid returning to Bom_Display to prevent display-and-delete
-		; and double-delete bugs.
-		addq.l	#4,sp
-	endif
+		move.b	(v_early_return).w
 		clr.w	bom_time(a0)
 		clr.b	obRoutine(a0)
 		move.w	bom_origY(a0),obY(a0)
