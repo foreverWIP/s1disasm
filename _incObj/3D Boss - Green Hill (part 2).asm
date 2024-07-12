@@ -136,12 +136,7 @@ loc_17A16:
 ; ===========================================================================
 
 BGHZ_ShipDel:
-	if FixBugs
-		; We do not want to return to BGHZ_ShipMain, as objects
-		; should not queue themselves for display while also being
-		; deleted.
-		addq.l	#4,sp
-	endif
+		move.b	#1,(v_early_return).w
 		jmp	(DeleteObject).l
 ; ===========================================================================
 

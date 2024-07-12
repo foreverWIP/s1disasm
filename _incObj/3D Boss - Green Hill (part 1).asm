@@ -54,6 +54,11 @@ BGHZ_ShipMain:	; Routine 2
 		move.b	ob2ndRout(a0),d0
 		move.w	BGHZ_ShipIndex(pc,d0.w),d1
 		jsr	BGHZ_ShipIndex(pc,d1.w)
+		tst.b	(v_early_return).w
+		beq.s	.display
+		clr.b	(v_early_return).w
+		rts
+.display:
 		lea	(Ani_Eggman).l,a1
 		jsr	(AnimateSprite).l
 		move.b	obStatus(a0),d0
