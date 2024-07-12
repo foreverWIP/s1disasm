@@ -16,19 +16,18 @@
 
 KosDec:
 
-		subq.l	#2,sp	; make space for 2 bytes on the stack
-		move.b	(a0)+,1(sp)
-		move.b	(a0)+,(sp)
-		move.w	(sp),d5	; get first description field
+		move.b	(a0)+,(v_kos_buffer+1).w
+		move.b	(a0)+,(v_kos_buffer).w
+		move.w	(v_kos_buffer).w,d5	; get first description field
 		moveq	#$F,d4	; set to loop for 16 bits
 
 Kos_Loop:
 		lsr.w	#1,d5	; shift bit into the c flag
 		move	sr,d6
 		dbf	d4,.chkbit
-		move.b	(a0)+,1(sp)
-		move.b	(a0)+,(sp)
-		move.w	(sp),d5
+		move.b	(a0)+,(v_kos_buffer+1).w
+		move.b	(a0)+,(v_kos_buffer).w
+		move.w	(v_kos_buffer).w,d5
 		moveq	#$F,d4
 
 .chkbit:
@@ -44,9 +43,9 @@ Kos_RLE:
 		lsr.w	#1,d5	; get next bit
 		move	sr,d6
 		dbf	d4,.chkbit
-		move.b	(a0)+,1(sp)
-		move.b	(a0)+,(sp)
-		move.w	(sp),d5
+		move.b	(a0)+,(v_kos_buffer+1).w
+		move.b	(a0)+,(v_kos_buffer).w
+		move.w	(v_kos_buffer).w,d5
 		moveq	#$F,d4
 
 .chkbit:
@@ -55,18 +54,18 @@ Kos_RLE:
 
 		lsr.w	#1,d5	; shift bit into the x flag
 		dbf	d4,.loop1
-		move.b	(a0)+,1(sp)
-		move.b	(a0)+,(sp)
-		move.w	(sp),d5
+		move.b	(a0)+,(v_kos_buffer+1).w
+		move.b	(a0)+,(v_kos_buffer).w
+		move.w	(v_kos_buffer).w,d5
 		moveq	#$F,d4
 
 .loop1:
 		roxl.w	#1,d3	; get high repeat count bit
 		lsr.w	#1,d5
 		dbf	d4,.loop2
-		move.b	(a0)+,1(sp)
-		move.b	(a0)+,(sp)
-		move.w	(sp),d5
+		move.b	(a0)+,(v_kos_buffer+1).w
+		move.b	(a0)+,(v_kos_buffer).w
+		move.w	(v_kos_buffer).w,d5
 		moveq	#$F,d4
 
 .loop2:
@@ -93,7 +92,7 @@ Kos_RLELoop:
 		move.b	(a1,d2.w),d0 ; copy appropriate byte
 		move.b	d0,(a1)+ ; repeat
 		dbf	d3,Kos_RLELoop
-		bra.s	Kos_Loop
+		bra.w	Kos_Loop
 ; ===========================================================================
 
 Kos_SeparateRLE2:
@@ -106,6 +105,5 @@ Kos_SeparateRLE2:
 ; ===========================================================================
 
 Kos_Done:
-		addq.l	#2,sp	; restore stack pointer
 		rts	
 ; End of function KosDec
