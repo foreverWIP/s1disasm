@@ -60,6 +60,11 @@ BossLabyrinth_ShipMain:	; Routine 2
 		move.b	ob2ndRout(a0),d0
 		move.w	BossLabyrinth_ShipIndex(pc,d0.w),d1
 		jsr	BossLabyrinth_ShipIndex(pc,d1.w)
+		tst.b	(v_obj_deleted).w
+		beq.s	.display
+		clr.b	(v_obj_deleted).w
+		rts
+.display:
 		lea	(Ani_Eggman).l,a1
 		jsr	(AnimateSprite).l
 		moveq	#3,d0
@@ -317,11 +322,6 @@ loc_18166:
 ; ===========================================================================
 
 BossLabyrinth_ShipDel:
-	if FixBugs
-		; Avoid returning to BossLabyrinth_ShipMain to prevent a
-		; display-and-delete bug.
-		addq.l	#4,sp
-	endif
 		jmp	(DeleteObject).l
 ; ===========================================================================
 
