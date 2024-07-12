@@ -24,7 +24,7 @@ v_sgfx_buffer:		ds.b	tile_size*23	; buffered Sonic graphics ($17 cells)
 v_sgfx_buffer_end:
 v_kos_buffer:
 			ds.b	2
-v_obj_deleted:
+v_early_return:
 			ds.b	1
 v_sonic_jumped:
 			ds.b	$1d		; unused

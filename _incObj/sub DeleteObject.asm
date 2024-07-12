@@ -15,7 +15,6 @@ DeleteChild:				; child objects are already in (a1)
 DelObj_Loop:
 		move.l	d1,(a1)+	; clear	the object RAM
 		dbf	d0,DelObj_Loop	; repeat for length of object RAM
-		move.b	#1,(v_obj_deleted).w
 		rts	
 
 ; End of function DeleteObject

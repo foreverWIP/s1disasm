@@ -60,9 +60,9 @@ BossLabyrinth_ShipMain:	; Routine 2
 		move.b	ob2ndRout(a0),d0
 		move.w	BossLabyrinth_ShipIndex(pc,d0.w),d1
 		jsr	BossLabyrinth_ShipIndex(pc,d1.w)
-		tst.b	(v_obj_deleted).w
+		tst.b	(v_early_return).w
 		beq.s	.display
-		clr.b	(v_obj_deleted).w
+		clr.b	(v_early_return).w
 		rts
 .display:
 		lea	(Ani_Eggman).l,a1
@@ -322,6 +322,7 @@ loc_18166:
 ; ===========================================================================
 
 BossLabyrinth_ShipDel:
+		move.b	#1,(v_early_return).w
 		jmp	(DeleteObject).l
 ; ===========================================================================
 
