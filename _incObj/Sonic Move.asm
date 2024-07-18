@@ -155,7 +155,7 @@ loc_13024:
 		move.b	obAngle(a0),d0
 		add.b	d1,d0
 		move.w	d0,-(sp)
-		bsr.w	Sonic_WalkSpeed
+		jsr		Sonic_WalkSpeed
 		move.w	(sp)+,d0
 		tst.w	d1
 		bpl.s	locret_1307C

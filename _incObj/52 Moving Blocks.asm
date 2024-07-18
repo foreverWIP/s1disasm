@@ -134,7 +134,7 @@ MBlock_02_Wait:
 MBlock_Type03:
 		moveq	#0,d3
 		move.b	obActWid(a0),d3
-		bsr.w	ObjHitWallRight
+		jsr		ObjHitWallRight
 		tst.w	d1		; has the platform hit a wall?
 		bmi.s	MBlock_03_End	; if yes, branch
 		addq.w	#1,obX(a0)	; move platform	to the right
@@ -150,7 +150,7 @@ MBlock_03_End:
 MBlock_Type05:
 		moveq	#0,d3
 		move.b	obActWid(a0),d3
-		bsr.w	ObjHitWallRight
+		jsr		ObjHitWallRight
 		tst.w	d1		; has the platform hit a wall?
 		bmi.s	MBlock_05_End	; if yes, branch
 		addq.w	#1,obX(a0)	; move platform	to the right
@@ -166,7 +166,7 @@ MBlock_05_End:
 MBlock_Type06:
 		bsr.w	SpeedToPos
 		addi.w	#$18,obVelY(a0)	; make the platform fall
-		bsr.w	ObjFloorDist
+		jsr		ObjFloorDist
 		tst.w	d1		; has platform hit the floor?
 		bpl.w	locret_FFA0	; if not, branch
 		add.w	d1,obY(a0)

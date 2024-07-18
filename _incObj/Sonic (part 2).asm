@@ -39,7 +39,7 @@ Sonic_HurtStop:
 	endif
 		addi.w	#224,d0
 		cmp.w	obY(a0),d0
-		blo.w	KillSonic
+		jlo.w	KillSonic
 		bsr.w	Sonic_Floor
 		btst	#1,obStatus(a0)
 		bne.s	locret_13860

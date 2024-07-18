@@ -26,7 +26,7 @@ Jun_Main:	; Routine 0
 ; ===========================================================================
 
 .repeat:
-		bsr.w	FindFreeObj
+		jsr		(FindFreeObj).l
 		bne.s	.fail
 		_move.b	#id_Junction,obID(a1)
 		addq.b	#4,obRoutine(a1) ; goto Jun_Display next
@@ -59,7 +59,7 @@ Jun_Action:	; Routine 2
 		move.w	d2,d3
 		addq.w	#1,d3
 		move.w	obX(a0),d4
-		bsr.w	SolidObject
+		jsr		(SolidObject).l
 		btst	#5,obStatus(a0)	; is Sonic pushing the disc?
 		beq.w	Jun_Display	; if not, branch
 
@@ -93,7 +93,7 @@ Jun_Action:	; Routine 2
 		asr	obY(a1)
 
 Jun_Display:	; Routine 4
-		bra.w	RememberState
+		jmp		(RememberState).l
 ; ===========================================================================
 
 Jun_Release:	; Routine 6
@@ -121,7 +121,7 @@ Jun_Release:	; Routine 6
 .dontrelease:
 		bsr.s	Jun_ChkSwitch
 		bsr.s	Jun_ChgPos
-		bra.w	RememberState
+		jmp		(RememberState).l
 
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
 

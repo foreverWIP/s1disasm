@@ -227,7 +227,7 @@ Drown_Countdown:; Routine $A
 		bcc.w	.gotomakenum	; if air is above 0, branch
 
 		; Sonic drowns here
-		bsr.w	ResumeMusic
+		call	ResumeMusic
 		move.b	#$81,(f_playerctrl).w ; lock controls and disable object interaction
 		move.w	#sfx_Drown,d0
 		jsr	(PlaySound_Special).l	; play drowning sound

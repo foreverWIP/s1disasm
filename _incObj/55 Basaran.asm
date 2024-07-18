@@ -124,7 +124,7 @@ Bas_Action:	; Routine 2
 .flyup:
 		bsr.w	SpeedToPos
 		subi.w	#$18,obVelY(a0)	; make basaran fly upwards
-		bsr.w	ObjHitCeiling
+		jsr		ObjHitCeiling
 		tst.w	d1		; has basaran hit the ceiling?
 		bpl.s	.noceiling	; if not, branch
 		sub.w	d1,obY(a0)

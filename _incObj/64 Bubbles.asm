@@ -79,7 +79,7 @@ Bub_ChkWater:	; Routine 4
 		bsr.w	Bub_ChkSonic	; has Sonic touched the	bubble?
 		beq.s	.display	; if not, branch
 
-		bsr.w	ResumeMusic	; cancel countdown music
+		jsr		ResumeMusic	; cancel countdown music
 		move.w	#sfx_Bubble,d0
 		jsr	(PlaySound_Special).l	; play collecting bubble sound
 		lea	(v_player).w,a1

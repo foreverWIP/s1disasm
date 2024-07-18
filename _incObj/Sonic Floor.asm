@@ -20,21 +20,21 @@ Sonic_Floor:
 		beq.w	loc_136E2
 		cmpi.b	#$C0,d0
 		beq.w	loc_1373E
-		bsr.w	Sonic_HitWall
+		jsr		Sonic_HitWall
 		tst.w	d1
 		bpl.s	loc_135F0
 		sub.w	d1,obX(a0)
 		move.w	#0,obVelX(a0)
 
 loc_135F0:
-		bsr.w	sub_14EB4
+		call	sub_14EB4
 		tst.w	d1
 		bpl.s	loc_13602
 		add.w	d1,obX(a0)
 		move.w	#0,obVelX(a0)
 
 loc_13602:
-		bsr.w	Sonic_HitFloor
+		call	Sonic_HitFloor
 		move.b	d1,(v_unused6).w
 		tst.w	d1
 		bpl.s	locret_1367E
@@ -86,7 +86,7 @@ locret_1367E:
 ; ===========================================================================
 
 loc_13680:
-		bsr.w	Sonic_HitWall
+		jsr		Sonic_HitWall
 		tst.w	d1
 		bpl.s	loc_1369A
 		sub.w	d1,obX(a0)
@@ -96,7 +96,7 @@ loc_13680:
 ; ===========================================================================
 
 loc_1369A:
-		bsr.w	Sonic_DontRunOnWalls
+		call	Sonic_DontRunOnWalls
 		tst.w	d1
 		bpl.s	loc_136B4
 		sub.w	d1,obY(a0)
@@ -111,7 +111,7 @@ locret_136B2:
 loc_136B4:
 		tst.w	obVelY(a0)
 		bmi.s	locret_136E0
-		bsr.w	Sonic_HitFloor
+		call	Sonic_HitFloor
 		tst.w	d1
 		bpl.s	locret_136E0
 		add.w	d1,obY(a0)
@@ -126,21 +126,21 @@ locret_136E0:
 ; ===========================================================================
 
 loc_136E2:
-		bsr.w	Sonic_HitWall
+		jsr		Sonic_HitWall
 		tst.w	d1
 		bpl.s	loc_136F4
 		sub.w	d1,obX(a0)
 		move.w	#0,obVelX(a0)
 
 loc_136F4:
-		bsr.w	sub_14EB4
+		call	sub_14EB4
 		tst.w	d1
 		bpl.s	loc_13706
 		add.w	d1,obX(a0)
 		move.w	#0,obVelX(a0)
 
 loc_13706:
-		bsr.w	Sonic_DontRunOnWalls
+		call	Sonic_DontRunOnWalls
 		tst.w	d1
 		bpl.s	locret_1373C
 		sub.w	d1,obY(a0)
@@ -165,7 +165,7 @@ locret_1373C:
 ; ===========================================================================
 
 loc_1373E:
-		bsr.w	sub_14EB4
+		call	sub_14EB4
 		tst.w	d1
 		bpl.s	loc_13758
 		add.w	d1,obX(a0)
@@ -175,7 +175,7 @@ loc_1373E:
 ; ===========================================================================
 
 loc_13758:
-		bsr.w	Sonic_DontRunOnWalls
+		call	Sonic_DontRunOnWalls
 		tst.w	d1
 		bpl.s	loc_13772
 		sub.w	d1,obY(a0)
@@ -190,7 +190,7 @@ locret_13770:
 loc_13772:
 		tst.w	obVelY(a0)
 		bmi.s	locret_1379E
-		bsr.w	Sonic_HitFloor
+		call	Sonic_HitFloor
 		tst.w	d1
 		bpl.s	locret_1379E
 		add.w	d1,obY(a0)
