@@ -69,7 +69,7 @@ Over_ChgMode:
 		move.b	#id_Continue,(v_gamemode).w ; set mode to $14 (continue screen)
 		tst.b	(v_continues).w	; do you have any continues?
 		bne.s	Over_Display	; if yes, branch
-		move.b	#id_Sega,(v_gamemode).w ; set mode to 0 (Sega screen)
+		move.b	#id_Title,(v_gamemode).w ; set mode to 0 (title screen)
 		bra.s	Over_Display
 ; ===========================================================================
 

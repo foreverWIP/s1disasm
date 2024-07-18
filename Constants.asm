@@ -2,7 +2,6 @@
 ; Constants
 ; ---------------------------------------------------------------------------
 
-Size_of_SegaPCM:		equ $6978
 Size_of_DAC_driver_guess:	equ $1760
 
 ; VDP addressses
@@ -40,7 +39,6 @@ tile_size:	equ 8*8/2
 plane_size_64x32:	equ 64*32*2
 
 ; Game modes
-id_Sega:	equ ptr_GM_Sega-GameModeArray	; $00
 id_Title:	equ ptr_GM_Title-GameModeArray	; $04
 id_Demo:	equ ptr_GM_Demo-GameModeArray	; $08
 id_Level:	equ ptr_GM_Level-GameModeArray	; $0C
@@ -245,7 +243,6 @@ spec__Last:	equ ((ptr_specend-SpecSoundIndex-4)/4)+spec__First
 
 flg__First:	equ $E0
 bgm_Fade:	equ ((ptr_flgE0-Sound_ExIndex)/4)+flg__First
-sfx_Sega:	equ ((ptr_flgE1-Sound_ExIndex)/4)+flg__First
 bgm_Speedup:	equ ((ptr_flgE2-Sound_ExIndex)/4)+flg__First
 bgm_Slowdown:	equ ((ptr_flgE3-Sound_ExIndex)/4)+flg__First
 bgm_Stop:	equ ((ptr_flgE4-Sound_ExIndex)/4)+flg__First
@@ -516,9 +513,6 @@ ArtTile_Warp:			equ $541
 ArtTile_Mini_Sonic:		equ $551
 ArtTile_Bonuses:		equ $570
 ArtTile_Signpost:		equ $680
-
-; Sega Screen
-ArtTile_Sega_Tiles:		equ $000
 
 ; Title Screen
 ArtTile_Title_Japanese_Text:	equ $000

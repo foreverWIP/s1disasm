@@ -11,7 +11,6 @@ PalPointers:
 
 ; palette address, RAM address, colours
 
-ptr_Pal_SegaBG:		palp	0,Pal_SegaBG		; 0 - Sega logo
 ptr_Pal_Title:		palp	0,Pal_Title		; 1 - title screen
 ptr_Pal_LevelSel:	palp	0,Pal_LevelSel		; 2 - level select
 ptr_Pal_Sonic:		palp	0,Pal_Sonic		; 3 - Sonic
@@ -36,7 +35,6 @@ ptr_Pal_Ending:		palp	0,Pal_Ending		; $13 (19) - ending sequence
 			even
 
 
-palid_SegaBG:		equ (ptr_Pal_SegaBG-PalPointers)/8
 palid_Title:		equ (ptr_Pal_Title-PalPointers)/8
 palid_LevelSel:		equ (ptr_Pal_LevelSel-PalPointers)/8
 palid_Sonic:		equ (ptr_Pal_Sonic-PalPointers)/8

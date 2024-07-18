@@ -325,7 +325,7 @@ GameInit:
 		jsr		(VDPSetupGame).l
 		jsr		(DACDriverLoad).l
 		jsr		(JoypadInit).l
-		move.b	#id_Sega,(v_gamemode).w ; set Game Mode to Sega Screen
+		move.b	#id_Title,(v_gamemode).w ; set Game Mode to title Screen
 
 MainGameLoop:
 		move.b	(v_gamemode).w,d0 ; load Game Mode
@@ -339,7 +339,7 @@ MainGameLoop:
 ; ---------------------------------------------------------------------------
 
 GameModeArray:
-ptr_GM_Sega:	dc.l	GM_Sega		; Sega Screen ($00)
+ptr_GM_Sega:	dc.l	0			; Sega Screen ($00)
 ptr_GM_Title:	dc.l	GM_Title	; Title	Screen ($04)
 ptr_GM_Demo:	dc.l	GM_Level	; Demo Mode ($08)
 ptr_GM_Level:	dc.l	GM_Level	; Normal Level ($0C)
@@ -353,7 +353,6 @@ __LABEL__:	binclude	path
 __LABEL___end:
 	endm
 
-		include "_gm/sega.asm"
 		include "_gm/title.asm"
 		include "_gm/level.asm"
 		include "_gm/special.asm"
@@ -1515,7 +1514,7 @@ TryAg_MainLoop:
 		beq.s	TryAg_MainLoop
 
 TryAg_Exit:
-		move.b	#id_Sega,(v_gamemode).w ; goto Sega screen
+		move.b	#id_Title,(v_gamemode).w ; goto title screen
 		rts	
 
 ; ===========================================================================
@@ -5160,8 +5159,6 @@ byte_6A320:	dc.b 0,	0, 0, 0
 
 Art_BigRing:	binclude	"artunc/Giant Ring.bin"
 		even
-
-		align	$100
 
 ; ---------------------------------------------------------------------------
 ; Sprite locations index

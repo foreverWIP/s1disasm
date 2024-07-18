@@ -153,7 +153,7 @@ Tit_MainLoop:
 		cmpi.w	#$1C00,d0	; has Sonic object passed $1C00 on x-axis?
 		blo.s	Tit_ChkRegion	; if not, branch
 
-		move.b	#id_Sega,(v_gamemode).w ; go to Sega screen
+		move.b	#id_Title,(v_gamemode).w ; go to title screen
 		rts	
 ; ===========================================================================
 
@@ -603,7 +603,7 @@ loc_33B6:
 		move.w	d0,(v_player+obX).w
 		cmpi.w	#$1C00,d0
 		blo.s	loc_33E4
-		move.b	#id_Sega,(v_gamemode).w
+		move.b	#id_Title,(v_gamemode).w
 		rts	
 ; ===========================================================================
 

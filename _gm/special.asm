@@ -80,7 +80,7 @@ SS_MainLoop:
 		tst.w	(f_demo).w	; is demo mode on?
 		beq.s	SS_ChkEnd	; if not, branch
 		tst.w	(v_demolength).w ; is there time left on the demo?
-		beq.w	SS_ToSegaScreen	; if not, branch
+		beq.w	SS_ToTitleScreen	; if not, branch
 
 SS_ChkEnd:
 		cmpi.b	#id_Special,(v_gamemode).w ; is game mode $10 (special stage)?
@@ -88,7 +88,7 @@ SS_ChkEnd:
 
 		tst.w	(f_demo).w	; is demo mode on?
 		if Revision=0
-		bne.w	SS_ToSegaScreen	; if yes, branch
+		bne.w	SS_ToTitleScreen	; if yes, branch
 		else
 		bne.w	SS_ToLevel
 		endif
@@ -166,13 +166,13 @@ SS_NormalExit:
 		rts	
 ; ===========================================================================
 
-SS_ToSegaScreen:
-		move.b	#id_Sega,(v_gamemode).w ; goto Sega screen
+SS_ToTitleScreen:
+		move.b	#id_Title,(v_gamemode).w ; goto title screen
 		rts
 
 		if Revision<>0
 SS_ToLevel:	cmpi.b	#id_Level,(v_gamemode).w
-		beq.s	SS_ToSegaScreen
+		beq.s	SS_ToTitleScreen
 		rts
 		endif
 

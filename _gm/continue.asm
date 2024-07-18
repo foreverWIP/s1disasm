@@ -72,7 +72,7 @@ loc_4DF2:
 		bhs.s	Cont_MainLoop
 		tst.w	(v_demolength).w
 		bne.w	Cont_MainLoop
-		move.b	#id_Sega,(v_gamemode).w ; go to Sega screen
+		move.b	#id_Title,(v_gamemode).w ; go to title screen
 		rts	
 ; ===========================================================================
 

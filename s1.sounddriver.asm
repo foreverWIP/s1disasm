@@ -19,7 +19,6 @@ SMPS_SPECIAL_SFX_PSG_TRACK_COUNT = (SMPS_RAM.v_spcsfx_psg_tracks_end-SMPS_RAM.v_
 ; Macros
 ; turn a sample rate into a djnz loop counter
 pcmLoopCounterBase function sampleRate,baseCycles, 1+(53693175/15/(sampleRate)-(baseCycles)+(13/2))/13
-pcmLoopCounter function sampleRate, pcmLoopCounterBase(sampleRate,90) ; 90 is the number of cycles zPlaySEGAPCMLoop takes to deliver one sample.
 dpcmLoopCounter function sampleRate, pcmLoopCounterBase(sampleRate,301/2) ; 301 is the number of cycles zPlayPCMLoop takes to deliver two samples.
 ; ---------------------------------------------------------------------------
 ; Go_SoundTypes:
@@ -741,32 +740,11 @@ Sound_E0toE4:
 
 Sound_ExIndex:
 ptr_flgE0:	bra.w	FadeOutMusic	; $E0
-ptr_flgE1:	bra.w	PlaySegaSound	; $E1
+ptr_flgE1:	bra.w	FadeOutMusic	; $E1
 ptr_flgE2:	bra.w	SpeedUpMusic	; $E2
 ptr_flgE3:	bra.w	SlowDownMusic	; $E3
 ptr_flgE4:	bra.w	StopAllSound	; $E4
 ptr_flgend
-; ===========================================================================
-; ---------------------------------------------------------------------------
-; Play "Say-gaa" PCM sound
-; ---------------------------------------------------------------------------
-; Sound_E1: PlaySega:
-PlaySegaSound:
-		move.b	#$88,(z80_ram+zDAC_Sample).l	; Queue Sega PCM
-		startZ80
-		move.w	#$11,d1
-; loc_71FC0:
-.busyloop_outer:
-		move.w	#-1,d0
-; loc_71FC4:
-.busyloop:
-		nop	
-		dbf	d0,.busyloop
-
-		dbf	d1,.busyloop_outer
-
-		addq.w	#4,sp	; Tamper return value so we don't return to caller
-		rts	
 ; ===========================================================================
 ; ---------------------------------------------------------------------------
 ; Play music track $81-$9F
@@ -2826,23 +2804,3 @@ SoundCF:	include "sound/sfx/SndCF - Signpost.asm"
 ; ---------------------------------------------------------------------------
 SoundD0:	include "sound/sfx/SndD0 - Waterfall.asm"
 		even
-
-; ---------------------------------------------------------------------------
-; 'Sega' chant PCM sample
-; ---------------------------------------------------------------------------
-		; Don't let Sega sample cross $8000-byte boundary
-		; (DAC driver doesn't switch banks automatically)
-		if ((*)&$7FFF)+Size_of_SegaPCM>$8000
-			align $8000
-		endif
-SegaPCM:	binclude "sound/dac/sega.pcm"
-SegaPCM_End
-		even
-
-		if SegaPCM_End-SegaPCM>$8000
-			fatal "Sega sound must fit within $8000 bytes, but you have a $\{SegaPCM_End-SegaPCM} byte Sega sound."
-		endif
-		if SegaPCM_End-SegaPCM>Size_of_SegaPCM
-			fatal "Size_of_SegaPCM = $\{Size_of_SegaPCM}, but you have a $\{SegaPCM_End-SegaPCM} byte Sega sound."
-		endif
-
