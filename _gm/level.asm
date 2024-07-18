@@ -7,17 +7,17 @@ GM_Level:
 		tst.w	(f_demo).w
 		bmi.s	Level_NoMusicFade
 		move.b	#bgm_Fade,d0
-		bsr.w	PlaySound_Special ; fade out music
+		call	PlaySound_Special ; fade out music
 
 Level_NoMusicFade:
-		bsr.w	ClearPLC
-		bsr.w	PaletteFadeOut
+		call	ClearPLC
+		call	PaletteFadeOut
 		tst.w	(f_demo).w	; is an ending sequence demo running?
 		bmi.s	Level_ClrRam	; if yes, branch
 		disable_ints
 		locVRAM	ArtTile_Title_Card*tile_size
 		lea	(Nem_TitleCard).l,a0 ; load title card patterns
-		bsr.w	NemDec
+		call	NemDec
 		enable_ints
 		moveq	#0,d0
 		move.b	(v_zone).w,d0
@@ -27,11 +27,11 @@ Level_NoMusicFade:
 		moveq	#0,d0
 		move.b	(a2),d0
 		beq.s	loc_37FC
-		bsr.w	AddPLC		; load level patterns
+		call	AddPLC		; load level patterns
 
 loc_37FC:
 		moveq	#plcid_Main2,d0
-		bsr.w	AddPLC		; load standard	patterns
+		call	AddPLC		; load standard	patterns
 
 Level_ClrRam:
 		clearRAM v_objspace
@@ -40,7 +40,7 @@ Level_ClrRam:
 		clearRAM v_timingandscreenvariables
 
 		disable_ints
-		bsr.w	ClearScreen
+		call	ClearScreen
 		lea	(vdp_control_port).l,a6
 		move.w	#$8B03,(a6)	; line scroll mode
 		move.w	#$8200+(vram_fg>>10),(a6) ; set foreground nametable address
@@ -71,7 +71,7 @@ Level_LoadPal:
 		move.w	#30,(v_air).w
 		enable_ints
 		moveq	#palid_Sonic,d0
-		bsr.w	PalLoad	; load Sonic's palette
+		call	PalLoad	; load Sonic's palette
 		cmpi.b	#id_LZ,(v_zone).w ; is level LZ?
 		bne.s	Level_GetBgm	; if not, branch
 
@@ -81,7 +81,7 @@ Level_LoadPal:
 		moveq	#palid_SBZ3SonWat,d0 ; palette number $10 (SBZ3)
 
 Level_WaterPal:
-		bsr.w	PalLoad_Fade_Water	; load underwater palette
+		call	PalLoad_Fade_Water	; load underwater palette
 		tst.b	(v_lastlamp).w
 		beq.s	Level_GetBgm
 		move.b	(v_lamp_wtrstat).w,(f_wtr_state).w
@@ -103,15 +103,15 @@ Level_BgmNotLZ4:
 Level_PlayBgm:
 		lea	(MusicList).l,a1 ; load	music playlist
 		move.b	(a1,d0.w),d0
-		bsr.w	PlaySound	; play music
+		call	PlaySound	; play music
 		move.b	#id_TitleCard,(v_titlecard).w ; load title card object
 
 Level_TtlCardLoop:
 		move.b	#$C,(v_vbla_routine).w
-		bsr.w	WaitForVBla
+		call	WaitForVBla
 		jsr	(ExecuteObjects).l
 		jsr	(BuildSprites).l
-		bsr.w	RunPLC
+		call	RunPLC
 		move.w	(v_ttlcardact+obX).w,d0
 		cmp.w	(v_ttlcardact+card_mainX).w,d0 ; has title card sequence finished?
 		bne.s	Level_TtlCardLoop ; if not, branch
@@ -121,15 +121,15 @@ Level_TtlCardLoop:
 
 Level_SkipTtlCard:
 		moveq	#palid_Sonic,d0
-		bsr.w	PalLoad_Fade	; load Sonic's palette
+		call	PalLoad_Fade	; load Sonic's palette
 		jsr		LevelSizeLoad
 		jsr		DeformLayers
 		bset	#2,(v_fg_scroll_flags).w
 		jsr		LevelDataLoad ; load block mappings and palettes
 		jsr		LoadTilesFromStart
 		jsr	(ConvertCollisionArray).l
-		bsr.w	ColIndexLoad
-		bsr.w	LZWaterFeatures
+		call	ColIndexLoad
+		call	LZWaterFeatures
 		move.b	#id_SonicPlayer,(v_player).w ; load Sonic object
 		tst.w	(f_demo).w
 		bmi.s	Level_ChkDebug
@@ -172,7 +172,7 @@ Level_SkipClr:
 		move.w	d0,(v_debuguse).w
 		move.w	d0,(f_restart).w
 		move.w	d0,(v_framecount).w
-		bsr.w	OscillateNumInit
+		call	OscillateNumInit
 		move.b	#1,(f_scorecount).w ; update score counter
 		move.b	#1,(f_ringcount).w ; update rings counter
 		move.b	#1,(f_timecount).w ; update time counter
@@ -210,18 +210,18 @@ Level_ChkWaterPal:
 		moveq	#palid_SBZ3Water,d0 ; palette $D (SBZ3 underwater)
 
 Level_WtrNotSbz:
-		bsr.w	PalLoad_Water
+		call	PalLoad_Water
 
 Level_Delay:
 		move.w	#3,d1
 
 Level_DelayLoop:
 		move.b	#8,(v_vbla_routine).w
-		bsr.w	WaitForVBla
+		call	WaitForVBla
 		dbf	d1,Level_DelayLoop
 
 		move.w	#$202F,(v_pfade_start).w ; fade in 2nd, 3rd & 4th palette lines
-		bsr.w	PalFadeIn_Alt
+		call	PalFadeIn_Alt
 		tst.w	(f_demo).w	; is an ending sequence demo running?
 		bmi.s	Level_ClrCardArt ; if yes, branch
 		addq.b	#2,(v_ttlcardname+obRoutine).w ; make title card move
@@ -247,13 +247,13 @@ Level_StartGame:
 ; ---------------------------------------------------------------------------
 
 Level_MainLoop:
-		bsr.w	PauseGame
+		call	PauseGame
 		move.b	#8,(v_vbla_routine).w
-		bsr.w	WaitForVBla
+		call	WaitForVBla
 		addq.w	#1,(v_framecount).w ; add 1 to level timer
-		bsr.w	MoveSonicInDemo
-		bsr.w	LZWaterFeatures
-		jsr	(ExecuteObjects).l
+		call	MoveSonicInDemo
+		call	LZWaterFeatures
+		call	ExecuteObjects
 		if Revision<>0
 			tst.w   (f_restart).w
 			bne     GM_Level
@@ -267,13 +267,13 @@ Level_DoScroll:
 		jsr		DeformLayers
 
 Level_SkipScroll:
-		jsr	(BuildSprites).l
-		jsr	(ObjPosLoad).l
-		bsr.w	PaletteCycle
-		bsr.w	RunPLC
-		bsr.w	OscillateNumDo
-		bsr.w	SynchroAnimate
-		bsr.w	SignpostArtLoad
+		call	BuildSprites
+		call	ObjPosLoad
+		call	PaletteCycle
+		call	RunPLC
+		call	OscillateNumDo
+		call	SynchroAnimate
+		call	SignpostArtLoad
 
 		cmpi.b	#id_Demo,(v_gamemode).w
 		beq.s	Level_ChkDemo	; if mode is 8 (demo), branch
@@ -312,15 +312,15 @@ Level_FadeDemo:
 
 Level_FDLoop:
 		move.b	#8,(v_vbla_routine).w
-		bsr.w	WaitForVBla
-		bsr.w	MoveSonicInDemo
-		jsr	(ExecuteObjects).l
-		jsr	(BuildSprites).l
-		jsr	(ObjPosLoad).l
+		call	WaitForVBla
+		call	MoveSonicInDemo
+		call	ExecuteObjects
+		call	BuildSprites
+		call	ObjPosLoad
 		subq.w	#1,(v_palchgspeed).w
 		bpl.s	loc_3BC8
 		move.w	#2,(v_palchgspeed).w
-		bsr.w	FadeOut_ToBlack
+		call	FadeOut_ToBlack
 
 loc_3BC8:
 		tst.w	(v_demolength).w
