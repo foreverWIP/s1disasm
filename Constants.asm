@@ -39,13 +39,13 @@ tile_size:	equ 8*8/2
 plane_size_64x32:	equ 64*32*2
 
 ; Game modes
-id_Title:	equ ptr_GM_Title-GameModeArray	; $04
-id_Demo:	equ ptr_GM_Demo-GameModeArray	; $08
-id_Level:	equ ptr_GM_Level-GameModeArray	; $0C
-id_Special:	equ ptr_GM_Special-GameModeArray; $10
-id_Continue:	equ ptr_GM_Cont-GameModeArray	; $14
-id_Ending:	equ ptr_GM_Ending-GameModeArray	; $18
-id_Credits:	equ ptr_GM_Credits-GameModeArray; $1C
+id_Title:	equ 4	; $04
+id_Demo:	equ 8	; $08
+id_Level:	equ $c	; $0C
+id_Special:	equ $10; $10
+id_Continue:	equ $14	; $14
+id_Ending:	equ $18	; $18
+id_Credits:	equ $1c; $1C
 
 ; Levels
 id_GHZ:		equ 0

@@ -28,26 +28,22 @@ Swing_Main:	; Routine 0
 		move.b	#8,obHeight(a0)
 		move.w	obY(a0),swing_origY(a0)
 		move.w	obX(a0),swing_origX(a0)
-		cmpi.b	#id_SLZ,(v_zone).w ; check if level is SLZ
-		bne.s	.notSLZ
-
+		if MMD_Is_SLZ
 		move.l	#Map_Swing_SLZ,obMap(a0) ; SLZ specific code
 		move.w	#make_art_tile(ArtTile_SLZ_Swing,2,0),obGfx(a0)
 		move.b	#$20,obActWid(a0)
 		move.b	#$10,obHeight(a0)
 		move.b	#$99,obColType(a0)
-
+		endif
 .notSLZ:
-		cmpi.b	#id_SBZ,(v_zone).w ; check if level is SBZ
-		bne.s	.length
-
+		if MMD_Is_SBZ
 		move.l	#Map_BBall,obMap(a0) ; SBZ specific code
 		move.w	#make_art_tile(ArtTile_SBZ_Swing,0,0),obGfx(a0)
 		move.b	#$18,obActWid(a0)
 		move.b	#$18,obHeight(a0)
 		move.b	#$86,obColType(a0)
+		endif
 		move.b	#$C,obRoutine(a0) ; goto Swing_Action next
-
 .length:
 		_move.b	obID(a0),d4
 		moveq	#0,d1

@@ -20,20 +20,17 @@ Plat_Main:	; Routine 0
 		move.w	#make_art_tile(ArtTile_Level,2,0),obGfx(a0)
 		move.l	#Map_Plat_GHZ,obMap(a0)
 		move.b	#$20,obActWid(a0)
-		cmpi.b	#id_SYZ,(v_zone).w ; check if level is SYZ
-		bne.s	.notSYZ
-
+		if MMD_Is_SYZ
 		move.l	#Map_Plat_SYZ,obMap(a0) ; SYZ specific code
 		move.b	#$20,obActWid(a0)
-
+		endif
 .notSYZ:
-		cmpi.b	#id_SLZ,(v_zone).w ; check if level is SLZ
-		bne.s	.notSLZ
+		if MMD_Is_SLZ
 		move.l	#Map_Plat_SLZ,obMap(a0) ; SLZ specific code
 		move.b	#$20,obActWid(a0)
+		endif
 		move.w	#make_art_tile(ArtTile_Level,2,0),obGfx(a0)
 		move.b	#3,obSubtype(a0)
-
 .notSLZ:
 		move.b	#4,obRender(a0)
 		move.b	#4,obPriority(a0)

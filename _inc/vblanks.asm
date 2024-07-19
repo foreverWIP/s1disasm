@@ -108,8 +108,9 @@ VBla_06:
 ; ===========================================================================
 
 VBla_10:
-		cmpi.b	#id_Special,(v_gamemode).w ; is game on special stage?
-		beq.w	VBla_0A		; if yes, branch
+		if MMD_Is_SS
+		bra.w	VBla_0A
+		endif
 
 VBla_08:
 		stopZ80
@@ -157,7 +158,9 @@ VBla_08:
 Demo_Time:
 		bsr.w	LoadTilesAsYouMove
 		jsr	(AnimateLevelGfx).l
+		if MMD_Is_Level
 		jsr	(HUD_Update).l
+		endif
 		bsr.w	ProcessDPLC2
 		tst.w	(v_demolength).w ; is there time left on the demo?
 		beq.w	.end		; if not, branch
@@ -170,6 +173,7 @@ Demo_Time:
 ; ===========================================================================
 
 VBla_0A:
+		if MMD_Is_SS
 		stopZ80
 		waitZ80
 		bsr.w	ReadJoypads
@@ -177,7 +181,7 @@ VBla_0A:
 		writeVRAM	v_spritetablebuffer,vram_sprites
 		writeVRAM	v_hscrolltablebuffer,vram_hscroll
 		startZ80
-		bsr.w	PalCycle_SS
+		call	PalCycle_SS
 		tst.b	(f_sonframechg).w ; has Sonic's sprite changed?
 		beq.s	.nochg		; if not, branch
 
@@ -190,6 +194,7 @@ VBla_0A:
 		subq.w	#1,(v_demolength).w	; subtract 1 from time left in demo
 
 .end:
+		endif
 		rts	
 ; ===========================================================================
 
@@ -223,7 +228,9 @@ VBla_0C:
 		movem.l	d0-d1,(v_fg_scroll_flags_dup).w
 		bsr.w	LoadTilesAsYouMove
 		jsr	(AnimateLevelGfx).l
+		if MMD_Is_Level
 		jsr	(HUD_Update).l
+		endif
 		bsr.w	sub_1642
 		rts	
 ; ===========================================================================

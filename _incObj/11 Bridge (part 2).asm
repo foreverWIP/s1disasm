@@ -17,7 +17,7 @@ Bri_WalkOff:
 		lsl.w	#3,d1
 		move.w	d1,d2
 		addq.w	#8,d1
-		bsr.s	ExitPlatform2
+		bsr.w	ExitPlatform2
 		bcc.s	locret_75BE
 		lsr.w	#4,d0
 		move.b	d0,objoff_3F(a0)

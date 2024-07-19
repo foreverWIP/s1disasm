@@ -57,3 +57,8 @@ Cred_WaitLoop:
 		cmpi.w	#9,(v_creditsnum).w ; have the credits finished?
 		beq.w	TryAgainEnd	; if yes, branch
 		rts	
+
+		include	"_incObj/8B Try Again & End Eggman.asm"
+		include "_anim/Try Again & End Eggman.asm"
+		include	"_incObj/8C Try Again Emeralds.asm"
+Map_EEgg:	include	"_maps/Try Again & End Eggman.asm"
