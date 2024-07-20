@@ -87,11 +87,7 @@ SS_ChkEnd:
 		beq.w	SS_MainLoop	; if yes, branch
 
 		tst.w	(f_demo).w	; is demo mode on?
-		if Revision=0
-		bne.w	SS_ToTitleScreen	; if yes, branch
-		else
 		bne.w	SS_ToLevel
-		endif
 		move.b	#id_Level,(v_gamemode).w ; set screen mode to $0C (level)
 		cmpi.w	#(id_SBZ<<8)+3,(v_zone).w ; is level number higher than FZ?
 		blo.s	SS_Finish	; if not, branch
@@ -170,11 +166,9 @@ SS_ToTitleScreen:
 		move.b	#id_Title,(v_gamemode).w ; goto title screen
 		rts
 
-		if Revision<>0
 SS_ToLevel:	cmpi.b	#id_Level,(v_gamemode).w
 		beq.s	SS_ToTitleScreen
 		rts
-		endif
 
 ; ---------------------------------------------------------------------------
 ; Special stage	background loading subroutine
@@ -1258,15 +1252,9 @@ SS_3:		binclude	"sslayout/3.eni"
 		even
 SS_4:		binclude	"sslayout/4.eni"
 		even
-		if Revision=0
-SS_5:		binclude	"sslayout/5.eni"
-		even
-SS_6:		binclude	"sslayout/6.eni"
-		else
 SS_5:		binclude	"sslayout/5 (JP1).eni"
-			even
+		even
 SS_6:		binclude	"sslayout/6 (JP1).eni"
-		endif
 		even
 Map_SS_R:	include	"_maps/SS R Block.asm"
 Map_SS_Glass:	include	"_maps/SS Glass Block.asm"

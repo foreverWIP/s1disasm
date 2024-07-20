@@ -129,9 +129,6 @@ PLC_LZ2:	dc.w ((PLC_LZ2end-PLC_LZ2-2)/6)-1
 		plcm	Nem_LzDoor2,     ArtTile_LZ_Blocks          ; large horizontal door
 		plcm	Nem_LzWheel,     ArtTile_LZ_Conveyor_Belt   ; wheel
 		plcm	Nem_Gargoyle,    ArtTile_LZ_Gargoyle        ; gargoyle head
-	if Revision=0
-		plcm	Nem_LzSonic,     ArtTile_LZ_Sonic_Drowning  ; Sonic holding his breath
-	endif
 		plcm	Nem_LzPlatfm,    ArtTile_LZ_Rising_Platform ; rising platform
 		plcm	Nem_Orbinaut,    ArtTile_LZ_Orbinaut        ; orbinaut enemy
 		plcm	Nem_Jaws,        ArtTile_Jaws               ; jaws enemy
@@ -286,15 +283,6 @@ PLC_Signpost:	dc.w ((PLC_Signpostend-PLC_Signpost-2)/6)-1
 		plcm	Nem_BigFlash, ArtTile_Giant_Ring_Flash ; giant ring flash effect
 PLC_Signpostend:
 ; ---------------------------------------------------------------------------
-; Pattern load cues - beta special stage warp effect
-; ---------------------------------------------------------------------------
-PLC_Warp:
-	if Revision=0
-		dc.w ((PLC_Warpend-PLC_Warp-2)/6)-1
-		plcm	Nem_Warp, ArtTile_Warp
-	endif
-PLC_Warpend:
-; ---------------------------------------------------------------------------
 ; Pattern load cues - special stage
 ; ---------------------------------------------------------------------------
 PLC_SpecialStage:	dc.w ((PLC_SpeStageend-PLC_SpecialStage-2)/6)-1
@@ -383,9 +371,6 @@ PLC_Ending:	dc.w ((PLC_Endingend-PLC_Ending-2)/6)-1
 		plcm	Nem_EndFlower, ArtTile_Ending_Flowers   ; flowers
 		plcm	Nem_EndEm,     ArtTile_Ending_Emeralds  ; emeralds
 		plcm	Nem_EndSonic,  ArtTile_Ending_Sonic     ; Sonic
-	if Revision=0
-		plcm	Nem_EndEggman, ArtTile_Ending_Eggman    ; Eggman's death (unused)
-	endif
 		plcm	Nem_Rabbit,    ArtTile_Ending_Rabbit    ; rabbit
 		plcm	Nem_Chicken,   ArtTile_Ending_Chicken   ; chicken
 		plcm	Nem_Penguin,   ArtTile_Ending_Penguin   ; penguin
