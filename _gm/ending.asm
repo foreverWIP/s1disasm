@@ -215,12 +215,6 @@ End_MoveSonExit:
 		include	"_incObj/89 Ending Sequence STH.asm"
 Map_ESon:	include	"_maps/Ending Sequence Sonic.asm"
 Map_ESth:	include	"_maps/Ending Sequence STH.asm"
-Nem_EndStH:	binclude	"artnem/Ending - StH Logo.nem"
-		even
-Kos_EndFlowers:	binclude	"artkos/Flowers at Ending.kos" ; ending sequence animated flowers
-		even
-Nem_EndFlower:	binclude	"artnem/Ending - Flowers.nem"
-		even
 ; ---------------------------------------------------------------------------
 ; Ending sequence demos
 ; ---------------------------------------------------------------------------

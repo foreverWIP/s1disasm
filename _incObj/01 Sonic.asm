@@ -204,8 +204,6 @@ locret_13302:
 Pal_Sonic:	bincludePalette	"palette/Sonic.bin"
 Pal_LZSonWater:	bincludePalette	"palette/Sonic - LZ Underwater.bin"
 Pal_SBZ3SonWat:	bincludePalette	"palette/Sonic - SBZ3 Underwater.bin"
-Nem_EndSonic:	binclude	"artnem/Ending - Sonic.nem"
-		even
 Map_Sonic:	include	"_maps/Sonic.asm"
 SonicDynPLC:	include	"_maps/Sonic - Dynamic Gfx Script.asm"
 Art_Sonic:	binclude	"artunc/Sonic.bin"	; Sonic

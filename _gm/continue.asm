@@ -142,10 +142,3 @@ loc_1C962:
 
 		rts	
 ; End of function ContScrCounter
-; ---------------------------------------------------------------------------
-; Compressed graphics - continue screen
-; ---------------------------------------------------------------------------
-Nem_ContSonic:	binclude	"artnem/Continue Screen Sonic.nem"
-		even
-Nem_MiniSonic:	binclude	"artnem/Continue Screen Stuff.nem"
-		even

@@ -542,12 +542,6 @@ Pal_Title:	bincludePalette	"palette/Title Screen.bin"
 Map_TSon:	include	"_maps/Title Screen Sonic.asm"
 Eni_Title:	binclude	"tilemaps/Title Screen.eni" ; title screen foreground (mappings)
 		even
-Nem_TitleFg:	binclude	"artnem/Title Screen Foreground.nem"
-		even
-Nem_TitleSonic:	binclude	"artnem/Title Screen Sonic.nem"
-		even
-Nem_TitleTM:	binclude	"artnem/Title Screen TM.nem"
-		even
 ; ---------------------------------------------------------------------------
 ; Demo mode
 ; ---------------------------------------------------------------------------
