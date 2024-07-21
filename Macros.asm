@@ -321,6 +321,27 @@ zonewarning:	macro loc,elementsize
 
 make_art_tile function addr,pal,pri,((pri&1)<<15)|((pal&3)<<13)|addr
 
+LoadColPointer: macro reg
+	if MMD_Is_GHZ||MMD_Is_Ending
+	movea.l	#Col_GHZ,reg
+	endif
+	if MMD_Is_MZ
+	movea.l	#Col_MZ,reg
+	endif
+	if MMD_Is_SYZ
+	movea.l	#Col_SYZ,reg
+	endif
+	if MMD_Is_LZ
+	movea.l	#Col_LZ,reg
+	endif
+	if MMD_Is_SLZ
+	movea.l	#Col_SLZ,reg
+	endif
+	if MMD_Is_SBZ
+	movea.l	#Col_SBZ,reg
+	endif
+	endm
+
 ; ---------------------------------------------------------------------------
 ; sprite mappings and DPLCs macros
 ; ---------------------------------------------------------------------------

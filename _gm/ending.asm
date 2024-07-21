@@ -43,7 +43,6 @@ End_LoadData:
 		bset	#2,(v_fg_scroll_flags).w
 		bsr.w	LevelDataLoad
 		bsr.w	LoadTilesFromStart
-		move.l	#Col_GHZ,(v_collindex).w ; load collision index
 		enable_ints
 		lea	(Kos_EndFlowers).l,a0 ;	load extra flower patterns
 		lea	(v_256x256_end-$1000).w,a1 ; RAM address to buffer the patterns

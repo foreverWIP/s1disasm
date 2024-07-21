@@ -127,7 +127,6 @@ Level_SkipTtlCard:
 		bset	#2,(v_fg_scroll_flags).w
 		jsr		LevelDataLoad ; load block mappings and palettes
 		jsr		LoadTilesFromStart
-		call	ColIndexLoad
 		call	LZWaterFeatures
 		move.b	#id_SonicPlayer,(v_player).w ; load Sonic object
 		tst.w	(f_demo).w
