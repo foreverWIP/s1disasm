@@ -19,17 +19,52 @@ local compression = improved_dac_driver_compression and "kosinski-optimised" or 
 if arg == nil then
 	arg = {}
 end
-local message, abort = common.build_rom("sonic", "s1built", table.concat(arg, " "), "-p=FF -z=0," .. compression .. ",Size_of_DAC_driver_guess,after", false, "https://github.com/sonicretro/s1disasm")
+local mmd_names = {
+	"TITLE",
+	"GHZ1",
+	"GHZ2",
+	"GHZ3",
+	"MZ1",
+	"MZ2",
+	"MZ3",
+	"SYZ1",
+	"SYZ2",
+	"SYZ3",
+	"LZ1",
+	"LZ2",
+	"LZ3",
+	"SLZ1",
+	"SLZ2",
+	"SLZ3",
+	"SBZ1",
+	"SBZ2",
+	"SBZ3",
+	"FZ",
+	"GHZ1DEMO",
+	"MZ1DEMO",
+	"SYZ1DEMO",
+	"SS1DEMO",
+	"SS1",
+	"SS2",
+	"SS3",
+	"SS4",
+	"SS5",
+	"SS6",
+	"CONTINUE",
+	"ENDING",
+	"CREDITS",
+}
+for k,v in pairs(mmd_names) do
+	print("Assembling " .. v .. "...")
+	local message, abort = common.build_rom("sonic", "build/" .. v, "-D MMD=" .. (k - 1), "-p=FF -z=0," .. compression .. ",Size_of_DAC_driver_guess,after", false, "https://github.com/sonicretro/s1disasm")
 
-if message then
-	exit_code = false
+	if message then
+		exit_code = false
+	end
+
+	if abort then
+		os.exit(exit_code, true)
+	end
 end
-
-if abort then
-	os.exit(exit_code, true)
-end
-
--- Correct the ROM's header with a proper checksum and end-of-ROM value.
-common.fix_header("s1built.bin")
 
 os.exit(exit_code, false)
