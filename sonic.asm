@@ -1325,8 +1325,7 @@ locret_69F2:
 DrawBGScrollBlock2:
 			tst.b	(a2)
 			beq.w	locj_6DF2
-			cmpi.b	#id_SBZ,(v_zone).w
-			beq.w	Draw_SBz
+			if (MMD_Is_SBZ==0)
 			bclr	#0,(a2)
 			beq.s	locj_6DD2
 			; Draw new tiles on the left
@@ -1348,6 +1347,7 @@ locj_6DD2:
 			move.w	#320,d5
 			moveq	#3-1,d6
 			bsr.w	DrawBlocks_TB_2
+			endif
 locj_6DF2:
 			rts
 ;===============================================================================
@@ -1357,6 +1357,7 @@ locj_6DF4:
 			dc.b $02,$00						
 ;===============================================================================
 Draw_SBz:
+			if MMD_Is_SBZ
 			moveq	#-16,d4
 			bclr	#0,(a2)
 			bne.s	locj_6E28
@@ -1409,7 +1410,7 @@ locj_6E8C:
 			lea	(a0,d0.w),a0
 			bra.w	locj_6FEC						
 ;===============================================================================
-
+			endif
 
 ; locj_6EA4:
 DrawBGScrollBlock3:
@@ -1972,7 +1973,7 @@ LevLoad_ClrRam:
 		moveq	#0,d1
 		bsr.w	LevelLayoutLoad2 ; load	level layout into RAM
 		lea	(v_lvllayout+$40).w,a3 ; RAM address for background layout
-		moveq	#2,d1
+		moveq	#4,d1
 ; End of function LevelLayoutLoad
 
 ; "LevelLayoutLoad2" is	run twice - for	the level and the background
@@ -1981,16 +1982,62 @@ LevLoad_ClrRam:
 
 
 LevelLayoutLoad2:
-		move.w	(v_zone).w,d0
-		lsl.b	#6,d0
-		lsr.w	#5,d0
-		move.w	d0,d2
-		add.w	d0,d0
-		add.w	d2,d0
-		add.w	d1,d0
-		lea	(Level_Index).l,a1
-		move.w	(a1,d0.w),d0
-		lea	(a1,d0.w),a1
+		if MMD_Is_GHZ_1
+		movea.l	#Layout_GHZ_1,a1
+		endif
+		if MMD_Is_GHZ_2
+		movea.l	#Layout_GHZ_2,a1
+		endif
+		if MMD_Is_GHZ_3
+		movea.l	#Layout_GHZ_3,a1
+		endif
+		if MMD_Is_MZ_1
+		movea.l	#Layout_MZ_1,a1
+		endif
+		if MMD_Is_MZ_2
+		movea.l	#Layout_MZ_2,a1
+		endif
+		if MMD_Is_MZ_3
+		movea.l	#Layout_MZ_3,a1
+		endif
+		if MMD_Is_SYZ_1
+		movea.l	#Layout_SYZ_1,a1
+		endif
+		if MMD_Is_SYZ_2
+		movea.l	#Layout_SYZ_2,a1
+		endif
+		if MMD_Is_SYZ_3
+		movea.l	#Layout_SYZ_3,a1
+		endif
+		if MMD_Is_LZ_1
+		movea.l	#Layout_LZ_1,a1
+		endif
+		if MMD_Is_LZ_2
+		movea.l	#Layout_LZ_2,a1
+		endif
+		if MMD_Is_LZ_3
+		movea.l	#Layout_LZ_3,a1
+		endif
+		if MMD_Is_SLZ_1
+		movea.l	#Layout_SLZ_1,a1
+		endif
+		if MMD_Is_SLZ_2
+		movea.l	#Layout_SLZ_2,a1
+		endif
+		if MMD_Is_SLZ_3
+		movea.l	#Layout_SLZ_3,a1
+		endif
+		if MMD_Is_SBZ_1
+		movea.l	#Layout_SBZ_1,a1
+		endif
+		if MMD_Is_SBZ_2
+		movea.l	#Layout_SBZ_2,a1
+		endif
+		if MMD_Is_SBZ_3
+		movea.l	#Layout_SBZ_3,a1
+		endif
+		adda.l	d1,a1
+		movea.l	(a1),a1
 		moveq	#0,d1
 		move.w	d1,d2
 		move.b	(a1)+,d1	; load level width (in tiles)
@@ -3226,9 +3273,6 @@ OPL_Index:	dc.w OPL_Main-OPL_Index
 
 OPL_Main:
 		addq.b	#2,(v_opl_routine).w
-		move.w	(v_zone).w,d0
-		lsl.w	#7,d0
-		lsr.w	#4,d0
 		if MMD_Is_GHZ_1
 		lea	(ObjPos_GHZ1).l,a0
 		endif
@@ -3695,12 +3739,13 @@ Pal_Continue:	bincludePalette	"palette/Special Stage Continue Bonus.bin"
 ResumeMusic:
 		cmpi.w	#12,(v_air).w	; more than 12 seconds of air left?
 		bhi.s	.over12		; if yes, branch
+		if MMD_Is_LZ
 		move.w	#bgm_LZ,d0	; play LZ music
-		cmpi.w	#(id_LZ<<8)+3,(v_zone).w ; check if level is 0103 (SBZ3)
-		bne.s	.notsbz
+		endif
+		if MMD_Is_SBZ_3
 		move.w	#bgm_SBZ,d0	; play SBZ music
+		endif
 
-.notsbz:
 			tst.b	(v_invinc).w ; is Sonic invincible?
 			beq.s	.notinvinc ; if not, branch
 			move.w	#bgm_Invincible,d0
@@ -4148,43 +4193,41 @@ Col_SBZ:	binclude	"collide/SBZ.bin"	; SBZ index
 ; ---------------------------------------------------------------------------
 ; Level	layout index
 ; ---------------------------------------------------------------------------
-Level_Index:
 		; GHZ
-		dc.w Level_GHZ1-Level_Index, Level_GHZbg-Level_Index, byte_68D70-Level_Index
-		dc.w Level_GHZ2-Level_Index, Level_GHZbg-Level_Index, byte_68E3C-Level_Index
-		dc.w Level_GHZ3-Level_Index, Level_GHZbg-Level_Index, byte_68F84-Level_Index
-		dc.w byte_68F88-Level_Index, byte_68F88-Level_Index, byte_68F88-Level_Index
+Layout_GHZ_1:		dc.l Level_GHZ1, Level_GHZbg, byte_68D70
+Layout_GHZ_2:		dc.l Level_GHZ2, Level_GHZbg, byte_68E3C
+Layout_GHZ_3:		dc.l Level_GHZ3, Level_GHZbg, byte_68F84
+Layout_GHZ_4:		dc.l byte_68F88, byte_68F88, byte_68F88
 		; LZ
-		dc.w Level_LZ1-Level_Index, Level_LZbg-Level_Index, byte_69190-Level_Index
-		dc.w Level_LZ2-Level_Index, Level_LZbg-Level_Index, byte_6922E-Level_Index
-		dc.w Level_LZ3-Level_Index, Level_LZbg-Level_Index, byte_6934C-Level_Index
-		dc.w Level_SBZ3-Level_Index, Level_LZbg-Level_Index, byte_6940A-Level_Index
+Layout_LZ_1:		dc.l Level_LZ1, Level_LZbg, byte_69190
+Layout_LZ_2:		dc.l Level_LZ2, Level_LZbg, byte_6922E
+Layout_LZ_3:		dc.l Level_LZ3, Level_LZbg, byte_6934C
+Layout_SBZ_3:		dc.l Level_SBZ3, Level_LZbg, byte_6940A
 		; MZ
-		dc.w Level_MZ1-Level_Index, Level_MZ1bg-Level_Index, Level_MZ1-Level_Index
-		dc.w Level_MZ2-Level_Index, Level_MZ2bg-Level_Index, byte_6965C-Level_Index
-		dc.w Level_MZ3-Level_Index, Level_MZ3bg-Level_Index, byte_697E6-Level_Index
-		dc.w byte_697EA-Level_Index, byte_697EA-Level_Index, byte_697EA-Level_Index
+Layout_MZ_1:		dc.l Level_MZ1, Level_MZ1bg, Level_MZ1
+Layout_MZ_2:		dc.l Level_MZ2, Level_MZ2bg, byte_6965C
+Layout_MZ_3:		dc.l Level_MZ3, Level_MZ3bg, byte_697E6
+Layout_MZ_4:		dc.l byte_697EA, byte_697EA, byte_697EA
 		; SLZ
-		dc.w Level_SLZ1-Level_Index, Level_SLZbg-Level_Index, byte_69B84-Level_Index
-		dc.w Level_SLZ2-Level_Index, Level_SLZbg-Level_Index, byte_69B84-Level_Index
-		dc.w Level_SLZ3-Level_Index, Level_SLZbg-Level_Index, byte_69B84-Level_Index
-		dc.w byte_69B84-Level_Index, byte_69B84-Level_Index, byte_69B84-Level_Index
+Layout_SLZ_1:		dc.l Level_SLZ1, Level_SLZbg, byte_69B84
+Layout_SLZ_2:		dc.l Level_SLZ2, Level_SLZbg, byte_69B84
+Layout_SLZ_3:		dc.l Level_SLZ3, Level_SLZbg, byte_69B84
+Layout_SLZ_4:		dc.l byte_69B84, byte_69B84, byte_69B84
 		; SYZ
-		dc.w Level_SYZ1-Level_Index, Level_SYZbg-Level_Index, byte_69C7E-Level_Index
-		dc.w Level_SYZ2-Level_Index, Level_SYZbg-Level_Index, byte_69D86-Level_Index
-		dc.w Level_SYZ3-Level_Index, Level_SYZbg-Level_Index, byte_69EE4-Level_Index
-		dc.w byte_69EE8-Level_Index, byte_69EE8-Level_Index, byte_69EE8-Level_Index
+Layout_SYZ_1:		dc.l Level_SYZ1, Level_SYZbg, byte_69C7E
+Layout_SYZ_2:		dc.l Level_SYZ2, Level_SYZbg, byte_69D86
+Layout_SYZ_3:		dc.l Level_SYZ3, Level_SYZbg, byte_69EE4
+Layout_SYZ_4:		dc.l byte_69EE8, byte_69EE8, byte_69EE8
 		; SBZ
-		dc.w Level_SBZ1-Level_Index, Level_SBZ1bg-Level_Index, Level_SBZ1bg-Level_Index
-		dc.w Level_SBZ2-Level_Index, Level_SBZ2bg-Level_Index, Level_SBZ2bg-Level_Index
-		dc.w Level_SBZ2-Level_Index, Level_SBZ2bg-Level_Index, byte_6A2F8-Level_Index
-		dc.w byte_6A2FC-Level_Index, byte_6A2FC-Level_Index, byte_6A2FC-Level_Index
-		zonewarning Level_Index,24
+Layout_SBZ_1:		dc.l Level_SBZ1, Level_SBZ1bg, Level_SBZ1bg
+Layout_SBZ_2:		dc.l Level_SBZ2, Level_SBZ2bg, Level_SBZ2bg
+Layout_FZ:			dc.l Level_SBZ2, Level_SBZ2bg, byte_6A2F8
+Layout_SBZ_4:		dc.l byte_6A2FC, byte_6A2FC, byte_6A2FC
 		; Ending
-		dc.w Level_End-Level_Index, Level_GHZbg-Level_Index, byte_6A320-Level_Index
-		dc.w Level_End-Level_Index, Level_GHZbg-Level_Index, byte_6A320-Level_Index
-		dc.w byte_6A320-Level_Index, byte_6A320-Level_Index, byte_6A320-Level_Index
-		dc.w byte_6A320-Level_Index, byte_6A320-Level_Index, byte_6A320-Level_Index
+Layout_Ending_1:		dc.l Level_End, Level_GHZbg, byte_6A320
+Layout_Ending_2:		dc.l Level_End, Level_GHZbg, byte_6A320
+Layout_Ending_3:		dc.l byte_6A320, byte_6A320, byte_6A320
+Layout_Ending_4:		dc.l byte_6A320, byte_6A320, byte_6A320
 
 Level_GHZ1:	binclude	"levels/ghz1.bin"
 		even

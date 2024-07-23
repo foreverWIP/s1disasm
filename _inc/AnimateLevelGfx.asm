@@ -9,7 +9,9 @@ AnimateLevelGfx:
 		tst.w	(f_pause).w	; is the game paused?
 		bne.s	.ispaused	; if yes, branch
 		lea	(vdp_data_port).l,a6
+		if MMD_Is_Level&&(MMD_Is_SBZ==0)
 		bsr.w	AniArt_GiantRing
+		endif
 		if MMD_Is_GHZ
 		goto	AniArt_GHZ
 		endif
@@ -572,7 +574,7 @@ loc_1C4FA:
 
 
 AniArt_GiantRing:
-
+		if MMD_Is_Level&&(MMD_Is_SBZ==0)
 .size		= 14
 
 		tst.w	(v_gfxbigring).w	; Is there any of the art left to load?
@@ -597,5 +599,6 @@ AniArt_GiantRing:
 
 		move.w	#.size-1,d1
 		bra.w	LoadTiles
+		endif
 
 ; End of function AniArt_GiantRing

@@ -1,12 +1,14 @@
+		if MMD_Is_Title
 Nem_JapNames:	binclude	"artnem/Hidden Japanese Credits.nem"
-		even
-Nem_CreditText:	binclude	"artnem/Ending - Credits.nem"
 		even
 Nem_TitleFg:	binclude	"artnem/Title Screen Foreground.nem"
 		even
 Nem_TitleSonic:	binclude	"artnem/Title Screen Sonic.nem"
 		even
 Nem_TitleTM:	binclude	"artnem/Title Screen TM.nem"
+		even
+		endif
+Nem_CreditText:	binclude	"artnem/Ending - Credits.nem"
 		even
 
 Art_Text:	binclude	"artunc/menutext.bin" ; text used in level select and debug mode
@@ -19,8 +21,12 @@ Art_Hud:	binclude	"artunc/HUD Numbers.bin" ; 8x16 pixel numbers on HUD
 		even
 Art_LivesNums:	binclude	"artunc/Lives Counter Numbers.bin" ; 8x8 pixel numbers on lives counter
 		even
+		if MMD_Is_Level&&(MMD_Is_SBZ==0)
 Art_BigRing:	binclude	"artunc/Giant Ring.bin"
 		even
+Nem_BigFlash:	binclude	"artnem/Giant Ring Flash.nem"
+		even
+		endif
 
 		if MMD_Is_GHZ||MMD_Is_Title||MMD_Is_Ending
 Art_GhzWater:	binclude	"artunc/GHZ Waterfall.bin"
@@ -307,13 +313,14 @@ Nem_SignPost:	binclude	"artnem/Signpost.nem"	; end of level signpost
 		even
 Nem_Lamp:	binclude	"artnem/Lamppost.nem"
 		even
-Nem_BigFlash:	binclude	"artnem/Giant Ring Flash.nem"
-		even
 Nem_Bonus:	binclude	"artnem/Hidden Bonuses.nem" ; hidden bonuses at end of a level
 		even
+		if (MMD_Act_ID==2)&&(MMD_Is_SBZ_3==0)
 Nem_Prison:	binclude	"artnem/Prison Capsule.nem"
 		even
+		endif
 
+		if MMD_Is_SS
 Nem_SSWalls:	binclude	"artnem/Special Walls.nem" ; special stage walls
 		even
 Nem_SSBgFish:	binclude	"artnem/Special Birds & Fish.nem" ; special stage birds and fish background
@@ -354,3 +361,4 @@ Nem_SSZone5:	binclude	"artnem/Special ZONE5.nem" ; ZONE5 block
 		even
 Nem_SSZone6:	binclude	"artnem/Special ZONE6.nem" ; ZONE6 block
 		even
+		endif
