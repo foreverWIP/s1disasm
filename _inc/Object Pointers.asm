@@ -12,14 +12,14 @@ objptr macro loc,cond
 	endif
 	endif
 	endm
-ptr_SonicPlayer:	objptr SonicPlayer,MMD_Has_Sonic	; $01
+ptr_SonicPlayer:	objptr SonicPlayer,(MMD_Has_Sonic&&(MMD_Is_SS==0))	; $01
 ptr_Obj02:	objptr NullObject
 ptr_Obj03:	objptr NullObject
 ptr_Obj04:	objptr NullObject
 ptr_Obj05:	objptr NullObject
 ptr_Obj06:	objptr NullObject
 ptr_Obj07:	objptr NullObject
-ptr_Splash:	objptr Splash		; $08
+ptr_Splash:	objptr Splash,MMD_Is_Level		; $08
 ptr_SonicSpecial:	objptr SonicSpecial,MMD_Is_SS
 ptr_DrownCount:	objptr DrownCount,MMD_Is_LZ
 ptr_Pole:	objptr Pole,MMD_Is_Level
@@ -29,35 +29,35 @@ ptr_TitleSonic:	objptr TitleSonic,MMD_Is_Title
 ptr_PSBTM:	objptr PSBTM,MMD_Is_Title
 ptr_Obj10:	objptr Obj10,MMD_Is_Level		; $10
 ptr_Bridge:	objptr Bridge,MMD_Is_GHZ
-ptr_SpinningLight:	objptr SpinningLight
+ptr_SpinningLight:	objptr SpinningLight,MMD_Is_SYZ
 ptr_LavaMaker:	objptr LavaMaker,MMD_Is_MZ
 ptr_LavaBall:	objptr LavaBall,MMD_Is_MZ
 ptr_SwingingPlatform:	objptr SwingingPlatform,MMD_Is_Level
-ptr_Harpoon:	objptr Harpoon,MMD_Is_Level
+ptr_Harpoon:	objptr Harpoon,MMD_Is_LZ
 ptr_Helix:	objptr Helix,MMD_Is_GHZ
 ptr_BasicPlatform:	objptr BasicPlatform,MMD_Is_Level	; $18
-ptr_Obj19:	objptr Obj19
+ptr_Obj19:	objptr Obj19,MMD_Is_GHZ
 ptr_CollapseLedge:	objptr CollapseLedge,MMD_Is_Level
 ptr_WaterSurface:	objptr WaterSurface,MMD_Is_Level
 ptr_Scenery:	objptr Scenery,MMD_Is_Level
-ptr_MagicSwitch:	objptr MagicSwitch
-ptr_BallHog:	objptr BallHog,MMD_Is_SYZ
+ptr_MagicSwitch:	objptr MagicSwitch,MMD_Is_Level
+ptr_BallHog:	objptr BallHog,MMD_Is_SBZ
 ptr_Crabmeat:	objptr Crabmeat,MMD_Is_Level
 ptr_Cannonball:	objptr Cannonball,MMD_Is_SBZ		; $20
-ptr_HUD:	objptr HUD
+ptr_HUD:	objptr HUD,MMD_Is_Level
 ptr_BuzzBomber:	objptr BuzzBomber,MMD_Is_Level
 ptr_Missile:	objptr Missile,MMD_Is_Level
 ptr_MissileDissolve:	objptr MissileDissolve,MMD_Is_Level
-ptr_Rings:	objptr Rings,MMD_Has_Sonic
+ptr_Rings:	objptr Rings,(MMD_Has_Sonic&&(MMD_Is_Ending==0))
 ptr_Monitor:	objptr Monitor,MMD_Is_Level
 ptr_ExplosionItem:	objptr ExplosionItem,MMD_Is_Level
 ptr_Animals:	objptr Animals,MMD_Is_Level		; $28
-ptr_Points:	objptr Points,MMD_Has_Sonic
-ptr_AutoDoor:	objptr AutoDoor,MMD_Is_LZ
+ptr_Points:	objptr Points,(MMD_Is_Level||MMD_Is_Demo)&&(MMD_Is_SS==0)
+ptr_AutoDoor:	objptr AutoDoor,MMD_Is_SBZ
 ptr_Chopper:	objptr Chopper,MMD_Is_GHZ
 ptr_Jaws:	objptr Jaws,MMD_Is_LZ
 ptr_Burrobot:	objptr Burrobot,MMD_Is_LZ
-ptr_PowerUp:	objptr PowerUp,MMD_Has_Sonic
+ptr_PowerUp:	objptr PowerUp,(MMD_Is_Level||MMD_Is_Demo)&&(MMD_Is_SS==0)
 ptr_LargeGrass:	objptr LargeGrass,MMD_Is_MZ
 ptr_GlassBlock:	objptr GlassBlock,MMD_Is_MZ		; $30
 ptr_ChainStomp:	objptr ChainStomp,MMD_Is_MZ
@@ -67,22 +67,22 @@ ptr_TitleCard:	objptr TitleCard,MMD_Is_Level
 ptr_GrassFire:	objptr GrassFire,MMD_Is_MZ
 ptr_Spikes:	objptr Spikes,MMD_Is_Level
 ptr_RingLoss:	objptr RingLoss,MMD_Is_Level
-ptr_ShieldItem:	objptr ShieldItem		; $38
+ptr_ShieldItem:	objptr ShieldItem,MMD_Is_Level		; $38
 ptr_GameOverCard:	objptr GameOverCard,MMD_Is_Level
 ptr_GotThroughCard:	objptr GotThroughCard,MMD_Is_Level
 ptr_PurpleRock:	objptr PurpleRock,MMD_Is_Level
 ptr_SmashWall:	objptr SmashWall,MMD_Is_Level
 ptr_BossGreenHill:	objptr BossGreenHill,MMD_Is_GHZ
-ptr_Prison:	objptr Prison,MMD_Is_MZ
+ptr_Prison:	objptr Prison,((MMD_Act_ID==3)&&(MMD_Is_SBZ==0))
 ptr_ExplosionBomb:	objptr ExplosionBomb,MMD_Is_Level
 ptr_MotoBug:	objptr MotoBug,MMD_Is_GHZ		; $40
 ptr_Springs:	objptr Springs,MMD_Is_Level
 ptr_Newtron:	objptr Newtron,MMD_Is_GHZ
-ptr_Roller:	objptr Roller,MMD_Is_MZ
-ptr_EdgeWalls:	objptr EdgeWalls,MMD_Is_Level
+ptr_Roller:	objptr Roller,MMD_Is_SYZ
+ptr_EdgeWalls:	objptr EdgeWalls,MMD_Is_GHZ
 ptr_SideStomp:	objptr SideStomp,MMD_Is_MZ
 ptr_MarbleBrick:	objptr MarbleBrick,MMD_Is_MZ
-ptr_Bumper:	objptr Bumper
+ptr_Bumper:	objptr Bumper,MMD_Is_SYZ
 ptr_BossBall:	objptr BossBall,MMD_Is_GHZ		; $48
 ptr_WaterSound:	objptr WaterSound,MMD_Is_GHZ
 ptr_VanishSonic:	objptr VanishSonic,MMD_Is_SS
@@ -108,11 +108,11 @@ ptr_Fan:	objptr Fan,MMD_Is_Level
 ptr_Seesaw:	objptr Seesaw,MMD_Is_Level
 ptr_Bomb:	objptr Bomb,MMD_Is_Level
 ptr_Orbinaut:	objptr Orbinaut,MMD_Is_Level		; $60
-ptr_LabyrinthBlock:	objptr LabyrinthBlock,MMD_Is_Level
-ptr_Gargoyle:	objptr Gargoyle,MMD_Is_Level
-ptr_LabyrinthConvey:	objptr LabyrinthConvey,MMD_Is_Level
-ptr_Bubble:	objptr Bubble,MMD_Is_Level
-ptr_Waterfall:	objptr Waterfall,MMD_Is_Level
+ptr_LabyrinthBlock:	objptr LabyrinthBlock,MMD_Is_LZ
+ptr_Gargoyle:	objptr Gargoyle,MMD_Is_LZ
+ptr_LabyrinthConvey:	objptr LabyrinthConvey,MMD_Is_LZ
+ptr_Bubble:	objptr Bubble,MMD_Is_LZ
+ptr_Waterfall:	objptr Waterfall,MMD_Is_LZ
 ptr_Junction:	objptr Junction,MMD_Is_SBZ
 ptr_RunningDisc:	objptr RunningDisc,MMD_Is_SBZ
 ptr_Conveyor:	objptr Conveyor,MMD_Is_SBZ		; $68
@@ -120,10 +120,10 @@ ptr_SpinPlatform:	objptr SpinPlatform,MMD_Is_SBZ
 ptr_Saws:	objptr Saws,MMD_Is_SBZ
 ptr_ScrapStomp:	objptr ScrapStomp,MMD_Is_SBZ
 ptr_VanishPlatform:	objptr VanishPlatform,MMD_Is_SBZ
-ptr_Flamethrower:	objptr Flamethrower
+ptr_Flamethrower:	objptr Flamethrower,MMD_Is_SBZ
 ptr_Electro:	objptr Electro,MMD_Is_SBZ
 ptr_SpinConvey:	objptr SpinConvey,MMD_Is_SBZ
-ptr_Girder:	objptr Girder,MMD_Is_SLZ		; $70
+ptr_Girder:	objptr Girder,MMD_Is_SBZ		; $70
 ptr_Invisibarrier:	objptr Invisibarrier,MMD_Is_Level
 ptr_Teleport:	objptr Teleport,MMD_Is_SBZ
 ptr_BossMarble:	objptr BossMarble,MMD_Is_MZ
@@ -149,7 +149,7 @@ ptr_BossPlasma:	objptr BossPlasma,MMD_Is_FZ
 ptr_EndSonic:	objptr EndSonic,MMD_Is_Ending
 ptr_EndChaos:	objptr EndChaos,MMD_Is_Ending		; $88
 ptr_EndSTH:	objptr EndSTH,MMD_Is_Ending
-ptr_CreditsText:	objptr CreditsText
+ptr_CreditsText:	objptr CreditsText,(MMD_Is_Title||MMD_Is_Credits)
 ptr_EndEggman:	objptr EndEggman,MMD_Is_Credits
 ptr_TryChaos:	objptr TryChaos,MMD_Is_Credits
 

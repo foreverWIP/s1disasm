@@ -42,7 +42,9 @@ Scen_Values:	dc.l Map_Scen                                     ; mappings addres
 		dc.l Map_Scen
 		dc.w make_art_tile(ArtTile_SLZ_Fireball_Launcher,2,0)
 		dc.b 0,	8, 2, 0
+		if MMD_Is_GHZ
 		dc.l Map_Bri
 		dc.w make_art_tile(ArtTile_GHZ_Bridge,2,0)
 		dc.b 1,	$10, 1,	0
+		endif
 		even

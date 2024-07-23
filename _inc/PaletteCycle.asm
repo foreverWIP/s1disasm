@@ -192,6 +192,7 @@ locret_1AC6:
 
 
 PalCycle_SBZ:
+		if MMD_Is_SBZ
 		lea	(Pal_SBZCycList1).l,a2
 		tst.b	(v_act).w
 		beq.s	loc_1ADA
@@ -262,5 +263,6 @@ loc_1B52:
 		move.w	4(a0,d0.w),(a1)
 
 locret_1B64:
+		endif
 		rts	
 ; End of function PalCycle_SBZ

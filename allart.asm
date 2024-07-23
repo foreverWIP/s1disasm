@@ -9,6 +9,23 @@ Nem_TitleSonic:	binclude	"artnem/Title Screen Sonic.nem"
 Nem_TitleTM:	binclude	"artnem/Title Screen TM.nem"
 		even
 
+Art_Text:	binclude	"artunc/menutext.bin" ; text used in level select and debug mode
+Art_Text_End:	even
+Art_Sonic:	binclude	"artunc/Sonic.bin"	; Sonic
+		even
+Art_Hud:	binclude	"artunc/HUD Numbers.bin" ; 8x16 pixel numbers on HUD
+		even
+Art_LivesNums:	binclude	"artunc/Lives Counter Numbers.bin" ; 8x8 pixel numbers on lives counter
+		even
+Art_BigRing:	binclude	"artunc/Giant Ring.bin"
+		even
+
+Art_GhzWater:	binclude	"artunc/GHZ Waterfall.bin"
+		even
+Art_GhzFlower1:	binclude	"artunc/GHZ Flower Large.bin"
+		even
+Art_GhzFlower2:	binclude	"artunc/GHZ Flower Small.bin"
+		even
 Nem_GHZ_1st:	binclude	"artnem/8x8 - GHZ1.nem"	; GHZ primary patterns
 		even
 Nem_GHZ_2nd:	binclude	"artnem/8x8 - GHZ2.nem"	; GHZ secondary patterns
@@ -30,6 +47,12 @@ Nem_SpikePole:	binclude	"artnem/GHZ Spiked Log.nem"
 Nem_Swing:	binclude	"artnem/GHZ Swinging Platform.nem"
 		even
 
+Art_MzLava1:	binclude	"artunc/MZ Lava Surface.bin"
+		even
+Art_MzLava2:	binclude	"artunc/MZ Lava.bin"
+		even
+Art_MzTorch:	binclude	"artunc/MZ Background Torch.bin"
+		even
 Nem_MZ:		binclude	"artnem/8x8 - MZ.nem"	; MZ primary patterns
 		even
 Nem_MzMetal:	binclude	"artnem/MZ Metal Blocks.nem"
@@ -108,6 +131,8 @@ Nem_SlzBlock:	binclude	"artnem/SLZ 32x32 Block.nem"
 Nem_SlzCannon:	binclude	"artnem/SLZ Cannon.nem"
 		even
 
+Art_SbzSmoke:	binclude	"artunc/SBZ Background Smoke.bin"
+		even
 Nem_SBZ:	binclude	"artnem/8x8 - SBZ.nem"	; SBZ primary patterns
 		even
 Nem_Sbz2Eggman:	binclude	"artnem/Boss - Eggman in SBZ2 & FZ.nem"

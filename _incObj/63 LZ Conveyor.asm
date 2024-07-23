@@ -219,66 +219,6 @@ loc_1256A:
 		rts	
 ; End of function sub_12502
 
-
-; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
-
-
-LCon_ChangeDir:
-		moveq	#0,d0
-		move.w	#-$100,d2
-		move.w	obX(a0),d0
-		sub.w	objoff_34(a0),d0
-		bcc.s	loc_12584
-		neg.w	d0
-		neg.w	d2
-
-loc_12584:
-		moveq	#0,d1
-		move.w	#-$100,d3
-		move.w	obY(a0),d1
-		sub.w	objoff_36(a0),d1
-		bcc.s	loc_12598
-		neg.w	d1
-		neg.w	d3
-
-loc_12598:
-		cmp.w	d0,d1
-		blo.s	loc_125C2
-		move.w	obX(a0),d0
-		sub.w	objoff_34(a0),d0
-		beq.s	loc_125AE
-		ext.l	d0
-		asl.l	#8,d0
-		divs.w	d1,d0
-		neg.w	d0
-
-loc_125AE:
-		move.w	d0,obVelX(a0)
-		move.w	d3,obVelY(a0)
-		swap	d0
-		move.w	d0,obX+2(a0)
-		clr.w	obY+2(a0)
-		rts	
-; ===========================================================================
-
-loc_125C2:
-		move.w	obY(a0),d1
-		sub.w	objoff_36(a0),d1
-		beq.s	loc_125D4
-		ext.l	d1
-		asl.l	#8,d1
-		divs.w	d0,d1
-		neg.w	d1
-
-loc_125D4:
-		move.w	d1,obVelY(a0)
-		move.w	d2,obVelX(a0)
-		swap	d1
-		move.w	d1,obY+2(a0)
-		clr.w	obX+2(a0)
-		rts	
-; End of function LCon_ChangeDir
-
 ; ===========================================================================
 LCon_Data:	dc.w word_125F4-LCon_Data
 		dc.w word_12610-LCon_Data

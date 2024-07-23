@@ -13,8 +13,8 @@ loc_1380C:
 		bsr.w	Sonic_HurtStop
 		bsr.w	Sonic_LevelBound
 		bsr.w	Sonic_RecordPosition
-		bsr.w	Sonic_Animate
-		bsr.w	Sonic_LoadGfx
+		call	Sonic_Animate
+		call	Sonic_LoadGfx
 		jmp	(DisplaySprite).l
 
 ; ---------------------------------------------------------------------------
@@ -26,20 +26,16 @@ loc_1380C:
 
 Sonic_HurtStop:
 		move.w	(v_limitbtm2).w,d0
-	if FixBugs
-		; The original code does not consider that the camera boundary
-		; may be in the middle of lowering itself, which is why going
-		; down the S-tunnel in Green Hill Zone Act 1 fast enough can
-		; kill Sonic.
 		move.w	(v_limitbtm1).w,d1
 		cmp.w	d0,d1
 		blo.s	.skip
 		move.w	d1,d0
 .skip:
-	endif
 		addi.w	#224,d0
+		if (MMD_Is_Ending==0)
 		cmp.w	obY(a0),d0
 		jlo.w	KillSonic
+		endif
 		bsr.w	Sonic_Floor
 		btst	#1,obStatus(a0)
 		bne.s	locret_13860
@@ -63,8 +59,8 @@ Sonic_Death:	; Routine 6
 		bsr.w	GameOver
 		jsr	(ObjectFall).l
 		bsr.w	Sonic_RecordPosition
-		bsr.w	Sonic_Animate
-		bsr.w	Sonic_LoadGfx
+		call	Sonic_Animate
+		call	Sonic_LoadGfx
 		jmp	(DisplaySprite).l
 
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||

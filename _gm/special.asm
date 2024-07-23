@@ -964,18 +964,6 @@ locret_1B640:
 SS_AniGlassData:dc.b $4B, $4C, $4D, $4E, $4B, $4C, $4D,	$4E, 0,	0
 
 ; ---------------------------------------------------------------------------
-; Special stage	layout pointers
-; ---------------------------------------------------------------------------
-SS_LayoutIndex:
-		dc.l SS_1
-		dc.l SS_2
-		dc.l SS_3
-		dc.l SS_4
-		dc.l SS_5
-		dc.l SS_6
-		even
-
-; ---------------------------------------------------------------------------
 ; Special stage start locations
 ; ---------------------------------------------------------------------------
 SS_StartLoc:	include	"_inc/Start Location Array - Special Stages.asm"
@@ -1021,7 +1009,24 @@ SS_LoadData:
 		move.w	(a1)+,(v_player+obY).w
 
 		; Load layout data
-		movea.l	SS_LayoutIndex(pc,d0.w),a0
+		if MMD_Is_SS_1
+		movea.l	SS_1,a0
+		endif
+		if MMD_Is_SS_2
+		movea.l	SS_2,a0
+		endif
+		if MMD_Is_SS_3
+		movea.l	SS_3,a0
+		endif
+		if MMD_Is_SS_4
+		movea.l	SS_4,a0
+		endif
+		if MMD_Is_SS_5
+		movea.l	SS_5,a0
+		endif
+		if MMD_Is_SS_6
+		movea.l	SS_6,a0
+		endif
 		lea	(v_ssbuffer2&$FFFFFF).l,a1
 		move.w	#make_art_tile(ArtTile_SS_Background_Clouds,0,FALSE),d0
 		call	EniDec
@@ -1190,7 +1195,6 @@ M_SSR_GotAll_End
 Map_SSRC:	include	"_maps/SS Result Chaos Emeralds.asm"
 Pal_Special:	bincludePalette	"palette/Special Stage.bin"
 Pal_SSResult:	bincludePalette	"palette/Special Stage Results.bin"
-Pal_Continue:	bincludePalette	"palette/Special Stage Continue Bonus.bin"
 			include	"_incObj/7E Special Stage Results.asm"
 			include	"_incObj/7F SS Result Chaos Emeralds.asm"
 			include	"_incObj/4A Special Stage Entry (Unused).asm"
@@ -1202,18 +1206,30 @@ SS_MapIndex_End:
 ; ---------------------------------------------------------------------------
 ; Special Stage layouts
 ; ---------------------------------------------------------------------------
+		if MMD_Is_SS_1
 SS_1:		binclude	"sslayout/1.eni"
 		even
+		endif
+		if MMD_Is_SS_2
 SS_2:		binclude	"sslayout/2.eni"
 		even
+		endif
+		if MMD_Is_SS_3
 SS_3:		binclude	"sslayout/3.eni"
 		even
+		endif
+		if MMD_Is_SS_4
 SS_4:		binclude	"sslayout/4.eni"
 		even
+		endif
+		if MMD_Is_SS_5
 SS_5:		binclude	"sslayout/5 (JP1).eni"
 		even
+		endif
+		if MMD_Is_SS_6
 SS_6:		binclude	"sslayout/6 (JP1).eni"
 		even
+		endif
 Map_SS_R:	include	"_maps/SS R Block.asm"
 Map_SS_Glass:	include	"_maps/SS Glass Block.asm"
 Map_SS_Up:	include	"_maps/SS UP Block.asm"

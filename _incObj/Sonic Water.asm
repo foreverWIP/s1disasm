@@ -14,7 +14,7 @@ Sonic_Water:
 		cmp.w	obY(a0),d0	; is Sonic above the water?
 		bge.s	.abovewater	; if yes, branch
 		bset	#6,obStatus(a0)
-		bne.s	.exit
+		bne.w	.exit
 		jsr		ResumeMusic
 		move.b	#id_DrownCount,(v_sonicbubbles).w ; load bubbles object from Sonic's mouth
 		move.b	#$81,(v_sonicbubbles+obSubtype).w
@@ -47,5 +47,8 @@ Sonic_Water:
 .belowmaxspeed:
 		move.w	#sfx_Splash,d0
 		jmp	(PlaySound_Special).l	 ; play splash sound
+
+.exit:
+		rts
 		endif
 ; End of function Sonic_Water

@@ -83,11 +83,13 @@ HUD_Update:
 ; ===========================================================================
 
 TimeOver:
+		if (MMD_Is_Continue==0)&&(MMD_Is_Ending==0)
 		clr.b	(f_timecount).w
 		lea	(v_player).w,a0
 		movea.l	a0,a2
 		bsr.w	KillSonic
 		move.b	#1,(f_timeover).w
+		endif
 		rts	
 ; ===========================================================================
 
@@ -160,7 +162,7 @@ Hud_Base:
 		move.w	#$E,d2
 
 loc_1C83E:
-		lea	Art_Hud(pc),a1
+		lea	(Art_Hud).l,a1
 
 loc_1C842:
 		move.w	#$F,d1
@@ -267,7 +269,7 @@ Hud_Score:
 
 Hud_LoadArt:
 		moveq	#0,d4
-		lea	Art_Hud(pc),a1
+		lea	(Art_Hud).l,a1
 
 Hud_ScoreLoop:
 		moveq	#0,d2
