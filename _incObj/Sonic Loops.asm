@@ -6,12 +6,7 @@
 
 
 Sonic_Loops:
-		cmpi.b	#id_SLZ,(v_zone).w ; is level SLZ ?
-		beq.s	.isstarlight	; if yes, branch
-		tst.b	(v_zone).w	; is level GHZ ?
-		bne.w	.noloops	; if not, branch
-
-.isstarlight:
+		if MMD_Is_GHZ||MMD_Is_SLZ
 		move.w	obY(a0),d0
 		lsr.w	#1,d0
 		andi.w	#$380,d0
@@ -77,7 +72,7 @@ Sonic_Loops:
 		bls.s	.done		; if yes, branch
 		bclr	#6,obRender(a0)	; send Sonic to	high plane
 
-.noloops:
 .done:
+		endif
 		rts	
 ; End of function Sonic_Loops

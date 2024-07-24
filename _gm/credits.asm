@@ -30,11 +30,27 @@ GM_Credits:
 		jsr	(ExecuteObjects).l
 		jsr	(BuildSprites).l
 		bsr.w	EndingDemoLoad
-		moveq	#0,d0
-		move.b	(v_zone).w,d0
-		lsl.w	#4,d0
-		lea	(LevelHeaders).l,a2
-		lea	(a2,d0.w),a2
+		if MMD_Is_GHZ
+		movea.l	#LevelHeader_GHZ,a2
+		endif
+		if MMD_Is_MZ
+		movea.l	#LevelHeader_MZ,a2
+		endif
+		if MMD_Is_SYZ
+		movea.l	#LevelHeader_SYZ,a2
+		endif
+		if MMD_Is_LZ
+		movea.l	#LevelHeader_LZ,a2
+		endif
+		if MMD_Is_SLZ
+		movea.l	#LevelHeader_SLZ,a2
+		endif
+		if MMD_Is_SBZ
+		movea.l	#LevelHeader_SBZ,a2
+		endif
+		if MMD_Is_Ending
+		movea.l	#LevelHeader_Ending,a2
+		endif
 		moveq	#0,d0
 		move.b	(a2),d0
 		beq.s	Cred_SkipObjGfx

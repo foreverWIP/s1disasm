@@ -19,11 +19,27 @@ Level_NoMusicFade:
 		lea	(Nem_TitleCard).l,a0 ; load title card patterns
 		call	NemDec
 		enable_ints
-		moveq	#0,d0
-		move.b	(v_zone).w,d0
-		lsl.w	#4,d0
-		lea	(LevelHeaders).l,a2
-		lea	(a2,d0.w),a2
+		if MMD_Is_GHZ
+		movea.l	#LevelHeader_GHZ,a2
+		endif
+		if MMD_Is_MZ
+		movea.l	#LevelHeader_MZ,a2
+		endif
+		if MMD_Is_SYZ
+		movea.l	#LevelHeader_SYZ,a2
+		endif
+		if MMD_Is_LZ
+		movea.l	#LevelHeader_LZ,a2
+		endif
+		if MMD_Is_SLZ
+		movea.l	#LevelHeader_SLZ,a2
+		endif
+		if MMD_Is_SBZ
+		movea.l	#LevelHeader_SBZ,a2
+		endif
+		if MMD_Is_Ending
+		movea.l	#LevelHeader_Ending,a2
+		endif
 		moveq	#0,d0
 		move.b	(a2),d0
 		beq.s	loc_37FC
@@ -51,9 +67,7 @@ Level_ClrRam:
 		move.w	#$8720,(a6)		; set background colour (line 3; colour 0)
 		move.w	#$8A00+223,(v_hbla_hreg).w ; set palette change position (for water)
 		move.w	(v_hbla_hreg).w,(a6)
-		cmpi.b	#id_LZ,(v_zone).w ; is level LZ?
-		bne.s	Level_LoadPal	; if not, branch
-
+		if MMD_Is_LZ
 		move.w	#$8014,(a6)	; enable H-interrupts
 		moveq	#0,d0
 		move.b	(v_act).w,d0
@@ -66,15 +80,12 @@ Level_ClrRam:
 		clr.b	(v_wtr_routine).w ; clear water routine counter
 		clr.b	(f_wtr_state).w	; clear	water state
 		move.b	#1,(f_water).w	; enable water
-
-Level_LoadPal:
+		endif
 		move.w	#30,(v_air).w
 		enable_ints
 		moveq	#palid_Sonic,d0
 		call	PalLoad	; load Sonic's palette
-		cmpi.b	#id_LZ,(v_zone).w ; is level LZ?
-		bne.s	Level_GetBgm	; if not, branch
-
+		if MMD_Is_LZ
 		moveq	#palid_LZSonWater,d0 ; palette number $F (LZ)
 		cmpi.b	#3,(v_act).w	; is act number 3?
 		bne.s	Level_WaterPal	; if not, branch
@@ -85,8 +96,8 @@ Level_WaterPal:
 		tst.b	(v_lastlamp).w
 		beq.s	Level_GetBgm
 		move.b	(v_lamp_wtrstat).w,(f_wtr_state).w
-
 Level_GetBgm:
+		endif
 		tst.w	(f_demo).w
 		bmi.s	Level_SkipTtlCard
 		moveq	#0,d0

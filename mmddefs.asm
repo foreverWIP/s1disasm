@@ -1,7 +1,7 @@
 mmdCounter := 0
 mmdCheck macro name
 MMD_name = mmdCounter
-MMD_Is_name = (MMD==mmdCounter)
+MMD_Is_name = (MMD_ID==mmdCounter)
 mmdCounter := mmdCounter + 1
 	endm
 
@@ -54,11 +54,11 @@ MMD_Is_SS = (MMD_Is_SS_1_Demo)||(MMD_Is_SS_1||MMD_Is_SS_2||MMD_Is_SS_3||MMD_Is_S
 MMD_Has_Sonic = (MMD_Is_Level||MMD_Is_Demo||MMD_Is_SS||MMD_Is_Ending)
 
 		if MMD_Is_Level
-MMD_Seq_ID = MMD - MMD_GHZ_1
-MMD_Act_ID = (MMD_Seq_ID#3)
+MMD_Seq_ID = MMD_ID - MMD_GHZ_1
+MMD_Act_ID = ((MMD_ID - 1)#3)
 		else
 		if MMD_Is_SS
-MMD_Seq_ID = MMD - MMD_SS_1
+MMD_Seq_ID = MMD_ID - MMD_SS_1
 MMD_Act_ID = 0
 		else
 MMD_Seq_ID = 0
