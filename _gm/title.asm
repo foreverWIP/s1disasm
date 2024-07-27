@@ -8,7 +8,6 @@ GM_Title:
 		jsr		ClearPLC
 		jsr		PaletteFadeOut
 		disable_ints
-		jsr		(DACDriverLoad).l
 		lea	(vdp_control_port).l,a6
 		move.w	#$8004,(a6)	; 8-colour mode
 		move.w	#$8200+(vram_fg>>10),(a6) ; set foreground nametable address
@@ -17,7 +16,7 @@ GM_Title:
 		move.w	#$9200,(a6)	; window vertical position
 		move.w	#$8B03,(a6)
 		move.w	#$8720,(a6)	; set background colour (palette line 2, entry 0)
-		clr.b	(f_wtr_state).w
+		clr.b	(f_wtr_state).l
 		jsr		ClearScreen
 
 		clearRAM v_objspace
@@ -39,7 +38,7 @@ GM_Title:
 
 		moveq	#palid_Sonic,d0	; load Sonic's palette
 		jsr		PalLoad_Fade
-		move.b	#id_CreditsText,(v_sonicteam).w ; load "SONIC TEAM PRESENTS" object
+		move.b	#id_CreditsText,(v_sonicteam).l ; load "SONIC TEAM PRESENTS" object
 		jsr	(ExecuteObjects).l
 		jsr	(BuildSprites).l
 		jsr		PaletteFadeIn
@@ -62,15 +61,15 @@ Tit_LoadText:
 		move.w	(a5)+,(a6)
 		dbf	d1,Tit_LoadText	; load level select font
 
-		move.b	#0,(v_lastlamp).w ; clear lamppost counter
-		move.w	#0,(v_debuguse).w ; disable debug item placement mode
-		move.w	#0,(f_demo).w	; disable debug mode
-		move.w	#0,(v_unused2).w ; unused variable
-		move.w	#(id_GHZ<<8),(v_zone).w	; set level to GHZ (00)
-		move.w	#0,(v_pcyc_time).w ; disable palette cycling
+		move.b	#0,(v_lastlamp).l ; clear lamppost counter
+		move.w	#0,(v_debuguse).l ; disable debug item placement mode
+		move.w	#0,(f_demo).l	; disable debug mode
+		move.w	#0,(v_unused2).l ; unused variable
+		move.w	#(id_GHZ<<8),(v_zone).l	; set level to GHZ (00)
+		move.w	#0,(v_pcyc_time).l ; disable palette cycling
 		jsr		LevelSizeLoad
 		jsr		DeformLayers
-		lea	(v_16x16).w,a1
+		lea	(v_16x16).l,a1
 		lea	(Blk16_GHZ).l,a0 ; load	GHZ 16x16 mappings
 		move.w	#make_art_tile(ArtTile_Level,0,FALSE),d0
 		jsr		EniDec
@@ -83,8 +82,8 @@ Tit_LoadText:
 		jsr		ClearScreen
 		lea	(vdp_control_port).l,a5
 		lea	(vdp_data_port).l,a6
-		lea	(v_bgscreenposx).w,a3
-		lea	(v_lvllayout+$40).w,a4
+		lea	(v_bgscreenposx).l,a3
+		lea	(v_lvllayout+$40).l,a4
 		move.w	#$6000,d2
 		jsr		DrawChunks
 		lea	(v_256x256&$FFFFFF).l,a1
@@ -101,8 +100,8 @@ Tit_LoadText:
 		jsr		PalLoad_Fade
 		move.b	#bgm_Title,d0
 		jsr		PlaySound_Special	; play title screen music
-		move.b	#0,(f_debugmode).w ; disable debug mode
-		move.w	#$178,(v_demolength).w ; run title screen for $178 frames
+		move.b	#0,(f_debugmode).l ; disable debug mode
+		move.w	#$178,(v_demolength).l ; run title screen for $178 frames
 		
 	if FixBugs
 		clearRAM v_sonicteam,v_sonicteam+object_size
@@ -113,50 +112,50 @@ Tit_LoadText:
 		clearRAM v_sonicteam,v_sonicteam+object_size/2
 	endif
 
-		move.b	#id_TitleSonic,(v_titlesonic).w ; load big Sonic object
-		move.b	#id_PSBTM,(v_pressstart).w ; load "PRESS START BUTTON" object
-		;clr.b	(v_pressstart+obRoutine).w ; The 'Mega Games 10' version of Sonic 1 added this line, to fix the 'PRESS START BUTTON' object not appearing
+		move.b	#id_TitleSonic,(v_titlesonic).l ; load big Sonic object
+		move.b	#id_PSBTM,(v_pressstart).l ; load "PRESS START BUTTON" object
+		;clr.b	(v_pressstart+obRoutine).l ; The 'Mega Games 10' version of Sonic 1 added this line, to fix the 'PRESS START BUTTON' object not appearing
 
-		tst.b   (v_megadrive).w	; is console Japanese?
+		tst.b   (v_megadrive).l	; is console Japanese?
 		bpl.s   .isjap		; if yes, branch
 
-		move.b	#id_PSBTM,(v_titletm).w ; load "TM" object
-		move.b	#3,(v_titletm+obFrame).w
+		move.b	#id_PSBTM,(v_titletm).l ; load "TM" object
+		move.b	#3,(v_titletm+obFrame).l
 .isjap:
-		move.b	#id_PSBTM,(v_ttlsonichide).w ; load object which hides part of Sonic
-		move.b	#2,(v_ttlsonichide+obFrame).w
+		move.b	#id_PSBTM,(v_ttlsonichide).l ; load object which hides part of Sonic
+		move.b	#2,(v_ttlsonichide+obFrame).l
 		jsr	(ExecuteObjects).l
 		jsr		DeformLayers
 		jsr	(BuildSprites).l
 		moveq	#plcid_Main,d0
 		jsr		NewPLC
-		move.w	#0,(v_title_dcount).w
-		move.w	#0,(v_title_ccount).w
-		move.w	(v_vdp_buffer1).w,d0
+		move.w	#0,(v_title_dcount).l
+		move.w	#0,(v_title_ccount).l
+		move.w	(v_vdp_buffer1).l,d0
 		ori.b	#$40,d0
 		move.w	d0,(vdp_control_port).l
 		jsr		PaletteFadeIn
 
 Tit_MainLoop:
-		move.b	#4,(v_vbla_routine).w
+		move.b	#4,(v_vbla_routine).l
 		jsr		WaitForVBla
 		jsr	(ExecuteObjects).l
 		jsr		DeformLayers
 		jsr	(BuildSprites).l
 		jsr		PalCycle_Title
 		jsr		RunPLC
-		move.w	(v_player+obX).w,d0
+		move.w	(v_player+obX).l,d0
 		addq.w	#2,d0
-		move.w	d0,(v_player+obX).w ; move Sonic to the right
+		move.w	d0,(v_player+obX).l ; move Sonic to the right
 		cmpi.w	#$1C00,d0	; has Sonic object passed $1C00 on x-axis?
 		blo.s	Tit_ChkRegion	; if not, branch
 
-		move.b	#id_Title,(v_gamemode).w ; go to title screen
+		move.b	#id_Title,(v_gamemode).l ; go to title screen
 		rts	
 ; ===========================================================================
 
 Tit_ChkRegion:
-		tst.b	(v_megadrive).w	; check	if the machine is US or	Japanese
+		tst.b	(v_megadrive).l	; check	if the machine is US or	Japanese
 		bpl.s	Tit_RegionJap	; if Japanese, branch
 
 		lea	(LevSelCode_US).l,a0 ; load US code
@@ -166,21 +165,21 @@ Tit_RegionJap:
 		lea	(LevSelCode_J).l,a0 ; load J code
 
 Tit_EnterCheat:
-		move.w	(v_title_dcount).w,d0
+		move.w	(v_title_dcount).l,d0
 		adda.w	d0,a0
-		move.b	(v_jpadpress1).w,d0 ; get button press
+		move.b	(v_jpadpress1).l,d0 ; get button press
 		andi.b	#btnDir,d0	; read only UDLR buttons
 		cmp.b	(a0),d0		; does button press match the cheat code?
 		bne.s	Tit_ResetCheat	; if not, branch
-		addq.w	#1,(v_title_dcount).w ; next button press
+		addq.w	#1,(v_title_dcount).l ; next button press
 		tst.b	d0
 		bne.s	Tit_CountC
-		lea	(f_levselcheat).w,a0
-		move.w	(v_title_ccount).w,d1
+		lea	(f_levselcheat).l,a0
+		move.w	(v_title_ccount).l,d1
 		lsr.w	#1,d1
 		andi.w	#3,d1
 		beq.s	Tit_PlayRing
-		tst.b	(v_megadrive).w
+		tst.b	(v_megadrive).l
 		bpl.s	Tit_PlayRing
 		moveq	#1,d1
 		move.b	d1,1(a0,d1.w)	; cheat depends on how many times C is pressed
@@ -195,26 +194,26 @@ Tit_PlayRing:
 Tit_ResetCheat:
 		tst.b	d0
 		beq.s	Tit_CountC
-		cmpi.w	#9,(v_title_dcount).w
+		cmpi.w	#9,(v_title_dcount).l
 		beq.s	Tit_CountC
-		move.w	#0,(v_title_dcount).w ; reset UDLR counter
+		move.w	#0,(v_title_dcount).l ; reset UDLR counter
 
 Tit_CountC:
-		move.b	(v_jpadpress1).w,d0
+		move.b	(v_jpadpress1).l,d0
 		andi.b	#btnC,d0	; is C button pressed?
 		beq.s	loc_3230	; if not, branch
-		addq.w	#1,(v_title_ccount).w ; increment C counter
+		addq.w	#1,(v_title_ccount).l ; increment C counter
 
 loc_3230:
-		tst.w	(v_demolength).w
+		tst.w	(v_demolength).l
 		beq.w	GotoDemo
-		andi.b	#btnStart,(v_jpadpress1).w ; check if Start is pressed
+		andi.b	#btnStart,(v_jpadpress1).l ; check if Start is pressed
 		beq.w	Tit_MainLoop	; if not, branch
 
 Tit_ChkLevSel:
-		tst.b	(f_levselcheat).w ; check if level select code is on
+		tst.b	(f_levselcheat).l ; check if level select code is on
 		beq.w	PlayLevel	; if not, play level
-		btst	#bitA,(v_jpadhold1).w ; check if A is pressed
+		btst	#bitA,(v_jpadhold1).l ; check if A is pressed
 		beq.w	PlayLevel	; if not, play level
 
 		moveq	#palid_LevelSel,d0
@@ -222,7 +221,7 @@ Tit_ChkLevSel:
 
 		clearRAM v_hscrolltablebuffer
 
-		move.l	d0,(v_scrposy_vdp).w
+		move.l	d0,(v_scrposy_vdp).l
 		disable_ints
 		lea	(vdp_data_port).l,a6
 		locVRAM	vram_bg
@@ -239,20 +238,20 @@ Tit_ClrScroll2:
 ; ---------------------------------------------------------------------------
 
 LevelSelect:
-		move.b	#4,(v_vbla_routine).w
+		move.b	#4,(v_vbla_routine).l
 		jsr		WaitForVBla
 		bsr.w	LevSelControls
 		jsr		RunPLC
-		tst.l	(v_plc_buffer).w
+		tst.l	(v_plc_buffer).l
 		bne.s	LevelSelect
-		andi.b	#btnABC+btnStart,(v_jpadpress1).w ; is A, B, C, or Start pressed?
+		andi.b	#btnABC+btnStart,(v_jpadpress1).l ; is A, B, C, or Start pressed?
 		beq.s	LevelSelect	; if not, branch
-		move.w	(v_levselitem).w,d0
+		move.w	(v_levselitem).l,d0
 		cmpi.w	#$14,d0		; have you selected item $14 (sound test)?
 		bne.s	LevSel_Level_SS	; if not, go to	Level/SS subroutine
-		move.w	(v_levselsound).w,d0
+		move.w	(v_levselsound).l,d0
 		addi.w	#$80,d0
-		tst.b	(f_creditscheat).w ; is Japanese Credits cheat on?
+		tst.b	(f_creditscheat).l ; is Japanese Credits cheat on?
 		beq.s	LevSel_NoCheat	; if not, branch
 		cmpi.w	#$9F,d0		; is sound $9F being played?
 		beq.s	LevSel_Ending	; if yes, branch
@@ -273,53 +272,55 @@ LevSel_PlaySnd:
 ; ===========================================================================
 
 LevSel_Ending:
-		move.b	#id_Ending,(v_gamemode).w ; set screen mode to $18 (Ending)
-		move.w	#(id_EndZ<<8),(v_zone).w ; set level to 0600 (Ending)
+		move.b	#id_Ending,(v_gamemode).l ; set screen mode to $18 (Ending)
+		move.w	#(id_EndZ<<8),(v_zone).l ; set level to 0600 (Ending)
 		rts	
 ; ===========================================================================
 
 LevSel_Credits:
-		move.b	#id_Credits,(v_gamemode).w ; set screen mode to $1C (Credits)
+		move.b	#id_Credits,(v_gamemode).l ; set screen mode to $1C (Credits)
 		move.b	#bgm_Credits,d0
 		jsr		PlaySound_Special ; play credits music
-		move.w	#0,(v_creditsnum).w
+		move.w	#0,(v_creditsnum).l
 		rts	
 ; ===========================================================================
 
 LevSel_Level_SS:
 		add.w	d0,d0
-		move.w	LevSel_Ptrs(pc,d0.w),d0 ; load level number
+		lea		LevSel_Ptrs,a0 ; load level number
+		adda.l	d0,a0
+		move.w	(a0),d0
 		bmi.w	LevelSelect
 		cmpi.w	#id_SS*$100,d0	; check	if level is 0700 (Special Stage)
 		bne.s	LevSel_Level	; if not, branch
-		move.b	#id_Special,(v_gamemode).w ; set screen mode to $10 (Special Stage)
-		clr.w	(v_zone).w	; clear	level
-		move.b	#3,(v_lives).w	; set lives to 3
+		move.b	#id_Special,(v_gamemode).l ; set screen mode to $10 (Special Stage)
+		clr.w	(v_zone).l	; clear	level
+		move.b	#3,(v_lives).l	; set lives to 3
 		moveq	#0,d0
-		move.w	d0,(v_rings).w	; clear rings
-		move.l	d0,(v_time).w	; clear time
-		move.l	d0,(v_score).w	; clear score
-		move.l	#5000,(v_scorelife).w ; extra life is awarded at 50000 points
+		move.w	d0,(v_rings).l	; clear rings
+		move.l	d0,(v_time).l	; clear time
+		move.l	d0,(v_score).l	; clear score
+		move.l	#5000,(v_scorelife).l ; extra life is awarded at 50000 points
 		rts	
 ; ===========================================================================
 
 LevSel_Level:
 		andi.w	#$3FFF,d0
-		move.w	d0,(v_zone).w	; set level number
+		move.w	d0,(v_zone).l	; set level number
 
 PlayLevel:
-		move.b	#id_Level,(v_gamemode).w ; set screen mode to $0C (level)
-		move.b	#3,(v_lives).w	; set lives to 3
+		move.b	#id_Level,(v_gamemode).l ; set screen mode to $0C (level)
+		move.b	#3,(v_lives).l	; set lives to 3
 		moveq	#0,d0
-		move.w	d0,(v_rings).w	; clear rings
-		move.l	d0,(v_time).w	; clear time
-		move.l	d0,(v_score).w	; clear score
-		move.b	d0,(v_lastspecial).w ; clear special stage number
-		move.b	d0,(v_emeralds).w ; clear emeralds
-		move.l	d0,(v_emldlist).w ; clear emeralds
-		move.l	d0,(v_emldlist+4).w ; clear emeralds
-		move.b	d0,(v_continues).w ; clear continues
-		move.l	#5000,(v_scorelife).w ; extra life is awarded at 50000 points
+		move.w	d0,(v_rings).l	; clear rings
+		move.l	d0,(v_time).l	; clear time
+		move.l	d0,(v_score).l	; clear score
+		move.b	d0,(v_lastspecial).l ; clear special stage number
+		move.b	d0,(v_emeralds).l ; clear emeralds
+		move.l	d0,(v_emldlist).l ; clear emeralds
+		move.l	d0,(v_emldlist+4).l ; clear emeralds
+		move.b	d0,(v_continues).l ; clear continues
+		move.l	#5000,(v_scorelife).l ; extra life is awarded at 50000 points
 		move.b	#bgm_Fade,d0
 		jsr		PlaySound_Special ; fade out music
 		rts	
@@ -367,18 +368,18 @@ LevSelCode_US:	dc.b btnUp,btnDn,btnL,btnR,0,$FF
 
 
 LevSelControls:
-		move.b	(v_jpadpress1).w,d1
+		move.b	(v_jpadpress1).l,d1
 		andi.b	#btnUp+btnDn,d1	; is up/down pressed and held?
 		bne.s	LevSel_UpDown	; if yes, branch
-		subq.w	#1,(v_levseldelay).w ; subtract 1 from time to next move
+		subq.w	#1,(v_levseldelay).l ; subtract 1 from time to next move
 		bpl.s	LevSel_SndTest	; if time remains, branch
 
 LevSel_UpDown:
-		move.w	#$B,(v_levseldelay).w ; reset time delay
-		move.b	(v_jpadhold1).w,d1
+		move.w	#$B,(v_levseldelay).l ; reset time delay
+		move.b	(v_jpadhold1).l,d1
 		andi.b	#btnUp+btnDn,d1	; is up/down pressed?
 		beq.s	LevSel_SndTest	; if not, branch
-		move.w	(v_levselitem).w,d0
+		move.w	(v_levselitem).l,d0
 		btst	#bitUp,d1	; is up	pressed?
 		beq.s	LevSel_Down	; if not, branch
 		subq.w	#1,d0		; move up 1 selection
@@ -394,18 +395,18 @@ LevSel_Down:
 		moveq	#0,d0		; if selection moves above $14,	jump to	selection 0
 
 LevSel_Refresh:
-		move.w	d0,(v_levselitem).w ; set new selection
+		move.w	d0,(v_levselitem).l ; set new selection
 		bsr.w	LevSelTextLoad	; refresh text
 		rts	
 ; ===========================================================================
 
 LevSel_SndTest:
-		cmpi.w	#$14,(v_levselitem).w ; is item $14 selected?
+		cmpi.w	#$14,(v_levselitem).l ; is item $14 selected?
 		bne.s	LevSel_NoMove	; if not, branch
-		move.b	(v_jpadpress1).w,d1
+		move.b	(v_jpadpress1).l,d1
 		andi.b	#btnR+btnL,d1	; is left/right	pressed?
 		beq.s	LevSel_NoMove	; if not, branch
-		move.w	(v_levselsound).w,d0
+		move.w	(v_levselsound).l,d0
 		btst	#bitL,d1	; is left pressed?
 		beq.s	LevSel_Right	; if not, branch
 		subq.w	#1,d0		; subtract 1 from sound	test
@@ -421,7 +422,7 @@ LevSel_Right:
 		moveq	#0,d0		; if sound test	moves above $4F, set to	0
 
 LevSel_Refresh2:
-		move.w	d0,(v_levselsound).w ; set sound test number
+		move.w	d0,(v_levselsound).l ; set sound test number
 		bsr.w	LevSelTextLoad	; refresh text
 
 LevSel_NoMove:
@@ -453,7 +454,7 @@ LevSel_DrawAll:
 		dbf	d1,LevSel_DrawAll
 
 		moveq	#0,d0
-		move.w	(v_levselitem).w,d0
+		move.w	(v_levselitem).l,d0
 		move.w	d0,d1
 		move.l	#textpos,d4
 		lsl.w	#7,d0
@@ -469,13 +470,13 @@ LevSel_DrawAll:
 		move.l	d4,4(a6)
 		bsr.w	LevSel_ChgLine	; recolour selected line
 		move.w	#$E680,d3
-		cmpi.w	#$14,(v_levselitem).w
+		cmpi.w	#$14,(v_levselitem).l
 		bne.s	LevSel_DrawSnd
 		move.w	#$C680,d3
 
 LevSel_DrawSnd:
 		locVRAM	vram_bg+$C30		; sound test position on screen
-		move.w	(v_levselsound).w,d0
+		move.w	(v_levselsound).l,d0
 		addi.w	#$80,d0
 		move.b	d0,d2
 		lsr.b	#4,d0
@@ -547,56 +548,56 @@ Eni_Title:	binclude	"tilemaps/Title Screen.eni" ; title screen foreground (mappi
 ; ---------------------------------------------------------------------------
 
 GotoDemo:
-		move.w	#$1E,(v_demolength).w
+		move.w	#$1E,(v_demolength).l
 
 loc_33B6:
-		move.b	#4,(v_vbla_routine).w
+		move.b	#4,(v_vbla_routine).l
 		call	WaitForVBla
 		call	DeformLayers
 		call	PaletteCycle
 		call	RunPLC
-		move.w	(v_player+obX).w,d0
+		move.w	(v_player+obX).l,d0
 		addq.w	#2,d0
-		move.w	d0,(v_player+obX).w
+		move.w	d0,(v_player+obX).l
 		cmpi.w	#$1C00,d0
 		blo.s	loc_33E4
-		move.b	#id_Title,(v_gamemode).w
+		move.b	#id_Title,(v_gamemode).l
 		rts	
 ; ===========================================================================
 
 loc_33E4:
-		andi.b	#btnStart,(v_jpadpress1).w ; is Start button pressed?
+		andi.b	#btnStart,(v_jpadpress1).l ; is Start button pressed?
 		bne.w	Tit_ChkLevSel	; if yes, branch
-		tst.w	(v_demolength).w
+		tst.w	(v_demolength).l
 		bne.w	loc_33B6
 		move.b	#bgm_Fade,d0
 		jsr		PlaySound_Special ; fade out music
-		move.w	(v_demonum).w,d0 ; load	demo number
+		move.w	(v_demonum).l,d0 ; load	demo number
 		andi.w	#7,d0
 		add.w	d0,d0
 		move.w	Demo_Levels(pc,d0.w),d0	; load level number for	demo
-		move.w	d0,(v_zone).w
-		addq.w	#1,(v_demonum).w ; add 1 to demo number
-		cmpi.w	#4,(v_demonum).w ; is demo number less than 4?
+		move.w	d0,(v_zone).l
+		addq.w	#1,(v_demonum).l ; add 1 to demo number
+		cmpi.w	#4,(v_demonum).l ; is demo number less than 4?
 		blo.s	loc_3422	; if yes, branch
-		move.w	#0,(v_demonum).w ; reset demo number to	0
+		move.w	#0,(v_demonum).l ; reset demo number to	0
 
 loc_3422:
-		move.w	#1,(f_demo).w	; turn demo mode on
-		move.b	#id_Demo,(v_gamemode).w ; set screen mode to 08 (demo)
+		move.w	#1,(f_demo).l	; turn demo mode on
+		move.b	#id_Demo,(v_gamemode).l ; set screen mode to 08 (demo)
 		cmpi.w	#$600,d0	; is level number 0600 (special	stage)?
 		bne.s	Demo_Level	; if not, branch
-		move.b	#id_Special,(v_gamemode).w ; set screen mode to $10 (Special Stage)
-		clr.w	(v_zone).w	; clear	level number
-		clr.b	(v_lastspecial).w ; clear special stage number
+		move.b	#id_Special,(v_gamemode).l ; set screen mode to $10 (Special Stage)
+		clr.w	(v_zone).l	; clear	level number
+		clr.b	(v_lastspecial).l ; clear special stage number
 
 Demo_Level:
-		move.b	#3,(v_lives).w	; set lives to 3
+		move.b	#3,(v_lives).l	; set lives to 3
 		moveq	#0,d0
-		move.w	d0,(v_rings).w	; clear rings
-		move.l	d0,(v_time).w	; clear time
-		move.l	d0,(v_score).w	; clear score
-		move.l	#5000,(v_scorelife).w ; extra life is awarded at 50000 points
+		move.w	d0,(v_rings).l	; clear rings
+		move.l	d0,(v_time).l	; clear time
+		move.l	d0,(v_score).l	; clear score
+		move.l	#5000,(v_scorelife).l ; extra life is awarded at 50000 points
 		rts	
 
 ; ---------------------------------------------------------------------------

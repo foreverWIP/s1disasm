@@ -31,7 +31,7 @@ FBlock_Main:	; Routine 0
 		addq.b	#2,obRoutine(a0)
 		move.l	#Map_FBlock,obMap(a0)
 		move.w	#make_art_tile(ArtTile_Level,2,0),obGfx(a0)
-		cmpi.b	#id_LZ,(v_zone).w ; check if level is LZ
+		cmpi.b	#id_LZ,(v_zone).l ; check if level is LZ
 		bne.s	.notLZ
 		move.w	#make_art_tile(ArtTile_LZ_Door,2,0),obGfx(a0) ; LZ specific code
 
@@ -57,24 +57,24 @@ FBlock_Main:	; Routine 0
 		bne.s	.dontdelete
 		cmpi.w	#$1BB8,obX(a0)
 		bne.s	.notatpos
-		tst.b	(f_obj56).w
+		tst.b	(f_obj56).l
 		beq.s	.dontdelete
 		jmp	(DeleteObject).l
 .notatpos:
 		clr.b	obSubtype(a0)
-		tst.b	(f_obj56).w
+		tst.b	(f_obj56).l
 		bne.s	.dontdelete
 		jmp	(DeleteObject).l
 .dontdelete:
 		moveq	#0,d0
-		cmpi.b	#id_LZ,(v_zone).w ; check if level is LZ
+		cmpi.b	#id_LZ,(v_zone).l ; check if level is LZ
 		beq.s	.stillnotLZ
 		move.b	obSubtype(a0),d0 ; SYZ/SLZ specific code
 		andi.w	#$F,d0
 		subq.w	#8,d0
 		bcs.s	.stillnotLZ
 		lsl.w	#2,d0
-		lea	(v_oscillate+$2C).w,a2
+		lea	(v_oscillate+$2C).l,a2
 		lea	(a2,d0.w),a2
 		tst.w	(a2)
 		bpl.s	.stillnotLZ
@@ -92,7 +92,7 @@ FBlock_Main:	; Routine 0
 		move.w	#$80,fb_height(a0)
 
 .chkstate:
-		lea	(v_objstate).w,a2
+		lea	(v_objstate).l,a2
 		moveq	#0,d0
 		move.b	obRespawnNo(a0),d0
 		beq.s	FBlock_Action
@@ -152,7 +152,7 @@ FBlock_Action:	; Routine 2
 ; moves side-to-side
 		move.w	#$40,d1		; set move distance
 		moveq	#0,d0
-		move.b	(v_oscillate+$A).w,d0
+		move.b	(v_oscillate+$A).l,d0
 		bra.s	.moveLR
 ; ===========================================================================
 
@@ -160,7 +160,7 @@ FBlock_Action:	; Routine 2
 ; moves side-to-side
 		move.w	#$80,d1		; set move distance
 		moveq	#0,d0
-		move.b	(v_oscillate+$1E).w,d0
+		move.b	(v_oscillate+$1E).l,d0
 
 .moveLR:
 		btst	#0,obStatus(a0)
@@ -179,7 +179,7 @@ FBlock_Action:	; Routine 2
 ; moves up/down
 		move.w	#$40,d1		; set move distance
 		moveq	#0,d0
-		move.b	(v_oscillate+$A).w,d0
+		move.b	(v_oscillate+$A).l,d0
 		bra.s	.moveUD
 ; ===========================================================================
 
@@ -187,7 +187,7 @@ FBlock_Action:	; Routine 2
 ; moves up/down
 		move.w	#$80,d1		; set move distance
 		moveq	#0,d0
-		move.b	(v_oscillate+$1E).w,d0
+		move.b	(v_oscillate+$1E).l,d0
 
 .moveUD:
 		btst	#0,obStatus(a0)
@@ -206,27 +206,27 @@ FBlock_Action:	; Routine 2
 ; moves up when a switch is pressed
 		tst.b	objoff_38(a0)
 		bne.s	.loc_104A4
-		cmpi.w	#(id_LZ<<8)+0,(v_zone).w ; is level LZ1 ?
+		cmpi.w	#(id_LZ<<8)+0,(v_zone).l ; is level LZ1 ?
 		bne.s	.aaa		; if not, branch
 		cmpi.b	#3,fb_type(a0)
 		bne.s	.aaa
-		clr.b	(f_wtunnelallow).w
-		move.w	(v_player+obX).w,d0
+		clr.b	(f_wtunnelallow).l
+		move.w	(v_player+obX).l,d0
 		cmp.w	obX(a0),d0
 		bhs.s	.aaa
-		move.b	#1,(f_wtunnelallow).w
+		move.b	#1,(f_wtunnelallow).l
 
 .aaa:
-		lea	(f_switch).w,a2
+		lea	(f_switch).l,a2
 		moveq	#0,d0
 		move.b	fb_type(a0),d0
 		btst	#0,(a2,d0.w)
 		beq.s	.loc_104AE
-		cmpi.w	#(id_LZ<<8)+0,(v_zone).w ; is level LZ1 ?
+		cmpi.w	#(id_LZ<<8)+0,(v_zone).l ; is level LZ1 ?
 		bne.s	.loc_1049E	; if not, branch
 		cmpi.b	#3,d0
 		bne.s	.loc_1049E
-		clr.b	(f_wtunnelallow).w
+		clr.b	(f_wtunnelallow).l
 
 .loc_1049E:
 		move.b	#1,objoff_38(a0)
@@ -252,7 +252,7 @@ FBlock_Action:	; Routine 2
 .loc_104C8:
 		addq.b	#1,obSubtype(a0)
 		clr.b	objoff_38(a0)
-		lea	(v_objstate).w,a2
+		lea	(v_objstate).l,a2
 		moveq	#0,d0
 		move.b	obRespawnNo(a0),d0
 		beq.s	.loc_104AE
@@ -263,7 +263,7 @@ FBlock_Action:	; Routine 2
 .type06:
 		tst.b	objoff_38(a0)
 		bne.s	.loc_10500
-		lea	(f_switch).w,a2
+		lea	(f_switch).l,a2
 		moveq	#0,d0
 		move.b	fb_type(a0),d0
 		tst.b	(a2,d0.w)
@@ -294,7 +294,7 @@ FBlock_Action:	; Routine 2
 .loc_1052C:
 		subq.b	#1,obSubtype(a0)
 		clr.b	objoff_38(a0)
-		lea	(v_objstate).w,a2
+		lea	(v_objstate).l,a2
 		moveq	#0,d0
 		move.b	obRespawnNo(a0),d0
 		beq.s	.loc_10512
@@ -305,7 +305,7 @@ FBlock_Action:	; Routine 2
 .type07:
 		tst.b	objoff_38(a0)
 		bne.s	.loc_1055E
-		tst.b	(f_switch+$F).w	; has switch number $F been pressed?
+		tst.b	(f_switch+$F).l	; has switch number $F been pressed?
 		beq.s	.locret_10578
 		move.b	#1,objoff_38(a0)
 		clr.w	fb_height(a0)
@@ -316,7 +316,7 @@ FBlock_Action:	; Routine 2
 		addq.w	#1,fb_height(a0)
 		cmpi.w	#$380,fb_height(a0)
 		bne.s	.locret_10578
-		move.b	#1,(f_obj56).w
+		move.b	#1,(f_obj56).l
 		clr.b	objoff_38(a0)
 		clr.b	obSubtype(a0)
 
@@ -327,7 +327,7 @@ FBlock_Action:	; Routine 2
 .type0C:
 		tst.b	objoff_38(a0)
 		bne.s	.loc_10598
-		lea	(f_switch).w,a2
+		lea	(f_switch).l,a2
 		moveq	#0,d0
 		move.b	fb_type(a0),d0
 		btst	#0,(a2,d0.w)
@@ -356,7 +356,7 @@ FBlock_Action:	; Routine 2
 .loc_105C0:
 		addq.b	#1,obSubtype(a0)
 		clr.b	objoff_38(a0)
-		lea	(v_objstate).w,a2
+		lea	(v_objstate).l,a2
 		moveq	#0,d0
 		move.b	obRespawnNo(a0),d0
 		beq.s	.loc_105A2
@@ -367,7 +367,7 @@ FBlock_Action:	; Routine 2
 .type0D:
 		tst.b	objoff_38(a0)
 		bne.s	.loc_105F8
-		lea	(f_switch).w,a2
+		lea	(f_switch).l,a2
 		moveq	#0,d0
 		move.b	fb_type(a0),d0
 		tst.b	(a2,d0.w)
@@ -397,7 +397,7 @@ FBlock_Action:	; Routine 2
 .loc_10624:
 		subq.b	#1,obSubtype(a0)
 		clr.b	objoff_38(a0)
-		lea	(v_objstate).w,a2
+		lea	(v_objstate).l,a2
 		moveq	#0,d0
 		move.b	obRespawnNo(a0),d0
 		beq.s	.wtf
@@ -408,33 +408,33 @@ FBlock_Action:	; Routine 2
 .type08:
 		move.w	#$10,d1
 		moveq	#0,d0
-		move.b	(v_oscillate+$2A).w,d0
+		move.b	(v_oscillate+$2A).l,d0
 		lsr.w	#1,d0
-		move.w	(v_oscillate+$2C).w,d3
+		move.w	(v_oscillate+$2C).l,d3
 		bra.s	.square
 ; ===========================================================================
 
 .type09:
 		move.w	#$30,d1
 		moveq	#0,d0
-		move.b	(v_oscillate+$2E).w,d0
-		move.w	(v_oscillate+$30).w,d3
+		move.b	(v_oscillate+$2E).l,d0
+		move.w	(v_oscillate+$30).l,d3
 		bra.s	.square
 ; ===========================================================================
 
 .type0A:
 		move.w	#$50,d1
 		moveq	#0,d0
-		move.b	(v_oscillate+$32).w,d0
-		move.w	(v_oscillate+$34).w,d3
+		move.b	(v_oscillate+$32).l,d0
+		move.w	(v_oscillate+$34).l,d3
 		bra.s	.square
 ; ===========================================================================
 
 .type0B:
 		move.w	#$70,d1
 		moveq	#0,d0
-		move.b	(v_oscillate+$36).w,d0
-		move.w	(v_oscillate+$38).w,d3
+		move.b	(v_oscillate+$36).l,d0
+		move.w	(v_oscillate+$38).l,d3
 
 .square:
 		tst.w	d3

@@ -22,7 +22,7 @@ ReactToItem:
 .notducking:
 		move.w	#$10,d4
 		add.w	d5,d5
-		lea	(v_lvlobjspace).w,a1 ; set object RAM start address
+		lea	(v_lvlobjspace).l,a1 ; set object RAM start address
 		move.w	#(v_lvlobjend-v_lvlobjspace)/$40-1,d6
 
 .loop:
@@ -165,7 +165,7 @@ React_Monitor:
 ; ===========================================================================
 
 React_Enemy:
-		tst.b	(v_invinc).w	; is Sonic invincible?
+		tst.b	(v_invinc).l	; is Sonic invincible?
 		bne.s	.donthurtsonic	; if yes, branch
 		cmpi.b	#id_Roll,obAnim(a0) ; is Sonic rolling/jumping?
 		bne.w	React_ChkHurt	; if not, branch
@@ -190,8 +190,8 @@ React_Enemy:
 .breakenemy:
 		bset	#7,obStatus(a1)
 		moveq	#0,d0
-		move.w	(v_itembonus).w,d0
-		addq.w	#2,(v_itembonus).w ; add 2 to item bonus counter
+		move.w	(v_itembonus).l,d0
+		addq.w	#2,(v_itembonus).l ; add 2 to item bonus counter
 		cmpi.w	#6,d0
 		blo.s	.bonusokay
 		moveq	#6,d0		; max bonus is lvl6
@@ -199,7 +199,7 @@ React_Enemy:
 .bonusokay:
 		move.w	d0,objoff_3E(a1)
 		move.w	.points(pc,d0.w),d0
-		cmpi.w	#$20,(v_itembonus).w ; have 16 enemies been destroyed?
+		cmpi.w	#$20,(v_itembonus).l ; have 16 enemies been destroyed?
 		blo.s	.lessthan16	; if not, branch
 		move.w	#1000,d0	; fix bonus to 10000
 		move.w	#$A,objoff_3E(a1)
@@ -233,7 +233,7 @@ React_Caterkiller:
 		bset	#7,obStatus(a1)
 
 React_ChkHurt:
-		tst.b	(v_invinc).w	; is Sonic invincible?
+		tst.b	(v_invinc).l	; is Sonic invincible?
 		beq.s	.notinvincible	; if not, branch
 
 .isflashing:
@@ -258,9 +258,9 @@ React_ChkHurt:
 
 
 HurtSonic:
-		tst.b	(v_shield).w	; does Sonic have a shield?
+		tst.b	(v_shield).l	; does Sonic have a shield?
 		bne.s	.hasshield	; if yes, branch
-		tst.w	(v_rings).w	; does Sonic have any rings?
+		tst.w	(v_rings).l	; does Sonic have any rings?
 		beq.w	.norings	; if not, branch
 
 		jsr	(FindFreeObj).l
@@ -270,7 +270,7 @@ HurtSonic:
 		move.w	obY(a0),obY(a1)
 
 .hasshield:
-		move.b	#0,(v_shield).w	; remove shield
+		move.b	#0,(v_shield).l	; remove shield
 		move.b	#4,obRoutine(a0)
 		jsr		(Sonic_ResetOnFloor).l
 		bset	#1,obStatus(a0)
@@ -316,7 +316,7 @@ HurtSonic:
 ; ===========================================================================
 
 .norings:
-		tst.w	(f_debugmode).w	; is debug mode	cheat on?
+		tst.w	(f_debugmode).l	; is debug mode	cheat on?
 		bne.w	.hasshield	; if yes, branch
 
 ; ---------------------------------------------------------------------------
@@ -327,9 +327,9 @@ HurtSonic:
 
 
 KillSonic:
-		tst.w	(v_debuguse).w	; is debug mode	active?
+		tst.w	(v_debuguse).l	; is debug mode	active?
 		bne.s	.dontdie	; if yes, branch
-		move.b	#0,(v_invinc).w	; remove invincibility
+		move.b	#0,(v_invinc).l	; remove invincibility
 		move.b	#6,obRoutine(a0)
 		jsr		(Sonic_ResetOnFloor).l
 		bset	#1,obStatus(a0)

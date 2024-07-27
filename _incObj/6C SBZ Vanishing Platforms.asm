@@ -44,7 +44,7 @@ VanP_Main:	; Routine 0
 		move.w	d1,objoff_38(a0)
 
 loc_16068:	; Routine 6
-		move.w	(v_framecount).w,d0
+		move.w	(v_framecount).l,d0
 		sub.w	objoff_36(a0),d0
 		and.w	objoff_38(a0),d0
 		bne.s	.animate
@@ -95,7 +95,7 @@ VanP_Appear:	; Routine 4
 .notsolid:
 		btst	#3,obStatus(a0)
 		beq.s	.display
-		lea	(v_player).w,a1
+		lea	(v_player).l,a1
 		bclr	#3,obStatus(a1)
 		bclr	#3,obStatus(a0)
 		move.b	#2,obRoutine(a0)

@@ -4,7 +4,7 @@
 ; ---------------------------------------------------------------------------
 
 SonicPlayer:
-		tst.w	(v_debuguse).w	; is debug mode	being used?
+		tst.w	(v_debuguse).l	; is debug mode	being used?
 		beq.s	Sonic_Normal	; if not, branch
 		jmp	(DebugMode).l
 ; ===========================================================================
@@ -31,27 +31,27 @@ Sonic_Main:	; Routine 0
 		move.b	#2,obPriority(a0)
 		move.b	#$18,obActWid(a0)
 		move.b	#4,obRender(a0)
-		move.w	#$600,(v_sonspeedmax).w ; Sonic's top speed
-		move.w	#$C,(v_sonspeedacc).w ; Sonic's acceleration
-		move.w	#$80,(v_sonspeeddec).w ; Sonic's deceleration
+		move.w	#$600,(v_sonspeedmax).l ; Sonic's top speed
+		move.w	#$C,(v_sonspeedacc).l ; Sonic's acceleration
+		move.w	#$80,(v_sonspeeddec).l ; Sonic's deceleration
 
 Sonic_Control:	; Routine 2
-		tst.w	(f_debugmode).w	; is debug cheat enabled?
+		tst.w	(f_debugmode).l	; is debug cheat enabled?
 		beq.s	loc_12C58	; if not, branch
-		btst	#bitB,(v_jpadpress1).w ; is button B pressed?
+		btst	#bitB,(v_jpadpress1).l ; is button B pressed?
 		beq.s	loc_12C58	; if not, branch
-		move.w	#1,(v_debuguse).w ; change Sonic into a ring/item
-		clr.b	(f_lockctrl).w
+		move.w	#1,(v_debuguse).l ; change Sonic into a ring/item
+		clr.b	(f_lockctrl).l
 		rts	
 ; ===========================================================================
 
 loc_12C58:
-		tst.b	(f_lockctrl).w	; are controls locked?
+		tst.b	(f_lockctrl).l	; are controls locked?
 		bne.s	loc_12C64	; if yes, branch
-		move.w	(v_jpadhold1).w,(v_jpadhold2).w ; enable joypad control
+		move.w	(v_jpadhold1).l,(v_jpadhold2).l ; enable joypad control
 
 loc_12C64:
-		btst	#0,(f_playerctrl).w ; are controls locked?
+		btst	#0,(f_playerctrl).l ; are controls locked?
 		bne.s	loc_12C7E	; if yes, branch
 		moveq	#0,d0
 		move.b	obStatus(a0),d0
@@ -63,9 +63,9 @@ loc_12C7E:
 		bsr.s	Sonic_Display
 		bsr.w	Sonic_RecordPosition
 		bsr.w	Sonic_Water
-		move.b	(v_anglebuffer).w,objoff_36(a0)
-		move.b	(v_anglebuffer2).w,objoff_37(a0)
-		tst.b	(f_wtunnelmode).w
+		move.b	(v_anglebuffer).l,objoff_36(a0)
+		move.b	(v_anglebuffer2).l,objoff_37(a0)
+		tst.b	(f_wtunnelmode).l
 		beq.s	loc_12CA6
 		tst.b	obAnim(a0)
 		bne.s	loc_12CA6
@@ -74,7 +74,7 @@ loc_12C7E:
 loc_12CA6:
 		call	Sonic_Animate
 		if MMD_Is_Ending==0
-		tst.b	(f_playerctrl).w
+		tst.b	(f_playerctrl).l
 		bmi.s	loc_12CB6
 		jsr	(ReactToItem).l
 
@@ -218,8 +218,8 @@ Sonic_WalkSpeed:
 		add.l	d1,d2
 		swap	d2
 		swap	d3
-		move.b	d0,(v_anglebuffer).w
-		move.b	d0,(v_anglebuffer2).w
+		move.b	d0,(v_anglebuffer).l
+		move.b	d0,(v_anglebuffer2).l
 		move.b	d0,d1
 		addi.b	#$20,d0
 		bpl.s	loc_14D1A
@@ -263,7 +263,7 @@ loc_14D3C:
 loc_14F7C:
 		subi.w	#$A,d2
 		eori.w	#$F,d2
-		lea	(v_anglebuffer).w,a4
+		lea	(v_anglebuffer).l,a4
 		movea.w	#-$10,a3
 		move.w	#$1000,d6
 		moveq	#$E,d5
@@ -276,8 +276,8 @@ loc_14F7C:
 
 
 sub_14D48:
-		move.b	d0,(v_anglebuffer).w
-		move.b	d0,(v_anglebuffer2).w
+		move.b	d0,(v_anglebuffer).l
+		move.b	d0,(v_anglebuffer2).l
 		addi.b	#$20,d0
 		andi.b	#$C0,d0
 		cmpi.b	#$40,d0
@@ -302,7 +302,7 @@ loc_14FD6:
 		ext.w	d0
 		sub.w	d0,d3
 		eori.w	#$F,d3
-		lea	(v_anglebuffer).w,a4
+		lea	(v_anglebuffer).l,a4
 		movea.w	#-$10,a3
 		move.w	#$800,d6
 		moveq	#$E,d5
@@ -318,7 +318,7 @@ loc_14FD6:
 		ext.w	d0
 		sub.w	d0,d3
 		eori.w	#$F,d3
-		lea	(v_anglebuffer2).w,a4
+		lea	(v_anglebuffer2).l,a4
 		movea.w	#-$10,a3
 		move.w	#$800,d6
 		moveq	#$E,d5
@@ -344,7 +344,7 @@ Sonic_HitFloor:
 		move.b	obWidth(a0),d0
 		ext.w	d0
 		add.w	d0,d3
-		lea	(v_anglebuffer).w,a4
+		lea	(v_anglebuffer).l,a4
 		movea.w	#$10,a3
 		move.w	#0,d6
 		moveq	#$D,d5
@@ -359,7 +359,7 @@ Sonic_HitFloor:
 		move.b	obWidth(a0),d0
 		ext.w	d0
 		sub.w	d0,d3
-		lea	(v_anglebuffer2).w,a4
+		lea	(v_anglebuffer2).l,a4
 		movea.w	#$10,a3
 		move.w	#0,d6
 		moveq	#$D,d5
@@ -368,10 +368,10 @@ Sonic_HitFloor:
 		move.b	#0,d2
 
 loc_14DD0:
-		move.b	(v_anglebuffer2).w,d3
+		move.b	(v_anglebuffer2).l,d3
 		cmp.w	d0,d1
 		ble.s	loc_14DDE
-		move.b	(v_anglebuffer).w,d3
+		move.b	(v_anglebuffer).l,d3
 		exg	d0,d1
 
 loc_14DDE:
@@ -398,7 +398,7 @@ Sonic_HitWall:
 loc_1504A:
 		subi.w	#$A,d3
 		eori.w	#$F,d3
-		lea	(v_anglebuffer).w,a4
+		lea	(v_anglebuffer).l,a4
 		movea.w	#-$10,a3
 		move.w	#$800,d6
 		moveq	#$E,d5
@@ -426,7 +426,7 @@ Sonic_DontRunOnWalls:
 		move.b	obWidth(a0),d0
 		ext.w	d0
 		add.w	d0,d3
-		lea	(v_anglebuffer).w,a4
+		lea	(v_anglebuffer).l,a4
 		movea.w	#-$10,a3
 		move.w	#$1000,d6
 		moveq	#$E,d5
@@ -442,7 +442,7 @@ Sonic_DontRunOnWalls:
 		move.b	obWidth(a0),d0
 		ext.w	d0
 		sub.w	d0,d3
-		lea	(v_anglebuffer2).w,a4
+		lea	(v_anglebuffer2).l,a4
 		movea.w	#-$10,a3
 		move.w	#$1000,d6
 		moveq	#$E,d5
@@ -458,7 +458,7 @@ Sonic_DontRunOnWalls:
 
 loc_14DF0:
 		addi.w	#$A,d2
-		lea	(v_anglebuffer).w,a4
+		lea	(v_anglebuffer).l,a4
 		movea.w	#$10,a3
 		move.w	#0,d6
 		moveq	#$E,d5
@@ -466,7 +466,7 @@ loc_14DF0:
 		move.b	#0,d2
 
 loc_14E0A:
-		move.b	(v_anglebuffer).w,d3
+		move.b	(v_anglebuffer).l,d3
 		btst	#0,d3
 		beq.s	locret_14E16
 		move.b	d2,d3
@@ -487,7 +487,7 @@ sub_14E50:
 		move.b	obHeight(a0),d0
 		ext.w	d0
 		add.w	d0,d3
-		lea	(v_anglebuffer).w,a4
+		lea	(v_anglebuffer).l,a4
 		movea.w	#$10,a3
 		move.w	#0,d6
 		moveq	#$E,d5
@@ -502,7 +502,7 @@ sub_14E50:
 		move.b	obHeight(a0),d0
 		ext.w	d0
 		add.w	d0,d3
-		lea	(v_anglebuffer2).w,a4
+		lea	(v_anglebuffer2).l,a4
 		movea.w	#$10,a3
 		move.w	#0,d6
 		moveq	#$E,d5
@@ -523,7 +523,7 @@ sub_14EB4:
 
 loc_14EBC:
 		addi.w	#$A,d3
-		lea	(v_anglebuffer).w,a4
+		lea	(v_anglebuffer).l,a4
 		movea.w	#$10,a3
 		move.w	#0,d6
 		moveq	#$E,d5

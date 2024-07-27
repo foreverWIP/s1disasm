@@ -22,8 +22,8 @@ writeVRAM:	macro source,destination
 		move.l	#$96000000+(((source>>1)&$FF00)<<8)+$9500+((source>>1)&$FF),(a5)
 		move.w	#$9700+((((source>>1)&$FF0000)>>16)&$7F),(a5)
 		move.w	#$4000+((destination)&$3FFF),(a5)
-		move.w	#$80+(((destination)&$C000)>>14),(v_vdp_buffer2).w
-		move.w	(v_vdp_buffer2).w,(a5)
+		move.w	#$80+(((destination)&$C000)>>14),v_vdp_buffer2
+		move.w	v_vdp_buffer2,(a5)
 		endm
 
 ; ---------------------------------------------------------------------------
@@ -37,8 +37,8 @@ writeCRAM:	macro source,destination
 		move.l	#$96000000+(((source>>1)&$FF00)<<8)+$9500+((source>>1)&$FF),(a5)
 		move.w	#$9700+((((source>>1)&$FF0000)>>16)&$7F),(a5)
 		move.w	#$C000+(destination&$3FFF),(a5)
-		move.w	#$80+((destination&$C000)>>14),(v_vdp_buffer2).w
-		move.w	(v_vdp_buffer2).w,(a5)
+		move.w	#$80+((destination&$C000)>>14),v_vdp_buffer2
+		move.w	v_vdp_buffer2,(a5)
 		endm
 
 ; ---------------------------------------------------------------------------
@@ -70,7 +70,7 @@ clearRAM:	macro startAddress,endAddress
 	else
 .length := startAddress_end-startAddress
 	endif
-		lea	(startAddress).w,a1
+		lea	startAddress,a1
 		moveq	#0,d0
 		move.w	#.length/4-1,d1
 
@@ -281,7 +281,7 @@ out_of_range:	macro exit,pos
 		move.w	obX(a0),d0	; get object position
 		endif
 		andi.w	#$FF80,d0	; round down to nearest $80
-		move.w	(v_screenposx).w,d1 ; get screen position
+		move.w	v_screenposx,d1 ; get screen position
 		subi.w	#128,d1
 		andi.w	#$FF80,d1
 		sub.w	d1,d0		; approx distance between object and screen

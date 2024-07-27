@@ -6,15 +6,15 @@
 
 
 PaletteFadeIn:
-		move.w	#$003F,(v_pfade_start).w ; set start position = 0; size = $40
+		move.w	#$003F,(v_pfade_start).l ; set start position = 0; size = $40
 
 PalFadeIn_Alt:				; start position and size are already set
 		moveq	#0,d0
-		lea	(v_palette).w,a0
-		move.b	(v_pfade_start).w,d0
+		lea	(v_palette).l,a0
+		move.b	(v_pfade_start).l,d0
 		adda.w	d0,a0
 		moveq	#cBlack,d1
-		move.b	(v_pfade_size).w,d0
+		move.b	(v_pfade_size).l,d0
 
 .fill:
 		move.w	d1,(a0)+
@@ -23,7 +23,7 @@ PalFadeIn_Alt:				; start position and size are already set
 		move.w	#$15,d4
 
 .mainloop:
-		move.b	#$12,(v_vbla_routine).w
+		move.b	#$12,(v_vbla_routine).l
 		bsr.w	WaitForVBla
 		bsr.s	FadeIn_FromBlack
 		bsr.w	RunPLC
@@ -37,12 +37,12 @@ PalFadeIn_Alt:				; start position and size are already set
 
 FadeIn_FromBlack:
 		moveq	#0,d0
-		lea	(v_palette).w,a0
-		lea	(v_palette_fading).w,a1
-		move.b	(v_pfade_start).w,d0
+		lea	(v_palette).l,a0
+		lea	(v_palette_fading).l,a1
+		move.b	(v_pfade_start).l,d0
 		adda.w	d0,a0
 		adda.w	d0,a1
-		move.b	(v_pfade_size).w,d0
+		move.b	(v_pfade_size).l,d0
 
 .addcolour:
 		bsr.s	FadeIn_AddColour ; increase colour
@@ -50,12 +50,12 @@ FadeIn_FromBlack:
 
 		if MMD_Is_LZ
 		moveq	#0,d0
-		lea	(v_palette_water).w,a0
-		lea	(v_palette_water_fading).w,a1
-		move.b	(v_pfade_start).w,d0
+		lea	(v_palette_water).l,a0
+		lea	(v_palette_water_fading).l,a1
+		move.b	(v_pfade_start).l,d0
 		adda.w	d0,a0
 		adda.w	d0,a1
-		move.b	(v_pfade_size).w,d0
+		move.b	(v_pfade_size).l,d0
 
 .addcolour2:
 		bsr.s	FadeIn_AddColour ; increase colour again
@@ -111,11 +111,11 @@ FadeIn_AddColour:
 
 
 PaletteFadeOut:
-		move.w	#$003F,(v_pfade_start).w ; start position = 0; size = $40
+		move.w	#$003F,(v_pfade_start).l ; start position = 0; size = $40
 		move.w	#$15,d4
 
 .mainloop:
-		move.b	#$12,(v_vbla_routine).w
+		move.b	#$12,(v_vbla_routine).l
 		bsr.w	WaitForVBla
 		bsr.s	FadeOut_ToBlack
 		bsr.w	RunPLC
@@ -129,20 +129,20 @@ PaletteFadeOut:
 
 FadeOut_ToBlack:
 		moveq	#0,d0
-		lea	(v_palette).w,a0
-		move.b	(v_pfade_start).w,d0
+		lea	(v_palette).l,a0
+		move.b	(v_pfade_start).l,d0
 		adda.w	d0,a0
-		move.b	(v_pfade_size).w,d0
+		move.b	(v_pfade_size).l,d0
 
 .decolour:
 		bsr.s	FadeOut_DecColour ; decrease colour
 		dbf	d0,.decolour	; repeat for size of palette
 
 		moveq	#0,d0
-		lea	(v_palette_water).w,a0
-		move.b	(v_pfade_start).w,d0
+		lea	(v_palette_water).l,a0
+		move.b	(v_pfade_start).l,d0
 		adda.w	d0,a0
-		move.b	(v_pfade_size).w,d0
+		move.b	(v_pfade_size).l,d0
 
 .decolour2:
 		bsr.s	FadeOut_DecColour
@@ -194,13 +194,13 @@ FadeOut_DecColour:
 
 
 PaletteWhiteIn:
-		move.w	#$003F,(v_pfade_start).w ; start position = 0; size = $40
+		move.w	#$003F,(v_pfade_start).l ; start position = 0; size = $40
 		moveq	#0,d0
-		lea	(v_palette).w,a0
-		move.b	(v_pfade_start).w,d0
+		lea	(v_palette).l,a0
+		move.b	(v_pfade_start).l,d0
 		adda.w	d0,a0
 		move.w	#cWhite,d1
-		move.b	(v_pfade_size).w,d0
+		move.b	(v_pfade_size).l,d0
 
 .fill:
 		move.w	d1,(a0)+
@@ -209,7 +209,7 @@ PaletteWhiteIn:
 		move.w	#$15,d4
 
 .mainloop:
-		move.b	#$12,(v_vbla_routine).w
+		move.b	#$12,(v_vbla_routine).l
 		bsr.w	WaitForVBla
 		bsr.s	WhiteIn_FromWhite
 		bsr.w	RunPLC
@@ -223,12 +223,12 @@ PaletteWhiteIn:
 
 WhiteIn_FromWhite:
 		moveq	#0,d0
-		lea	(v_palette).w,a0
-		lea	(v_palette_fading).w,a1
-		move.b	(v_pfade_start).w,d0
+		lea	(v_palette).l,a0
+		lea	(v_palette_fading).l,a1
+		move.b	(v_pfade_start).l,d0
 		adda.w	d0,a0
 		adda.w	d0,a1
-		move.b	(v_pfade_size).w,d0
+		move.b	(v_pfade_size).l,d0
 
 .decolour:
 		bsr.s	WhiteIn_DecColour ; decrease colour
@@ -236,12 +236,12 @@ WhiteIn_FromWhite:
 
 		if MMD_Is_LZ
 		moveq	#0,d0
-		lea	(v_palette_water).w,a0
-		lea	(v_palette_water_fading).w,a1
-		move.b	(v_pfade_start).w,d0
+		lea	(v_palette_water).l,a0
+		lea	(v_palette_water_fading).l,a1
+		move.b	(v_pfade_start).l,d0
 		adda.w	d0,a0
 		adda.w	d0,a1
-		move.b	(v_pfade_size).w,d0
+		move.b	(v_pfade_size).l,d0
 
 .decolour2:
 		bsr.s	WhiteIn_DecColour
@@ -297,11 +297,11 @@ WhiteIn_DecColour:
 
 
 PaletteWhiteOut:
-		move.w	#$003F,(v_pfade_start).w ; start position = 0; size = $40
+		move.w	#$003F,(v_pfade_start).l ; start position = 0; size = $40
 		move.w	#$15,d4
 
 .mainloop:
-		move.b	#$12,(v_vbla_routine).w
+		move.b	#$12,(v_vbla_routine).l
 		bsr.w	WaitForVBla
 		bsr.s	WhiteOut_ToWhite
 		bsr.w	RunPLC
@@ -315,20 +315,20 @@ PaletteWhiteOut:
 
 WhiteOut_ToWhite:
 		moveq	#0,d0
-		lea	(v_palette).w,a0
-		move.b	(v_pfade_start).w,d0
+		lea	(v_palette).l,a0
+		move.b	(v_pfade_start).l,d0
 		adda.w	d0,a0
-		move.b	(v_pfade_size).w,d0
+		move.b	(v_pfade_size).l,d0
 
 .addcolour:
 		bsr.s	WhiteOut_AddColour
 		dbf	d0,.addcolour
 
 		moveq	#0,d0
-		lea	(v_palette_water).w,a0
-		move.b	(v_pfade_start).w,d0
+		lea	(v_palette_water).l,a0
+		move.b	(v_pfade_start).l,d0
 		adda.w	d0,a0
-		move.b	(v_pfade_size).w,d0
+		move.b	(v_pfade_size).l,d0
 
 .addcolour2:
 		bsr.s	WhiteOut_AddColour

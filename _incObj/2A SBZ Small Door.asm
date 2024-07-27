@@ -23,7 +23,7 @@ ADoor_Main:	; Routine 0
 ADoor_OpenShut:	; Routine 2
 		move.w	#$40,d1		; set range for door detection
 		clr.b	obAnim(a0)	; use "closing"	animation
-		move.w	(v_player+obX).w,d0
+		move.w	(v_player+obX).l,d0
 		add.w	d1,d0
 		cmp.w	obX(a0),d0
 		blo.s	ADoor_Animate

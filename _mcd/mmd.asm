@@ -15,19 +15,17 @@ MMDSUBM		EQU	1<<MMDSUB		; Sub CPU Word RAM access flag mask
 ; -------------------------------------------------------------------------
 ; MMD header structure
 ; -------------------------------------------------------------------------
-		if 0
-	rsreset
-mmdFlags	rs.b	1			; Flags
-		rs.b	1
-mmdOrigin	rs.l	1			; Origin address
-mmdSize		rs.w	1			; Size of file data
-mmdEntry	rs.l	1			; Entry address
-mmdHInt		rs.l	1			; H-BLANK interrupt address
-mmdVInt		rs.l	1			; V-BLANK interrupt address
-		rs.b	$100-__rs
-mmdFile		rs.b	0			; Start of file data
-MMDHEADSZ	rs.b	0			; Size of structure
-		endif
+;	rsreset
+;mmdFlags	rs.b	1			; Flags
+;		rs.b	1
+;mmdOrigin	rs.l	1			; Origin address
+;mmdSize		rs.w	1			; Size of file data
+;mmdEntry	rs.l	1			; Entry address
+;mmdHInt		rs.l	1			; H-BLANK interrupt address
+;mmdVInt		rs.l	1			; V-BLANK interrupt address
+;		rs.b	$100-__rs
+;mmdFile		rs.b	0			; Start of file data
+;MMDHEADSZ	rs.b	0			; Size of structure
 MMDHEADSZ = $100
 
 ; -------------------------------------------------------------------------
@@ -43,11 +41,7 @@ MMDHEADSZ = $100
 ; -------------------------------------------------------------------------
 
 MMD macro flags, origin, size, entry, hint, vint
-	if (origin)=WORDRAM2M
-		org	WORDRAM2M
-	else
-		org	(origin)-MMDHEADSZ
-	endif
+	phase	$200000
 
 	dc.b	flags, 0
 	if (origin)=WORDRAM2M

@@ -10,9 +10,9 @@ GM_Special:
 		lea	(vdp_control_port).l,a6
 		move.w	#$8B03,(a6)	; line scroll mode
 		move.w	#$8004,(a6)	; 8-colour mode
-		move.w	#$8A00+175,(v_hbla_hreg).w
+		move.w	#$8A00+175,(v_hbla_hreg).l
 		move.w	#$9011,(a6)	; 128-cell hscroll size
-		move.w	(v_vdp_buffer1).w,d0
+		move.w	(v_vdp_buffer1).l,d0
 		andi.b	#$BF,d0
 		move.w	d0,(vdp_control_port).l
 		call	ClearScreen
@@ -27,38 +27,40 @@ GM_Special:
 		clearRAM v_timingvariables
 		clearRAM v_ngfx_buffer
 
-		clr.b	(f_wtr_state).w
-		clr.w	(f_restart).w
+		clr.b	(f_wtr_state).l
+		clr.w	(f_restart).l
 		moveq	#palid_Special,d0
 		call	PalLoad_Fade	; load special stage palette
 		jsr	(SS_Load).l		; load SS layout data
-		move.l	#0,(v_screenposx).w
-		move.l	#0,(v_screenposy).w
-		move.b	#id_SonicSpecial,(v_player).w ; load special stage Sonic object
+		move.l	#0,(v_screenposx).l
+		move.l	#0,(v_screenposy).l
+		move.b	#id_SonicSpecial,(v_player).l ; load special stage Sonic object
 		bsr.w	PalCycle_SS
-		clr.w	(v_ssangle).w	; set stage angle to "upright"
-		move.w	#$40,(v_ssrotate).w ; set stage rotation speed
+		clr.w	(v_ssangle).l	; set stage angle to "upright"
+		move.w	#$40,(v_ssrotate).l ; set stage rotation speed
 		move.w	#bgm_SS,d0
 		call	PlaySound	; play special stage BG	music
-		move.w	#0,(v_btnpushtime1).w
+		move.w	#0,(v_btnpushtime1).l
+		if MMD_Is_Demo
 		lea	(DemoDataPtr).l,a1
 		moveq	#6,d0
 		lsl.w	#2,d0
 		movea.l	(a1,d0.w),a1
-		move.b	1(a1),(v_btnpushtime2).w
-		subq.b	#1,(v_btnpushtime2).w
-		clr.w	(v_rings).w
-		clr.b	(v_lifecount).w
-		move.w	#0,(v_debuguse).w
-		move.w	#1800,(v_demolength).w
-		tst.b	(f_debugcheat).w ; has debug cheat been entered?
+		move.b	1(a1),(v_btnpushtime2).l
+		subq.b	#1,(v_btnpushtime2).l
+		endif
+		clr.w	(v_rings).l
+		clr.b	(v_lifecount).l
+		move.w	#0,(v_debuguse).l
+		move.w	#1800,(v_demolength).l
+		tst.b	(f_debugcheat).l ; has debug cheat been entered?
 		beq.s	SS_NoDebug	; if not, branch
-		btst	#bitA,(v_jpadhold1).w ; is A button pressed?
+		btst	#bitA,(v_jpadhold1).l ; is A button pressed?
 		beq.s	SS_NoDebug	; if not, branch
-		move.b	#1,(f_debugmode).w ; enable debug mode
+		move.b	#1,(f_debugmode).l ; enable debug mode
 
 SS_NoDebug:
-		move.w	(v_vdp_buffer1).w,d0
+		move.w	(v_vdp_buffer1).l,d0
 		ori.b	#$40,d0
 		move.w	d0,(vdp_control_port).l
 		call	PaletteWhiteIn
@@ -69,51 +71,55 @@ SS_NoDebug:
 
 SS_MainLoop:
 		call	PauseGame
-		move.b	#$A,(v_vbla_routine).w
+		move.b	#$A,(v_vbla_routine).l
 		call	WaitForVBla
+		if MMD_Is_Demo
 		call	MoveSonicInDemo
-		move.w	(v_jpadhold1).w,(v_jpadhold2).w
+		endif
+		move.w	(v_jpadhold1).l,(v_jpadhold2).l
 		call	ExecuteObjects
 		call	BuildSprites
 		call	SS_ShowLayout
 		call	SS_BGAnimate
-		tst.w	(f_demo).w	; is demo mode on?
+		tst.w	(f_demo).l	; is demo mode on?
 		beq.s	SS_ChkEnd	; if not, branch
-		tst.w	(v_demolength).w ; is there time left on the demo?
+		tst.w	(v_demolength).l ; is there time left on the demo?
 		beq.w	SS_ToTitleScreen	; if not, branch
 
 SS_ChkEnd:
-		cmpi.b	#id_Special,(v_gamemode).w ; is game mode $10 (special stage)?
+		cmpi.b	#id_Special,(v_gamemode).l ; is game mode $10 (special stage)?
 		beq.w	SS_MainLoop	; if yes, branch
 
-		tst.w	(f_demo).w	; is demo mode on?
+		tst.w	(f_demo).l	; is demo mode on?
 		bne.w	SS_ToLevel
-		move.b	#id_Level,(v_gamemode).w ; set screen mode to $0C (level)
-		cmpi.w	#(id_SBZ<<8)+3,(v_zone).w ; is level number higher than FZ?
+		move.b	#id_Level,(v_gamemode).l ; set screen mode to $0C (level)
+		cmpi.w	#(id_SBZ<<8)+3,(v_zone).l ; is level number higher than FZ?
 		blo.s	SS_Finish	; if not, branch
-		clr.w	(v_zone).w	; set to GHZ1
+		clr.w	(v_zone).l	; set to GHZ1
 
 SS_Finish:
-		move.w	#60,(v_demolength).w ; set delay time to 1 second
-		move.w	#$3F,(v_pfade_start).w
-		clr.w	(v_palchgspeed).w
+		move.w	#60,(v_demolength).l ; set delay time to 1 second
+		move.w	#$3F,(v_pfade_start).l
+		clr.w	(v_palchgspeed).l
 
 SS_FinLoop:
-		move.b	#$16,(v_vbla_routine).w
+		move.b	#$16,(v_vbla_routine).l
 		call	WaitForVBla
+		if MMD_Is_Demo
 		call	MoveSonicInDemo
-		move.w	(v_jpadhold1).w,(v_jpadhold2).w
+		endif
+		move.w	(v_jpadhold1).l,(v_jpadhold2).l
 		call	ExecuteObjects
 		call	BuildSprites
 		call	SS_ShowLayout
 		call	SS_BGAnimate
-		subq.w	#1,(v_palchgspeed).w
+		subq.w	#1,(v_palchgspeed).l
 		bpl.s	loc_47D4
-		move.w	#2,(v_palchgspeed).w
+		move.w	#2,(v_palchgspeed).l
 		call	WhiteOut_ToWhite
 
 loc_47D4:
-		tst.w	(v_demolength).w
+		tst.w	(v_demolength).l
 		bne.s	SS_FinLoop
 
 		disable_ints
@@ -133,28 +139,28 @@ loc_47D4:
 		call	NewPLC
 		moveq	#plcid_SSResult,d0
 		call	AddPLC		; load results screen patterns
-		move.b	#1,(f_scorecount).w ; update score counter
-		move.b	#1,(f_endactbonus).w ; update ring bonus counter
-		move.w	(v_rings).w,d0
+		move.b	#1,(f_scorecount).l ; update score counter
+		move.b	#1,(f_endactbonus).l ; update ring bonus counter
+		move.w	(v_rings).l,d0
 		mulu.w	#10,d0		; multiply rings by 10
-		move.w	d0,(v_ringbonus).w ; set rings bonus
+		move.w	d0,(v_ringbonus).l ; set rings bonus
 		move.w	#bgm_GotThrough,d0
 		call	PlaySound_Special	 ; play end-of-level music
 
 		clearRAM v_objspace
 
-		move.b	#id_SSResult,(v_ssrescard).w ; load results screen object
+		move.b	#id_SSResult,(v_ssrescard).l ; load results screen object
 
 SS_NormalExit:
 		call	PauseGame
-		move.b	#$C,(v_vbla_routine).w
+		move.b	#$C,(v_vbla_routine).l
 		call	WaitForVBla
 		call	ExecuteObjects
 		call	BuildSprites
 		call	RunPLC
-		tst.w	(f_restart).w
+		tst.w	(f_restart).l
 		beq.s	SS_NormalExit
-		tst.l	(v_plc_buffer).w
+		tst.l	(v_plc_buffer).l
 		bne.s	SS_NormalExit
 		move.w	#sfx_EnterSS,d0
 		call	PlaySound_Special ; play special stage exit sound
@@ -163,10 +169,10 @@ SS_NormalExit:
 ; ===========================================================================
 
 SS_ToTitleScreen:
-		move.b	#id_Title,(v_gamemode).w ; goto title screen
+		move.b	#id_Title,(v_gamemode).l ; goto title screen
 		rts
 
-SS_ToLevel:	cmpi.b	#id_Level,(v_gamemode).w
+SS_ToLevel:	cmpi.b	#id_Level,(v_gamemode).l
 		beq.s	SS_ToTitleScreen
 		rts
 
@@ -248,14 +254,14 @@ loc_491C:
 
 
 PalCycle_SS:
-		tst.w	(f_pause).w
-		bne.s	locret_49E6
-		subq.w	#1,(v_palss_time).w
-		bpl.s	locret_49E6
+		tst.w	(f_pause).l
+		bne.w	locret_49E6
+		subq.w	#1,(v_palss_time).l
+		bpl.w	locret_49E6
 
 		lea	(vdp_control_port).l,a6
-		move.w	(v_palss_num).w,d0
-		addq.w	#1,(v_palss_num).w
+		move.w	(v_palss_num).l,d0
+		addq.w	#1,(v_palss_num).l
 		andi.w	#$1F,d0
 		lsl.w	#2,d0
 		lea	(byte_4A3C).l,a0
@@ -267,12 +273,12 @@ PalCycle_SS:
 		move.w	#$1FF,d0
 
 loc_4992:
-		move.w	d0,(v_palss_time).w
+		move.w	d0,(v_palss_time).l
 
 		; Anim
 		moveq	#0,d0
 		move.b	(a0)+,d0
-		move.w	d0,(v_ssbganim).w
+		move.w	d0,(v_ssbganim).l
 		lea	(byte_4ABC).l,a1
 		lea	(a1,d0.w),a1
 		; FG VRAM
@@ -280,14 +286,14 @@ loc_4992:
 		move.b	(a1)+,d0
 		move.w	d0,(a6)
 		; Y coordinate
-		move.b	(a1),(v_scrposy_vdp).w
+		move.b	(a1),(v_scrposy_vdp).l
 
 		; BG VRAM
 		move.w	#$8400,d0
 		move.b	(a0)+,d0
 		move.w	d0,(a6)
 		move.l	#$40000010,(vdp_control_port).l
-		move.l	(v_scrposy_vdp).w,(vdp_data_port).l
+		move.l	(v_scrposy_vdp).l,(vdp_data_port).l
 
 		; Palette cycle index
 		moveq	#0,d0
@@ -295,7 +301,7 @@ loc_4992:
 		bmi.s	loc_49E8
 		lea	(Pal_SSCyc1).l,a1
 		adda.w	d0,a1
-		lea	(v_palette+$4E).w,a2
+		lea	(v_palette+$4E).l,a2
 		move.l	(a1)+,(a2)+
 		move.l	(a1)+,(a2)+
 		move.l	(a1)+,(a2)+
@@ -305,7 +311,7 @@ locret_49E6:
 ; ===========================================================================
 
 loc_49E8:
-		move.w	(v_palss_index).w,d1	; Doesn't seem to ever be modified...
+		move.w	(v_palss_index).l,d1	; Doesn't seem to ever be modified...
 		cmpi.w	#$8A,d0
 		blo.s	loc_49F4
 		addq.w	#1,d1
@@ -318,18 +324,18 @@ loc_49F4:
 
 		bclr	#0,d0
 		beq.s	loc_4A18
-		lea	(v_palette+$6E).w,a2
+		lea	(v_palette+$6E).l,a2
 		move.l	(a1),(a2)+
 		move.l	4(a1),(a2)+
 		move.l	8(a1),(a2)+
 
 loc_4A18:
 		adda.w	#$C,a1
-		lea	(v_palette+$5A).w,a2
+		lea	(v_palette+$5A).l,a2
 		cmpi.w	#$A,d0
 		blo.s	loc_4A2E
 		subi.w	#$A,d0
-		lea	(v_palette+$7A).w,a2
+		lea	(v_palette+$7A).l,a2
 
 loc_4A2E:
 		move.w	d0,d1
@@ -420,27 +426,27 @@ Pal_SSCyc2:	binclude	"palette/Cycle - Special Stage 2.bin"
 
 
 SS_BGAnimate:
-		move.w	(v_ssbganim).w,d0
+		move.w	(v_ssbganim).l,d0
 		bne.s	loc_4BF6
-		move.w	#0,(v_bgscreenposy).w
-		move.w	(v_bgscreenposy).w,(v_bgscrposy_vdp).w
+		move.w	#0,(v_bgscreenposy).l
+		move.w	(v_bgscreenposy).l,(v_bgscrposy_vdp).l
 
 loc_4BF6:
 		cmpi.w	#8,d0
 		bhs.s	loc_4C4E
 		cmpi.w	#6,d0
 		bne.s	loc_4C10
-		addq.w	#1,(v_bg3screenposx).w
-		addq.w	#1,(v_bgscreenposy).w
-		move.w	(v_bgscreenposy).w,(v_bgscrposy_vdp).w
+		addq.w	#1,(v_bg3screenposx).l
+		addq.w	#1,(v_bgscreenposy).l
+		move.w	(v_bgscreenposy).l,(v_bgscrposy_vdp).l
 
 loc_4C10:
 		moveq	#0,d0
-		move.w	(v_bgscreenposx).w,d0
+		move.w	(v_bgscreenposx).l,d0
 		neg.w	d0
 		swap	d0
 		lea	(byte_4CCC).l,a1
-		lea	(v_ngfx_buffer).w,a3
+		lea	(v_ngfx_buffer).l,a3
 		moveq	#9,d3
 
 loc_4C26:
@@ -455,7 +461,7 @@ loc_4C26:
 		ext.w	d2
 		add.w	d2,(a3)+
 		dbf	d3,loc_4C26
-		lea	(v_ngfx_buffer).w,a3
+		lea	(v_ngfx_buffer).l,a3
 		lea	(byte_4CB8).l,a2
 		bra.s	loc_4C7E
 ; ===========================================================================
@@ -463,8 +469,8 @@ loc_4C26:
 loc_4C4E:
 		cmpi.w	#$C,d0
 		bne.s	loc_4C74
-		subq.w	#1,(v_bg3screenposx).w
-		lea	(v_ssscroll_buffer).w,a3
+		subq.w	#1,(v_bg3screenposx).l
+		lea	(v_ssscroll_buffer).l,a3
 		move.l	#$18000,d2
 		moveq	#7-1,d1
 
@@ -476,17 +482,17 @@ loc_4C64:
 		dbf	d1,loc_4C64
 
 loc_4C74:
-		lea	(v_ssscroll_buffer).w,a3
+		lea	(v_ssscroll_buffer).l,a3
 		lea	(byte_4CC4).l,a2
 
 loc_4C7E:
-		lea	(v_hscrolltablebuffer).w,a1
-		move.w	(v_bg3screenposx).w,d0
+		lea	(v_hscrolltablebuffer).l,a1
+		move.w	(v_bg3screenposx).l,d0
 		neg.w	d0
 		swap	d0
 		moveq	#0,d3
 		move.b	(a2)+,d3
-		move.w	(v_bgscreenposy).w,d2
+		move.w	(v_bgscreenposy).l,d2
 		neg.w	d2
 		andi.w	#$FF,d2
 		lsl.w	#2,d2
@@ -528,8 +534,8 @@ SS_ShowLayout:
 		bsr.w	SS_AniWallsRings
 		bsr.w	SS_AniItems
 		move.w	d5,-(sp)
-		lea	(v_ssbuffer3).w,a1
-		move.b	(v_ssangle).w,d0
+		lea	(v_ssbuffer3).l,a1
+		move.b	(v_ssangle).l,d0
 		andi.b	#$FC,d0
 		jsr	(CalcSine).l
 		move.w	d0,d4
@@ -537,13 +543,13 @@ SS_ShowLayout:
 		muls.w	#$18,d4
 		muls.w	#$18,d5
 		moveq	#0,d2
-		move.w	(v_screenposx).w,d2
+		move.w	(v_screenposx).l,d2
 		divu.w	#$18,d2
 		swap	d2
 		neg.w	d2
 		addi.w	#-$B4,d2
 		moveq	#0,d3
-		move.w	(v_screenposy).w,d3
+		move.w	(v_screenposy).l,d3
 		divu.w	#$18,d3
 		swap	d3
 		neg.w	d3
@@ -583,15 +589,15 @@ loc_1B1C0:
 		move.w	(sp)+,d5
 		lea	(v_ssbuffer1&$FFFFFF).l,a0
 		moveq	#0,d0
-		move.w	(v_screenposy).w,d0
+		move.w	(v_screenposy).l,d0
 		divu.w	#$18,d0
 		mulu.w	#$80,d0
 		adda.l	d0,a0
 		moveq	#0,d0
-		move.w	(v_screenposx).w,d0
+		move.w	(v_screenposx).l,d0
 		divu.w	#$18,d0
 		adda.w	d0,a0
-		lea	(v_ssbuffer3).w,a4
+		lea	(v_ssbuffer3).l,a4
 		move.w	#$10-1,d7
 
 loc_1B20C:
@@ -636,7 +642,7 @@ loc_1B268:
 		lea	$70(a0),a0
 		dbf	d7,loc_1B20C
 
-		move.b	d5,(v_spritecount).w
+		move.b	d5,(v_spritecount).l
 		cmpi.b	#$50,d5
 		beq.s	loc_1B288
 		move.l	#0,(a2)
@@ -658,7 +664,7 @@ loc_1B288:
 SS_AniWallsRings:
 		lea	((v_ssblocktypes+$C)&$FFFFFF).l,a1
 		moveq	#0,d0
-		move.b	(v_ssangle).w,d0
+		move.b	(v_ssangle).l,d0
 		lsr.b	#2,d0
 		andi.w	#$F,d0
 		moveq	#$24-1,d1
@@ -669,22 +675,22 @@ loc_1B2A4:
 		dbf	d1,loc_1B2A4
 
 		lea	((v_ssblocktypes+5)&$FFFFFF).l,a1
-		subq.b	#1,(v_ani1_time).w
+		subq.b	#1,(v_ani1_time).l
 		bpl.s	loc_1B2C8
-		move.b	#7,(v_ani1_time).w
-		addq.b	#1,(v_ani1_frame).w
-		andi.b	#3,(v_ani1_frame).w
+		move.b	#7,(v_ani1_time).l
+		addq.b	#1,(v_ani1_frame).l
+		andi.b	#3,(v_ani1_frame).l
 
 loc_1B2C8:
-		move.b	(v_ani1_frame).w,$1D0(a1)
-		subq.b	#1,(v_ani2_time).w
+		move.b	(v_ani1_frame).l,$1D0(a1)
+		subq.b	#1,(v_ani2_time).l
 		bpl.s	loc_1B2E4
-		move.b	#7,(v_ani2_time).w
-		addq.b	#1,(v_ani2_frame).w
-		andi.b	#1,(v_ani2_frame).w
+		move.b	#7,(v_ani2_time).l
+		addq.b	#1,(v_ani2_frame).l
+		andi.b	#1,(v_ani2_frame).l
 
 loc_1B2E4:
-		move.b	(v_ani2_frame).w,d0
+		move.b	(v_ani2_frame).l,d0
 		move.b	d0,$138(a1)
 		move.b	d0,$160(a1)
 		move.b	d0,$148(a1)
@@ -695,29 +701,29 @@ loc_1B2E4:
 		move.b	d0,$1F0(a1)
 		move.b	d0,$1F8(a1)
 		move.b	d0,$200(a1)
-		subq.b	#1,(v_ani3_time).w
+		subq.b	#1,(v_ani3_time).l
 		bpl.s	loc_1B326
-		move.b	#4,(v_ani3_time).w
-		addq.b	#1,(v_ani3_frame).w
-		andi.b	#3,(v_ani3_frame).w
+		move.b	#4,(v_ani3_time).l
+		addq.b	#1,(v_ani3_frame).l
+		andi.b	#3,(v_ani3_frame).l
 
 loc_1B326:
-		move.b	(v_ani3_frame).w,d0
+		move.b	(v_ani3_frame).l,d0
 		move.b	d0,$168(a1)
 		move.b	d0,$170(a1)
 		move.b	d0,$178(a1)
 		move.b	d0,$180(a1)
-		subq.b	#1,(v_ani0_time).w
+		subq.b	#1,(v_ani0_time).l
 		bpl.s	loc_1B350
-		move.b	#7,(v_ani0_time).w
-		subq.b	#1,(v_ani0_frame).w
-		andi.b	#7,(v_ani0_frame).w
+		move.b	#7,(v_ani0_time).l
+		subq.b	#1,(v_ani0_frame).l
+		andi.b	#7,(v_ani0_frame).l
 
 loc_1B350:
 		lea	((v_ssblocktypes+$16)&$FFFFFF).l,a1
 		lea	(SS_WaRiVramSet).l,a0
 		moveq	#0,d0
-		move.b	(v_ani0_frame).w,d0
+		move.b	(v_ani0_frame).l,d0
 		add.w	d0,d0
 		lea	(a0,d0.w),a0
 		move.w	(a0),(a1)
@@ -933,7 +939,7 @@ SS_AniEmeraldSparks:
 		bne.s	locret_1B60C
 		clr.l	(a0)
 		clr.l	4(a0)
-		move.b	#4,(v_player+obRoutine).w
+		move.b	#4,(v_player+obRoutine).l
 		move.w	#sfx_SSGoal,d0
 		jsr	(PlaySound_Special).l	; play special stage GOAL sound
 
@@ -977,20 +983,20 @@ SS_StartLoc:	include	"_inc/Start Location Array - Special Stages.asm"
 
 SS_Load:
 		moveq	#0,d0
-		move.b	(v_lastspecial).w,d0 ; load number of last special stage entered
-		addq.b	#1,(v_lastspecial).w
-		cmpi.b	#6,(v_lastspecial).w
+		move.b	(v_lastspecial).l,d0 ; load number of last special stage entered
+		addq.b	#1,(v_lastspecial).l
+		cmpi.b	#6,(v_lastspecial).l
 		blo.s	SS_ChkEmldNum
-		move.b	#0,(v_lastspecial).w ; reset if higher than 6
+		move.b	#0,(v_lastspecial).l ; reset if higher than 6
 
 SS_ChkEmldNum:
-		cmpi.b	#6,(v_emeralds).w ; do you have all emeralds?
+		cmpi.b	#6,(v_emeralds).l ; do you have all emeralds?
 		beq.s	SS_LoadData	; if yes, branch
 		moveq	#0,d1
-		move.b	(v_emeralds).w,d1
+		move.b	(v_emeralds).l,d1
 		subq.b	#1,d1
 		blo.s	SS_LoadData
-		lea	(v_emldlist).w,a3 ; check which emeralds you have
+		lea	(v_emldlist).l,a3 ; check which emeralds you have
 
 SS_ChkEmldLoop:	
 		cmp.b	(a3,d1.w),d0
@@ -1005,8 +1011,8 @@ SS_LoadData:
 		; Load player position data
 		lsl.w	#2,d0
 		lea	SS_StartLoc(pc,d0.w),a1
-		move.w	(a1)+,(v_player+obX).w
-		move.w	(a1)+,(v_player+obY).w
+		move.w	(a1)+,(v_player+obX).l
+		move.w	(a1)+,(v_player+obY).l
 
 		; Load layout data
 		if MMD_Is_SS_1
@@ -1197,9 +1203,6 @@ Pal_Special:	bincludePalette	"palette/Special Stage.bin"
 Pal_SSResult:	bincludePalette	"palette/Special Stage Results.bin"
 			include	"_incObj/7E Special Stage Results.asm"
 			include	"_incObj/7F SS Result Chaos Emeralds.asm"
-			include	"_incObj/4A Special Stage Entry (Unused).asm"
-			include	"_anim/Special Stage Entry (Unused).asm"
-Map_Vanish:	include	"_maps/Special Stage Entry (Unused).asm"
 SS_MapIndex:
 			include	"_inc/Special Stage Mappings & VRAM Pointers.asm"
 SS_MapIndex_End:

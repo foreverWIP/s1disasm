@@ -6,7 +6,7 @@
 
 
 RandomNumber:
-		move.l	(v_random).w,d1
+		move.l	(v_random).l,d1
 		bne.s	.scramble	; if d1 is not 0, branch
 		move.l	#$2A6D365A,d1	; if d1 is 0, use seed number
 
@@ -21,5 +21,5 @@ RandomNumber:
 		add.w	d1,d0
 		move.w	d0,d1
 		swap	d1
-		move.l	d1,(v_random).w
+		move.l	d1,(v_random).l
 		rts	

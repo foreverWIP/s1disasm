@@ -18,6 +18,8 @@
 
 FindFloor:
 		bsr.s	FindNearestTile
+		cmpa.l	#0,a1
+		beq.s	.isblank
 		move.w	(a1),d0		; get value for solidness, orientation and 16x16 tile number
 		move.w	d0,d4
 		andi.w	#$7FF,d0
@@ -99,6 +101,8 @@ FindFloor:
 
 FindFloor2:
 		bsr.w	FindNearestTile
+		cmpa.l	#0,a1
+		beq.s	.isblank2
 		move.w	(a1),d0
 		move.w	d0,d4
 		andi.w	#$7FF,d0

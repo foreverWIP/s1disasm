@@ -14,7 +14,7 @@ GM_Ending:
 		clearRAM v_timingandscreenvariables
 
 		disable_ints
-		move.w	(v_vdp_buffer1).w,d0
+		move.w	(v_vdp_buffer1).l,d0
 		andi.b	#$BF,d0
 		move.w	d0,(vdp_control_port).l
 		bsr.w	ClearScreen
@@ -26,13 +26,13 @@ GM_Ending:
 		move.w	#$9001,(a6)		; 64-cell hscroll size
 		move.w	#$8004,(a6)		; 8-colour mode
 		move.w	#$8720,(a6)		; set background colour (line 3; colour 0)
-		move.w	#$8A00+223,(v_hbla_hreg).w ; set palette change position (for water)
-		move.w	(v_hbla_hreg).w,(a6)
-		move.w	#30,(v_air).w
-		move.w	#id_EndZ<<8,(v_zone).w ; set level number to 0600 (extra flowers)
-		cmpi.b	#6,(v_emeralds).w ; do you have all 6 emeralds?
+		move.w	#$8A00+223,(v_hbla_hreg).l ; set palette change position (for water)
+		move.w	(v_hbla_hreg).l,(a6)
+		move.w	#30,(v_air).l
+		move.w	#id_EndZ<<8,(v_zone).l ; set level number to 0600 (extra flowers)
+		cmpi.b	#6,(v_emeralds).l ; do you have all 6 emeralds?
 		beq.s	End_LoadData	; if yes, branch
-		move.w	#(id_EndZ<<8)+1,(v_zone).w ; set level number to 0601 (no flowers)
+		move.w	#(id_EndZ<<8)+1,(v_zone).l ; set level number to 0601 (no flowers)
 
 End_LoadData:
 		moveq	#plcid_Ending,d0
@@ -40,53 +40,53 @@ End_LoadData:
 		jsr	(Hud_Base).l
 		bsr.w	LevelSizeLoad
 		bsr.w	DeformLayers
-		bset	#2,(v_fg_scroll_flags).w
+		bset	#2,(v_fg_scroll_flags).l
 		bsr.w	LevelDataLoad
 		bsr.w	LoadTilesFromStart
 		enable_ints
 		lea	(Kos_EndFlowers).l,a0 ;	load extra flower patterns
-		lea	(v_256x256_end-$1000).w,a1 ; RAM address to buffer the patterns
+		lea	(v_256x256_end-$1000).l,a1 ; RAM address to buffer the patterns
 		bsr.w	KosDec
 		moveq	#palid_Sonic,d0
 		bsr.w	PalLoad_Fade	; load Sonic's palette
 		move.w	#bgm_Ending,d0
 		bsr.w	PlaySound	; play ending sequence music
-		btst	#bitA,(v_jpadhold1).w ; is button A pressed?
+		btst	#bitA,(v_jpadhold1).l ; is button A pressed?
 		beq.s	End_LoadSonic	; if not, branch
-		move.b	#1,(f_debugmode).w ; enable debug mode
+		move.b	#1,(f_debugmode).l ; enable debug mode
 
 End_LoadSonic:
-		move.b	#id_SonicPlayer,(v_player).w ; load Sonic object
-		bset	#0,(v_player+obStatus).w ; make Sonic face left
-		move.b	#1,(f_lockctrl).w ; lock controls
-		move.w	#(btnL<<8),(v_jpadhold2).w ; move Sonic to the left
-		move.w	#$F800,(v_player+obInertia).w ; set Sonic's speed
-		move.b	#id_HUD,(v_hud).w ; load HUD object
+		move.b	#id_SonicPlayer,(v_player).l ; load Sonic object
+		bset	#0,(v_player+obStatus).l ; make Sonic face left
+		move.b	#1,(f_lockctrl).l ; lock controls
+		move.w	#(btnL<<8),(v_jpadhold2).l ; move Sonic to the left
+		move.w	#$F800,(v_player+obInertia).l ; set Sonic's speed
+		move.b	#id_HUD,(v_hud).l ; load HUD object
 		jsr	(ObjPosLoad).l
 		jsr	(ExecuteObjects).l
 		jsr	(BuildSprites).l
 		moveq	#0,d0
-		move.w	d0,(v_rings).w
-		move.l	d0,(v_time).w
-		move.b	d0,(v_lifecount).w
-		move.b	d0,(v_shield).w
-		move.b	d0,(v_invinc).w
-		move.b	d0,(v_shoes).w
-		move.b	d0,(v_unused1).w
-		move.w	d0,(v_debuguse).w
-		move.w	d0,(f_restart).w
-		move.w	d0,(v_framecount).w
+		move.w	d0,(v_rings).l
+		move.l	d0,(v_time).l
+		move.b	d0,(v_lifecount).l
+		move.b	d0,(v_shield).l
+		move.b	d0,(v_invinc).l
+		move.b	d0,(v_shoes).l
+		move.b	d0,(v_unused1).l
+		move.w	d0,(v_debuguse).l
+		move.w	d0,(f_restart).l
+		move.w	d0,(v_framecount).l
 		bsr.w	OscillateNumInit
-		move.b	#1,(f_scorecount).w
-		move.b	#1,(f_ringcount).w
-		move.b	#0,(f_timecount).w
-		move.w	#1800,(v_demolength).w
-		move.b	#$18,(v_vbla_routine).w
+		move.b	#1,(f_scorecount).l
+		move.b	#1,(f_ringcount).l
+		move.b	#0,(f_timecount).l
+		move.w	#1800,(v_demolength).l
+		move.b	#$18,(v_vbla_routine).l
 		bsr.w	WaitForVBla
-		move.w	(v_vdp_buffer1).w,d0
+		move.w	(v_vdp_buffer1).l,d0
 		ori.b	#$40,d0
 		move.w	d0,(vdp_control_port).l
-		move.w	#$3F,(v_pfade_start).w
+		move.w	#$3F,(v_pfade_start).l
 		bsr.w	PaletteFadeIn
 
 ; ---------------------------------------------------------------------------
@@ -95,9 +95,9 @@ End_LoadSonic:
 
 End_MainLoop:
 		bsr.w	PauseGame
-		move.b	#$18,(v_vbla_routine).w
+		move.b	#$18,(v_vbla_routine).l
 		bsr.w	WaitForVBla
-		addq.w	#1,(v_framecount).w
+		addq.w	#1,(v_framecount).l
 		bsr.w	End_MoveSonic
 		jsr	(ExecuteObjects).l
 		bsr.w	DeformLayers
@@ -106,29 +106,29 @@ End_MainLoop:
 		bsr.w	PaletteCycle
 		bsr.w	OscillateNumDo
 		bsr.w	SynchroAnimate
-		cmpi.b	#id_Ending,(v_gamemode).w ; is game mode $18 (ending)?
+		cmpi.b	#id_Ending,(v_gamemode).l ; is game mode $18 (ending)?
 		beq.s	End_ChkEmerald	; if yes, branch
 
-		move.b	#id_Credits,(v_gamemode).w ; goto credits
+		move.b	#id_Credits,(v_gamemode).l ; goto credits
 		move.b	#bgm_Credits,d0
 		bsr.w	PlaySound_Special ; play credits music
-		move.w	#0,(v_creditsnum).w ; set credits index number to 0
+		move.w	#0,(v_creditsnum).l ; set credits index number to 0
 		rts	
 ; ===========================================================================
 
 End_ChkEmerald:
-		tst.w	(f_restart).w	; has Sonic released the emeralds?
+		tst.w	(f_restart).l	; has Sonic released the emeralds?
 		beq.w	End_MainLoop	; if not, branch
 
-		clr.w	(f_restart).w
-		move.w	#$3F,(v_pfade_start).w
-		clr.w	(v_palchgspeed).w
+		clr.w	(f_restart).l
+		move.w	#$3F,(v_pfade_start).l
+		clr.w	(v_palchgspeed).l
 
 End_AllEmlds:
 		bsr.w	PauseGame
-		move.b	#$18,(v_vbla_routine).w
+		move.b	#$18,(v_vbla_routine).l
 		bsr.w	WaitForVBla
-		addq.w	#1,(v_framecount).w
+		addq.w	#1,(v_framecount).l
 		bsr.w	End_MoveSonic
 		jsr	(ExecuteObjects).l
 		bsr.w	DeformLayers
@@ -136,20 +136,20 @@ End_AllEmlds:
 		jsr	(ObjPosLoad).l
 		bsr.w	OscillateNumDo
 		bsr.w	SynchroAnimate
-		subq.w	#1,(v_palchgspeed).w
+		subq.w	#1,(v_palchgspeed).l
 		bpl.s	End_SlowFade
-		move.w	#2,(v_palchgspeed).w
+		move.w	#2,(v_palchgspeed).l
 		bsr.w	WhiteOut_ToWhite
 
 End_SlowFade:
-		tst.w	(f_restart).w
+		tst.w	(f_restart).l
 		beq.w	End_AllEmlds
-		clr.w	(f_restart).w
-		move.w	#$2E2F,(v_lvllayout+$80).w ; modify level layout
+		clr.w	(f_restart).l
+		move.w	#$2E2F,(v_lvllayout+$80).l ; modify level layout
 		lea	(vdp_control_port).l,a5
 		lea	(vdp_data_port).l,a6
-		lea	(v_screenposx).w,a3
-		lea	(v_lvllayout).w,a4
+		lea	(v_screenposx).l,a3
+		lea	(v_lvllayout).l,a4
 		move.w	#$4000,d2
 		bsr.w	DrawChunks
 		moveq	#palid_Ending,d0
@@ -165,42 +165,42 @@ End_SlowFade:
 
 
 End_MoveSonic:
-		move.b	(v_sonicend).w,d0
+		move.b	(v_sonicend).l,d0
 		bne.s	End_MoveSon2
-		cmpi.w	#$90,(v_player+obX).w ; has Sonic passed $90 on x-axis?
-		bhs.s	End_MoveSonExit	; if not, branch
+		cmpi.w	#$90,(v_player+obX).l ; has Sonic passed $90 on x-axis?
+		bhs.w	End_MoveSonExit	; if not, branch
 
-		addq.b	#2,(v_sonicend).w
-		move.b	#1,(f_lockctrl).w ; lock player's controls
-		move.w	#(btnR<<8),(v_jpadhold2).w ; move Sonic to the right
+		addq.b	#2,(v_sonicend).l
+		move.b	#1,(f_lockctrl).l ; lock player's controls
+		move.w	#(btnR<<8),(v_jpadhold2).l ; move Sonic to the right
 		rts	
 ; ===========================================================================
 
 End_MoveSon2:
 		subq.b	#2,d0
 		bne.s	End_MoveSon3
-		cmpi.w	#$A0,(v_player+obX).w ; has Sonic passed $A0 on x-axis?
-		blo.s	End_MoveSonExit	; if not, branch
+		cmpi.w	#$A0,(v_player+obX).l ; has Sonic passed $A0 on x-axis?
+		blo.w	End_MoveSonExit	; if not, branch
 
-		addq.b	#2,(v_sonicend).w
+		addq.b	#2,(v_sonicend).l
 		moveq	#0,d0
-		move.b	d0,(f_lockctrl).w
-		move.w	d0,(v_jpadhold2).w ; stop Sonic moving
-		move.w	d0,(v_player+obInertia).w
-		move.b	#$81,(f_playerctrl).w ; lock controls and disable object interaction
-		move.b	#fr_Wait2,(v_player+obFrame).w
-		move.w	#(id_Wait<<8)+id_Wait,(v_player+obAnim).w ; use "standing" animation
-		move.b	#3,(v_player+obTimeFrame).w
+		move.b	d0,(f_lockctrl).l
+		move.w	d0,(v_jpadhold2).l ; stop Sonic moving
+		move.w	d0,(v_player+obInertia).l
+		move.b	#$81,(f_playerctrl).l ; lock controls and disable object interaction
+		move.b	#fr_Wait2,(v_player+obFrame).l
+		move.w	#(id_Wait<<8)+id_Wait,(v_player+obAnim).l ; use "standing" animation
+		move.b	#3,(v_player+obTimeFrame).l
 		rts	
 ; ===========================================================================
 
 End_MoveSon3:
 		subq.b	#2,d0
-		bne.s	End_MoveSonExit
-		addq.b	#2,(v_sonicend).w
-		move.w	#$A0,(v_player+obX).w
-		move.b	#id_EndSonic,(v_player).w ; load Sonic ending sequence object
-		clr.w	(v_player+obRoutine).w
+		bne.w	End_MoveSonExit
+		addq.b	#2,(v_sonicend).l
+		move.w	#$A0,(v_player+obX).l
+		move.b	#id_EndSonic,(v_player).l ; load Sonic ending sequence object
+		clr.w	(v_player+obRoutine).l
 
 End_MoveSonExit:
 		rts	

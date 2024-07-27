@@ -22,9 +22,9 @@ ptr_Obj07:	objptr NullObject
 ptr_Splash:	objptr Splash,MMD_Is_Level		; $08
 ptr_SonicSpecial:	objptr SonicSpecial,MMD_Is_SS
 ptr_DrownCount:	objptr DrownCount,MMD_Is_LZ
-ptr_Pole:	objptr Pole,MMD_Is_Level
-ptr_FlapDoor:	objptr FlapDoor,MMD_Is_Level
-ptr_Signpost:	objptr Signpost,MMD_Is_Level
+ptr_Pole:	objptr Pole,MMD_Is_LZ
+ptr_FlapDoor:	objptr FlapDoor,MMD_Is_LZ
+ptr_Signpost:	objptr Signpost,(MMD_Is_Level&&(MMD_Act_ID<>2))
 ptr_TitleSonic:	objptr TitleSonic,MMD_Is_Title
 ptr_PSBTM:	objptr PSBTM,MMD_Is_Title
 ptr_Obj10:	objptr Obj10,MMD_Is_Level		; $10
@@ -38,9 +38,9 @@ ptr_Helix:	objptr Helix,MMD_Is_GHZ
 ptr_BasicPlatform:	objptr BasicPlatform,MMD_Is_Level	; $18
 ptr_Obj19:	objptr Obj19,MMD_Is_GHZ
 ptr_CollapseLedge:	objptr CollapseLedge,MMD_Is_Level
-ptr_WaterSurface:	objptr WaterSurface,MMD_Is_Level
+ptr_WaterSurface:	objptr WaterSurface,MMD_Is_LZ
 ptr_Scenery:	objptr Scenery,MMD_Is_Level
-ptr_MagicSwitch:	objptr MagicSwitch,MMD_Is_Level
+ptr_MagicSwitch:	objptr NullObject
 ptr_BallHog:	objptr BallHog,MMD_Is_SBZ
 ptr_Crabmeat:	objptr Crabmeat,MMD_Is_Level
 ptr_Cannonball:	objptr Cannonball,MMD_Is_SBZ		; $20
@@ -70,8 +70,8 @@ ptr_RingLoss:	objptr RingLoss,MMD_Is_Level
 ptr_ShieldItem:	objptr ShieldItem,MMD_Is_Level		; $38
 ptr_GameOverCard:	objptr GameOverCard,MMD_Is_Level
 ptr_GotThroughCard:	objptr GotThroughCard,MMD_Is_Level
-ptr_PurpleRock:	objptr PurpleRock,MMD_Is_Level
-ptr_SmashWall:	objptr SmashWall,MMD_Is_Level
+ptr_PurpleRock:	objptr PurpleRock,MMD_Is_GHZ
+ptr_SmashWall:	objptr SmashWall,MMD_Is_GHZ
 ptr_BossGreenHill:	objptr BossGreenHill,MMD_Is_GHZ
 ptr_Prison:	objptr Prison,((MMD_Act_ID==3)&&(MMD_Is_SBZ==0))
 ptr_ExplosionBomb:	objptr ExplosionBomb,MMD_Is_Level
@@ -85,13 +85,13 @@ ptr_MarbleBrick:	objptr MarbleBrick,MMD_Is_MZ
 ptr_Bumper:	objptr Bumper,MMD_Is_SYZ
 ptr_BossBall:	objptr BossBall,MMD_Is_GHZ		; $48
 ptr_WaterSound:	objptr WaterSound,MMD_Is_GHZ
-ptr_VanishSonic:	objptr VanishSonic,MMD_Is_SS
+ptr_VanishSonic:	objptr NullObject
 ptr_GiantRing:	objptr GiantRing,MMD_Is_Level
 ptr_GeyserMaker:	objptr GeyserMaker,MMD_Is_MZ
 ptr_LavaGeyser:	objptr LavaGeyser,MMD_Is_MZ
 ptr_LavaWall:	objptr LavaWall,MMD_Is_MZ
 ptr_Obj4F:	objptr Obj4F
-ptr_Yadrin:	objptr Yadrin,MMD_Is_Level		; $50
+ptr_Yadrin:	objptr Yadrin,MMD_Is_MZ||MMD_Is_SYZ		; $50
 ptr_SmashBlock:	objptr SmashBlock,MMD_Is_MZ
 ptr_MovingBlock:	objptr MovingBlock,MMD_Is_Level
 ptr_CollapseFloor:	objptr CollapseFloor,MMD_Is_Level
@@ -100,13 +100,13 @@ ptr_Basaran:	objptr Basaran,MMD_Is_Level
 ptr_FloatingBlock:	objptr FloatingBlock,MMD_Is_Level
 ptr_SpikeBall:	objptr SpikeBall,MMD_Is_Level
 ptr_BigSpikeBall:	objptr BigSpikeBall,MMD_Is_Level	; $58
-ptr_Elevator:	objptr Elevator,MMD_Is_Level
-ptr_CirclingPlatform:	objptr CirclingPlatform,MMD_Is_Level
-ptr_Staircase:	objptr Staircase,MMD_Is_Level
-ptr_Pylon:	objptr Pylon,MMD_Is_Level
-ptr_Fan:	objptr Fan,MMD_Is_Level
-ptr_Seesaw:	objptr Seesaw,MMD_Is_Level
-ptr_Bomb:	objptr Bomb,MMD_Is_Level
+ptr_Elevator:	objptr Elevator,MMD_Is_SLZ
+ptr_CirclingPlatform:	objptr CirclingPlatform,MMD_Is_SLZ
+ptr_Staircase:	objptr Staircase,MMD_Is_SLZ
+ptr_Pylon:	objptr Pylon,MMD_Is_SLZ
+ptr_Fan:	objptr Fan,MMD_Is_SLZ
+ptr_Seesaw:	objptr Seesaw,MMD_Is_SLZ
+ptr_Bomb:	objptr Bomb,MMD_Is_SLZ
 ptr_Orbinaut:	objptr Orbinaut,MMD_Is_Level		; $60
 ptr_LabyrinthBlock:	objptr LabyrinthBlock,MMD_Is_LZ
 ptr_Gargoyle:	objptr Gargoyle,MMD_Is_LZ

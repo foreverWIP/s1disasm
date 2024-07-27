@@ -3,7 +3,7 @@
 ; ---------------------------------------------------------------------------
 
 SonicSpecial:
-		tst.w	(v_debuguse).w	; is debug mode	being used?
+		tst.w	(v_debuguse).l	; is debug mode	being used?
 		beq.s	Obj09_Normal	; if not, branch
 		bsr.w	SS_FixCamera
 		jmp		(DebugMode).l
@@ -34,11 +34,11 @@ Obj09_Main:	; Routine 0
 		bset	#1,obStatus(a0)
 
 Obj09_ChkDebug:	; Routine 2
-		tst.w	(f_debugmode).w	; is debug mode	cheat enabled?
+		tst.w	(f_debugmode).l	; is debug mode	cheat enabled?
 		beq.s	Obj09_NoDebug	; if not, branch
-		btst	#bitB,(v_jpadpress1).w ; is button B pressed?
+		btst	#bitB,(v_jpadpress1).l ; is button B pressed?
 		beq.s	Obj09_NoDebug	; if not, branch
-		move.w	#1,(v_debuguse).w ; change Sonic into a ring
+		move.w	#1,(v_debuguse).l ; change Sonic into a ring
 
 Obj09_NoDebug:
 		move.b	#0,objoff_30(a0)
@@ -71,9 +71,9 @@ Obj09_Display:
 		bsr.w	Obj09_ChkItems2
 		jsr	(SpeedToPos).l
 		bsr.w	SS_FixCamera
-		move.w	(v_ssangle).w,d0
-		add.w	(v_ssrotate).w,d0
-		move.w	d0,(v_ssangle).w
+		move.w	(v_ssangle).l,d0
+		add.w	(v_ssrotate).l,d0
+		move.w	d0,(v_ssangle).l
 		jsr	(Sonic_Animate).l
 		rts	
 
@@ -81,17 +81,17 @@ Obj09_Display:
 
 
 Obj09_Move:
-		btst	#bitL,(v_jpadhold2).w ; is left being pressed?
+		btst	#bitL,(v_jpadhold2).l ; is left being pressed?
 		beq.s	Obj09_ChkRight	; if not, branch
 		bsr.w	Obj09_MoveLeft
 
 Obj09_ChkRight:
-		btst	#bitR,(v_jpadhold2).w ; is right being pressed?
+		btst	#bitR,(v_jpadhold2).l ; is right being pressed?
 		beq.s	loc_1BA78	; if not, branch
 		bsr.w	Obj09_MoveRight
 
 loc_1BA78:
-		move.b	(v_jpadhold2).w,d0
+		move.b	(v_jpadhold2).l,d0
 		andi.b	#btnL+btnR,d0
 		bne.s	loc_1BAA8
 		move.w	obInertia(a0),d0
@@ -115,7 +115,7 @@ loc_1BAA4:
 		move.w	d0,obInertia(a0)
 
 loc_1BAA8:
-		move.b	(v_ssangle).w,d0
+		move.b	(v_ssangle).l,d0
 		addi.b	#$20,d0
 		andi.b	#$C0,d0
 		neg.b	d0
@@ -207,10 +207,10 @@ locret_1BB54:
 
 
 Obj09_Jump:
-		move.b	(v_jpadpress2).w,d0
+		move.b	(v_jpadpress2).l,d0
 		andi.b	#btnABC,d0	; is A,	B or C pressed?
 		beq.s	Obj09_NoJump	; if not, branch
-		move.b	(v_ssangle).w,d0
+		move.b	(v_ssangle).l,d0
 		andi.b	#$FC,d0
 		neg.b	d0
 		subi.b	#$40,d0
@@ -244,7 +244,7 @@ nullsub_2:
 		move.w	#-$400,d1
 		cmp.w	obVelY(a0),d1
 		ble.s	locret_1BBB4
-		move.b	(v_jpadhold2).w,d0
+		move.b	(v_jpadhold2).l,d0
 		andi.b	#btnABC,d0
 		bne.s	locret_1BBB4
 		move.w	d1,obVelY(a0)
@@ -261,18 +261,18 @@ locret_1BBB4:
 SS_FixCamera:
 		move.w	obY(a0),d2
 		move.w	obX(a0),d3
-		move.w	(v_screenposx).w,d0
+		move.w	(v_screenposx).l,d0
 		subi.w	#$A0,d3
 		bcs.s	loc_1BBCE
 		sub.w	d3,d0
-		sub.w	d0,(v_screenposx).w
+		sub.w	d0,(v_screenposx).l
 
 loc_1BBCE:
-		move.w	(v_screenposy).w,d0
+		move.w	(v_screenposy).l,d0
 		subi.w	#$70,d2
 		bcs.s	locret_1BBDE
 		sub.w	d2,d0
-		sub.w	d0,(v_screenposy).w
+		sub.w	d0,(v_screenposy).l
 
 locret_1BBDE:
 		rts	
@@ -281,23 +281,23 @@ locret_1BBDE:
 ; ===========================================================================
 
 Obj09_ExitStage:
-		addi.w	#$40,(v_ssrotate).w
-		cmpi.w	#$1800,(v_ssrotate).w
+		addi.w	#$40,(v_ssrotate).l
+		cmpi.w	#$1800,(v_ssrotate).l
 		bne.s	loc_1BBF4
-		move.b	#id_Level,(v_gamemode).w
+		move.b	#id_Level,(v_gamemode).l
 
 loc_1BBF4:
-		cmpi.w	#$3000,(v_ssrotate).w
+		cmpi.w	#$3000,(v_ssrotate).l
 		blt.s	loc_1BC12
-		move.w	#0,(v_ssrotate).w
-		move.w	#$4000,(v_ssangle).w
+		move.w	#0,(v_ssrotate).l
+		move.w	#$4000,(v_ssangle).l
 		addq.b	#2,obRoutine(a0)
 		move.w	#$3C,objoff_38(a0)
 
 loc_1BC12:
-		move.w	(v_ssangle).w,d0
-		add.w	(v_ssrotate).w,d0
-		move.w	d0,(v_ssangle).w
+		move.w	(v_ssangle).l,d0
+		add.w	(v_ssrotate).l,d0
+		move.w	d0,(v_ssangle).l
 		jsr	(Sonic_Animate).l
 		jsr	(Sonic_LoadGfx).l
 		bsr.w	SS_FixCamera
@@ -307,7 +307,7 @@ loc_1BC12:
 Obj09_Exit2:
 		subq.w	#1,objoff_38(a0)
 		bne.s	loc_1BC40
-		move.b	#id_Level,(v_gamemode).w
+		move.b	#id_Level,(v_gamemode).l
 
 loc_1BC40:
 		jsr	(Sonic_Animate).l
@@ -321,7 +321,7 @@ loc_1BC40:
 Obj09_Fall:
 		move.l	obY(a0),d2
 		move.l	obX(a0),d3
-		move.b	(v_ssangle).w,d0
+		move.b	(v_ssangle).l,d0
 		andi.b	#$FC,d0
 		jsr	(CalcSine).l
 		move.w	obVelX(a0),d4
@@ -470,11 +470,11 @@ Obj09_ChkCont:
 
 Obj09_GetCont:
 		jsr	(CollectRing).l
-		cmpi.w	#50,(v_rings).w	; check if you have 50 rings
+		cmpi.w	#50,(v_rings).l	; check if you have 50 rings
 		blo.s	Obj09_NoCont
-		bset	#0,(v_lifecount).w
+		bset	#0,(v_lifecount).l
 		bne.s	Obj09_NoCont
-		addq.b	#1,(v_continues).w ; add 1 to number of continues
+		addq.b	#1,(v_continues).l ; add 1 to number of continues
 		move.w	#sfx_Continue,d0
 		jsr	(PlaySound).l	; play extra continue sound
 
@@ -492,8 +492,8 @@ Obj09_Chk1Up:
 		move.l	a1,4(a2)
 
 Obj09_Get1Up:
-		addq.b	#1,(v_lives).w	; add 1 to number of lives
-		addq.b	#1,(f_lifecount).w ; update the lives counter
+		addq.b	#1,(v_lives).l	; add 1 to number of lives
+		addq.b	#1,(f_lifecount).l ; update the lives counter
 		move.w	#bgm_ExtraLife,d0
 		jsr	(PlaySound).l	; play extra life music
 		moveq	#0,d4
@@ -511,14 +511,14 @@ Obj09_ChkEmer:
 		move.l	a1,4(a2)
 
 Obj09_GetEmer:
-		cmpi.b	#6,(v_emeralds).w ; do you have all the emeralds?
+		cmpi.b	#6,(v_emeralds).l ; do you have all the emeralds?
 		beq.s	Obj09_NoEmer	; if yes, branch
 		subi.b	#$3B,d4
 		moveq	#0,d0
-		move.b	(v_emeralds).w,d0
-		lea	(v_emldlist).w,a2
+		move.b	(v_emeralds).l,d0
+		lea	(v_emldlist).l,a2
 		move.b	d4,(a2,d0.w)
-		addq.b	#1,(v_emeralds).w ; add 1 to number of emeralds
+		addq.b	#1,(v_emeralds).l ; add 1 to number of emeralds
 
 Obj09_NoEmer:
 		move.w	#bgm_Emerald,d0
@@ -641,9 +641,9 @@ Obj09_UPblock:
 		tst.b	objoff_36(a0)
 		bne.w	Obj09_NoGlass
 		move.b	#$1E,objoff_36(a0)
-		btst	#6,(v_ssrotate+1).w
+		btst	#6,(v_ssrotate+1).l
 		beq.s	Obj09_UPsnd
-		asl	(v_ssrotate).w	; increase stage rotation speed
+		asl	(v_ssrotate).l	; increase stage rotation speed
 		movea.l	objoff_32(a0),a1
 		subq.l	#1,a1
 		move.b	#$2A,(a1)	; change item to a "DOWN" block
@@ -659,9 +659,9 @@ Obj09_DOWNblock:
 		tst.b	objoff_36(a0)
 		bne.w	Obj09_NoGlass
 		move.b	#$1E,objoff_36(a0)
-		btst	#6,(v_ssrotate+1).w
+		btst	#6,(v_ssrotate+1).l
 		bne.s	Obj09_DOWNsnd
-		asr	(v_ssrotate).w	; reduce stage rotation speed
+		asr	(v_ssrotate).l	; reduce stage rotation speed
 		movea.l	objoff_32(a0),a1
 		subq.l	#1,a1
 		move.b	#$29,(a1)	; change item to an "UP" block
@@ -685,7 +685,7 @@ Obj09_Rblock:
 		move.l	d0,4(a2)
 
 Obj09_RevStage:
-		neg.w	(v_ssrotate).w	; reverse stage rotation
+		neg.w	(v_ssrotate).l	; reverse stage rotation
 		move.w	#sfx_SSItem,d0
 		jmp	(PlaySound_Special).l	; play sound
 ; ===========================================================================

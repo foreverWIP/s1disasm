@@ -22,7 +22,7 @@ SSRC_Main:	; Routine 0
 		lea	(SSRC_PosData).l,a2
 		moveq	#0,d2
 		moveq	#0,d1
-		move.b	(v_emeralds).w,d1 ; d1 is number of emeralds
+		move.b	(v_emeralds).l,d1 ; d1 is number of emeralds
 		subq.b	#1,d1		; subtract 1 from d1
 		jcs.w	DeleteObject	; if you have 0	emeralds, branch
 
@@ -30,7 +30,7 @@ SSRC_Loop:
 		_move.b	#id_SSRChaos,obID(a1)
 		move.w	(a2)+,obX(a1)	; set x-position
 		move.w	#$F0,obScreenY(a1) ; set y-position
-		lea	(v_emldlist).w,a3 ; check which emeralds you have
+		lea	(v_emldlist).l,a3 ; check which emeralds you have
 		move.b	(a3,d2.w),d3
 		move.b	d3,obFrame(a1)
 		move.b	d3,obAnim(a1)

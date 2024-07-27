@@ -54,10 +54,17 @@ local mmd_names = {
 	"ENDING",
 	"CREDITS",
 }
-for k,v in pairs(mmd_names) do
+local build_file = function(k, v, mmd_format)
 	print("Assembling " .. v .. "...")
-	local out_name = "build/" .. v
-	local message, abort = common.build_rom("sonic", out_name, "-D MMD_ID=" .. (k - 1), "-p=FF -z=0," .. compression .. ",Size_of_DAC_driver_guess,after", false, "https://github.com/sonicretro/s1disasm")
+	local out_name = "build/md/" .. v
+	if mmd_format then
+		out_name = "build/mmd/" .. v
+	end
+	local mmd_enabled = 0
+	if mmd_format then
+		mmd_enabled = 1
+	end
+	local message, abort = common.build_rom("sonic", out_name, "-D MMD_ID=" .. (k - 1) .. ",MMD_Enabled=" .. mmd_enabled, "-p=FF -z=0," .. compression .. ",Size_of_DAC_driver_guess,after", false, "https://github.com/sonicretro/s1disasm")
 	os.rename("sonic.lst", out_name .. ".lst")
 
 	if message then
@@ -67,7 +74,11 @@ for k,v in pairs(mmd_names) do
 	if abort then
 		os.exit(exit_code, true)
 	end
+end
 
+for k,v in pairs(mmd_names) do
+	build_file(k, v, false)
+	build_file(k, v, true)
 end
 
 os.exit(exit_code, false)

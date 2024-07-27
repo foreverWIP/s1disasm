@@ -33,7 +33,7 @@ Swi_Action:	; Routine 2
 
 		addq.w	#2,obY(a0)	; move object 2	pixels
 		moveq	#1,d0
-		move.w	d0,(f_switch).w	; set switch 0 as "pressed"
+		move.w	d0,(f_switch).l	; set switch 0 as "pressed"
 
 Swi_ChkDel:
 		bsr.w	DisplaySprite
@@ -53,7 +53,7 @@ Swi_Delete:	; Routine 4
 
 
 Swi_ChkTouch:
-		lea	(v_player).w,a1
+		lea	(v_player).l,a1
 		move.w	obX(a1),d0
 		sub.w	obX(a0),d0
 		add.w	d1,d0

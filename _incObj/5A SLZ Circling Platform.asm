@@ -59,10 +59,10 @@ Circ_Types:
 ; ===========================================================================
 
 .type00:
-		move.b	(v_oscillate+$22).w,d1 ; get rotating value
+		move.b	(v_oscillate+$22).l,d1 ; get rotating value
 		subi.b	#$50,d1		; set radius of circle
 		ext.w	d1
-		move.b	(v_oscillate+$26).w,d2
+		move.b	(v_oscillate+$26).l,d2
 		subi.b	#$50,d2
 		ext.w	d2
 		btst	#0,obSubtype(a0)
@@ -85,10 +85,10 @@ Circ_Types:
 ; ===========================================================================
 
 .type04:
-		move.b	(v_oscillate+$22).w,d1
+		move.b	(v_oscillate+$22).l,d1
 		subi.b	#$50,d1
 		ext.w	d1
-		move.b	(v_oscillate+$26).w,d2
+		move.b	(v_oscillate+$26).l,d2
 		subi.b	#$50,d2
 		ext.w	d2
 		btst	#0,obSubtype(a0)

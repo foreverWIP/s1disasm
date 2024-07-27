@@ -14,7 +14,7 @@ LCon_Display:
 ; ===========================================================================
 
 loc_1236A:
-		cmpi.b	#2,(v_act).w
+		cmpi.b	#2,(v_act).l
 		bne.s	loc_12378
 		cmpi.w	#-$80,d0
 		bhs.s	LCon_Display
@@ -23,7 +23,7 @@ loc_12378:
 		move.b	objoff_2F(a0),d0
 		bpl.w	DeleteObject
 		andi.w	#$7F,d0
-		lea	(v_obj63).w,a2
+		lea	(v_obj63).l,a2
 		bclr	#0,(a2,d0.w)
 		bra.w	DeleteObject
 ; ===========================================================================
@@ -66,7 +66,7 @@ loc_123E2:
 		lsl.w	#2,d1
 		move.b	d1,objoff_38(a0)
 		move.b	#4,objoff_3A(a0)
-		tst.b	(f_conveyrev).w
+		tst.b	(f_conveyrev).l
 		beq.s	loc_1244C
 		move.b	#1,objoff_3B(a0)
 		neg.b	objoff_3A(a0)
@@ -95,7 +95,7 @@ loc_1244C:
 loc_12460:
 		move.b	d0,objoff_2F(a0)
 		andi.w	#$7F,d0
-		lea	(v_obj63).w,a2
+		lea	(v_obj63).l,a2
 		bset	#0,(a2,d0.w)
 	if FixBugs
 		bne.s	.delete
@@ -156,11 +156,11 @@ loc_124C2:	; Routine 4
 ; ===========================================================================
 
 loc_124DE:	; Routine 6
-		move.w	(v_framecount).w,d0
+		move.w	(v_framecount).l,d0
 		andi.w	#3,d0
 		bne.s	loc_124FC
 		moveq	#1,d1
-		tst.b	(f_conveyrev).w
+		tst.b	(f_conveyrev).l
 		beq.s	loc_124F2
 		neg.b	d1
 
@@ -176,12 +176,12 @@ loc_124FC:
 
 
 sub_12502:
-		tst.b	(f_switch+$E).w
+		tst.b	(f_switch+$E).l
 		beq.s	loc_12520
 		tst.b	objoff_3B(a0)
 		bne.s	loc_12520
 		move.b	#1,objoff_3B(a0)
-		move.b	#1,(f_conveyrev).w
+		move.b	#1,(f_conveyrev).l
 		neg.b	objoff_3A(a0)
 		bra.s	loc_12534
 ; ===========================================================================

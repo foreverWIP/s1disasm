@@ -7,12 +7,12 @@
 
 LevelSizeLoad:
 		moveq	#0,d0
-		move.b	d0,(v_unused7).w
-		move.b	d0,(v_unused8).w
-		move.b	d0,(v_unused9).w
-		move.b	d0,(v_unused10).w
-		move.b	d0,(v_dle_routine).w
-		move.w	(v_zone).w,d0
+		move.b	d0,(v_unused7).l
+		move.b	d0,(v_unused8).l
+		move.b	d0,(v_unused9).l
+		move.b	d0,(v_unused10).l
+		move.b	d0,(v_dle_routine).l
+		move.w	(v_zone).l,d0
 		lsl.b	#6,d0
 		lsr.w	#4,d0
 		move.w	d0,d1
@@ -20,19 +20,19 @@ LevelSizeLoad:
 		add.w	d1,d0
 		lea	LevelSizeArray(pc,d0.w),a0 ; load level	boundaries
 		move.w	(a0)+,d0
-		move.w	d0,(v_unused11).w
+		move.w	d0,(v_unused11).l
 		move.l	(a0)+,d0
-		move.l	d0,(v_limitleft2).w
-		move.l	d0,(v_limitleft1).w
+		move.l	d0,(v_limitleft2).l
+		move.l	d0,(v_limitleft1).l
 		move.l	(a0)+,d0
-		move.l	d0,(v_limittop2).w
-		move.l	d0,(v_limittop1).w
-		move.w	(v_limitleft2).w,d0
+		move.l	d0,(v_limittop2).l
+		move.l	d0,(v_limittop1).l
+		move.w	(v_limitleft2).l,d0
 		addi.w	#$240,d0
-		move.w	d0,(v_limitleft3).w
-		move.w	#$1010,(v_fg_xblock).w ; and v_fg_yblock
+		move.w	d0,(v_limitleft3).l
+		move.w	#$1010,(v_fg_xblock).l ; and v_fg_yblock
 		move.w	(a0)+,d0
-		move.w	d0,(v_lookshift).w
+		move.w	d0,(v_lookshift).l
 		bra.w	LevSz_ChkLamp
 ; ===========================================================================
 ; ---------------------------------------------------------------------------
@@ -85,26 +85,26 @@ EndingStLocArray:
 ; ===========================================================================
 
 LevSz_ChkLamp:
-		tst.b	(v_lastlamp).w	; have any lampposts been hit?
+		tst.b	(v_lastlamp).l	; have any lampposts been hit?
 		beq.s	LevSz_StartLoc	; if not, branch
 
 		if MMD_Is_Level
 		jsr	(Lamp_LoadInfo).l
 		endif
-		move.w	(v_player+obX).w,d1
-		move.w	(v_player+obY).w,d0
+		move.w	(v_player+obX).l,d1
+		move.w	(v_player+obY).l,d0
 		bra.s	LevSz_SkipStartPos
 ; ===========================================================================
 
 LevSz_StartLoc:
-		move.w	(v_zone).w,d0
+		move.w	(v_zone).l,d0
 		lsl.b	#6,d0
 		lsr.w	#4,d0
 		lea	StartLocArray(pc,d0.w),a1 ; load Sonic's start location
-		tst.w	(f_demo).w	; is ending demo mode on?
+		tst.w	(f_demo).l	; is ending demo mode on?
 		bpl.s	LevSz_SonicPos	; if not, branch
 
-		move.w	(v_creditsnum).w,d0
+		move.w	(v_creditsnum).l,d0
 		subq.w	#1,d0
 		lsl.w	#2,d0
 		lea	EndingStLocArray(pc,d0.w),a1 ; load Sonic's start location
@@ -112,10 +112,10 @@ LevSz_StartLoc:
 LevSz_SonicPos:
 		moveq	#0,d1
 		move.w	(a1)+,d1
-		move.w	d1,(v_player+obX).w ; set Sonic's position on x-axis
+		move.w	d1,(v_player+obX).l ; set Sonic's position on x-axis
 		moveq	#0,d0
 		move.w	(a1),d0
-		move.w	d0,(v_player+obY).w ; set Sonic's position on y-axis
+		move.w	d0,(v_player+obY).l ; set Sonic's position on y-axis
 
 SetScreen:
 LevSz_SkipStartPos:
@@ -124,30 +124,30 @@ LevSz_SkipStartPos:
 		moveq	#0,d1
 
 SetScr_WithinLeft:
-		move.w	(v_limitright2).w,d2
+		move.w	(v_limitright2).l,d2
 		cmp.w	d2,d1		; is Sonic inside the right edge?
 		blo.s	SetScr_WithinRight ; if yes, branch
 		move.w	d2,d1
 
 SetScr_WithinRight:
-		move.w	d1,(v_screenposx).w ; set horizontal screen position
+		move.w	d1,(v_screenposx).l ; set horizontal screen position
 
 		subi.w	#96,d0		; is Sonic within 96px of upper edge?
 		bcc.s	SetScr_WithinTop ; if yes, branch
 		moveq	#0,d0
 
 SetScr_WithinTop:
-		cmp.w	(v_limitbtm2).w,d0 ; is Sonic above the bottom edge?
+		cmp.w	(v_limitbtm2).l,d0 ; is Sonic above the bottom edge?
 		blt.s	SetScr_WithinBottom ; if yes, branch
-		move.w	(v_limitbtm2).w,d0
+		move.w	(v_limitbtm2).l,d0
 
 SetScr_WithinBottom:
-		move.w	d0,(v_screenposy).w ; set vertical screen position
+		move.w	d0,(v_screenposy).l ; set vertical screen position
 		bsr.w	BgScrollSpeed
 		moveq	#0,d0
-		move.b	(v_zone).w,d0
+		move.b	(v_zone).l,d0
 		lsl.b	#2,d0
-		move.l	LoopTileNums(pc,d0.w),(v_256loop1).w
+		move.l	LoopTileNums(pc,d0.w),(v_256loop1).l
 		rts
 ; ===========================================================================
 ; ---------------------------------------------------------------------------
@@ -182,17 +182,17 @@ LoopTileNums:
 
 
 BgScrollSpeed:
-		tst.b	(v_lastlamp).w
+		tst.b	(v_lastlamp).l
 		bne.s	loc_6206
-		move.w	d0,(v_bgscreenposy).w
-		move.w	d0,(v_bg2screenposy).w
-		move.w	d1,(v_bgscreenposx).w
-		move.w	d1,(v_bg2screenposx).w
-		move.w	d1,(v_bg3screenposx).w
+		move.w	d0,(v_bgscreenposy).l
+		move.w	d0,(v_bg2screenposy).l
+		move.w	d1,(v_bgscreenposx).l
+		move.w	d1,(v_bg2screenposx).l
+		move.w	d1,(v_bg3screenposx).l
 
 loc_6206:
 		moveq	#0,d2
-		move.b	(v_zone).w,d2
+		move.b	(v_zone).l,d2
 		add.w	d2,d2
 		move.w	BgScroll_Index(pc,d2.w),d2
 		jmp	BgScroll_Index(pc,d2.w)
@@ -207,11 +207,11 @@ BgScroll_Index:	dc.w BgScroll_GHZ-BgScroll_Index, BgScroll_LZ-BgScroll_Index
 ; ===========================================================================
 
 BgScroll_GHZ:
-		clr.l	(v_bgscreenposx).w
-		clr.l	(v_bgscreenposy).w
-		clr.l	(v_bg2screenposy).w
-		clr.l	(v_bg3screenposy).w
-		lea	(v_bgscroll_buffer).w,a2
+		clr.l	(v_bgscreenposx).l
+		clr.l	(v_bgscreenposy).l
+		clr.l	(v_bg2screenposy).l
+		clr.l	(v_bg3screenposy).l
+		lea	(v_bgscroll_buffer).l,a2
 		clr.l	(a2)+
 		clr.l	(a2)+
 		clr.l	(a2)+
@@ -220,7 +220,7 @@ BgScroll_GHZ:
 
 BgScroll_LZ:
 		asr.l	#1,d0
-		move.w	d0,(v_bgscreenposy).w
+		move.w	d0,(v_bgscreenposy).l
 		rts	
 ; ===========================================================================
 
@@ -231,8 +231,8 @@ BgScroll_MZ:
 BgScroll_SLZ:
 		asr.l	#1,d0
 		addi.w	#$C0,d0
-		move.w	d0,(v_bgscreenposy).w
-		clr.l	(v_bgscreenposx).w
+		move.w	d0,(v_bgscreenposy).l
+		clr.l	(v_bgscreenposx).l
 		rts	
 ; ===========================================================================
 
@@ -243,8 +243,8 @@ BgScroll_SYZ:
 		add.l	d2,d0
 		asr.l	#8,d0
 		addq.w	#1,d0
-		move.w	d0,(v_bgscreenposy).w
-		clr.l	(v_bgscreenposx).w
+		move.w	d0,(v_bgscreenposy).l
+		clr.l	(v_bgscreenposx).l
 		rts	
 ; ===========================================================================
 
@@ -252,24 +252,24 @@ BgScroll_SBZ:
 		andi.w	#$7F8,d0
 		asr.w	#3,d0
 		addq.w	#1,d0
-		move.w	d0,(v_bgscreenposy).w
+		move.w	d0,(v_bgscreenposy).l
 		rts	
 ; ===========================================================================
 
 BgScroll_End:
-		move.w	(v_screenposx).w,d0
+		move.w	(v_screenposx).l,d0
 		asr.w	#1,d0
-		move.w	d0,(v_bgscreenposx).w
-		move.w	d0,(v_bg2screenposx).w
+		move.w	d0,(v_bgscreenposx).l
+		move.w	d0,(v_bg2screenposx).l
 		asr.w	#2,d0
 		move.w	d0,d1
 		add.w	d0,d0
 		add.w	d1,d0
-		move.w	d0,(v_bg3screenposx).w
-		clr.l	(v_bgscreenposy).w
-		clr.l	(v_bg2screenposy).w
-		clr.l	(v_bg3screenposy).w
-		lea	(v_bgscroll_buffer).w,a2
+		move.w	d0,(v_bg3screenposx).l
+		clr.l	(v_bgscreenposy).l
+		clr.l	(v_bg2screenposy).l
+		clr.l	(v_bg3screenposy).l
+		lea	(v_bgscroll_buffer).l,a2
 		clr.l	(a2)+
 		clr.l	(a2)+
 		clr.l	(a2)+

@@ -26,12 +26,12 @@ EEgg_Main:	; Routine 0
 		move.b	#0,obRender(a0)
 		move.b	#2,obPriority(a0)
 		move.b	#2,obAnim(a0)	; use "END" animation
-		cmpi.b	#6,(v_emeralds).w ; do you have all 6 emeralds?
+		cmpi.b	#6,(v_emeralds).l ; do you have all 6 emeralds?
 		beq.s	EEgg_Animate	; if yes, branch
 
-		move.b	#id_CreditsText,(v_tryagain).w ; load credits object
-		move.w	#9,(v_creditsnum).w ; use "TRY AGAIN" text
-		move.b	#id_TryChaos,(v_eggmanchaos).w ; load emeralds object on "TRY AGAIN" screen
+		move.b	#id_CreditsText,(v_tryagain).l ; load credits object
+		move.w	#9,(v_creditsnum).l ; use "TRY AGAIN" text
+		move.b	#id_TryChaos,(v_eggmanchaos).l ; load emeralds object on "TRY AGAIN" screen
 		move.b	#0,obAnim(a0)	; use "TRY AGAIN" animation
 
 EEgg_Animate:	; Routine 2
@@ -47,7 +47,7 @@ EEgg_Juggle:	; Routine 4
 		neg.w	d0
 
 .noflip:
-		lea	(v_eggmanchaos).w,a1 ; get RAM address for emeralds
+		lea	(v_eggmanchaos).l,a1 ; get RAM address for emeralds
 		moveq	#5,d1
 
 .emeraldloop:
