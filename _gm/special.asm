@@ -1080,9 +1080,49 @@ Map_SSWalls:	include	"_maps/SS Walls.asm"
 ; ---------------------------------------------------------------------------
 ; Compressed graphics - special stage
 ; ---------------------------------------------------------------------------
+Nem_SSWalls:	binclude	"artnem/Special Walls.nem" ; special stage walls
+		even
 Eni_SSBg1:	binclude	"tilemaps/SS Background 1.eni" ; special stage background (mappings)
 		even
+Nem_SSBgFish:	binclude	"artnem/Special Birds & Fish.nem" ; special stage birds and fish background
+		even
 Eni_SSBg2:	binclude	"tilemaps/SS Background 2.eni" ; special stage background (mappings)
+		even
+Nem_SSBgCloud:	binclude	"artnem/Special Clouds.nem" ; special stage clouds background
+		even
+Nem_SSGOAL:	binclude	"artnem/Special GOAL.nem" ; special stage GOAL block
+		even
+Nem_SSRBlock:	binclude	"artnem/Special R.nem"	; special stage R block
+		even
+Nem_SS1UpBlock:	binclude	"artnem/Special 1UP.nem" ; special stage 1UP block
+		even
+Nem_SSEmStars:	binclude	"artnem/Special Emerald Twinkle.nem" ; special stage stars from a collected emerald
+		even
+Nem_SSRedWhite:	binclude	"artnem/Special Red-White.nem" ; special stage red/white block
+		even
+Nem_SSZone1:	binclude	"artnem/Special ZONE1.nem" ; special stage ZONE1 block
+		even
+Nem_SSZone2:	binclude	"artnem/Special ZONE2.nem" ; ZONE2 block
+		even
+Nem_SSZone3:	binclude	"artnem/Special ZONE3.nem" ; ZONE3 block
+		even
+Nem_SSZone4:	binclude	"artnem/Special ZONE4.nem" ; ZONE4 block
+		even
+Nem_SSZone5:	binclude	"artnem/Special ZONE5.nem" ; ZONE5 block
+		even
+Nem_SSZone6:	binclude	"artnem/Special ZONE6.nem" ; ZONE6 block
+		even
+Nem_SSUpDown:	binclude	"artnem/Special UP-DOWN.nem" ; special stage UP/DOWN block
+		even
+Nem_SSEmerald:	binclude	"artnem/Special Emeralds.nem" ; special stage chaos emeralds
+		even
+Nem_SSGhost:	binclude	"artnem/Special Ghost.nem" ; special stage ghost block
+		even
+Nem_SSWBlock:	binclude	"artnem/Special W.nem"	; special stage W block
+		even
+Nem_SSGlass:	binclude	"artnem/Special Glass.nem" ; special stage destroyable glass block
+		even
+Nem_ResultEm:	binclude	"artnem/Special Result Emeralds.nem" ; chaos emeralds on special stage results screen
 		even
 ; ---------------------------------------------------------------------------
 ; Sprite mappings - special stage results screen
@@ -1199,6 +1239,8 @@ Map_Vanish:	include	"_maps/Special Stage Entry (Unused).asm"
 SS_MapIndex:
 			include	"_inc/Special Stage Mappings & VRAM Pointers.asm"
 SS_MapIndex_End:
+Nem_Warp:	binclude	"artnem/Unused - SStage Flash.nem" ; entry to special stage flash
+		even
 ; ---------------------------------------------------------------------------
 ; Special Stage layouts
 ; ---------------------------------------------------------------------------
