@@ -253,8 +253,10 @@ Level_MainLoop:
 		call	MoveSonicInDemo
 		call	LZWaterFeatures
 		call	ExecuteObjects
-		tst.w   (f_restart).w
-		bne     GM_Level
+		if Revision<>0
+			tst.w   (f_restart).w
+			bne     GM_Level
+		endif
 		tst.w	(v_debuguse).w	; is debug mode being used?
 		bne.s	Level_DoScroll	; if yes, branch
 		cmpi.b	#6,(v_player+obRoutine).w ; has Sonic just died?
@@ -274,6 +276,10 @@ Level_SkipScroll:
 
 		cmpi.b	#id_Demo,(v_gamemode).w
 		beq.s	Level_ChkDemo	; if mode is 8 (demo), branch
+		if Revision=0
+		tst.w	(f_restart).w	; is the level set to restart?
+		bne.w	GM_Level	; if yes, branch
+		endif
 		cmpi.b	#id_Level,(v_gamemode).w
 		beq.w	Level_MainLoop	; if mode is $C (level), branch
 		rts	

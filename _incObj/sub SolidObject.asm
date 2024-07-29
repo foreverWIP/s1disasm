@@ -140,7 +140,11 @@ loc_FB0E:
 		tst.b	(f_playerctrl).w ; are object interactions disabled?
 		bmi.w	Solid_Ignore	; if yes, branch
 		cmpi.b	#6,(v_player+obRoutine).w ; is Sonic dying?
-		bcc.w	Solid_Debug
+		if Revision=0
+		bcc.w	Solid_Ignore	; if yes, branch
+		else
+			bcc.w	Solid_Debug
+		endif
 		tst.w	(v_debuguse).w	; is debug mode being used?
 		bne.w	Solid_Debug	; if yes, branch
 		move.w	d0,d5

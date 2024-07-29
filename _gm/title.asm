@@ -117,8 +117,10 @@ Tit_LoadText:
 		move.b	#id_PSBTM,(v_pressstart).w ; load "PRESS START BUTTON" object
 		;clr.b	(v_pressstart+obRoutine).w ; The 'Mega Games 10' version of Sonic 1 added this line, to fix the 'PRESS START BUTTON' object not appearing
 
-		tst.b   (v_megadrive).w	; is console Japanese?
-		bpl.s   .isjap		; if yes, branch
+		if Revision<>0
+			tst.b   (v_megadrive).w	; is console Japanese?
+			bpl.s   .isjap		; if yes, branch
+		endif
 
 		move.b	#id_PSBTM,(v_titletm).w ; load "TM" object
 		move.b	#3,(v_titletm+obFrame).w
@@ -299,7 +301,9 @@ LevSel_Level_SS:
 		move.w	d0,(v_rings).w	; clear rings
 		move.l	d0,(v_time).w	; clear time
 		move.l	d0,(v_score).w	; clear score
-		move.l	#5000,(v_scorelife).w ; extra life is awarded at 50000 points
+		if Revision<>0
+			move.l	#5000,(v_scorelife).w ; extra life is awarded at 50000 points
+		endif
 		rts	
 ; ===========================================================================
 
@@ -319,7 +323,9 @@ PlayLevel:
 		move.l	d0,(v_emldlist).w ; clear emeralds
 		move.l	d0,(v_emldlist+4).w ; clear emeralds
 		move.b	d0,(v_continues).w ; clear continues
-		move.l	#5000,(v_scorelife).w ; extra life is awarded at 50000 points
+		if Revision<>0
+			move.l	#5000,(v_scorelife).w ; extra life is awarded at 50000 points
+		endif
 		move.b	#bgm_Fade,d0
 		jsr		PlaySound_Special ; fade out music
 		rts	
@@ -327,7 +333,29 @@ PlayLevel:
 ; ---------------------------------------------------------------------------
 ; Level	select - level pointers
 ; ---------------------------------------------------------------------------
-LevSel_Ptrs:
+LevSel_Ptrs:	if Revision=0
+		; old level order
+		dc.b id_GHZ, 0
+		dc.b id_GHZ, 1
+		dc.b id_GHZ, 2
+		dc.b id_LZ, 0
+		dc.b id_LZ, 1
+		dc.b id_LZ, 2
+		dc.b id_MZ, 0
+		dc.b id_MZ, 1
+		dc.b id_MZ, 2
+		dc.b id_SLZ, 0
+		dc.b id_SLZ, 1
+		dc.b id_SLZ, 2
+		dc.b id_SYZ, 0
+		dc.b id_SYZ, 1
+		dc.b id_SYZ, 2
+		dc.b id_SBZ, 0
+		dc.b id_SBZ, 1
+		dc.b id_LZ, 3		; Scrap Brain Zone 3
+		dc.b id_SBZ, 2		; Final Zone
+		else
+		; correct level order
 		dc.b id_GHZ, 0
 		dc.b id_GHZ, 1
 		dc.b id_GHZ, 2
@@ -347,13 +375,18 @@ LevSel_Ptrs:
 		dc.b id_SBZ, 1
 		dc.b id_LZ, 3
 		dc.b id_SBZ, 2
+		endif
 		dc.b id_SS, 0		; Special Stage
 		dc.w $8000		; Sound Test
 		even
 ; ---------------------------------------------------------------------------
 ; Level	select codes
 ; ---------------------------------------------------------------------------
-LevSelCode_J:	dc.b btnUp,btnDn,btnDn,btnDn,btnL,btnR,0,$FF
+LevSelCode_J:	if Revision=0
+		dc.b btnUp,btnDn,btnL,btnR,0,$FF
+		else
+		dc.b btnUp,btnDn,btnDn,btnDn,btnL,btnR,0,$FF
+		endif
 		even
 
 LevSelCode_US:	dc.b btnUp,btnDn,btnL,btnR,0,$FF
@@ -528,7 +561,11 @@ LevSel_CharOk:
 ; ---------------------------------------------------------------------------
 ; Level	select menu text
 ; ---------------------------------------------------------------------------
-LevelMenuText:	binclude	"misc/Level Select Text (JP1).bin"
+LevelMenuText:	if Revision=0
+		binclude	"misc/Level Select Text.bin"
+		else
+		binclude	"misc/Level Select Text (JP1).bin"
+		endif
 		even
 
 		include	"_incObj/0E Title Screen Sonic.asm"
@@ -602,7 +639,9 @@ Demo_Level:
 		move.w	d0,(v_rings).w	; clear rings
 		move.l	d0,(v_time).w	; clear time
 		move.l	d0,(v_score).w	; clear score
-		move.l	#5000,(v_scorelife).w ; extra life is awarded at 50000 points
+		if Revision<>0
+			move.l	#5000,(v_scorelife).w ; extra life is awarded at 50000 points
+		endif
 		rts	
 
 ; ---------------------------------------------------------------------------

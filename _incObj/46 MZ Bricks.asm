@@ -42,8 +42,14 @@ Brick_Action:	; Routine 2
 		bsr.w	SolidObject
 
 .chkdel:
+		if Revision=0
+		bsr.w	DisplaySprite
 		out_of_range.w	DeleteObject
-		bra.w	DisplaySprite
+		rts	
+		else
+			out_of_range.w	DeleteObject
+			bra.w	DisplaySprite
+		endif
 ; ===========================================================================
 Brick_TypeIndex:dc.w Brick_Type00-Brick_TypeIndex
 		dc.w Brick_Type01-Brick_TypeIndex
@@ -94,7 +100,11 @@ Brick_Type03:
 		move.b	#4,obSubtype(a0)
 		move.w	(a1),d0
 		andi.w	#$3FF,d0
-		cmpi.w	#$16A,d0
+		if Revision=0
+		cmpi.w	#$2E8,d0
+		else
+			cmpi.w	#$16A,d0
+		endif
 		bcc.s	locret_E8EE
 		move.b	#0,obSubtype(a0)
 
