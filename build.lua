@@ -57,7 +57,7 @@ local mmd_names = {
 for k,v in pairs(mmd_names) do
 	print("Assembling " .. v .. "...")
 	local out_name = "build/" .. v
-	local message, abort = common.build_rom("sonic", out_name, "-D MMD_ID=" .. (k - 1), "-p=FF -z=0," .. compression .. ",Size_of_DAC_driver_guess,after", false, "https://github.com/sonicretro/s1disasm")
+	local message, abort = common.build_rom("sonic", out_name, "-D MMD=" .. (k - 1), "-p=FF -z=0," .. compression .. ",Size_of_DAC_driver_guess,after", false, "https://github.com/sonicretro/s1disasm")
 	os.rename("sonic.lst", out_name .. ".lst")
 
 	if message then

@@ -19,9 +19,7 @@ FixBugs		  = 0	; change to 1 to enable bugfixes
 
 zeroOffsetOptimization = 0	; if 1, makes a handful of zero-offset instructions smaller
 
-	include "_mcd/subcpu.asm"
-	include "_mcd/mmd.asm"
-	include "mmddefs.asm"
+	include "MMDConstants.asm"
 	include "MacroSetup.asm"
 	include	"Constants.asm"
 	include	"Variables.asm"
@@ -30,7 +28,6 @@ zeroOffsetOptimization = 0	; if 1, makes a handful of zero-offset instructions s
 ; ===========================================================================
 
 StartOfRom:
-		if 1
 Vectors:	dc.l v_systemstack&$FFFFFF	; Initial stack pointer value
 		dc.l EntryPoint			; Start of program
 		dc.l BusError			; Bus error
@@ -116,11 +113,6 @@ RomEndLoc:	dc.l EndOfRom-1		; End address of ROM
 		dc.b "                                                    " ; Notes (unused, anything can be put in this space, but it has to be 52 bytes.)
 		dc.b "JUE             " ; Region (Country code)
 EndOfHeader:
-		endif
-
-		if 0
-		MMD 0,WORDRAM2M,0,EntryPoint,HBlank,VBlank
-		endif
 
 		include "_debugger/DebuggerBlob.asm"
 
@@ -1799,15 +1791,14 @@ LoadTilesFromStart:
 		lea	(v_bgscreenposx).w,a3
 		lea	(v_lvllayout+$40).w,a4
 		move.w	#$6000,d2
-		if MMD_Is_GHZ||MMD_Is_Ending
-		goto	Draw_GHz_Bg
-		endif
-		if MMD_Is_MZ
-		goto	Draw_Mz_Bg
-		endif
-		if MMD_Is_SBZ
-		goto	Draw_SBz_Bg
-		endif
+		tst.b	(v_zone).w
+		beq.w	Draw_GHz_Bg
+		cmpi.b	#id_MZ,(v_zone).w
+		beq.w	Draw_Mz_Bg
+		cmpi.w	#(id_SBZ<<8)+0,(v_zone).w
+		beq.w	Draw_SBz_Bg
+		cmpi.b	#id_EndZ,(v_zone).w
+		beq.w	Draw_GHz_Bg
 ; End of function LoadTilesFromStart
 
 
@@ -1833,7 +1824,6 @@ DrawChunks:
 ; End of function DrawChunks
 
 Draw_GHz_Bg:
-			if MMD_Is_GHZ
 			moveq	#0,d4
 			moveq	#((224+16+16)/16)-1,d6
 locj_7224:			
@@ -1849,10 +1839,8 @@ locj_7224:
 			rts
 locj_724a:
 			dc.b $00,$00,$00,$00,$06,$06,$06,$04,$04,$04,$00,$00,$00,$00,$00,$00
-			endif
 ;-------------------------------------------------------------------------------
 Draw_Mz_Bg:;locj_725a:
-			if MMD_Is_MZ
 			moveq	#-16,d4
 			moveq	#((224+16+16)/16)-1,d6
 locj_725E:			
@@ -1867,10 +1855,8 @@ locj_725E:
 			addi.w	#16,d4
 			dbf	d6,locj_725E
 			rts
-			endif
 ;-------------------------------------------------------------------------------
 Draw_SBz_Bg:;locj_7288:
-			if MMD_Is_SBZ
 			moveq	#-16,d4
 			moveq	#((224+16+16)/16)-1,d6
 locj_728C:			
@@ -1884,7 +1870,6 @@ locj_728C:
 			addi.w	#16,d4
 			dbf	d6,locj_728C
 			rts
-			endif
 ;-------------------------------------------------------------------------------
 locj_72B2:
 			dc.w v_bgscreenposx, v_bgscreenposx, v_bg2screenposx, v_bg3screenposx
@@ -1917,27 +1902,11 @@ locj_72EE:
 
 
 LevelDataLoad:
-		if MMD_Is_GHZ
-		movea.l	#LevelHeader_GHZ,a2
-		endif
-		if MMD_Is_MZ
-		movea.l	#LevelHeader_MZ,a2
-		endif
-		if MMD_Is_SYZ
-		movea.l	#LevelHeader_SYZ,a2
-		endif
-		if MMD_Is_LZ
-		movea.l	#LevelHeader_LZ,a2
-		endif
-		if MMD_Is_SLZ
-		movea.l	#LevelHeader_SLZ,a2
-		endif
-		if MMD_Is_SBZ
-		movea.l	#LevelHeader_SBZ,a2
-		endif
-		if MMD_Is_Ending
-		movea.l	#LevelHeader_Ending,a2
-		endif
+		moveq	#0,d0
+		move.b	(v_zone).w,d0
+		lsl.w	#4,d0
+		lea	(LevelHeaders).l,a2
+		lea	(a2,d0.w),a2
 		move.l	a2,-(sp)
 		addq.l	#4,a2
 		movea.l	(a2)+,a0
