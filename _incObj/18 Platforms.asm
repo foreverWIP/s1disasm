@@ -18,17 +18,20 @@ Plat_Index:	dc.w Plat_Main-Plat_Index
 Plat_Main:	; Routine 0
 		addq.b	#2,obRoutine(a0)
 		move.w	#make_art_tile(ArtTile_Level,2,0),obGfx(a0)
-		if MMD_Is_GHZ
 		move.l	#Map_Plat_GHZ,obMap(a0)
-		endif
+		move.b	#$20,obActWid(a0)
 		if MMD_Is_SYZ
 		move.l	#Map_Plat_SYZ,obMap(a0) ; SYZ specific code
+		move.b	#$20,obActWid(a0)
 		endif
+.notSYZ:
 		if MMD_Is_SLZ
 		move.l	#Map_Plat_SLZ,obMap(a0) ; SLZ specific code
-		endif
 		move.b	#$20,obActWid(a0)
+		endif
+		move.w	#make_art_tile(ArtTile_Level,2,0),obGfx(a0)
 		move.b	#3,obSubtype(a0)
+.notSLZ:
 		move.b	#4,obRender(a0)
 		move.b	#4,obPriority(a0)
 		move.w	obY(a0),objoff_2C(a0)

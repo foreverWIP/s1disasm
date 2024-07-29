@@ -72,16 +72,14 @@ loc_12C7E:
 		move.b	obPrevAni(a0),obAnim(a0)
 
 loc_12CA6:
-		call	Sonic_Animate
-		if MMD_Is_Ending==0
+		bsr.w	Sonic_Animate
 		tst.b	(f_playerctrl).w
 		bmi.s	loc_12CB6
 		jsr	(ReactToItem).l
 
 loc_12CB6:
-		endif
 		bsr.w	Sonic_Loops
-		call	Sonic_LoadGfx
+		bsr.w	Sonic_LoadGfx
 		rts	
 ; ===========================================================================
 Sonic_Modes:	dc.w Sonic_MdNormal-Sonic_Modes
@@ -195,11 +193,20 @@ locret_13302:
 		include	"_incObj/Sonic SlopeRepel.asm"
 		include	"_incObj/Sonic JumpAngle.asm"
 		include	"_incObj/Sonic Floor.asm"
+		include	"_incObj/Sonic ResetOnFloor.asm"
 		include	"_incObj/Sonic (part 2).asm"
 		include	"_incObj/Sonic Loops.asm"
+		include	"_incObj/Sonic Animate.asm"
+		include	"_anim/Sonic.asm"
+		include	"_incObj/Sonic LoadGfx.asm"
 
+		include	"_incObj/0A Drowning Countdown.asm"
+Pal_Sonic:	bincludePalette	"palette/Sonic.bin"
 Pal_LZSonWater:	bincludePalette	"palette/Sonic - LZ Underwater.bin"
 Pal_SBZ3SonWat:	bincludePalette	"palette/Sonic - SBZ3 Underwater.bin"
+Map_Sonic:	include	"_maps/Sonic.asm"
+SonicDynPLC:	include	"_maps/Sonic - Dynamic Gfx Script.asm"
+Art_Sonic:	binclude	"artunc/Sonic.bin"	; Sonic
 		even
 
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
@@ -473,6 +480,9 @@ loc_14E0A:
 
 locret_14E16:
 		rts	
+
+		include	"_incObj/sub ObjFloorDist.asm"
+
 
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
 

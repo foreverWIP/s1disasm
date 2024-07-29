@@ -233,3 +233,60 @@ Demo_EndSBZ2:	binclude	"demodata/Ending - SBZ2.bin"
 		even
 Demo_EndGHZ2:	binclude	"demodata/Ending - GHZ2.bin"
 		even
+; ---------------------------------------------------------------------------
+; Ending sequence demo loading subroutine
+; ---------------------------------------------------------------------------
+
+; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
+
+
+EndingDemoLoad:
+		move.w	(v_creditsnum).w,d0
+		andi.w	#$F,d0
+		add.w	d0,d0
+		move.w	EndDemo_Levels(pc,d0.w),d0 ; load level	array
+		move.w	d0,(v_zone).w	; set level from level array
+		addq.w	#1,(v_creditsnum).w
+		cmpi.w	#9,(v_creditsnum).w ; have credits finished?
+		bhs.s	EndDemo_Exit	; if yes, branch
+		move.w	#$8001,(f_demo).w ; set demo+ending mode
+		move.b	#id_Demo,(v_gamemode).w ; set game mode to 8 (demo)
+		move.b	#3,(v_lives).w	; set lives to 3
+		moveq	#0,d0
+		move.w	d0,(v_rings).w	; clear rings
+		move.l	d0,(v_time).w	; clear time
+		move.l	d0,(v_score).w	; clear score
+		move.b	d0,(v_lastlamp).w ; clear lamppost counter
+		cmpi.w	#4,(v_creditsnum).w ; is SLZ demo running?
+		bne.s	EndDemo_Exit	; if not, branch
+		lea	(EndDemo_LampVar).l,a1 ; load lamppost variables
+		lea	(v_lastlamp).w,a2
+		move.w	#8,d0
+
+EndDemo_LampLoad:
+		move.l	(a1)+,(a2)+
+		dbf	d0,EndDemo_LampLoad
+
+EndDemo_Exit:
+		rts	
+; End of function EndingDemoLoad
+
+; ---------------------------------------------------------------------------
+; Levels used in the end sequence demos
+; ---------------------------------------------------------------------------
+EndDemo_Levels:	binclude	"misc/Demo Level Order - Ending.bin"
+
+; ---------------------------------------------------------------------------
+; Lamppost variables in the end sequence demo (Star Light Zone)
+; ---------------------------------------------------------------------------
+EndDemo_LampVar:
+		dc.b 1,	1		; number of the last lamppost
+		dc.w $A00, $62C		; x/y-axis position
+		dc.w 13			; rings
+		dc.l 0			; time
+		dc.b 0,	0		; dynamic level event routine counter
+		dc.w $800		; level bottom boundary
+		dc.w $957, $5CC		; x/y axis screen position
+		dc.w $4AB, $3A6, 0, $28C, 0, 0 ; scroll info
+		dc.w $308		; water height
+		dc.b 1,	1		; water routine and state

@@ -1,4 +1,14 @@
 ; ---------------------------------------------------------------------------
+; HUD counter sizes
+; ---------------------------------------------------------------------------
+Hud_100000:	dc.l 100000
+Hud_10000:	dc.l 10000
+Hud_1000:	dc.l 1000
+Hud_100:	dc.l 100
+Hud_10:		dc.l 10
+Hud_1:		dc.l 1
+
+; ---------------------------------------------------------------------------
 ; Subroutine to	load time numbers patterns
 ; ---------------------------------------------------------------------------
 
@@ -21,7 +31,7 @@ Hud_Secs:
 
 loc_1C9BA:
 		moveq	#0,d4
-		lea	(Art_Hud).l,a1
+		lea	Art_Hud(pc),a1
 
 Hud_TimeLoop:
 		moveq	#0,d2
@@ -77,7 +87,7 @@ Hud_TimeRingBonus:
 		lea	(Hud_1000).l,a2
 		moveq	#3,d6
 		moveq	#0,d4
-		lea	(Art_Hud).l,a1
+		lea	Art_Hud(pc),a1
 
 Hud_BonusLoop:
 		moveq	#0,d2
@@ -148,7 +158,7 @@ Hud_Lives:
 		lea	(Hud_10).l,a2
 		moveq	#1,d6
 		moveq	#0,d4
-		lea	(Art_LivesNums).l,a1
+		lea	Art_LivesNums(pc),a1
 
 Hud_LivesLoop:
 		move.l	d0,4(a6)

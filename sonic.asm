@@ -19,11 +19,11 @@ FixBugs		  = 0	; change to 1 to enable bugfixes
 
 zeroOffsetOptimization = 0	; if 1, makes a handful of zero-offset instructions smaller
 
-	include "MMDConstants.asm"
 	include "MacroSetup.asm"
 	include	"Constants.asm"
 	include	"Variables.asm"
 	include	"Macros.asm"
+	include "MMDConstants.asm"
 
 ; ===========================================================================
 
@@ -338,7 +338,7 @@ MainGameLoop:
 		ori.b	#$40,d0
 		move.w	d0,(vdp_control_port).l
 		move.b	#id_Continue,(v_gamemode).w
-		call	GM_Continue
+		call	GM_Cont
 		endif
 		if MMD_Is_Ending
 		move.w	(v_vdp_buffer1).w,d0
@@ -386,7 +386,7 @@ __LABEL___end:
 		if MMD_Is_Title
 		include "_gm/title.asm"
 		endif
-		if MMD_Is_Level||MMD_Is_Demo
+		if MMD_Is_Level
 		include "_gm/level.asm"
 		endif
 		if MMD_Is_SS
@@ -401,66 +401,11 @@ __LABEL___end:
 		if MMD_Is_Credits
 		include "_gm/credits.asm"
 		endif
+; ===========================================================================
 
-		if MMD_Is_Ending||MMD_Is_Credits
-; ---------------------------------------------------------------------------
-; Ending sequence demo loading subroutine
-; ---------------------------------------------------------------------------
+Art_Text:	binclude	"artunc/menutext.bin" ; text used in level select and debug mode
+Art_Text_End:	even
 
-; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
-
-
-EndingDemoLoad:
-		move.w	(v_creditsnum).w,d0
-		andi.w	#$F,d0
-		add.w	d0,d0
-		move.w	EndDemo_Levels(pc,d0.w),d0 ; load level	array
-		move.w	d0,(v_zone).w	; set level from level array
-		addq.w	#1,(v_creditsnum).w
-		cmpi.w	#9,(v_creditsnum).w ; have credits finished?
-		bhs.s	EndDemo_Exit	; if yes, branch
-		move.w	#$8001,(f_demo).w ; set demo+ending mode
-		move.b	#id_Demo,(v_gamemode).w ; set game mode to 8 (demo)
-		move.b	#3,(v_lives).w	; set lives to 3
-		moveq	#0,d0
-		move.w	d0,(v_rings).w	; clear rings
-		move.l	d0,(v_time).w	; clear time
-		move.l	d0,(v_score).w	; clear score
-		move.b	d0,(v_lastlamp).w ; clear lamppost counter
-		cmpi.w	#4,(v_creditsnum).w ; is SLZ demo running?
-		bne.s	EndDemo_Exit	; if not, branch
-		lea	(EndDemo_LampVar).l,a1 ; load lamppost variables
-		lea	(v_lastlamp).w,a2
-		move.w	#8,d0
-
-EndDemo_LampLoad:
-		move.l	(a1)+,(a2)+
-		dbf	d0,EndDemo_LampLoad
-
-EndDemo_Exit:
-		rts	
-; End of function EndingDemoLoad
-
-; ---------------------------------------------------------------------------
-; Levels used in the end sequence demos
-; ---------------------------------------------------------------------------
-EndDemo_Levels:	binclude	"misc/Demo Level Order - Ending.bin"
-
-; ---------------------------------------------------------------------------
-; Lamppost variables in the end sequence demo (Star Light Zone)
-; ---------------------------------------------------------------------------
-EndDemo_LampVar:
-		dc.b 1,	1		; number of the last lamppost
-		dc.w $A00, $62C		; x/y-axis position
-		dc.w 13			; rings
-		dc.l 0			; time
-		dc.b 0,	0		; dynamic level event routine counter
-		dc.w $800		; level bottom boundary
-		dc.w $957, $5CC		; x/y axis screen position
-		dc.w $4AB, $3A6, 0, $28C, 0, 0 ; scroll info
-		dc.w $308		; water height
-		dc.b 1,	1		; water routine and state
-		endif
 ; ===========================================================================
 		include "_inc/vblanks.asm"
 		include "_inc/hblank.asm"
@@ -545,9 +490,7 @@ ClearScreen:
 ; End of function ClearScreen
 
 		include	"_incObj/sub PlaySound.asm"
-		if MMD_Has_Sonic||MMD_Is_Credits
 		include	"_inc/PauseGame.asm"
-		endif
 
 ; ---------------------------------------------------------------------------
 ; Subroutine to	copy a tile map from RAM to VRAM namespace
@@ -846,7 +789,6 @@ Pal_SLZCyc:	binclude	"palette/Cycle - SLZ.bin"
 Pal_SYZCyc1:	binclude	"palette/Cycle - SYZ1.bin"
 Pal_SYZCyc2:	binclude	"palette/Cycle - SYZ2.bin"
 
-		if MMD_Is_SBZ
 		include	"_inc/SBZ Palette Scripts.asm"
 
 Pal_SBZCyc1:	binclude	"palette/Cycle - SBZ 1.bin"
@@ -859,7 +801,6 @@ Pal_SBZCyc7:	binclude	"palette/Cycle - SBZ 7.bin"
 Pal_SBZCyc8:	binclude	"palette/Cycle - SBZ 8.bin"
 Pal_SBZCyc9:	binclude	"palette/Cycle - SBZ 9.bin"
 Pal_SBZCyc10:	binclude	"palette/Cycle - SBZ 10.bin"
-		endif
 ; ---------------------------------------------------------------------------
 ; Subroutine to	fade in from black
 ; ---------------------------------------------------------------------------
@@ -1512,7 +1453,6 @@ TryAgainEnd:
 ; "TRY AGAIN" and "END"	screen main loop
 ; ---------------------------------------------------------------------------
 TryAg_MainLoop:
-		if MMD_Is_Credits
 		bsr.w	PauseGame
 		move.b	#4,(v_vbla_routine).w
 		bsr.w	WaitForVBla
@@ -1527,17 +1467,12 @@ TryAg_MainLoop:
 
 TryAg_Exit:
 		move.b	#id_Title,(v_gamemode).w ; goto title screen
-		endif
 		rts	
 
 ; ===========================================================================
 
-		if MMD_Has_Sonic||MMD_Is_Title
 		include	"_inc/LevelSizeLoad & BgScrollSpeed (JP1).asm"
-		endif
-		if MMD_Is_Level||MMD_Is_Title||MMD_Is_Demo||MMD_Is_Ending
 		include	"_inc/DeformLayers (JP1).asm"
-		endif
 
 
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
@@ -2404,9 +2339,7 @@ LevLoad_Row:
 		rts	
 ; End of function LevelLayoutLoad2
 
-		if MMD_Is_Level||MMD_Is_Title||MMD_Is_Demo||MMD_Is_Ending
 		include	"_inc/DynamicLevelEvents.asm"
-		endif
 
 		if MMD_Is_GHZ
 		include	"_incObj/11 Bridge (part 1).asm"
@@ -2415,7 +2348,7 @@ LevLoad_Row:
 Map_Bri:	include	"_maps/Bridge.asm"
 		endif
 
-		if MMD_Has_Sonic&&(MMD_Is_SS==0)
+		if MMD_Has_Sonic
 ; ---------------------------------------------------------------------------
 ; Platform subroutine
 ; ---------------------------------------------------------------------------
@@ -2655,11 +2588,11 @@ Map_Plat_SYZ:	include	"_maps/Platforms (SYZ).asm"
 		if MMD_Is_SLZ
 Map_Plat_SLZ:	include	"_maps/Platforms (SLZ).asm"
 		endif
+		include	"_incObj/19.asm"
 		if MMD_Is_GHZ
 Map_GBall:	include	"_maps/GHZ Ball.asm"
 		endif
 		if MMD_Is_Level
-		include	"_incObj/19.asm"
 		include	"_incObj/1A Collapsing Ledge (part 1).asm"
 		include	"_incObj/53 Collapsing Floors.asm"
 
@@ -2772,10 +2705,10 @@ Map_CFlo:	include	"_maps/Collapsing Floors.asm"
 		if MMD_Is_Level
 		include	"_incObj/1C Scenery.asm"
 Map_Scen:	include	"_maps/Scenery.asm"
+		endif
 
 		include	"_incObj/1D Unused Switch.asm"
 Map_Swi:	include	"_maps/Unused Switch.asm"
-		endif
 
 		if MMD_Is_SBZ
 		include	"_incObj/2A SBZ Small Door.asm"
@@ -2916,9 +2849,9 @@ Map_Hog:	include	"_maps/Ball Hog.asm"
 		endif
 		if MMD_Is_Level
 		include	"_incObj/24, 27 & 3F Explosions.asm"
+		endif
 Map_MisDissolve:include	"_maps/Buzz Bomber Missile Dissolve.asm"
 		include	"_maps/Explosions.asm"
-		endif
 
 		if MMD_Is_Level
 		include	"_incObj/28 Animals.asm"
@@ -2937,17 +2870,13 @@ Map_Crab:	include	"_maps/Crabmeat.asm"
 		include	"_anim/Buzz Bomber Missile.asm"
 Map_Buzz:	include	"_maps/Buzz Bomber.asm"
 Map_Missile:	include	"_maps/Buzz Bomber Missile.asm"
-		endif
 
-		if MMD_Is_Level||MMD_Is_SS||MMD_Is_Ending
 		include	"_incObj/25 & 37 Rings.asm"
-		include	"_anim/Rings.asm"
-Map_Ring:		include	"_maps/Rings (JP1).asm"
-		endif
-		if MMD_Is_Level
 		include	"_incObj/4B Giant Ring.asm"
 		include	"_incObj/7C Ring Flash.asm"
 
+		include	"_anim/Rings.asm"
+Map_Ring:		include	"_maps/Rings (JP1).asm"
 Map_GRing:	include	"_maps/Giant Ring.asm"
 Map_Flash:	include	"_maps/Ring Flash.asm"
 		include	"_incObj/26 Monitor.asm"
@@ -2959,9 +2888,7 @@ Map_Monitor:	include	"_maps/Monitor.asm"
 
 		include	"_incObj/sub AnimateSprite.asm"
 
-		if MMD_Is_Title
 Map_PSB:	include	"_maps/Press Start and TM.asm"
-		endif
 
 		if MMD_Is_GHZ
 		include	"_incObj/2B Chopper.asm"
@@ -2982,15 +2909,13 @@ Map_Burro:	include	"_maps/Burrobot.asm"
 		include	"_incObj/35 Burning Grass.asm"
 		include	"_anim/Burning Grass.asm"
 Map_LGrass:	include	"_maps/MZ Large Grassy Platforms.asm"
+Map_Fire:	include	"_maps/Fireballs.asm"
 		include	"_incObj/30 MZ Large Green Glass Blocks.asm"
 Map_Glass:	include	"_maps/MZ Large Green Glass Blocks.asm"
 		include	"_incObj/31 Chained Stompers.asm"
 		include	"_incObj/45 Sideways Stomper.asm"
 Map_CStom:	include	"_maps/Chained Stompers.asm"
 Map_SStom:	include	"_maps/Sideways Stomper.asm"
-		endif
-		if MMD_Is_MZ||MMD_Is_SLZ
-Map_Fire:	include	"_maps/Fireballs.asm"
 		endif
 
 		if MMD_Is_Level
@@ -2999,15 +2924,11 @@ Map_But:	include	"_maps/Button.asm"
 
 		include	"_incObj/33 Pushable Blocks.asm"
 Map_Push:	include	"_maps/Pushable Blocks.asm"
-		endif
-		if MMD_Is_Level||MMD_Is_Demo
+
 		include	"_incObj/34 Title Cards.asm"
-		endif
-		if MMD_Is_Level
 		include	"_incObj/39 Game Over.asm"
 		include	"_incObj/3A Got Through Card.asm"
-		endif
-		if MMD_Is_Level||MMD_Is_SS
+
 ; ---------------------------------------------------------------------------
 ; Sprite mappings - zone title cards
 ; ---------------------------------------------------------------------------
@@ -3150,8 +3071,7 @@ M_Card_FZ:	spriteHeader		; FINAL
 	spritePiece	$14, -8, 2, 2, $26, 0, 0, 0, 0
 M_Card_FZ_End
 	even
-	endif
-	if MMD_Is_Level
+
 Map_Over:	include	"_maps/Game Over.asm"
 
 ; ---------------------------------------------------------------------------
@@ -3865,26 +3785,20 @@ Map_Edge:	include	"_maps/GHZ Edge Walls.asm"
 		include	"_anim/Fireballs.asm"
 		endif
 
-		if MMD_Is_Level
 		include	"_incObj/6D Flamethrower.asm"
 		include	"_anim/Flamethrower.asm"
 Map_Flame:	include	"_maps/Flamethrower.asm"
-		endif
 
 		if MMD_Is_MZ
 		include	"_incObj/46 MZ Bricks.asm"
 Map_Brick:	include	"_maps/MZ Bricks.asm"
 		endif
 
-		if MMD_Is_SYZ
 		include	"_incObj/12 Light.asm"
 Map_Light	include	"_maps/Light.asm"
-		endif
-		if MMD_Is_SYZ||MMD_Is_SS
 		include	"_incObj/47 Bumper.asm"
 		include	"_anim/Bumper.asm"
 Map_Bump:	include	"_maps/Bumper.asm"
-		endif
 
 		if MMD_Is_Level
 		include	"_incObj/0D Signpost.asm" ; includes "GotThroughAct" subroutine
@@ -3904,11 +3818,10 @@ Map_LWall:	include	"_maps/Wall of Lava.asm"
 		endif
 
 		if MMD_Is_GHZ
-		include	"_incObj/40 Moto Bug.asm"
+		include	"_incObj/40 Moto Bug.asm" ; includes "_incObj/sub RememberState.asm"
 		include	"_anim/Moto Bug.asm"
 Map_Moto:	include	"_maps/Moto Bug.asm"
 		endif
-		include	"_incObj/sub RememberState.asm"
 		include	"_incObj/4F.asm"
 
 		if MMD_Is_Level
@@ -3974,7 +3887,6 @@ Map_Bomb:	include	"_maps/Bomb Enemy.asm"
 		include	"_anim/Orbinaut.asm"
 Map_Orb:	include	"_maps/Orbinaut.asm"
 
-		if MMD_Is_LZ
 		include	"_incObj/16 Harpoon.asm"
 		include	"_anim/Harpoon.asm"
 Map_Harp:	include	"_maps/Harpoon.asm"
@@ -3991,94 +3903,9 @@ Map_Bub:	include	"_maps/Bubbles.asm"
 		include	"_anim/Waterfalls.asm"
 Map_WFall:	include	"_maps/Waterfalls.asm"
 		endif
-		endif
 
-		if MMD_Is_LZ||MMD_Is_SBZ
-; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
-
-
-LCon_ChangeDir:
-		moveq	#0,d0
-		move.w	#-$100,d2
-		move.w	obX(a0),d0
-		sub.w	objoff_34(a0),d0
-		bcc.s	loc_12584
-		neg.w	d0
-		neg.w	d2
-
-loc_12584:
-		moveq	#0,d1
-		move.w	#-$100,d3
-		move.w	obY(a0),d1
-		sub.w	objoff_36(a0),d1
-		bcc.s	loc_12598
-		neg.w	d1
-		neg.w	d3
-
-loc_12598:
-		cmp.w	d0,d1
-		blo.s	loc_125C2
-		move.w	obX(a0),d0
-		sub.w	objoff_34(a0),d0
-		beq.s	loc_125AE
-		ext.l	d0
-		asl.l	#8,d0
-		divs.w	d1,d0
-		neg.w	d0
-
-loc_125AE:
-		move.w	d0,obVelX(a0)
-		move.w	d3,obVelY(a0)
-		swap	d0
-		move.w	d0,obX+2(a0)
-		clr.w	obY+2(a0)
-		rts	
-; ===========================================================================
-
-loc_125C2:
-		move.w	obY(a0),d1
-		sub.w	objoff_36(a0),d1
-		beq.s	loc_125D4
-		ext.l	d1
-		asl.l	#8,d1
-		divs.w	d0,d1
-		neg.w	d1
-
-loc_125D4:
-		move.w	d1,obVelY(a0)
-		move.w	d2,obVelX(a0)
-		swap	d1
-		move.w	d1,obY+2(a0)
-		clr.w	obX+2(a0)
-		rts	
-; End of function LCon_ChangeDir
-		endif
-
-		if MMD_Has_Sonic&&(MMD_Is_SS==0)
+		if MMD_Has_Sonic
 		include "_incObj/01 Sonic.asm"
-		endif
-		if MMD_Is_LZ
-		include	"_incObj/0A Drowning Countdown.asm"
-		endif
-		if MMD_Has_Sonic
-		include	"_incObj/sub ObjFloorDist.asm"
-		endif
-		if MMD_Has_Sonic||MMD_Is_Continue
-SonicDynPLC:	include	"_maps/Sonic - Dynamic Gfx Script.asm"
-		endif
-		if MMD_Has_Sonic
-Pal_Sonic:	bincludePalette	"palette/Sonic.bin"
-		include	"_incObj/Sonic ResetOnFloor.asm"
-		endif
-		if MMD_Has_Sonic||MMD_Is_Continue
-		include	"_incObj/Sonic Animate.asm"
-		include	"_incObj/Sonic LoadGfx.asm"
-		include	"_anim/Sonic.asm"
-Map_Sonic:	include	"_maps/Sonic.asm"
-		endif
-
-		if MMD_Is_SS||MMD_Is_Continue
-Pal_Continue:	bincludePalette	"palette/Special Stage Continue Bonus.bin"
 		endif
 
 ; ---------------------------------------------------------------------------
@@ -4116,7 +3943,6 @@ ResumeMusic:
 
 ; ===========================================================================
 
-		if MMD_Is_Level&&(MMD_Is_Ending==0)
 		include	"_anim/Drowning Countdown.asm"
 Map_Drown:	include	"_maps/Drowning Countdown.asm"
 
@@ -4126,10 +3952,10 @@ Map_Drown:	include	"_maps/Drowning Countdown.asm"
 Map_Shield:	include	"_maps/Shield and Invincibility.asm"
 		include	"_anim/Water Splash.asm"
 Map_Splash:	include	"_maps/Water Splash.asm"
-		endif
 
 		if MMD_Has_Sonic
 		include	"_incObj/Sonic AnglePos.asm"
+		endif
 
 		include	"_incObj/sub FindNearestTile.asm"
 		include	"_incObj/sub FindFloor.asm"
@@ -4214,7 +4040,6 @@ ObjHitWallLeft:
 locret_15098:
 		rts	
 ; End of function ObjHitWallLeft
-		endif
 
 ; ===========================================================================
 
@@ -4252,9 +4077,11 @@ word_16516:	dc.w $10, $1C80, $1C14,	$5E0, $1CEF, $572, $1CEF, $5B0,	$1C14, $61E
 		endif
 ; ===========================================================================
 
-		if MMD_Is_SBZ
+		if MMD_Is_SLZ
 		include	"_incObj/70 Girder Block.asm"
 Map_Gird:	include	"_maps/Girder Block.asm"
+		endif
+		if MMD_Is_SBZ
 		include	"_incObj/72 Teleporter.asm"
 		endif
 
@@ -4269,10 +4096,8 @@ Map_Lamp:	include	"_maps/Lamppost.asm"
 Map_Bonus:	include	"_maps/Hidden Bonuses.asm"
 		endif
 
-		if MMD_Is_Title||MMD_Is_Credits
 		include	"_incObj/8A Credits.asm"
 Map_Cred:	include	"_maps/Credits.asm"
-		endif
 		if MMD_Is_Ending||MMD_Is_Credits
 Map_ECha:	include	"_maps/Ending Sequence Emeralds.asm"
 		endif
@@ -4372,7 +4197,6 @@ loc_1982C:
 		jmp	(DeleteObject).l
 
 		if MMD_Is_Level
-		if MMD_Is_SBZ||MMD_Is_FZ
 		include	"_incObj/82 Eggman - Scrap Brain 2.asm"
 		include	"_anim/Eggman - Scrap Brain 2 & Final.asm"
 Map_SEgg:	include	"_maps/Eggman - Scrap Brain 2.asm"
@@ -4389,7 +4213,6 @@ Map_EggCyl:	include	"_maps/FZ Eggman's Cylinders.asm"
 Map_PLaunch:	include	"_maps/Plasma Ball Launcher.asm"
 		include	"_anim/Plasma Balls.asm"
 Map_Plasma:	include	"_maps/Plasma Balls.asm"
-		endif
 
 		if MMD_Act_ID==2
 		include	"_incObj/3E Prison Capsule.asm"
@@ -4397,19 +4220,15 @@ Map_Plasma:	include	"_maps/Plasma Balls.asm"
 Map_Pri:	include	"_maps/Prison Capsule.asm"
 		endif
 
+		include	"_incObj/sub ReactToItem.asm"
 
 		include	"_incObj/10.asm"
 		endif
 
-		if MMD_Is_Level||MMD_Is_SS
-		include	"_incObj/sub ReactToItem.asm"
-		endif
 		include	"_inc/AnimateLevelGfx.asm"
 
-		if MMD_Is_Level
 		include	"_incObj/21 HUD.asm"
 Map_HUD:	include	"_maps/HUD.asm"
-		endif
 
 ; ---------------------------------------------------------------------------
 ; Add points subroutine
@@ -4444,21 +4263,17 @@ AddPoints:
 		rts	
 ; End of function AddPoints
 
-		if MMD_Has_Sonic||MMD_Is_Continue
+		if MMD_Is_Level
 		include	"_inc/HUD_Update.asm"
 		include	"_inc/HUD (part 2).asm"
-; ---------------------------------------------------------------------------
-; HUD counter sizes
-; ---------------------------------------------------------------------------
-Hud_100000:	dc.l 100000
-Hud_10000:	dc.l 10000
-Hud_1000:	dc.l 1000
-Hud_100:	dc.l 100
-Hud_10:		dc.l 10
-Hud_1:		dc.l 1
+
+Art_Hud:	binclude	"artunc/HUD Numbers.bin" ; 8x16 pixel numbers on HUD
+		even
+Art_LivesNums:	binclude	"artunc/Lives Counter Numbers.bin" ; 8x8 pixel numbers on lives counter
+		even
 		endif
 
-		if MMD_Is_Level||MMD_Is_SS||MMD_Is_Ending
+		if MMD_Has_Sonic
 		include	"_incObj/DebugMode.asm"
 		include	"_inc/DebugList.asm"
 		endif
@@ -4472,7 +4287,7 @@ Eni_JapNames:	binclude	"tilemaps/Hidden Japanese Credits.eni" ; Japanese credits
 ; ---------------------------------------------------------------------------
 ; Compressed graphics - primary patterns and block mappings
 ; ---------------------------------------------------------------------------
-		if MMD_Is_GHZ||MMD_Is_Title||MMD_Is_Ending
+		if MMD_Is_GHZ||MMD_Is_Title
 Blk16_GHZ:	binclude	"map16/GHZ.eni"
 		even
 Blk256_GHZ:	binclude	"map256/GHZ.kos"
@@ -4541,6 +4356,24 @@ Col_SYZ:	binclude	"collide/SYZ.bin"	; SYZ index
 Col_SBZ:	binclude	"collide/SBZ.bin"	; SBZ index
 		even
 		endif
+; ---------------------------------------------------------------------------
+; Animated uncompressed graphics
+; ---------------------------------------------------------------------------
+Art_GhzWater:	binclude	"artunc/GHZ Waterfall.bin"
+		even
+Art_GhzFlower1:	binclude	"artunc/GHZ Flower Large.bin"
+		even
+Art_GhzFlower2:	binclude	"artunc/GHZ Flower Small.bin"
+		even
+Art_MzLava1:	binclude	"artunc/MZ Lava Surface.bin"
+		even
+Art_MzLava2:	binclude	"artunc/MZ Lava.bin"
+		even
+Art_MzTorch:	binclude	"artunc/MZ Background Torch.bin"
+		even
+Art_SbzSmoke:	binclude	"artunc/SBZ Background Smoke.bin"
+		even
+
 ; ---------------------------------------------------------------------------
 ; Level	layout index
 ; ---------------------------------------------------------------------------
@@ -4662,6 +4495,10 @@ byte_6A2FC:	dc.b 0,	0, 0, 0
 Level_End:	binclude	"levels/ending.bin"
 		even
 byte_6A320:	dc.b 0,	0, 0, 0
+
+
+Art_BigRing:	binclude	"artunc/Giant Ring.bin"
+		even
 
 ; ---------------------------------------------------------------------------
 ; Sprite locations index

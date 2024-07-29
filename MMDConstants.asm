@@ -35,19 +35,19 @@ MMD_Is_name = (MMD_Is_name_1||MMD_Is_name_2||MMD_Is_name_3)
 		mmdCheck SBZ_3
 		mmdZoneCheck SBZ
 		mmdCheck FZ
-		mmdCheck GHZ_1_Demo
-		mmdCheck MZ_1_Demo
-		mmdCheck SYZ_1_Demo
-		mmdCheck SS_1_Demo
-MMD_Is_Level = (MMD_Is_GHZ_1_Demo||MMD_Is_MZ_1_Demo||MMD_Is_SYZ_1_Demo)||(MMD_Is_GHZ||MMD_Is_MZ||MMD_Is_SYZ||MMD_Is_LZ||MMD_Is_SLZ||MMD_Is_SBZ||MMD_Is_FZ)
-MMD_Is_Demo = (MMD_Is_GHZ_1_Demo||MMD_Is_MZ_1_Demo||MMD_Is_SYZ_1_Demo||MMD_Is_SS_1_Demo)
+MMD_Is_Level = (MMD_Is_GHZ||MMD_Is_MZ||MMD_Is_SYZ||MMD_Is_LZ||MMD_Is_SLZ||MMD_Is_SBZ||MMD_Is_FZ)
+		mmdCheck GHZ_1Demo
+		mmdCheck MZ_1Demo
+		mmdCheck SYZ_1Demo
+		mmdCheck SS_1Demo
+MMD_Is_Demo = (MMD_Is_GHZ_1Demo||MMD_Is_MZ_1Demo||MMD_Is_SYZ_1Demo||MMD_Is_SS_1Demo)
 		mmdCheck SS_1
 		mmdCheck SS_2
 		mmdCheck SS_3
 		mmdCheck SS_4
 		mmdCheck SS_5
 		mmdCheck SS_6
-MMD_Is_SS = (MMD_Is_SS_1_Demo)||(MMD_Is_SS_1||MMD_Is_SS_2||MMD_Is_SS_3||MMD_Is_SS_4||MMD_Is_SS_5||MMD_Is_SS_6)
+MMD_Is_SS = (MMD_Is_SS_1||MMD_Is_SS_2||MMD_Is_SS_3||MMD_Is_SS_4||MMD_Is_SS_5||MMD_Is_SS_6)
 		mmdCheck Continue
 		mmdCheck Ending
 		mmdCheck Credits
