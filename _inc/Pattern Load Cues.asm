@@ -24,6 +24,7 @@ ptr_PLC_SBZ2:		dc.w PLC_SBZ2-ArtLoadCues
 ptr_PLC_TitleCard:	dc.w PLC_TitleCard-ArtLoadCues
 ptr_PLC_Boss:		dc.w PLC_Boss-ArtLoadCues
 ptr_PLC_Signpost:	dc.w PLC_Signpost-ArtLoadCues
+ptr_PLC_Warp:		dc.w PLC_Warp-ArtLoadCues
 ptr_PLC_SpecialStage:	dc.w PLC_SpecialStage-ArtLoadCues
 PLC_Animals:
 ptr_PLC_GHZAnimals:	dc.w PLC_GHZAnimals-ArtLoadCues
@@ -435,6 +436,7 @@ plcid_SBZ2:		equ (ptr_PLC_SBZ2-ArtLoadCues)/2	; $F
 plcid_TitleCard:	equ (ptr_PLC_TitleCard-ArtLoadCues)/2	; $10
 plcid_Boss:		equ (ptr_PLC_Boss-ArtLoadCues)/2	; $11
 plcid_Signpost:		equ (ptr_PLC_Signpost-ArtLoadCues)/2	; $12
+plcid_Warp:		equ (ptr_PLC_Warp-ArtLoadCues)/2	; $13
 plcid_SpecialStage:	equ (ptr_PLC_SpecialStage-ArtLoadCues)/2 ; $14
 plcid_GHZAnimals:	equ (ptr_PLC_GHZAnimals-ArtLoadCues)/2	; $15
 plcid_LZAnimals:	equ (ptr_PLC_LZAnimals-ArtLoadCues)/2	; $16
