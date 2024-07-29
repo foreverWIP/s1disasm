@@ -160,7 +160,7 @@ Hud_Base:
 		move.w	#$E,d2
 
 loc_1C83E:
-		lea	Art_Hud(pc),a1
+		lea	Art_Hud,a1
 
 loc_1C842:
 		move.w	#$F,d1
@@ -267,7 +267,7 @@ Hud_Score:
 
 Hud_LoadArt:
 		moveq	#0,d4
-		lea	Art_Hud(pc),a1
+		lea	Art_Hud,a1
 
 Hud_ScoreLoop:
 		moveq	#0,d2

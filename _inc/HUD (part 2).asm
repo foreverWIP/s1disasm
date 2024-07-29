@@ -31,7 +31,7 @@ Hud_Secs:
 
 loc_1C9BA:
 		moveq	#0,d4
-		lea	Art_Hud(pc),a1
+		lea	Art_Hud,a1
 
 Hud_TimeLoop:
 		moveq	#0,d2
@@ -87,7 +87,7 @@ Hud_TimeRingBonus:
 		lea	(Hud_1000).l,a2
 		moveq	#3,d6
 		moveq	#0,d4
-		lea	Art_Hud(pc),a1
+		lea	Art_Hud,a1
 
 Hud_BonusLoop:
 		moveq	#0,d2
@@ -158,7 +158,7 @@ Hud_Lives:
 		lea	(Hud_10).l,a2
 		moveq	#1,d6
 		moveq	#0,d4
-		lea	Art_LivesNums(pc),a1
+		lea	Art_LivesNums,a1
 
 Hud_LivesLoop:
 		move.l	d0,4(a6)
