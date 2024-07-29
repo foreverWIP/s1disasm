@@ -434,8 +434,13 @@ ClearScreen:
 		fillVRAM	0, vram_fg, vram_fg+plane_size_64x32 ; clear foreground namespace
 		fillVRAM	0, vram_bg, vram_bg+plane_size_64x32 ; clear background namespace
 
+		if Revision=0
+		move.l	#0,(v_scrposy_vdp).w
+		move.l	#0,(v_scrposx_vdp).w
+		else
 		clr.l	(v_scrposy_vdp).w
 		clr.l	(v_scrposx_vdp).w
+		endif
 
 	if FixBugs
 		clearRAM v_spritetablebuffer,v_spritetablebuffer_end
@@ -744,6 +749,7 @@ Pal_LZCyc1:	binclude	"palette/Cycle - LZ Waterfall.bin"
 Pal_LZCyc2:	binclude	"palette/Cycle - LZ Conveyor Belt.bin"
 Pal_LZCyc3:	binclude	"palette/Cycle - LZ Conveyor Belt Underwater.bin"
 Pal_SBZ3Cyc:	binclude	"palette/Cycle - SBZ3 Waterfall.bin"
+Pal_MZCyc:	binclude	"palette/Cycle - MZ (Unused).bin"
 Pal_SLZCyc:	binclude	"palette/Cycle - SLZ.bin"
 Pal_SYZCyc1:	binclude	"palette/Cycle - SYZ1.bin"
 Pal_SYZCyc2:	binclude	"palette/Cycle - SYZ2.bin"
@@ -1244,8 +1250,11 @@ Pal_SLZ:	bincludePalette	"palette/Star Light Zone.bin"
 Pal_SYZ:	bincludePalette	"palette/Spring Yard Zone.bin"
 Pal_SBZ1:	bincludePalette	"palette/SBZ Act 1.bin"
 Pal_SBZ2:	bincludePalette	"palette/SBZ Act 2.bin"
+Pal_Special:	bincludePalette	"palette/Special Stage.bin"
 Pal_SBZ3:	bincludePalette	"palette/SBZ Act 3.bin"
 Pal_SBZ3Water:	bincludePalette	"palette/SBZ Act 3 Underwater.bin"
+Pal_SSResult:	bincludePalette	"palette/Special Stage Results.bin"
+Pal_Continue:	bincludePalette	"palette/Special Stage Continue Bonus.bin"
 Pal_Ending:	bincludePalette	"palette/Ending.bin"
 
 ; ---------------------------------------------------------------------------
@@ -1266,6 +1275,10 @@ WaitForVBla:
 
 		include	"_incObj/sub RandomNumber.asm"
 		include	"_incObj/sub CalcSine.asm"
+		if Revision=0
+		include	"_incObj/sub CalcSqrt.asm"
+		else
+		endif
 		include	"_incObj/sub CalcAngle.asm"
 
 ; ===========================================================================
@@ -1545,8 +1558,13 @@ Demo_EndSBZ2:	binclude	"demodata/Ending - SBZ2.bin"
 Demo_EndGHZ2:	binclude	"demodata/Ending - GHZ2.bin"
 		even
 
+		if Revision=0
+		include	"_inc/LevelSizeLoad & BgScrollSpeed.asm"
+		include	"_inc/DeformLayers.asm"
+		else
 		include	"_inc/LevelSizeLoad & BgScrollSpeed (JP1).asm"
 		include	"_inc/DeformLayers (JP1).asm"
+		endif
 
 
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
@@ -1584,11 +1602,13 @@ LoadTilesAsYouMove:
 		lea	(v_bg2_scroll_flags_dup).w,a2	; Scroll block 2 scroll flags
 		lea	(v_bg2screenposx_dup).w,a3	; Scroll block 2 X coordinate
 		bsr.w	DrawBGScrollBlock2
+		if Revision>=1
 		; REV01 added a third scroll block, though, technically,
 		; the RAM for it was already there in REV00
 		lea	(v_bg3_scroll_flags_dup).w,a2	; Scroll block 3 scroll flags
 		lea	(v_bg3screenposx_dup).w,a3	; Scroll block 3 X coordinate
 		bsr.w	DrawBGScrollBlock3
+		endif
 		; Then, update the foreground
 		lea	(v_fg_scroll_flags_dup).w,a2	; Foreground scroll flags
 		lea	(v_screenposx_dup).w,a3		; Foreground X coordinate
@@ -1659,7 +1679,12 @@ DrawBGScrollBlock1:
 		bsr.w	Calc_VRAM_Pos
 		moveq	#-16,d4
 		moveq	#-16,d5
-		bsr.w	DrawBlocks_LR
+		if Revision=0
+		moveq	#(512/16)-1,d6	 ; Draw entire row of plane
+		bsr.w	DrawBlocks_LR_2
+		else
+			bsr.w	DrawBlocks_LR
+		endif
 
 loc_6972:
 		bclr	#1,(a2)
@@ -1670,10 +1695,61 @@ loc_6972:
 		bsr.w	Calc_VRAM_Pos
 		move.w	#224,d4
 		moveq	#-16,d5
-		bsr.w	DrawBlocks_LR
+		if Revision=0
+		moveq	#(512/16)-1,d6
+		bsr.w	DrawBlocks_LR_2
+		else
+			bsr.w	DrawBlocks_LR
+		endif
 
 loc_698E:
 		bclr	#2,(a2)
+
+		if Revision=0
+		beq.s	loc_69BE
+		; Draw new tiles on the left
+		moveq	#-16,d4
+		moveq	#-16,d5
+		bsr.w	Calc_VRAM_Pos
+		moveq	#-16,d4
+		moveq	#-16,d5
+		move.w	(v_scroll_block_1_size).w,d6
+		move.w	4(a3),d1
+		andi.w	#-16,d1		; Floor camera Y coordinate to the nearest block
+		sub.w	d1,d6
+		blt.s	loc_69BE	; If scroll block 1 is offscreen, skip loading its tiles
+		lsr.w	#4,d6		; Get number of rows not above the screen
+		cmpi.w	#((224+16+16)/16)-1,d6
+		blo.s	loc_69BA
+		moveq	#((224+16+16)/16)-1,d6	; Cap at height of screen
+
+loc_69BA:
+		bsr.w	DrawBlocks_TB_2
+
+loc_69BE:
+		bclr	#3,(a2)
+		beq.s	locret_69F2
+		; Draw new tiles on the right
+		moveq	#-16,d4
+		move.w	#320,d5
+		bsr.w	Calc_VRAM_Pos
+		moveq	#-16,d4
+		move.w	#320,d5
+		move.w	(v_scroll_block_1_size).w,d6
+		move.w	4(a3),d1
+		andi.w	#-16,d1
+		sub.w	d1,d6
+		blt.s	locret_69F2
+		lsr.w	#4,d6
+		cmpi.w	#((224+16+16)/16)-1,d6
+		blo.s	loc_69EE
+		moveq	#((224+16+16)/16)-1,d6
+
+loc_69EE:
+		bsr.w	DrawBlocks_TB_2
+
+		else
+
 			beq.s	locj_6D56
 			; Draw new tiles on the left
 			moveq	#-16,d4
@@ -1717,6 +1793,7 @@ locj_6D88:
 			moveq	#0,d5
 			moveq	#(512/16)-1,d6
 			bsr.w	DrawBlocks_LR_3
+		endif
 
 locret_69F2:
 		rts	
@@ -1728,6 +1805,105 @@ locret_69F2:
 ; Essentially, this draws everything that isn't scroll block 1
 ; sub_69F4:
 DrawBGScrollBlock2:
+		if Revision=0
+
+		tst.b	(a2)
+		beq.w	locret_6A80
+		bclr	#2,(a2)
+		beq.s	loc_6A3E
+		; Draw new tiles on the left
+		cmpi.w	#16,(a3)
+		blo.s	loc_6A3E
+		move.w	(v_scroll_block_1_size).w,d4
+		move.w	4(a3),d1
+		andi.w	#-16,d1
+		sub.w	d1,d4	; Get remaining coverage of screen that isn't scroll block 1
+		move.w	d4,-(sp)
+		moveq	#-16,d5
+		bsr.w	Calc_VRAM_Pos
+		move.w	(sp)+,d4
+		moveq	#-16,d5
+		move.w	(v_scroll_block_1_size).w,d6
+		move.w	4(a3),d1
+		andi.w	#-16,d1
+		sub.w	d1,d6
+		blt.s	loc_6A3E	; If scroll block 1 is completely offscreen, branch?
+		lsr.w	#4,d6
+		subi.w	#((224+16)/16)-1,d6	; Get however many of the rows on screen are not scroll block 1
+		bhs.s	loc_6A3E
+		neg.w	d6
+		bsr.w	DrawBlocks_TB_2
+
+loc_6A3E:
+		bclr	#3,(a2)
+		beq.s	locret_6A80
+		; Draw new tiles on the right
+		move.w	(v_scroll_block_1_size).w,d4
+		move.w	4(a3),d1
+		andi.w	#-16,d1
+		sub.w	d1,d4
+		move.w	d4,-(sp)
+		move.w	#320,d5
+		bsr.w	Calc_VRAM_Pos
+		move.w	(sp)+,d4
+		move.w	#320,d5
+		move.w	(v_scroll_block_1_size).w,d6
+		move.w	4(a3),d1
+		andi.w	#-16,d1
+		sub.w	d1,d6
+		blt.s	locret_6A80
+		lsr.w	#4,d6
+		subi.w	#((224+16)/16)-1,d6
+		bhs.s	locret_6A80
+		neg.w	d6
+		bsr.w	DrawBlocks_TB_2
+
+locret_6A80:
+		rts	
+; End of function DrawBGScrollBlock2
+
+; ===========================================================================
+
+; Abandoned unused scroll block code.
+; This would have drawn a scroll block that started at 208 pixels down, and was 48 pixels long.
+		tst.b	(a2)
+		beq.s	locret_6AD6
+		bclr	#2,(a2)
+		beq.s	loc_6AAC
+		; Draw new tiles on the left
+		move.w	#224-16,d4	; Note that full screen coverage is normally 224+16+16. This is exactly three blocks less.
+		move.w	4(a3),d1
+		andi.w	#-16,d1
+		sub.w	d1,d4
+		move.w	d4,-(sp)
+		moveq	#-16,d5
+		bsr.w	Calc_VRAM_Pos_Unknown
+		move.w	(sp)+,d4
+		moveq	#-16,d5
+		moveq	#3-1,d6	; Draw only three rows
+		bsr.w	DrawBlocks_TB_2
+
+loc_6AAC:
+		bclr	#3,(a2)
+		beq.s	locret_6AD6
+		; Draw new tiles on the right
+		move.w	#224-16,d4
+		move.w	4(a3),d1
+		andi.w	#-16,d1
+		sub.w	d1,d4
+		move.w	d4,-(sp)
+		move.w	#320,d5
+		bsr.w	Calc_VRAM_Pos_Unknown
+		move.w	(sp)+,d4
+		move.w	#320,d5
+		moveq	#3-1,d6
+		bsr.w	DrawBlocks_TB_2
+
+locret_6AD6:
+		rts	
+
+		else
+
 			tst.b	(a2)
 			beq.w	locj_6DF2
 			cmpi.b	#id_SBZ,(v_zone).w
@@ -1930,7 +2106,9 @@ locj_701C:
 			addi.w	#16,d4
 			dbf	d6,locj_6FF4
 			clr.b	(a2)
-			rts
+			rts			
+
+		endif
 
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
 
@@ -1957,6 +2135,7 @@ DrawBlocks_LR_2:
 		rts
 ; End of function DrawBlocks_LR
 
+		if Revision>=1
 ; DrawTiles_LR_3:
 DrawBlocks_LR_3:
 		move.l	#$800000,d7
@@ -1974,6 +2153,7 @@ DrawBlocks_LR_3:
 		dbf	d6,.loop
 		rts	
 ; End of function DrawBlocks_LR_3
+		endif
 
 
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
@@ -2074,6 +2254,33 @@ DrawFlipXY:
 		rts	
 ; End of function DrawBlocks
 
+; ===========================================================================
+; unused garbage
+		if Revision=0
+; This is interesting. It draws a block, but not before
+; incrementing its palette lines by 1. This may have been
+; a debug function to discolour mirrored tiles, to test
+; if they're loading properly.
+		rts	
+		move.l	d0,(a5)
+		move.w	#$2000,d5
+		move.w	(a1)+,d4
+		add.w	d5,d4
+		move.w	d4,(a6)
+		move.w	(a1)+,d4
+		add.w	d5,d4
+		move.w	d4,(a6)
+		add.l	d7,d0
+		move.l	d0,(a5)
+		move.w	(a1)+,d4
+		add.w	d5,d4
+		move.w	d4,(a6)
+		move.w	(a1)+,d4
+		add.w	d5,d4
+		move.w	d4,(a6)
+		rts
+		endif
+
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
 
 ; Gets address of block at a certain coordinate
@@ -2086,10 +2293,16 @@ DrawFlipXY:
 ; a1 = Address of block
 ; DrawBlocks:
 GetBlockData:
+		if Revision=0
+		lea	(v_16x16).w,a1
+		add.w	4(a3),d4	; Add camera Y coordinate to relative coordinate
+		add.w	(a3),d5		; Add camera X coordinate to relative coordinate
+		else
 			add.w	(a3),d5
 GetBlockData_2:
 			add.w	4(a3),d4
 			lea	(v_16x16).w,a1
+		endif
 		; Turn Y coordinate into index into level layout
 		move.w	d4,d3
 		lsr.w	#1,d3
@@ -2136,9 +2349,14 @@ locret_6C1E:
 ; d5 = Relative X coordinate
 ; Returns VDP command in d0
 Calc_VRAM_Pos:
+		if Revision=0
+		add.w	4(a3),d4	; Add camera Y coordinate
+		add.w	(a3),d5		; Add camera X coordinate
+		else
 			add.w	(a3),d5
 Calc_VRAM_Pos_2:
 			add.w	4(a3),d4
+		endif
 		; Floor the coordinates to the nearest pair of tiles (the size of a block).
 		; Also note that this wraps the value to the size of the plane:
 		; The plane is 64*8 wide, so wrap at $100, and it's 32*8 tall, so wrap at $200
@@ -2195,14 +2413,16 @@ LoadTilesFromStart:
 		lea	(v_bgscreenposx).w,a3
 		lea	(v_lvllayout+$40).w,a4
 		move.w	#$6000,d2
-		tst.b	(v_zone).w
-		beq.w	Draw_GHz_Bg
-		cmpi.b	#id_MZ,(v_zone).w
-		beq.w	Draw_Mz_Bg
-		cmpi.w	#(id_SBZ<<8)+0,(v_zone).w
-		beq.w	Draw_SBz_Bg
-		cmpi.b	#id_EndZ,(v_zone).w
-		beq.w	Draw_GHz_Bg
+		if Revision<>0
+			tst.b	(v_zone).w
+			beq.w	Draw_GHz_Bg
+			cmpi.b	#id_MZ,(v_zone).w
+			beq.w	Draw_Mz_Bg
+			cmpi.w	#(id_SBZ<<8)+0,(v_zone).w
+			beq.w	Draw_SBz_Bg
+			cmpi.b	#id_EndZ,(v_zone).w
+			beq.w	Draw_GHz_Bg
+		endif
 ; End of function LoadTilesFromStart
 
 
@@ -2227,6 +2447,7 @@ DrawChunks:
 		rts	
 ; End of function DrawChunks
 
+		if Revision>=1
 Draw_GHz_Bg:
 			moveq	#0,d4
 			moveq	#((224+16+16)/16)-1,d6
@@ -2297,6 +2518,7 @@ locj_72da:
 			bsr.w	DrawBlocks_LR_3
 locj_72EE:
 			rts
+		endif
 
 ; ---------------------------------------------------------------------------
 ; Subroutine to load basic level data
@@ -2642,6 +2864,7 @@ Map_Swing_SLZ:	include	"_maps/Swinging Platforms (SLZ).asm"
 		include	"_incObj/17 Spiked Pole Helix.asm"
 Map_Hel:	include	"_maps/Spiked Pole Helix.asm"
 		include	"_incObj/18 Platforms.asm"
+Map_Plat_Unused:include	"_maps/Platforms (unused).asm"
 Map_Plat_GHZ:	include	"_maps/Platforms (GHZ).asm"
 Map_Plat_SYZ:	include	"_maps/Platforms (SYZ).asm"
 Map_Plat_SLZ:	include	"_maps/Platforms (SLZ).asm"
@@ -2920,7 +3143,11 @@ Map_Missile:	include	"_maps/Buzz Bomber Missile.asm"
 		include	"_incObj/7C Ring Flash.asm"
 
 		include	"_anim/Rings.asm"
+		if Revision=0
+Map_Ring:	include	"_maps/Rings.asm"
+		else
 Map_Ring:		include	"_maps/Rings (JP1).asm"
+		endif
 Map_GRing:	include	"_maps/Giant Ring.asm"
 Map_Flash:	include	"_maps/Ring Flash.asm"
 		include	"_incObj/26 Monitor.asm"
@@ -2964,6 +3191,8 @@ Map_Push:	include	"_maps/Pushable Blocks.asm"
 		include	"_incObj/34 Title Cards.asm"
 		include	"_incObj/39 Game Over.asm"
 		include	"_incObj/3A Got Through Card.asm"
+		include	"_incObj/7E Special Stage Results.asm"
+		include	"_incObj/7F SS Result Chaos Emeralds.asm"
 
 ; ---------------------------------------------------------------------------
 ; Sprite mappings - zone title cards
@@ -3933,6 +4162,7 @@ ResumeMusic:
 		move.w	#bgm_SBZ,d0	; play SBZ music
 
 .notsbz:
+		if Revision<>0
 			tst.b	(v_invinc).w ; is Sonic invincible?
 			beq.s	.notinvinc ; if not, branch
 			move.w	#bgm_Invincible,d0
@@ -3941,6 +4171,7 @@ ResumeMusic:
 			beq.s	.playselected ; if not, branch
 			move.w	#bgm_Boss,d0
 .playselected:
+		endif
 
 		jsr	(PlaySound).l
 
@@ -3956,9 +4187,12 @@ ResumeMusic:
 Map_Drown:	include	"_maps/Drowning Countdown.asm"
 
 		include	"_incObj/38 Shield and Invincibility.asm"
+		include	"_incObj/4A Special Stage Entry (Unused).asm"
 		include	"_incObj/08 Water Splash.asm"
 		include	"_anim/Shield and Invincibility.asm"
 Map_Shield:	include	"_maps/Shield and Invincibility.asm"
+		include	"_anim/Special Stage Entry (Unused).asm"
+Map_Vanish:	include	"_maps/Special Stage Entry (Unused).asm"
 		include	"_anim/Water Splash.asm"
 Map_Splash:	include	"_maps/Water Splash.asm"
 
@@ -4646,6 +4880,16 @@ Map_Pri:	include	"_maps/Prison Capsule.asm"
 
 		include	"_incObj/sub ReactToItem.asm"
 
+SS_MapIndex:
+		include	"_inc/Special Stage Mappings & VRAM Pointers.asm"
+SS_MapIndex_End:
+
+Map_SS_R:	include	"_maps/SS R Block.asm"
+Map_SS_Glass:	include	"_maps/SS Glass Block.asm"
+Map_SS_Up:	include	"_maps/SS UP Block.asm"
+Map_SS_Down:	include	"_maps/SS DOWN Block.asm"
+		include	"_maps/SS Chaos Emeralds.asm"
+
 		include	"_incObj/10.asm"
 
 		include	"_inc/AnimateLevelGfx.asm"
@@ -4662,24 +4906,44 @@ Map_HUD:	include	"_maps/HUD.asm"
 
 AddPoints:
 		move.b	#1,(f_scorecount).w ; set score counter to update
-		lea     (v_score).w,a3
-		add.l   d0,(a3)
-		move.l  #999999,d1
-		cmp.l   (a3),d1 ; is score below 999999?
-		bhi.s   .belowmax ; if yes, branch
-		move.l  d1,(a3) ; reset score to 999999
-.belowmax:
-		move.l  (a3),d0
-		cmp.l   (v_scorelife).w,d0 ; has Sonic got 50000+ points?
-		blo.s   .noextralife ; if not, branch
 
-		addi.l  #5000,(v_scorelife).w ; increase requirement by 50000
-		tst.b   (v_megadrive).w
-		bmi.s   .noextralife ; branch if Mega Drive is Japanese
-		addq.b  #1,(v_lives).w ; give extra life
-		addq.b  #1,(f_lifecount).w
-		move.w	#bgm_ExtraLife,d0
-		jmp	(PlaySound).l
+		if Revision=0
+		lea	(v_scorecopy).w,a2
+		lea	(v_score).w,a3
+		add.l	d0,(a3)		; add d0*10 to the score
+		move.l	#999999,d1
+		cmp.l	(a3),d1		; is score below 999999?
+		bhi.w	.belowmax	; if yes, branch
+		move.l	d1,(a3)		; reset	score to 999999
+		move.l	d1,(a2)
+
+.belowmax:
+		move.l	(a3),d0
+		cmp.l	(a2),d0
+		blo.w	.locret_1C6B6
+		move.l	d0,(a2)
+
+		else
+
+			lea     (v_score).w,a3
+			add.l   d0,(a3)
+			move.l  #999999,d1
+			cmp.l   (a3),d1 ; is score below 999999?
+			bhi.s   .belowmax ; if yes, branch
+			move.l  d1,(a3) ; reset score to 999999
+.belowmax:
+			move.l  (a3),d0
+			cmp.l   (v_scorelife).w,d0 ; has Sonic got 50000+ points?
+			blo.s   .noextralife ; if not, branch
+
+			addi.l  #5000,(v_scorelife).w ; increase requirement by 50000
+			tst.b   (v_megadrive).w
+			bmi.s   .noextralife ; branch if Mega Drive is Japanese
+			addq.b  #1,(v_lives).w ; give extra life
+			addq.b  #1,(f_lifecount).w
+			move.w	#bgm_ExtraLife,d0
+			jmp	(PlaySound).l
+		endif
 
 .locret_1C6B6:
 .noextralife:
@@ -4687,6 +4951,57 @@ AddPoints:
 ; End of function AddPoints
 
 		include	"_inc/HUD_Update.asm"
+
+; ---------------------------------------------------------------------------
+; Subroutine to	load countdown numbers on the continue screen
+; ---------------------------------------------------------------------------
+
+; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
+
+
+ContScrCounter:
+		locVRAM	ArtTile_Continue_Number*tile_size
+		lea	(vdp_data_port).l,a6
+		lea	(Hud_10).l,a2
+		moveq	#2-1,d6
+		moveq	#0,d4
+		lea	Art_Hud(pc),a1 ; load numbers patterns
+
+ContScr_Loop:
+		moveq	#0,d2
+		move.l	(a2)+,d3
+
+loc_1C95A:
+		sub.l	d3,d1
+		blo.s	loc_1C962
+		addq.w	#1,d2
+		bra.s	loc_1C95A
+; ===========================================================================
+
+loc_1C962:
+		add.l	d3,d1
+		lsl.w	#6,d2
+		lea	(a1,d2.w),a3
+		move.l	(a3)+,(a6)
+		move.l	(a3)+,(a6)
+		move.l	(a3)+,(a6)
+		move.l	(a3)+,(a6)
+		move.l	(a3)+,(a6)
+		move.l	(a3)+,(a6)
+		move.l	(a3)+,(a6)
+		move.l	(a3)+,(a6)
+		move.l	(a3)+,(a6)
+		move.l	(a3)+,(a6)
+		move.l	(a3)+,(a6)
+		move.l	(a3)+,(a6)
+		move.l	(a3)+,(a6)
+		move.l	(a3)+,(a6)
+		move.l	(a3)+,(a6)
+		move.l	(a3)+,(a6)
+		dbf	d6,ContScr_Loop	; repeat 1 more	time
+
+		rts	
+; End of function ContScrCounter
 
 ; ===========================================================================
 
@@ -4709,10 +5024,26 @@ Nem_JapNames:	binclude	"artnem/Hidden Japanese Credits.nem"
 ; ---------------------------------------------------------------------------
 ; Compressed graphics - various
 ; ---------------------------------------------------------------------------
+		if Revision=0
+Nem_Smoke:	binclude	"artnem/Unused - Smoke.nem"
+		even
+Nem_SyzSparkle:	binclude	"artnem/Unused - SYZ Sparkles.nem"
+		even
+		endif
 Nem_Shield:	binclude	"artnem/Shield.nem"
 		even
 Nem_Stars:	binclude	"artnem/Invincibility Stars.nem"
 		even
+		if Revision=0
+Nem_LzSonic:	binclude	"artnem/Unused - LZ Sonic.nem" ; Sonic holding his breath
+		even
+Nem_UnkFire:	binclude	"artnem/Unused - Fireball.nem" ; unused fireball
+		even
+Nem_Warp:	binclude	"artnem/Unused - SStage Flash.nem" ; entry to special stage flash
+		even
+Nem_Goggle:	binclude	"artnem/Unused - Goggles.nem" ; unused goggles
+		even
+		endif
 ; ---------------------------------------------------------------------------
 ; Compressed graphics - GHZ stuff
 ; ---------------------------------------------------------------------------
@@ -4722,9 +5053,13 @@ Nem_Swing:	binclude	"artnem/GHZ Swinging Platform.nem"
 		even
 Nem_Bridge:	binclude	"artnem/GHZ Bridge.nem"
 		even
+Nem_GhzUnkBlock:binclude	"artnem/Unused - GHZ Block.nem"
+		even
 Nem_Ball:	binclude	"artnem/GHZ Giant Ball.nem"
 		even
 Nem_Spikes:	binclude	"artnem/Spikes.nem"
+		even
+Nem_GhzLog:	binclude	"artnem/Unused - GHZ Log.nem"
 		even
 Nem_SpikePole:	binclude	"artnem/GHZ Spiked Log.nem"
 		even
@@ -4778,11 +5113,15 @@ Nem_MzSwitch:	binclude	"artnem/MZ Switch.nem"
 		even
 Nem_MzGlass:	binclude	"artnem/MZ Green Glass Block.nem"
 		even
+Nem_UnkGrass:	binclude	"artnem/Unused - Grass.nem"
+		even
 Nem_MzFire:	binclude	"artnem/Fireballs.nem"
 		even
 Nem_Lava:	binclude	"artnem/MZ Lava.nem"
 		even
 Nem_MzBlock:	binclude	"artnem/MZ Green Pushable Block.nem"
+		even
+Nem_MzUnkBlock:	binclude	"artnem/Unused - MZ Background.nem"
 		even
 ; ---------------------------------------------------------------------------
 ; Compressed graphics - SLZ stuff
@@ -4854,6 +5193,8 @@ Nem_Crabmeat:	binclude	"artnem/Enemy Crabmeat.nem"
 		even
 Nem_Buzz:	binclude	"artnem/Enemy Buzz Bomber.nem"
 		even
+Nem_UnkExplode:	binclude	"artnem/Unused - Explosion.nem"
+		even
 Nem_Burrobot:	binclude	"artnem/Enemy Burrobot.nem"
 		even
 Nem_Chopper:	binclude	"artnem/Enemy Chopper.nem"
@@ -4910,6 +5251,13 @@ Nem_BigFlash:	binclude	"artnem/Giant Ring Flash.nem"
 Nem_Bonus:	binclude	"artnem/Hidden Bonuses.nem" ; hidden bonuses at end of a level
 		even
 ; ---------------------------------------------------------------------------
+; Compressed graphics - continue screen
+; ---------------------------------------------------------------------------
+Nem_ContSonic:	binclude	"artnem/Continue Screen Sonic.nem"
+		even
+Nem_MiniSonic:	binclude	"artnem/Continue Screen Stuff.nem"
+		even
+; ---------------------------------------------------------------------------
 ; Compressed graphics - animals
 ; ---------------------------------------------------------------------------
 Nem_Rabbit:	binclude	"artnem/Animal Rabbit.nem"
@@ -4947,7 +5295,11 @@ Blk16_MZ:	binclude	"map16/MZ.eni"
 		even
 Nem_MZ:		binclude	"artnem/8x8 - MZ.nem"	; MZ primary patterns
 		even
-Blk256_MZ:	binclude	"map256/MZ (JP1).kos"
+Blk256_MZ:	if Revision=0
+		binclude	"map256/MZ.kos"
+		else
+		binclude	"map256/MZ (JP1).kos"
+		endif
 		even
 Blk16_SLZ:	binclude	"map16/SLZ.eni"
 		even
@@ -4965,7 +5317,11 @@ Blk16_SBZ:	binclude	"map16/SBZ.eni"
 		even
 Nem_SBZ:	binclude	"artnem/8x8 - SBZ.nem"	; SBZ primary patterns
 		even
-Blk256_SBZ:	binclude	"map256/SBZ (JP1).kos"
+Blk256_SBZ:	if Revision=0
+		binclude	"map256/SBZ.kos"
+		else
+		binclude	"map256/SBZ (JP1).kos"
+		endif
 		even
 ; ---------------------------------------------------------------------------
 ; Compressed graphics - bosses and ending sequence
@@ -4988,6 +5344,10 @@ Nem_EndEm:	binclude	"artnem/Ending - Emeralds.nem"
 		even
 Nem_TryAgain:	binclude	"artnem/Ending - Try Again.nem"
 		even
+Nem_EndEggman:	if Revision=0
+		binclude	"artnem/Unused - Eggman Ending.nem"
+		endif
+		even
 Kos_EndFlowers:	binclude	"artkos/Flowers at Ending.kos" ; ending sequence animated flowers
 		even
 Nem_EndFlower:	binclude	"artnem/Ending - Flowers.nem"
@@ -4996,6 +5356,16 @@ Nem_CreditText:	binclude	"artnem/Ending - Credits.nem"
 		even
 Nem_EndStH:	binclude	"artnem/Ending - StH Logo.nem"
 		even
+
+		if Revision=0
+		rept $104
+		dc.b $FF			; why?
+		endm
+		else
+		rept $40
+		dc.b $FF
+		endm
+		endif
 ; ---------------------------------------------------------------------------
 ; Collision data
 ; ---------------------------------------------------------------------------
@@ -5016,6 +5386,27 @@ Col_SLZ:	binclude	"collide/SLZ.bin"	; SLZ index
 Col_SYZ:	binclude	"collide/SYZ.bin"	; SYZ index
 		even
 Col_SBZ:	binclude	"collide/SBZ.bin"	; SBZ index
+		even
+; ---------------------------------------------------------------------------
+; Special Stage layouts
+; ---------------------------------------------------------------------------
+SS_1:		binclude	"sslayout/1.eni"
+		even
+SS_2:		binclude	"sslayout/2.eni"
+		even
+SS_3:		binclude	"sslayout/3.eni"
+		even
+SS_4:		binclude	"sslayout/4.eni"
+		even
+		if Revision=0
+SS_5:		binclude	"sslayout/5.eni"
+		even
+SS_6:		binclude	"sslayout/6.eni"
+		else
+SS_5:		binclude	"sslayout/5 (JP1).eni"
+			even
+SS_6:		binclude	"sslayout/6 (JP1).eni"
+		endif
 		even
 ; ---------------------------------------------------------------------------
 ; Animated uncompressed graphics
@@ -5132,7 +5523,11 @@ byte_69B84:	dc.b 0,	0, 0, 0
 
 Level_SYZ1:	binclude	"levels/syz1.bin"
 		even
-Level_SYZbg:	binclude	"levels/syzbg (JP1).bin"
+Level_SYZbg:	if Revision=0
+		binclude	"levels/syzbg.bin"
+		else
+		binclude	"levels/syzbg (JP1).bin"
+		endif
 		even
 byte_69C7E:	dc.b 0,	0, 0, 0
 Level_SYZ2:	binclude	"levels/syz2.bin"
@@ -5219,13 +5614,25 @@ ObjPos_GHZ1:	binclude	"objpos/ghz1.bin"
 		even
 ObjPos_GHZ2:	binclude	"objpos/ghz2.bin"
 		even
-ObjPos_GHZ3:	binclude	"objpos/ghz3 (JP1).bin"
+ObjPos_GHZ3:	if Revision=0
+		binclude	"objpos/ghz3.bin"
+		else
+		binclude	"objpos/ghz3 (JP1).bin"
+		endif
 		even
-ObjPos_LZ1:	binclude	"objpos/lz1 (JP1).bin"
+ObjPos_LZ1:	if Revision=0
+		binclude	"objpos/lz1.bin"
+		else
+		binclude	"objpos/lz1 (JP1).bin"
+		endif
 		even
 ObjPos_LZ2:	binclude	"objpos/lz2.bin"
 		even
-ObjPos_LZ3:	binclude	"objpos/lz3 (JP1).bin"
+ObjPos_LZ3:	if Revision=0
+		binclude	"objpos/lz3.bin"
+		else
+		binclude	"objpos/lz3 (JP1).bin"
+		endif
 		even
 ObjPos_SBZ3:	binclude	"objpos/sbz3.bin"
 		even
@@ -5241,7 +5648,11 @@ ObjPos_LZ3pf1:	binclude	"objpos/lz3pf1.bin"
 		even
 ObjPos_LZ3pf2:	binclude	"objpos/lz3pf2.bin"
 		even
-ObjPos_MZ1:		binclude	"objpos/mz1 (JP1).bin"
+ObjPos_MZ1:	if Revision=0
+		binclude	"objpos/mz1.bin"
+		else
+		binclude	"objpos/mz1 (JP1).bin"
+		endif
 		even
 ObjPos_MZ2:	binclude	"objpos/mz2.bin"
 		even
@@ -5257,9 +5668,17 @@ ObjPos_SYZ1:	binclude	"objpos/syz1.bin"
 		even
 ObjPos_SYZ2:	binclude	"objpos/syz2.bin"
 		even
-ObjPos_SYZ3:	binclude	"objpos/syz3 (JP1).bin"
+ObjPos_SYZ3:	if Revision=0
+		binclude	"objpos/syz3.bin"
+		else
+		binclude	"objpos/syz3 (JP1).bin"
+		endif
 		even
-ObjPos_SBZ1:	binclude	"objpos/sbz1 (JP1).bin"
+ObjPos_SBZ1:	if Revision=0
+		binclude	"objpos/sbz1.bin"
+		else
+		binclude	"objpos/sbz1 (JP1).bin"
+		endif
 		even
 ObjPos_SBZ2:	binclude	"objpos/sbz2.bin"
 		even
@@ -5280,6 +5699,16 @@ ObjPos_SBZ1pf6:	binclude	"objpos/sbz1pf6.bin"
 ObjPos_End:	binclude	"objpos/ending.bin"
 		even
 ObjPos_Null:	dc.b $FF, $FF, 0, 0, 0,	0
+
+		if Revision=0
+		rept $62A
+		dc.b $FF
+		endm
+		else
+		rept $63C
+		dc.b $FF
+		endm
+		endif
 
 SoundDriver:	include "s1.sounddriver.asm"
 

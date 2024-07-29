@@ -79,7 +79,7 @@ loc_C85A:
 		bmi.s	locret_C86A
 		cmpi.w	#$200,d0	; has item moved beyond	$200 on	x-axis?
 		bhs.s	locret_C86A	; if yes, branch
-		goto	DisplaySprite
+		bra.w	DisplaySprite
 ; ===========================================================================
 
 locret_C86A:
@@ -99,11 +99,11 @@ SSR_Wait:	; Routine 4, 8, $C, $10
 		addq.b	#2,obRoutine(a0)
 
 SSR_Display:
-		goto	DisplaySprite
+		bra.w	DisplaySprite
 ; ===========================================================================
 
 SSR_RingBonus:	; Routine 6
-		call	DisplaySprite
+		bsr.w	DisplaySprite
 		move.b	#1,(f_endactbonus).w ; set ring bonus update flag
 		tst.w	(v_ringbonus).w	; is ring bonus	= zero?
 		beq.s	loc_C8C4	; if yes, branch
@@ -133,7 +133,7 @@ locret_C8EA:
 
 SSR_Exit:	; Routine $A, $12
 		move.w	#1,(f_restart).w ; restart level
-		goto	DisplaySprite
+		bra.w	DisplaySprite
 ; ===========================================================================
 
 SSR_Continue:	; Routine $E
@@ -143,7 +143,7 @@ SSR_Continue:	; Routine $E
 		jsr	(PlaySound_Special).l	; play continues jingle
 		addq.b	#2,obRoutine(a0)
 		move.w	#360,obTimeFrame(a0) ; set time delay to 6 seconds
-		goto	DisplaySprite
+		bra.w	DisplaySprite
 ; ===========================================================================
 
 loc_C91A:	; Routine $14
@@ -153,7 +153,7 @@ loc_C91A:	; Routine $14
 		bchg	#0,obFrame(a0)
 
 SSR_Display2:
-		goto	DisplaySprite
+		bra.w	DisplaySprite
 ; ===========================================================================
 SSR_Config:	dc.w $20, $120,	$C4	; start	x-pos, main x-pos, y-pos
 		dc.b 2,	0		; rountine number, frame number

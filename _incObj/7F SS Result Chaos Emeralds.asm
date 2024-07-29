@@ -24,7 +24,7 @@ SSRC_Main:	; Routine 0
 		moveq	#0,d1
 		move.b	(v_emeralds).w,d1 ; d1 is number of emeralds
 		subq.b	#1,d1		; subtract 1 from d1
-		jcs.w	DeleteObject	; if you have 0	emeralds, branch
+		bcs.w	DeleteObject	; if you have 0	emeralds, branch
 
 SSRC_Loop:
 		_move.b	#id_SSRChaos,obID(a1)
@@ -50,4 +50,4 @@ SSRC_Flash:	; Routine 2
 		move.b	obAnim(a0),obFrame(a0) ; load visible frame
 
 SSRC_Display:
-		goto	DisplaySprite
+		bra.w	DisplaySprite

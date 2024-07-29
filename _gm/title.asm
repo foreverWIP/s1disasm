@@ -594,10 +594,10 @@ GotoDemo:
 
 loc_33B6:
 		move.b	#4,(v_vbla_routine).w
-		call	WaitForVBla
-		call	DeformLayers
-		call	PaletteCycle
-		call	RunPLC
+		bsr.w	WaitForVBla
+		jsr		DeformLayers
+		bsr.w	PaletteCycle
+		bsr.w	RunPLC
 		move.w	(v_player+obX).w,d0
 		addq.w	#2,d0
 		move.w	d0,(v_player+obX).w

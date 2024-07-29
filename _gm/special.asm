@@ -4,8 +4,8 @@
 
 GM_Special:
 		move.w	#sfx_EnterSS,d0
-		call	PlaySound_Special ; play special stage entry sound
-		call	PaletteWhiteOut
+		bsr.w	PlaySound_Special ; play special stage entry sound
+		bsr.w	PaletteWhiteOut
 		disable_ints
 		lea	(vdp_control_port).l,a6
 		move.w	#$8B03,(a6)	; line scroll mode
@@ -15,12 +15,12 @@ GM_Special:
 		move.w	(v_vdp_buffer1).w,d0
 		andi.b	#$BF,d0
 		move.w	d0,(vdp_control_port).l
-		call	ClearScreen
+		bsr.w	ClearScreen
 		enable_ints
 		fillVRAM	0, ArtTile_SS_Plane_1*tile_size+plane_size_64x32, ArtTile_SS_Plane_5*tile_size
 		bsr.w	SS_BGLoad
 		moveq	#plcid_SpecialStage,d0
-		call	QuickPLC	; load special stage patterns
+		bsr.w	QuickPLC	; load special stage patterns
 
 		clearRAM v_objspace
 		clearRAM v_levelvariables
@@ -30,7 +30,7 @@ GM_Special:
 		clr.b	(f_wtr_state).w
 		clr.w	(f_restart).w
 		moveq	#palid_Special,d0
-		call	PalLoad_Fade	; load special stage palette
+		bsr.w	PalLoad_Fade	; load special stage palette
 		jsr	(SS_Load).l		; load SS layout data
 		move.l	#0,(v_screenposx).w
 		move.l	#0,(v_screenposy).w
@@ -39,7 +39,7 @@ GM_Special:
 		clr.w	(v_ssangle).w	; set stage angle to "upright"
 		move.w	#$40,(v_ssrotate).w ; set stage rotation speed
 		move.w	#bgm_SS,d0
-		call	PlaySound	; play special stage BG	music
+		bsr.w	PlaySound	; play special stage BG	music
 		move.w	#0,(v_btnpushtime1).w
 		lea	(DemoDataPtr).l,a1
 		moveq	#6,d0
@@ -61,22 +61,22 @@ SS_NoDebug:
 		move.w	(v_vdp_buffer1).w,d0
 		ori.b	#$40,d0
 		move.w	d0,(vdp_control_port).l
-		call	PaletteWhiteIn
+		bsr.w	PaletteWhiteIn
 
 ; ---------------------------------------------------------------------------
 ; Main Special Stage loop
 ; ---------------------------------------------------------------------------
 
 SS_MainLoop:
-		call	PauseGame
+		bsr.w	PauseGame
 		move.b	#$A,(v_vbla_routine).w
-		call	WaitForVBla
-		call	MoveSonicInDemo
+		bsr.w	WaitForVBla
+		bsr.w	MoveSonicInDemo
 		move.w	(v_jpadhold1).w,(v_jpadhold2).w
-		call	ExecuteObjects
-		call	BuildSprites
-		call	SS_ShowLayout
-		call	SS_BGAnimate
+		jsr	(ExecuteObjects).l
+		jsr	(BuildSprites).l
+		jsr	(SS_ShowLayout).l
+		bsr.w	SS_BGAnimate
 		tst.w	(f_demo).w	; is demo mode on?
 		beq.s	SS_ChkEnd	; if not, branch
 		tst.w	(v_demolength).w ; is there time left on the demo?
@@ -104,17 +104,17 @@ SS_Finish:
 
 SS_FinLoop:
 		move.b	#$16,(v_vbla_routine).w
-		call	WaitForVBla
-		call	MoveSonicInDemo
+		bsr.w	WaitForVBla
+		bsr.w	MoveSonicInDemo
 		move.w	(v_jpadhold1).w,(v_jpadhold2).w
-		call	ExecuteObjects
-		call	BuildSprites
-		call	SS_ShowLayout
-		call	SS_BGAnimate
+		jsr	(ExecuteObjects).l
+		jsr	(BuildSprites).l
+		jsr	(SS_ShowLayout).l
+		bsr.w	SS_BGAnimate
 		subq.w	#1,(v_palchgspeed).w
 		bpl.s	loc_47D4
 		move.w	#2,(v_palchgspeed).w
-		call	WhiteOut_ToWhite
+		bsr.w	WhiteOut_ToWhite
 
 loc_47D4:
 		tst.w	(v_demolength).w
@@ -125,44 +125,44 @@ loc_47D4:
 		move.w	#$8200+(vram_fg>>10),(a6) ; set foreground nametable address
 		move.w	#$8400+(vram_bg>>13),(a6) ; set background nametable address
 		move.w	#$9001,(a6)		; 64-cell hscroll size
-		call	ClearScreen
+		bsr.w	ClearScreen
 		locVRAM	ArtTile_Title_Card*tile_size
 		lea	(Nem_TitleCard).l,a0 ; load title card patterns
-		call	NemDec
-		call	Hud_Base
+		bsr.w	NemDec
+		jsr	(Hud_Base).l
 		enable_ints
 		moveq	#palid_SSResult,d0
-		call	PalLoad	; load results screen palette
+		bsr.w	PalLoad	; load results screen palette
 		moveq	#plcid_Main,d0
-		call	NewPLC
+		bsr.w	NewPLC
 		moveq	#plcid_SSResult,d0
-		call	AddPLC		; load results screen patterns
+		bsr.w	AddPLC		; load results screen patterns
 		move.b	#1,(f_scorecount).w ; update score counter
 		move.b	#1,(f_endactbonus).w ; update ring bonus counter
 		move.w	(v_rings).w,d0
 		mulu.w	#10,d0		; multiply rings by 10
 		move.w	d0,(v_ringbonus).w ; set rings bonus
 		move.w	#bgm_GotThrough,d0
-		call	PlaySound_Special	 ; play end-of-level music
+		jsr	(PlaySound_Special).l	 ; play end-of-level music
 
 		clearRAM v_objspace
 
 		move.b	#id_SSResult,(v_ssrescard).w ; load results screen object
 
 SS_NormalExit:
-		call	PauseGame
+		bsr.w	PauseGame
 		move.b	#$C,(v_vbla_routine).w
-		call	WaitForVBla
-		call	ExecuteObjects
-		call	BuildSprites
-		call	RunPLC
+		bsr.w	WaitForVBla
+		jsr	(ExecuteObjects).l
+		jsr	(BuildSprites).l
+		bsr.w	RunPLC
 		tst.w	(f_restart).w
 		beq.s	SS_NormalExit
 		tst.l	(v_plc_buffer).w
 		bne.s	SS_NormalExit
 		move.w	#sfx_EnterSS,d0
-		call	PlaySound_Special ; play special stage exit sound
-		call	PaletteWhiteOut
+		bsr.w	PlaySound_Special ; play special stage exit sound
+		bsr.w	PaletteWhiteOut
 		rts	
 ; ===========================================================================
 
@@ -187,7 +187,7 @@ SS_BGLoad:
 		lea	(v_ssbuffer1&$FFFFFF).l,a1
 		lea	(Eni_SSBg1).l,a0 ; load	mappings for the birds and fish
 		move.w	#make_art_tile(ArtTile_SS_Background_Fish,2,0),d0
-		call	EniDec
+		bsr.w	EniDec
 		locVRAM	ArtTile_SS_Plane_1*tile_size+plane_size_64x32,d3
 		lea	((v_ssbuffer1+$80)&$FFFFFF).l,a2
 		moveq	#7-1,d7 ; $5000, $6000, $7000, $8000, $9000, $A000, $B000.
@@ -216,7 +216,7 @@ loc_48E2:
 		movem.l	d0-d4,-(sp)
 		moveq	#8-1,d1
 		moveq	#8-1,d2
-		call	TilemapToVRAM
+		bsr.w	TilemapToVRAM
 		movem.l	(sp)+,d0-d4
 
 loc_48F2:
@@ -240,7 +240,7 @@ loc_491C:
 		lea	(v_ssbuffer1&$FFFFFF).l,a1
 		lea	(Eni_SSBg2).l,a0 ; load	mappings for the clouds
 		move.w	#make_art_tile(ArtTile_SS_Background_Clouds,2,0),d0
-		call	EniDec
+		bsr.w	EniDec
 		copyTilemap	v_ssbuffer1&$FFFFFF,ArtTile_SS_Plane_5*tile_size,64,32
 		copyTilemap	v_ssbuffer1&$FFFFFF,ArtTile_SS_Plane_5*tile_size+plane_size_64x32,64,64
 		rts	
@@ -451,7 +451,7 @@ loc_4C10:
 
 loc_4C26:
 		move.w	2(a3),d0
-		call	CalcSine
+		bsr.w	CalcSine
 		moveq	#0,d2
 		move.b	(a1)+,d2
 		muls.w	d2,d0
@@ -1030,7 +1030,7 @@ SS_LoadData:
 		movea.l	SS_LayoutIndex(pc,d0.w),a0
 		lea	(v_ssbuffer2&$FFFFFF).l,a1
 		move.w	#make_art_tile(ArtTile_SS_Background_Clouds,0,FALSE),d0
-		call	EniDec
+		jsr	(EniDec).l
 
 		; Clear everything from v_ssbuffer1 to v_ssbuffer2
 		lea	(v_ssbuffer1&$FFFFFF).l,a1
@@ -1234,42 +1234,3 @@ M_SSR_GotAll_End
 	even
 
 Map_SSRC:	include	"_maps/SS Result Chaos Emeralds.asm"
-Pal_Special:	bincludePalette	"palette/Special Stage.bin"
-Pal_SSResult:	bincludePalette	"palette/Special Stage Results.bin"
-Pal_Continue:	bincludePalette	"palette/Special Stage Continue Bonus.bin"
-			include	"_incObj/7E Special Stage Results.asm"
-			include	"_incObj/7F SS Result Chaos Emeralds.asm"
-			include	"_incObj/4A Special Stage Entry (Unused).asm"
-			include	"_anim/Special Stage Entry (Unused).asm"
-Map_Vanish:	include	"_maps/Special Stage Entry (Unused).asm"
-SS_MapIndex:
-			include	"_inc/Special Stage Mappings & VRAM Pointers.asm"
-SS_MapIndex_End:
-Nem_Warp:	binclude	"artnem/Unused - SStage Flash.nem" ; entry to special stage flash
-		even
-; ---------------------------------------------------------------------------
-; Special Stage layouts
-; ---------------------------------------------------------------------------
-SS_1:		binclude	"sslayout/1.eni"
-		even
-SS_2:		binclude	"sslayout/2.eni"
-		even
-SS_3:		binclude	"sslayout/3.eni"
-		even
-SS_4:		binclude	"sslayout/4.eni"
-		even
-		if Revision=0
-SS_5:		binclude	"sslayout/5.eni"
-		even
-SS_6:		binclude	"sslayout/6.eni"
-		else
-SS_5:		binclude	"sslayout/5 (JP1).eni"
-			even
-SS_6:		binclude	"sslayout/6 (JP1).eni"
-		endif
-		even
-Map_SS_R:	include	"_maps/SS R Block.asm"
-Map_SS_Glass:	include	"_maps/SS Glass Block.asm"
-Map_SS_Up:	include	"_maps/SS UP Block.asm"
-Map_SS_Down:	include	"_maps/SS DOWN Block.asm"
-		include	"_maps/SS Chaos Emeralds.asm"
