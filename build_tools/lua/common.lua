@@ -277,7 +277,7 @@ local function build_rom(input_filename, output_filename, as_arguments, p2bin_ar
 	os.remove(output_filename .. ".prev.bin")
 
 	-- Backup the most recent ROM.
-	-- os.rename(output_filename .. ".bin", output_filename .. ".prev.bin")
+	os.rename(output_filename .. ".bin", output_filename .. ".prev.bin")
 
 	local log_filename = input_filename .. ".log"
 

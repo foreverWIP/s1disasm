@@ -263,11 +263,9 @@ PLC_Boss:	dc.w ((PLC_Bossend-PLC_Boss-2)/6)-1
 		if MMD_Act_ID==2||MMD_Is_FZ
 		plcm	Nem_Eggman,   ArtTile_Eggman           ; Eggman main patterns
 		endif
-		if (MMD_Act_ID==2)
+		if MMD_Act_ID==2
 		plcm	Nem_Weapons,  ArtTile_Eggman_Weapons   ; Eggman's weapons
-		if (MMD_Is_SBZ==0)
 		plcm	Nem_Prison,   ArtTile_Prison_Capsule   ; prison capsule
-		endif
 		plcm	Nem_Bomb,     ArtTile_Eggman_Spikeball ; bomb enemy (gets overwritten)
 		if MMD_Is_SLZ
 		plcm	Nem_SlzSpike, ArtTile_Eggman_Spikeball ; spikeball (SLZ boss)
@@ -279,13 +277,9 @@ PLC_Bossend:
 ; Pattern load cues - act 1/2 signpost
 ; ---------------------------------------------------------------------------
 PLC_Signpost:	dc.w ((PLC_Signpostend-PLC_Signpost-2)/6)-1
-		if MMD_Is_Level&&(MMD_Act_ID<>2)
 		plcm	Nem_SignPost, ArtTile_Signpost         ; signpost
 		plcm	Nem_Bonus,    ArtTile_Hidden_Points    ; hidden bonus points
-		if (MMD_Is_SBZ==0)
 		plcm	Nem_BigFlash, ArtTile_Giant_Ring_Flash ; giant ring flash effect
-		endif
-		endif
 PLC_Signpostend:
 ; ---------------------------------------------------------------------------
 ; Pattern load cues - special stage
