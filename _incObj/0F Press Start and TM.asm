@@ -7,7 +7,7 @@ PSBTM:
 		move.b	obRoutine(a0),d0
 		move.w	PSB_Index(pc,d0.w),d1
 		jsr	PSB_Index(pc,d1.w)
-		jmp		DisplaySprite
+		bra.w	DisplaySprite
 ; ===========================================================================
 PSB_Index:	dc.w PSB_Main-PSB_Index
 		dc.w PSB_PrsStart-PSB_Index
@@ -37,4 +37,4 @@ PSB_Exit:	; Routine 4
 
 PSB_PrsStart:	; Routine 2
 		lea	(Ani_PSBTM).l,a1
-		jmp		AnimateSprite	; "PRESS START" is animated
+		bra.w	AnimateSprite	; "PRESS START" is animated

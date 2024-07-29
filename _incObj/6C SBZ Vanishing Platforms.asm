@@ -55,7 +55,7 @@ loc_16068:	; Routine 6
 .animate:
 		lea	(Ani_Van).l,a1
 		jsr	(AnimateSprite).l
-		jmp		(RememberState).l
+		bra.w	RememberState
 ; ===========================================================================
 
 VanP_Vanish:	; Routine 2
@@ -80,7 +80,7 @@ VanP_Appear:	; Routine 4
 		moveq	#0,d1
 		move.b	obActWid(a0),d1
 		jsr	(PlatformObject).l
-		jmp		(RememberState).l
+		bra.w	RememberState
 ; ===========================================================================
 
 .loc_160D6:
@@ -89,7 +89,7 @@ VanP_Appear:	; Routine 4
 		jsr	(ExitPlatform).l
 		move.w	obX(a0),d2
 		jsr	(MvSonicOnPtfm2).l
-		jmp		(RememberState).l
+		bra.w	RememberState
 ; ===========================================================================
 
 .notsolid:
@@ -102,4 +102,4 @@ VanP_Appear:	; Routine 4
 		clr.b	obSolid(a0)
 
 .display:
-		jmp		(RememberState).l
+		bra.w	RememberState

@@ -23,13 +23,13 @@ TSon_Main:	; Routine 0
 		move.b	#1,obPriority(a0)
 		move.b	#29,obDelayAni(a0) ; set time delay to 0.5 seconds
 		lea	(Ani_TSon).l,a1
-		jsr		AnimateSprite
+		bsr.w	AnimateSprite
 
 TSon_Delay:	;Routine 2
 		subq.b	#1,obDelayAni(a0) ; subtract 1 from time delay
 		bpl.s	.wait		; if time remains, branch
 		addq.b	#2,obRoutine(a0) ; go to next routine
-		jmp		DisplaySprite
+		bra.w	DisplaySprite
 
 .wait:
 		rts	
@@ -42,14 +42,14 @@ TSon_Move:	; Routine 4
 		addq.b	#2,obRoutine(a0)
 
 .display:
-		jmp		DisplaySprite
+		bra.w	DisplaySprite
 
 		rts	
 ; ===========================================================================
 
 TSon_Animate:	; Routine 6
 		lea	(Ani_TSon).l,a1
-		jsr		AnimateSprite
-		jmp		DisplaySprite
+		bsr.w	AnimateSprite
+		bra.w	DisplaySprite
 
 		rts	

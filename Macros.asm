@@ -97,7 +97,7 @@ copyTilemap:	macro source,destination,width,height
 		locVRAM	destination,d0
 		moveq	#(width)-1,d1
 		moveq	#(height)-1,d2
-		jsr		(TilemapToVRAM).l
+		bsr.w	TilemapToVRAM
 		endm
 
 ; ---------------------------------------------------------------------------
@@ -235,38 +235,6 @@ jmi:		macro loc
 		bpl.s	.nojump
 		jmp	loc
 .nojump:
-		endm
-
-call:		macro loc
-		ifdef loc
-		if abs(loc-*)>=$8000
-		jsr		loc
-		else
-		if abs(loc-*)>=$80
-		bsr.w	loc
-		else
-		bsr.s	loc
-		endif
-		endif
-		else
-		jsr		loc
-		endif
-		endm
-
-goto:		macro loc
-		ifdef loc
-		if abs(loc-*)>=$8000
-		jmp		loc
-		else
-		if abs(loc-*)>=$80
-		bra.w	loc
-		else
-		bra.s	loc
-		endif
-		endif
-		else
-		jmp		loc
-		endif
 		endm
 
 ; ---------------------------------------------------------------------------

@@ -6,7 +6,7 @@ SonicSpecial:
 		tst.w	(v_debuguse).w	; is debug mode	being used?
 		beq.s	Obj09_Normal	; if not, branch
 		bsr.w	SS_FixCamera
-		jmp		(DebugMode).l
+		bra.w	DebugMode
 ; ===========================================================================
 
 Obj09_Normal:

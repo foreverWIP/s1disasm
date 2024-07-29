@@ -104,7 +104,7 @@ locret_E430:
 
 LBall_Type04:
 		bset	#1,obStatus(a0)
-		jsr		(ObjHitCeiling).l
+		bsr.w	ObjHitCeiling
 		tst.w	d1
 		bpl.s	locret_E452
 		move.b	#8,obSubtype(a0)
@@ -118,7 +118,7 @@ locret_E452:
 
 LBall_Type05:
 		bclr	#1,obStatus(a0)
-		jsr		(ObjFloorDist).l
+		bsr.w	ObjFloorDist
 		tst.w	d1
 		bpl.s	locret_E474
 		move.b	#8,obSubtype(a0)
@@ -133,7 +133,7 @@ locret_E474:
 LBall_Type06:
 		bset	#0,obStatus(a0)
 		moveq	#-8,d3
-		jsr		(ObjHitWallLeft).l
+		bsr.w	ObjHitWallLeft
 		tst.w	d1
 		bpl.s	locret_E498
 		move.b	#8,obSubtype(a0)
@@ -147,7 +147,7 @@ locret_E498:
 LBall_Type07:
 		bclr	#0,obStatus(a0)
 		moveq	#8,d3
-		jsr		(ObjHitWallRight).l
+		bsr.w	ObjHitWallRight
 		tst.w	d1
 		bpl.s	locret_E4BC
 		move.b	#8,obSubtype(a0)

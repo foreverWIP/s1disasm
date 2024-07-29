@@ -71,8 +71,8 @@ Spin_Trapdoor:	; Routine 2
 		move.w	d2,d3
 		addq.w	#1,d3
 		move.w	obX(a0),d4
-		jsr		(SolidObject).l
-		jmp		(RememberState).l
+		bsr.w	SolidObject
+		bra.w	RememberState
 ; ===========================================================================
 
 .notsolid:
@@ -84,7 +84,7 @@ Spin_Trapdoor:	; Routine 2
 		clr.b	obSolid(a0)
 
 .display:
-		jmp		(RememberState).l
+		bra.w	RememberState
 ; ===========================================================================
 
 Spin_Spinner:	; Routine 4
@@ -112,8 +112,8 @@ Spin_Spinner:	; Routine 4
 		move.w	d2,d3
 		addq.w	#1,d3
 		move.w	obX(a0),d4
-		jsr		(SolidObject).l
-		jmp		(RememberState).l
+		bsr.w	SolidObject
+		bra.w	RememberState
 ; ===========================================================================
 
 .notsolid2:
@@ -125,4 +125,4 @@ Spin_Spinner:	; Routine 4
 		clr.b	obSolid(a0)
 
 .display:
-		jmp		(RememberState).l
+		bra.w	RememberState

@@ -82,7 +82,7 @@ Gar_AniFire:	; Routine 6
 		btst	#0,obStatus(a0) ; is fireball moving left?
 		bne.s	.isright	; if not, branch
 		moveq	#-8,d3
-		jsr		ObjHitWallLeft
+		bsr.w	ObjHitWallLeft
 		tst.w	d1
 	if FixBugs
 		bmi.s	.delete		; delete if the	fireball hits a	wall
@@ -93,7 +93,7 @@ Gar_AniFire:	; Routine 6
 
 .isright:
 		moveq	#8,d3
-		jsr		ObjHitWallRight
+		bsr.w	ObjHitWallRight
 		tst.w	d1
 	if FixBugs
 		bmi.s	.delete

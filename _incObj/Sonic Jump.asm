@@ -12,7 +12,7 @@ Sonic_Jump:
 		moveq	#0,d0
 		move.b	obAngle(a0),d0
 		addi.b	#$80,d0
-		jsr		sub_14D48
+		bsr.w	sub_14D48
 		cmpi.w	#6,d1
 		blt.w	locret_1348E
 		move.w	#$680,d2

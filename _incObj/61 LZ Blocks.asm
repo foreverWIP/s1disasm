@@ -106,7 +106,7 @@ LBlk_Action:	; Routine 2
 .type06:
 		bsr.w	SpeedToPos
 		addq.w	#8,obVelY(a0)	; make block fall
-		jsr		ObjFloorDist
+		bsr.w	ObjFloorDist
 		tst.w	d1		; has block hit the floor?
 		bpl.w	.nofloor02	; if not, branch
 		addq.w	#1,d1
@@ -121,7 +121,7 @@ LBlk_Action:	; Routine 2
 .type04:
 		bsr.w	SpeedToPos
 		subq.w	#8,obVelY(a0)	; make block rise
-		jsr		ObjHitCeiling
+		bsr.w	ObjHitCeiling
 		tst.w	d1		; has block hit the ceiling?
 		bpl.w	.noceiling04	; if not, branch
 		sub.w	d1,obY(a0)
@@ -153,7 +153,7 @@ LBlk_Action:	; Routine 2
 
 .loc_1214E:
 		add.w	d0,obY(a0)	; make the block rise with water level
-		jsr		ObjHitCeiling
+		bsr.w	ObjHitCeiling
 		tst.w	d1		; has block hit the ceiling?
 		bpl.w	.noceiling07	; if not, branch
 		sub.w	d1,obY(a0)	; stop block
@@ -169,7 +169,7 @@ LBlk_Action:	; Routine 2
 
 .loc_1216A:
 		add.w	d0,obY(a0)	; make the block sink with water level
-		jsr		ObjFloorDist
+		bsr.w	ObjFloorDist
 		tst.w	d1
 		bpl.w	.stop07
 		addq.w	#1,d1

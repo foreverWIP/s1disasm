@@ -118,30 +118,6 @@ SoundPriorities:
 		dc.b $90,$90,$90,$90,$90                                            	; $E0
 
 ; ---------------------------------------------------------------------------
-; Subroutine to load the DAC driver
-; ---------------------------------------------------------------------------
-
-; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
-
-; SoundDriverLoad:
-DACDriverLoad:
-		nop	
-		stopZ80
-		resetZ80
-		lea	(DACDriver).l,a0	; load DAC driver
-		lea	(z80_ram).l,a1		; target Z80 RAM
-		jsr	(KosDec).l			; decompress
-		resetZ80a
-		nop	
-		nop	
-		nop	
-		nop	
-		resetZ80
-		startZ80
-		rts	
-; End of function DACDriverLoad
-
-; ---------------------------------------------------------------------------
 ; Subroutine to update music more than once per frame
 ; (Called by horizontal & vert. interrupts)
 ; ---------------------------------------------------------------------------

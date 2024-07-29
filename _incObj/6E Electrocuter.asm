@@ -46,4 +46,4 @@ Elec_Shock:	; Routine 2
 		move.b	#$A4,obColType(a0) ; if yes, make object hurt Sonic
 
 .display:
-		jmp		(RememberState).l
+		bra.w	RememberState

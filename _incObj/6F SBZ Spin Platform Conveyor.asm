@@ -88,7 +88,7 @@ loc_1636C:
 		move.b	#0,obAnim(a0)
 
 loc_16378:
-		jsr		(LCon_ChangeDir).l
+		bsr.w	LCon_ChangeDir
 		bra.w	loc_163D8
 ; ===========================================================================
 
@@ -142,7 +142,7 @@ loc_163D8:	; Routine 2
 		move.w	d2,d3
 		addq.w	#1,d3
 		move.w	(sp)+,d4
-		jmp		(SolidObject).l
+		bra.w	SolidObject
 ; ===========================================================================
 
 loc_16404:
@@ -190,7 +190,7 @@ loc_16474:
 		move.b	#0,obAnim(a0)
 
 loc_16480:
-		jsr		(LCon_ChangeDir).l
+		bsr.w	LCon_ChangeDir
 
 loc_16484:
 		jmp	(SpeedToPos).l
