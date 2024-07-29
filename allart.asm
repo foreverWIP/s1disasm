@@ -11,10 +11,8 @@ Nem_TitleTM:	binclude	"artnem/Title Screen TM.nem"
 
 Art_Text:	binclude	"artunc/menutext.bin" ; text used in level select and debug mode
 Art_Text_End:	even
-		if MMD_Has_Sonic||MMD_Is_Continue
 Art_Sonic:	binclude	"artunc/Sonic.bin"	; Sonic
 		even
-		endif
 Art_Hud:	binclude	"artunc/HUD Numbers.bin" ; 8x16 pixel numbers on HUD
 		even
 Art_LivesNums:	binclude	"artunc/Lives Counter Numbers.bin" ; 8x8 pixel numbers on lives counter
@@ -22,7 +20,6 @@ Art_LivesNums:	binclude	"artunc/Lives Counter Numbers.bin" ; 8x8 pixel numbers o
 Art_BigRing:	binclude	"artunc/Giant Ring.bin"
 		even
 
-		if MMD_Is_GHZ||MMD_Is_Title||MMD_Is_Ending
 Art_GhzWater:	binclude	"artunc/GHZ Waterfall.bin"
 		even
 Art_GhzFlower1:	binclude	"artunc/GHZ Flower Large.bin"
@@ -47,13 +44,9 @@ Nem_PplRock:	binclude	"artnem/GHZ Purple Rock.nem"
 		even
 Nem_SpikePole:	binclude	"artnem/GHZ Spiked Log.nem"
 		even
-		endif
-		if MMD_Is_GHZ||MMD_Is_MZ
 Nem_Swing:	binclude	"artnem/GHZ Swinging Platform.nem"
 		even
-		endif
 
-		if MMD_Is_MZ
 Art_MzLava1:	binclude	"artunc/MZ Lava Surface.bin"
 		even
 Art_MzLava2:	binclude	"artunc/MZ Lava.bin"
@@ -68,35 +61,22 @@ Nem_MzSwitch:	binclude	"artnem/MZ Switch.nem"
 		even
 Nem_MzGlass:	binclude	"artnem/MZ Green Glass Block.nem"
 		even
+Nem_MzFire:	binclude	"artnem/Fireballs.nem"
+		even
 Nem_MzBlock:	binclude	"artnem/MZ Green Pushable Block.nem"
 		even
 Nem_Lava:	binclude	"artnem/MZ Lava.nem"
 		even
-		endif
 
-		if MMD_Is_MZ||MMD_Is_SLZ
-Nem_MzFire:	binclude	"artnem/Fireballs.nem"
-		even
-		endif
-
-		if MMD_Is_SYZ
 Nem_SYZ:	binclude	"artnem/8x8 - SYZ.nem"	; SYZ primary patterns
+		even
+Nem_Bumper:	binclude	"artnem/SYZ Bumper.nem"
 		even
 Nem_SyzSpike2:	binclude	"artnem/SYZ Small Spikeball.nem"
 		even
-		endif
-
-		if MMD_Is_SYZ||MMD_Is_SS
-Nem_Bumper:	binclude	"artnem/SYZ Bumper.nem"
-		even
-		endif
-
-		if MMD_Is_SYZ||MMD_Is_SBZ
 Nem_SyzSpike1:	binclude	"artnem/SYZ Large Spikeball.nem"
 		even
-		endif
 
-		if MMD_Is_LZ
 Nem_LZ:		binclude	"artnem/8x8 - LZ.nem"	; LZ primary patterns
 		even
 Nem_LzBlock1:	binclude	"artnem/LZ 32x32 Block.nem"
@@ -131,9 +111,7 @@ Nem_Water:	binclude	"artnem/LZ Water Surface.nem"
 		even
 Nem_LzWheel:	binclude	"artnem/LZ Wheel.nem"
 		even
-		endif
 
-		if MMD_Is_SLZ
 Nem_SLZ:	binclude	"artnem/8x8 - SLZ.nem"	; SLZ primary patterns
 		even
 Nem_Seesaw:	binclude	"artnem/SLZ Seesaw.nem"
@@ -152,12 +130,12 @@ Nem_SlzBlock:	binclude	"artnem/SLZ 32x32 Block.nem"
 		even
 Nem_SlzCannon:	binclude	"artnem/SLZ Cannon.nem"
 		even
-		endif
 
-		if MMD_Is_SBZ
 Art_SbzSmoke:	binclude	"artunc/SBZ Background Smoke.bin"
 		even
 Nem_SBZ:	binclude	"artnem/8x8 - SBZ.nem"	; SBZ primary patterns
+		even
+Nem_Sbz2Eggman:	binclude	"artnem/Boss - Eggman in SBZ2 & FZ.nem"
 		even
 Nem_SbzWheel1:	binclude	"artnem/SBZ Running Disc.nem"
 		even
@@ -187,38 +165,24 @@ Nem_SbzDoor2:	binclude	"artnem/SBZ Large Horizontal Door.nem"
 		even
 Nem_Girder:	binclude	"artnem/SBZ Crushing Girder.nem"
 		even
-		endif
 
-		if MMD_Is_SBZ_2||MMD_Is_FZ
-Nem_Sbz2Eggman:	binclude	"artnem/Boss - Eggman in SBZ2 & FZ.nem"
-		even
-		endif
-
-		if MMD_Is_FZ
 Nem_FzBoss:	binclude	"artnem/Boss - Final Zone.nem"
 		even
 Nem_FzEggman:	binclude	"artnem/Boss - Eggman after FZ Fight.nem"
 		even
-		endif
 
-		if MMD_Is_Ending
 Kos_EndFlowers:	binclude	"artkos/Flowers at Ending.kos" ; ending sequence animated flowers
+		even
+Nem_EndEm:	binclude	"artnem/Ending - Emeralds.nem"
 		even
 Nem_EndFlower:	binclude	"artnem/Ending - Flowers.nem"
 		even
 Nem_EndStH:	binclude	"artnem/Ending - StH Logo.nem"
 		even
-Nem_EndSonic:	binclude	"artnem/Ending - Sonic.nem"
-		even
-		endif
-		if MMD_Is_Ending||MMD_Is_Credits
-		Nem_EndEm:	binclude	"artnem/Ending - Emeralds.nem"
-		even
-		endif
-		if MMD_Is_Credits
 Nem_TryAgain:	binclude	"artnem/Ending - Try Again.nem"
 		even
-		endif
+Nem_EndSonic:	binclude	"artnem/Ending - Sonic.nem"
+		even
 
 Nem_Chicken:	binclude	"artnem/Animal Chicken.nem"
 		even
