@@ -293,14 +293,14 @@ Level_ChkDemo:
 		beq.s	Level_EndDemo	; if not, branch
 		cmpi.b	#id_Demo,(v_gamemode).w
 		beq.w	Level_MainLoop	; if mode is 8 (demo), branch
-		move.b	#id_Title,(v_gamemode).w ; go to title screen
+		move.b	#id_Sega,(v_gamemode).w ; go to Sega screen
 		rts	
 ; ===========================================================================
 
 Level_EndDemo:
 		cmpi.b	#id_Demo,(v_gamemode).w
 		bne.s	Level_FadeDemo	; if mode is 8 (demo), branch
-		move.b	#id_Title,(v_gamemode).w ; go to title screen
+		move.b	#id_Sega,(v_gamemode).w ; go to Sega screen
 		tst.w	(f_demo).w	; is demo mode on & not ending sequence?
 		bpl.s	Level_FadeDemo	; if yes, branch
 		move.b	#id_Credits,(v_gamemode).w ; go to credits

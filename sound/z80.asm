@@ -48,6 +48,17 @@ endpad := $
 	xor	a				; a=0
 	ld	(zDAC_Status),a			; Disable DAC
 	ld	(zDAC_Sample),a			; Clear sample
+	ld	a,zmake68kBank(SegaPCM)&1	; least significant bit from ROM bank ID
+	ld	(zBankRegister),a		; Latch it to bank register, initializing bank switch
+
+	ld	b,8				; Number of bits to latch to ROM bank
+	ld	a,zmake68kBank(SegaPCM)>>1	; Bank ID without the least significant bit
+
+zBankSwitchLoop:
+	ld	(zBankRegister),a		; Latch another bit to bank register.
+	rrca					; Move next bit into position
+	djnz	zBankSwitchLoop			; decrement and loop if not zero
+
 	jr	zCheckForSamples
 
 ; ===========================================================================
@@ -68,6 +79,8 @@ zWaitDACLoop:
 
 	sub	81h				; Make 0-based index
 	ld	(hl),a				; Store it back into sample index (i.e., mark it as being played)
+	cp	6				; Is the sample 87h or higher?
+	jr	nc,zPlay_SegaPCM		; If yes, branch
 
 	ld	de,0				; de = 0
 	ld	iy,zPCM_Table			; iy = pointer to PCM Table
@@ -167,6 +180,31 @@ zPlayPCMLoop:
 	jp	nz,zPlayPCMLoop		; 10	; If yes, keep playing sample
 					; 301 in total
 	jp	zCheckForSamples		; Sample is done; wait for new samples
+;
+; Subroutine - Play_SegaPCM
+;
+; This subroutine plays the "SEGA" sound.
+;
+zPlay_SegaPCM:
+	ld	de,zmake68kPtr(SegaPCM)		; de = bank-relative location of the SEGA sound
+	ld	hl,SegaPCM_End-SegaPCM		; hl = size of the SEGA sound
+	ld	c,2Ah				; c = Command to select DAC output register
+
+zPlaySEGAPCMLoop:
+	ld	a,(de)			; 7	; a = next byte from SEGA PCM
+	ld	(ix+0),c		; 19	; Select DAC output register
+	ld	(ix+1),a		; 19	; Send current data
+
+	ld	b,pcmLoopCounter(16000)	; 7	; b = pitch of the SEGA sample
+	djnz	$			; 8	; Pitch loop
+
+	inc	de			; 6	; Point to next byte of DAC sample
+	dec	hl			; 6	; Decrement remaining bytes on DAC sample
+	ld	a,l			; 4	; a = low byte of remainig bytes
+	or	h			; 4	; Are there any bytes left?
+	jp	nz,zPlaySEGAPCMLoop	; 10	; If yes, keep playing sample
+					; 90 in total
+	jp	zCheckForSamples		; SEGA sound is done; wait for new samples
 
 zPCMMetadata macro label,sampleRate
 	dw	label				; Start
