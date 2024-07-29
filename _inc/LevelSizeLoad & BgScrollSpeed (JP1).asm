@@ -88,9 +88,7 @@ LevSz_ChkLamp:
 		tst.b	(v_lastlamp).w	; have any lampposts been hit?
 		beq.s	LevSz_StartLoc	; if not, branch
 
-		if MMD_Is_Level
 		jsr	(Lamp_LoadInfo).l
-		endif
 		move.w	(v_player+obX).w,d1
 		move.w	(v_player+obY).w,d0
 		bra.s	LevSz_SkipStartPos

@@ -4,13 +4,12 @@
 
 mSBZh:	macro {INTLABEL},{GLOBALSYMBOLS}
 __LABEL__:
-	dc.w ((__LABEL___end-__LABEL__-2)/8)-1
+	dc.w ((__LABEL___end-__LABEL__-2)/6)-1
 	endm
 
 mSBZp:	macro duration,colours,sourceAddress,destinationPaletteIndex
 	dc.b duration, colours
-	dc.l sourceAddress
-	dc.w v_palette+destinationPaletteIndex*2
+	dc.w sourceAddress, v_palette+destinationPaletteIndex*2
 	endm
 
 ; duration in frames, number of colours, palette address, RAM address

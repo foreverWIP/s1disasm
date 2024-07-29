@@ -32,13 +32,13 @@ PalCycle_Index:	dc.w PalCycle_GHZ-PalCycle_Index
 
 
 PalCycle_Title:
-		if MMD_Is_Title
 		lea	(Pal_TitleCyc).l,a0
-		endif
+		bra.s	PCycGHZ_Go
+; ===========================================================================
+
 PalCycle_GHZ:
-		if MMD_Is_GHZ
 		lea	(Pal_GHZCyc).l,a0
-		endif
+
 PCycGHZ_Go:
 		subq.w	#1,(v_pcyc_time).w ; decrement timer
 		bpl.s	PCycGHZ_Skip	; if time remains, branch
@@ -205,7 +205,7 @@ loc_1AE0:
 		subq.b	#1,(a1)
 		bmi.s	loc_1AEA
 		addq.l	#2,a1
-		addq.l	#8,a2
+		addq.l	#6,a2
 		bra.s	loc_1B06
 ; ===========================================================================
 
@@ -221,7 +221,7 @@ loc_1AF6:
 		move.b	d0,(a1)+
 		andi.w	#$F,d0
 		add.w	d0,d0
-		movea.l	(a2)+,a0
+		movea.w	(a2)+,a0
 		movea.w	(a2)+,a3
 		move.w	(a0,d0.w),(a3)
 

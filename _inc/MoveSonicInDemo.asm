@@ -97,9 +97,7 @@ DemoDataPtr:	dc.l Demo_GHZ		; demos run after the title screen
 		dc.l Demo_SS
 		dc.l Demo_SS
 
-DemoEndDataPtr:
-		if MMD_Is_Credits
-		dc.l Demo_EndGHZ1	; demos run during the credits
+DemoEndDataPtr:	dc.l Demo_EndGHZ1	; demos run during the credits
 		dc.l Demo_EndMZ
 		dc.l Demo_EndSYZ
 		dc.l Demo_EndLZ
@@ -107,7 +105,6 @@ DemoEndDataPtr:
 		dc.l Demo_EndSBZ1
 		dc.l Demo_EndSBZ2
 		dc.l Demo_EndGHZ2
-		endif
 
 		dc.b 0,	$8B, 8,	$37, 0,	$42, 8,	$5C, 0,	$6A, 8,	$5F, 0,	$2F, 8,	$2C
 		dc.b 0,	$21, 8,	3, $28,	$30, 8,	8, 0, $2E, 8, $15, 0, $F, 8, $46

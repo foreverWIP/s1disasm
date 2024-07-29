@@ -127,6 +127,7 @@ Level_SkipTtlCard:
 		bset	#2,(v_fg_scroll_flags).w
 		jsr		LevelDataLoad ; load block mappings and palettes
 		jsr		LoadTilesFromStart
+		jsr	(ConvertCollisionArray).l
 		call	ColIndexLoad
 		call	LZWaterFeatures
 		move.b	#id_SonicPlayer,(v_player).w ; load Sonic object
@@ -152,9 +153,9 @@ Level_ChkWater:
 		move.w	#$120,(v_watersurface2+obX).w
 
 Level_LoadObj:
-		call	ObjPosLoad
-		call	ExecuteObjects
-		call	BuildSprites
+		jsr	(ObjPosLoad).l
+		jsr	(ExecuteObjects).l
+		jsr	(BuildSprites).l
 		moveq	#0,d0
 		tst.b	(v_lastlamp).w	; are you starting from	a lamppost?
 		bne.s	Level_SkipClr	; if yes, branch

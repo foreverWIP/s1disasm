@@ -19,7 +19,7 @@ dbug:	macro map,object,subtype,frame,vram
 
 .GHZ:
 	dc.w (.GHZend-.GHZ-2)/8
-		if MMD_Is_GHZ
+
 ;		mappings	object		subtype	frame	VRAM setting
 	dbug 	Map_Ring,	id_Rings,	0,	0,	make_art_tile(ArtTile_Ring,1,0)
 	dbug	Map_Monitor,	id_Monitor,	0,	0,	make_art_tile(ArtTile_Monitor,0,0)
@@ -37,12 +37,11 @@ dbug:	macro map,object,subtype,frame,vram
 	dbug	Map_Lamp,	id_Lamppost,	1,	0,	make_art_tile(ArtTile_Lamppost,0,0)
 	dbug	Map_GRing,	id_GiantRing,	0,	0,	make_art_tile(ArtTile_Giant_Ring,1,0)
 	dbug	Map_Bonus,	id_HiddenBonus,	1,	1,	make_art_tile(ArtTile_Hidden_Points,0,1)
-		endif
 .GHZend:
 
 .LZ:
 	dc.w (.LZend-.LZ-2)/8
-		if MMD_Is_LZ
+
 ;		mappings	object		subtype	frame	VRAM setting
 	dbug 	Map_Ring,	id_Rings,	0,	0,	make_art_tile(ArtTile_Ring,1,0)
 	dbug	Map_Monitor,	id_Monitor,	0,	0,	make_art_tile(ArtTile_Monitor,0,0)
@@ -73,12 +72,11 @@ dbug:	macro map,object,subtype,frame,vram
 	dbug	Map_Pole,	id_Pole,	0,	0,	make_art_tile(ArtTile_LZ_Pole,2,0)
 	dbug	Map_Flap,	id_FlapDoor,	2,	0,	make_art_tile(ArtTile_LZ_Flapping_Door,2,0)
 	dbug	Map_Lamp,	id_Lamppost,	1,	0,	make_art_tile(ArtTile_Lamppost,0,0)
-		endif
 .LZend:
 
 .MZ:
 	dc.w (.MZend-.MZ-2)/8
-		if MMD_Is_MZ
+
 ;		mappings	object		subtype	frame	VRAM setting
 	dbug 	Map_Ring,	id_Rings,	0,	0,	make_art_tile(ArtTile_Ring,1,0)
 	dbug	Map_Monitor,	id_Monitor,	0,	0,	make_art_tile(ArtTile_Monitor,0,0)
@@ -98,12 +96,11 @@ dbug:	macro map,object,subtype,frame,vram
 	dbug	Map_Bas,	id_Basaran,	0,	0,	make_art_tile(ArtTile_Basaran,0,0)
 	dbug	Map_Cat,	id_Caterkiller,	0,	0,	make_art_tile(ArtTile_MZ_SYZ_Caterkiller,1,0)
 	dbug	Map_Lamp,	id_Lamppost,	1,	0,	make_art_tile(ArtTile_Lamppost,0,0)
-		endif
 .MZend:
 
 .SLZ:
 	dc.w (.SLZend-.SLZ-2)/8
-		if MMD_Is_SLZ
+
 ;		mappings	object		subtype	frame	VRAM setting
 	dbug 	Map_Ring,	id_Rings,	0,	0,	make_art_tile(ArtTile_Ring,1,0)
 	dbug	Map_Monitor,	id_Monitor,	0,	0,	make_art_tile(ArtTile_Monitor,0,0)
@@ -120,12 +117,11 @@ dbug:	macro map,object,subtype,frame,vram
 	dbug	Map_Bomb,	id_Bomb,	0,	0,	make_art_tile(ArtTile_Bomb,0,0)
 	dbug	Map_Orb,	id_Orbinaut,	0,	0,	make_art_tile(ArtTile_SLZ_Orbinaut,1,0)
 	dbug	Map_Lamp,	id_Lamppost,	1,	0,	make_art_tile(ArtTile_Lamppost,0,0)
-		endif
 .SLZend:
 
 .SYZ:
 	dc.w (.SYZend-.SYZ-2)/8
-		if MMD_Is_SYZ
+
 ;		mappings	object		subtype	frame	VRAM setting
 	dbug 	Map_Ring,	id_Rings,	0,	0,	make_art_tile(ArtTile_Ring,1,0)
 	dbug	Map_Monitor,	id_Monitor,	0,	0,	make_art_tile(ArtTile_Monitor,0,0)
@@ -142,12 +138,11 @@ dbug:	macro map,object,subtype,frame,vram
 	dbug	Map_But,	id_Button,	0,	0,	make_art_tile(ArtTile_Button+4,0,0)
 	dbug	Map_Cat,	id_Caterkiller,	0,	0,	make_art_tile(ArtTile_MZ_SYZ_Caterkiller,1,0)
 	dbug	Map_Lamp,	id_Lamppost,	1,	0,	make_art_tile(ArtTile_Lamppost,0,0)
-		endif
 .SYZend:
 
 .SBZ:
 	dc.w (.SBZend-.SBZ-2)/8
-		if MMD_Is_SBZ
+
 ;		mappings	object		subtype	frame	VRAM setting
 	dbug 	Map_Ring,	id_Rings,	0,	0,	make_art_tile(ArtTile_Ring,1,0)
 	dbug	Map_Monitor,	id_Monitor,	0,	0,	make_art_tile(ArtTile_Monitor,0,0)
@@ -178,12 +173,11 @@ dbug:	macro map,object,subtype,frame,vram
 	dbug	Map_Invis,	id_Invisibarrier, $11,	0,	make_art_tile(ArtTile_Monitor,0,1)
 	dbug	Map_Hog,	id_BallHog,	4,	0,	make_art_tile(ArtTile_Ball_Hog,1,0)
 	dbug	Map_Lamp,	id_Lamppost,	1,	0,	make_art_tile(ArtTile_Lamppost,0,0)
-		endif
 .SBZend:
 
 .Ending:
 	dc.w (.Endingend-.Ending-2)/8
-		if MMD_Is_Ending
+
 ;		mappings	object		subtype	frame	VRAM setting
 	dbug 	Map_Ring,	id_Rings,	0,	0,	make_art_tile(ArtTile_Ring,1,0)
     if Revision=0
@@ -208,7 +202,6 @@ dbug:	macro map,object,subtype,frame,vram
     else
 	dbug 	Map_Ring,	id_Rings,	0,	8,	make_art_tile(ArtTile_Ring,1,0)
     endif
-		endif
 .Endingend:
 
 	even

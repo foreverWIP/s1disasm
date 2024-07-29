@@ -100,5 +100,5 @@ Bri_Solid:
 		bmi.w	Plat_Exit
 		cmp.w	d2,d0
 		bhs.w	Plat_Exit
-		bra.w	Plat_NoXCheck
+		bra.s	Plat_NoXCheck
 ; End of function Bri_Solid
