@@ -8,7 +8,7 @@
 PaletteCycle:
 		moveq	#0,d2
 		moveq	#0,d0
-		move.b	(v_zone).l,d0	; get level number
+		move.b	(v_zone).w,d0	; get level number
 		add.w	d0,d0
 		move.w	PalCycle_Index(pc,d0.w),d0
 		jmp	PalCycle_Index(pc,d0.w) ; jump to relevant palette routine
@@ -40,15 +40,15 @@ PalCycle_GHZ:
 		lea	(Pal_GHZCyc).l,a0
 		endif
 PCycGHZ_Go:
-		subq.w	#1,(v_pcyc_time).l ; decrement timer
+		subq.w	#1,(v_pcyc_time).w ; decrement timer
 		bpl.s	PCycGHZ_Skip	; if time remains, branch
 
-		move.w	#5,(v_pcyc_time).l ; reset timer to 5 frames
-		move.w	(v_pcyc_num).l,d0 ; get cycle number
-		addq.w	#1,(v_pcyc_num).l ; increment cycle number
+		move.w	#5,(v_pcyc_time).w ; reset timer to 5 frames
+		move.w	(v_pcyc_num).w,d0 ; get cycle number
+		addq.w	#1,(v_pcyc_num).w ; increment cycle number
 		andi.w	#3,d0		; if cycle > 3, reset to 0
 		lsl.w	#3,d0
-		lea	(v_palette+$50).l,a1
+		lea	(v_palette+$50).w,a1
 		move.l	(a0,d0.w),(a1)+
 		move.l	4(a0,d0.w),(a1)	; copy palette data to RAM
 
@@ -62,40 +62,40 @@ PCycGHZ_Skip:
 
 PalCycle_LZ:
 ; Waterfalls
-		subq.w	#1,(v_pcyc_time).l ; decrement timer
+		subq.w	#1,(v_pcyc_time).w ; decrement timer
 		bpl.s	PCycLZ_Skip1	; if time remains, branch
 
-		move.w	#2,(v_pcyc_time).l ; reset timer to 2 frames
-		move.w	(v_pcyc_num).l,d0
-		addq.w	#1,(v_pcyc_num).l ; increment cycle number
+		move.w	#2,(v_pcyc_time).w ; reset timer to 2 frames
+		move.w	(v_pcyc_num).w,d0
+		addq.w	#1,(v_pcyc_num).w ; increment cycle number
 		andi.w	#3,d0		; if cycle > 3, reset to 0
 		lsl.w	#3,d0
 		lea	(Pal_LZCyc1).l,a0
-		cmpi.b	#3,(v_act).l	; check if level is SBZ3
+		cmpi.b	#3,(v_act).w	; check if level is SBZ3
 		bne.s	PCycLZ_NotSBZ3
 		lea	(Pal_SBZ3Cyc).l,a0 ; load SBZ3	palette instead
 
 PCycLZ_NotSBZ3:
-		lea	(v_palette+$56).l,a1
+		lea	(v_palette+$56).w,a1
 		move.l	(a0,d0.w),(a1)+
 		move.l	4(a0,d0.w),(a1)
-		lea	(v_palette_water+$56).l,a1
+		lea	(v_palette_water+$56).w,a1
 		move.l	(a0,d0.w),(a1)+
 		move.l	4(a0,d0.w),(a1)
 
 PCycLZ_Skip1:
 ; Conveyor belts
-		move.w	(v_framecount).l,d0
+		move.w	(v_framecount).w,d0
 		andi.w	#7,d0
 		move.b	PCycLZ_Seq(pc,d0.w),d0 ; get byte from palette sequence
 		beq.s	PCycLZ_Skip2	; if byte is 0, branch
 		moveq	#1,d1
-		tst.b	(f_conveyrev).l	; have conveyor belts been reversed?
+		tst.b	(f_conveyrev).w	; have conveyor belts been reversed?
 		beq.s	PCycLZ_NoRev	; if not, branch
 		neg.w	d1
 
 PCycLZ_NoRev:
-		move.w	(v_pal_buffer).l,d0
+		move.w	(v_pal_buffer).w,d0
 		andi.w	#3,d0
 		add.w	d1,d0
 		cmpi.w	#3,d0
@@ -107,17 +107,17 @@ PCycLZ_NoRev:
 		moveq	#2,d0
 
 loc_1A0A:
-		move.w	d0,(v_pal_buffer).l
+		move.w	d0,(v_pal_buffer).w
 		add.w	d0,d0
 		move.w	d0,d1
 		add.w	d0,d0
 		add.w	d1,d0
 		lea	(Pal_LZCyc2).l,a0
-		lea	(v_palette+$76).l,a1
+		lea	(v_palette+$76).w,a1
 		move.l	(a0,d0.w),(a1)+
 		move.w	4(a0,d0.w),(a1)
 		lea	(Pal_LZCyc3).l,a0
-		lea	(v_palette_water+$76).l,a1
+		lea	(v_palette_water+$76).w,a1
 		move.l	(a0,d0.w),(a1)+
 		move.w	4(a0,d0.w),(a1)
 
@@ -136,23 +136,23 @@ PalCycle_MZ:
 
 
 PalCycle_SLZ:
-		subq.w	#1,(v_pcyc_time).l
+		subq.w	#1,(v_pcyc_time).w
 		bpl.s	locret_1A80
-		move.w	#7,(v_pcyc_time).l
-		move.w	(v_pcyc_num).l,d0
+		move.w	#7,(v_pcyc_time).w
+		move.w	(v_pcyc_num).w,d0
 		addq.w	#1,d0
 		cmpi.w	#6,d0
 		blo.s	loc_1A60
 		moveq	#0,d0
 
 loc_1A60:
-		move.w	d0,(v_pcyc_num).l
+		move.w	d0,(v_pcyc_num).w
 		move.w	d0,d1
 		add.w	d1,d1
 		add.w	d1,d0
 		add.w	d0,d0
 		lea	(Pal_SLZCyc).l,a0
-		lea	(v_palette+$56).l,a1
+		lea	(v_palette+$56).w,a1
 		move.w	(a0,d0.w),(a1)
 		move.l	2(a0,d0.w),4(a1)
 
@@ -165,21 +165,21 @@ locret_1A80:
 
 
 PalCycle_SYZ:
-		subq.w	#1,(v_pcyc_time).l
+		subq.w	#1,(v_pcyc_time).w
 		bpl.s	locret_1AC6
-		move.w	#5,(v_pcyc_time).l
-		move.w	(v_pcyc_num).l,d0
-		addq.w	#1,(v_pcyc_num).l
+		move.w	#5,(v_pcyc_time).w
+		move.w	(v_pcyc_num).w,d0
+		addq.w	#1,(v_pcyc_num).w
 		andi.w	#3,d0
 		lsl.w	#2,d0
 		move.w	d0,d1
 		add.w	d0,d0
 		lea	(Pal_SYZCyc1).l,a0
-		lea	(v_palette+$6E).l,a1
+		lea	(v_palette+$6E).w,a1
 		move.l	(a0,d0.w),(a1)+
 		move.l	4(a0,d0.w),(a1)
 		lea	(Pal_SYZCyc2).l,a0
-		lea	(v_palette+$76).l,a1
+		lea	(v_palette+$76).w,a1
 		move.w	(a0,d1.w),(a1)
 		move.w	2(a0,d1.w),4(a1)
 
@@ -194,19 +194,19 @@ locret_1AC6:
 PalCycle_SBZ:
 		if MMD_Is_SBZ
 		lea	(Pal_SBZCycList1).l,a2
-		tst.b	(v_act).l
+		tst.b	(v_act).w
 		beq.s	loc_1ADA
 		lea	(Pal_SBZCycList2).l,a2
 
 loc_1ADA:
-		lea	(v_pal_buffer).l,a1
+		lea	(v_pal_buffer).w,a1
 		move.w	(a2)+,d1
 
 loc_1AE0:
 		subq.b	#1,(a1)
 		bmi.s	loc_1AEA
 		addq.l	#2,a1
-		adda.l	#10,a2
+		addq.l	#8,a2
 		bra.s	loc_1B06
 ; ===========================================================================
 
@@ -223,28 +223,28 @@ loc_1AF6:
 		andi.w	#$F,d0
 		add.w	d0,d0
 		movea.l	(a2)+,a0
-		movea.l	(a2)+,a3
+		movea.w	(a2)+,a3
 		move.w	(a0,d0.w),(a3)
 
 loc_1B06:
 		dbf	d1,loc_1AE0
-		subq.w	#1,(v_pcyc_time).l
+		subq.w	#1,(v_pcyc_time).w
 		bpl.s	locret_1B64
 		lea	(Pal_SBZCyc4).l,a0
-		move.w	#1,(v_pcyc_time).l
-		tst.b	(v_act).l
+		move.w	#1,(v_pcyc_time).w
+		tst.b	(v_act).w
 		beq.s	loc_1B2E
 		lea	(Pal_SBZCyc10).l,a0
-		move.w	#0,(v_pcyc_time).l
+		move.w	#0,(v_pcyc_time).w
 
 loc_1B2E:
 		moveq	#-1,d1
-		tst.b	(f_conveyrev).l
+		tst.b	(f_conveyrev).w
 		beq.s	loc_1B38
 		neg.w	d1
 
 loc_1B38:
-		move.w	(v_pcyc_num).l,d0
+		move.w	(v_pcyc_num).w,d0
 		andi.w	#3,d0
 		add.w	d1,d0
 		cmpi.w	#3,d0
@@ -256,9 +256,9 @@ loc_1B38:
 		moveq	#2,d0
 
 loc_1B52:
-		move.w	d0,(v_pcyc_num).l
+		move.w	d0,(v_pcyc_num).w
 		add.w	d0,d0
-		lea	(v_palette+$58).l,a1
+		lea	(v_palette+$58).w,a1
 		move.l	(a0,d0.w),(a1)+
 		move.w	4(a0,d0.w),(a1)
 

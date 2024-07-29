@@ -19,15 +19,15 @@ echa_angle = objoff_3E	; angle for rotation (2 bytes)
 ; ===========================================================================
 
 ECha_Main:	; Routine 0
-		cmpi.b	#2,(v_player+obFrame).l ; this isn't `fr_Wait1`: `v_player` is Object 88, which has its own frames
+		cmpi.b	#2,(v_player+obFrame).w ; this isn't `fr_Wait1`: `v_player` is Object 88, which has its own frames
 		beq.s	ECha_CreateEms
 		addq.l	#4,sp
 		rts	
 ; ===========================================================================
 
 ECha_CreateEms:
-		move.w	(v_player+obX).l,obX(a0) ; match X position with Sonic
-		move.w	(v_player+obY).l,obY(a0) ; match Y position with Sonic
+		move.w	(v_player+obX).w,obX(a0) ; match X position with Sonic
+		move.w	(v_player+obY).w,obY(a0) ; match Y position with Sonic
 		movea.l	a0,a1
 		moveq	#0,d3
 		moveq	#1,d2

@@ -18,7 +18,7 @@ TCha_Main:	; Routine 0
 		moveq	#0,d2
 		moveq	#0,d3
 		moveq	#5,d1
-		sub.b	(v_emeralds).l,d1
+		sub.b	(v_emeralds).w,d1
 
 .makeemerald:
 		move.b	#id_TryChaos,obID(a1) ; load emerald object
@@ -32,11 +32,11 @@ TCha_Main:	; Routine 0
 		move.w	#$EC,obScreenY(a1)
 		move.w	obScreenY(a1),objoff_3A(a1)
 		move.b	#$1C,objoff_3C(a1)
-		lea	(v_emldlist).l,a3
+		lea	(v_emldlist).w,a3
 
 .chkemerald:
 		moveq	#0,d0
-		move.b	(v_emeralds).l,d0
+		move.b	(v_emeralds).w,d0
 		subq.w	#1,d0
 		bcs.s	.loc_5B42
 

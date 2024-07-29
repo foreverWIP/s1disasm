@@ -13,17 +13,17 @@ Sonic_Loops:
 		move.b	obX(a0),d1
 		andi.w	#$7F,d1
 		add.w	d1,d0
-		lea	(v_lvllayout).l,a1
+		lea	(v_lvllayout).w,a1
 		move.b	(a1,d0.w),d1	; d1 is	the 256x256 tile Sonic is currently on
 
-		cmp.b	(v_256roll1).l,d1 ; is Sonic on a "roll tunnel" tile?
+		cmp.b	(v_256roll1).w,d1 ; is Sonic on a "roll tunnel" tile?
 		beq.w	Sonic_ChkRoll	; if yes, branch
-		cmp.b	(v_256roll2).l,d1
+		cmp.b	(v_256roll2).w,d1
 		beq.w	Sonic_ChkRoll
 
-		cmp.b	(v_256loop1).l,d1 ; is Sonic on a loop tile?
+		cmp.b	(v_256loop1).w,d1 ; is Sonic on a loop tile?
 		beq.s	.chkifleft	; if yes, branch
-		cmp.b	(v_256loop2).l,d1
+		cmp.b	(v_256loop2).w,d1
 		beq.s	.chkifinair
 		bclr	#6,obRender(a0) ; return Sonic to high plane
 		rts	

@@ -9,7 +9,7 @@ BossSpikeball:
 		jsr	BossSpikeball_Index(pc,d0.w)
 		move.w	objoff_30(a0),d0
 		andi.w	#$FF80,d0
-		move.w	(v_screenposx).l,d1
+		move.w	(v_screenposx).w,d1
 		subi.w	#$80,d1
 		andi.w	#$FF80,d1
 		sub.w	d1,d0
@@ -167,9 +167,9 @@ locret_18EA8:
 
 loc_18EAA:	; Routine 6
 	if FixBugs
-		lea	(v_lvlobjspace).l,a1
+		lea	(v_lvlobjspace).w,a1
 	else
-		lea	(v_objspace+object_size*1).l,a1 ; Nonsensical starting point, since dynamic object allocations begin at v_lvlobjspace.
+		lea	(v_objspace+object_size*1).w,a1 ; Nonsensical starting point, since dynamic object allocations begin at v_lvlobjspace.
 	endif
 		moveq	#id_BossStarLight,d0
 		moveq	#object_size,d1
@@ -285,7 +285,7 @@ loc_18FA2:
 		beq.s	loc_19008
 		clr.b	ob2ndRout(a1)
 		move.b	#2,obRoutine(a1)
-		lea	(v_player).l,a2
+		lea	(v_player).w,a2
 		move.w	obVelY(a0),obVelY(a2)
 		neg.w	obVelY(a2)
 		cmpi.b	#1,obFrame(a1)
@@ -370,7 +370,7 @@ BossSpikeball_MoveFrag:	; Routine $A
 		move.w	obY(a0),objoff_34(a0)
 		addi.w	#$18,obVelY(a0)
 		moveq	#4,d0
-		and.w	(v_vbla_word).l,d0
+		and.w	(v_vbla_word).w,d0
 		lsr.w	#2,d0
 		move.b	d0,obFrame(a0)
 		tst.b	obRender(a0)

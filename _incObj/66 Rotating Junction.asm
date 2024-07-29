@@ -63,7 +63,7 @@ Jun_Action:	; Routine 2
 		btst	#5,obStatus(a0)	; is Sonic pushing the disc?
 		beq.w	Jun_Display	; if not, branch
 
-		lea	(v_player).l,a1
+		lea	(v_player).w,a1
 		moveq	#$E,d1
 		move.w	obX(a1),d0
 		cmp.w	obX(a0),d0	; is Sonic to the left of the disc?
@@ -76,7 +76,7 @@ Jun_Action:	; Routine 2
 
 		move.b	d1,objoff_32(a0)
 		addq.b	#4,obRoutine(a0) ; goto Jun_Release next
-		move.b	#1,(f_playerctrl).l ; lock controls
+		move.b	#1,(f_playerctrl).w ; lock controls
 		move.b	#id_Roll,obAnim(a1) ; make Sonic use "rolling" animation
 		move.w	#$800,obInertia(a1)
 		move.w	#0,obVelX(a1)
@@ -106,7 +106,7 @@ Jun_Release:	; Routine 6
 .release:
 		cmp.b	objoff_32(a0),d0
 		beq.s	.dontrelease
-		lea	(v_player).l,a1
+		lea	(v_player).w,a1
 		move.w	#0,obVelX(a1)
 		move.w	#$800,obVelY(a1)
 		cmpi.b	#4,d0
@@ -115,7 +115,7 @@ Jun_Release:	; Routine 6
 		move.w	#$800,obVelY(a1)
 
 .isdown:
-		clr.b	(f_playerctrl).l	; unlock controls
+		clr.b	(f_playerctrl).w	; unlock controls
 		subq.b	#4,obRoutine(a0)
 
 .dontrelease:
@@ -127,7 +127,7 @@ Jun_Release:	; Routine 6
 
 
 Jun_ChkSwitch:
-		lea	(f_switch).l,a2
+		lea	(f_switch).w,a2
 		moveq	#0,d0
 		move.b	jun_switch(a0),d0
 		btst	#0,(a2,d0.w)	; is switch pressed?
@@ -162,7 +162,7 @@ Jun_ChkSwitch:
 
 
 Jun_ChgPos:
-		lea	(v_player).l,a1
+		lea	(v_player).w,a1
 		moveq	#0,d0
 		move.b	obFrame(a0),d0
 		add.w	d0,d0

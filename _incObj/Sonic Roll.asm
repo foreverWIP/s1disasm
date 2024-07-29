@@ -6,7 +6,7 @@
 
 
 Sonic_Roll:
-		tst.b	(f_slidemode).l
+		tst.b	(f_slidemode).w
 		bne.s	.noroll
 		move.w	obInertia(a0),d0
 		bpl.s	.ispositive
@@ -15,10 +15,10 @@ Sonic_Roll:
 .ispositive:
 		cmpi.w	#$80,d0		; is Sonic moving at $80 speed or faster?
 		blo.s	.noroll		; if not, branch
-		move.b	(v_jpadhold2).l,d0
+		move.b	(v_jpadhold2).w,d0
 		andi.b	#btnL+btnR,d0	; is left/right	being pressed?
 		bne.s	.noroll		; if yes, branch
-		btst	#bitDn,(v_jpadhold2).l ; is down being pressed?
+		btst	#bitDn,(v_jpadhold2).w ; is down being pressed?
 		bne.s	Sonic_ChkRoll	; if yes, branch
 
 .noroll:

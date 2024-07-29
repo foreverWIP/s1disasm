@@ -41,7 +41,7 @@ GMake_Wait:	; Routine 2
 		bpl.s	.cancel		; if time remains, branch
 
 		move.w	gmake_time(a0),gmake_timer(a0) ; reset timer
-		move.w	(v_player+obY).l,d0
+		move.w	(v_player+obY).w,d0
 		move.w	obY(a0),d1
 		cmp.w	d1,d0
 		bhs.s	.cancel

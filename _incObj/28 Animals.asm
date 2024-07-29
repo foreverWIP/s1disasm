@@ -93,7 +93,7 @@ Anml_FromEnemy:
 		bsr.w	RandomNumber
 		andi.w	#1,d0
 		moveq	#0,d1
-		move.b	(v_zone).l,d1
+		move.b	(v_zone).w,d1
 		add.w	d1,d1
 		add.w	d0,d1
 		lea	Anml_VarIndex(pc),a1
@@ -119,7 +119,7 @@ loc_90C0:
 		move.b	#7,obTimeFrame(a0)
 		move.b	#2,obFrame(a0)
 		move.w	#-$400,obVelY(a0)
-		tst.b	(v_bossstatus).l
+		tst.b	(v_bossstatus).w
 		bne.s	loc_911C
 		bsr.w	FindFreeObj
 		bne.s	Anml_Display
@@ -157,9 +157,9 @@ loc_912A:
 		add.b	d0,d0
 		addq.b	#4,d0
 		move.b	d0,obRoutine(a0)
-		tst.b	(v_bossstatus).l
+		tst.b	(v_bossstatus).w
 		beq.s	loc_9180
-		btst	#4,(v_vbla_byte).l
+		btst	#4,(v_vbla_byte).w
 		beq.s	loc_9180
 		neg.w	obVelX(a0)
 		bchg	#0,obRender(a0)
@@ -222,7 +222,7 @@ loc_9212:
 
 loc_9224:
 		move.w	obX(a0),d0
-		sub.w	(v_player+obX).l,d0
+		sub.w	(v_player+obX).w,d0
 		bcs.s	loc_923C
 		subi.w	#$180,d0
 		bpl.s	loc_923C
@@ -389,7 +389,7 @@ locret_93EA:
 loc_93EC:
 		bset	#0,obRender(a0)
 		move.w	obX(a0),d0
-		sub.w	(v_player+obX).l,d0
+		sub.w	(v_player+obX).w,d0
 		bcc.s	locret_9402
 		bclr	#0,obRender(a0)
 
@@ -400,7 +400,7 @@ locret_9402:
 
 
 sub_9404:
-		move.w	(v_player+obX).l,d0
+		move.w	(v_player+obX).w,d0
 		sub.w	obX(a0),d0
 		subi.w	#$B8,d0
 		rts	

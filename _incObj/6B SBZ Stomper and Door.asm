@@ -35,13 +35,13 @@ Sto_Main:	; Routine 0
 		move.b	d0,obFrame(a0)
 		move.l	#Map_Stomp,obMap(a0)
 		move.w	#make_art_tile(ArtTile_SBZ_Moving_Block_Short,1,0),obGfx(a0)
-		cmpi.b	#id_LZ,(v_zone).l ; check if level is LZ/SBZ3
+		cmpi.b	#id_LZ,(v_zone).w ; check if level is LZ/SBZ3
 		bne.s	.isSBZ12	; if not, branch
-		bset	#0,(v_obj6B).l
+		bset	#0,(v_obj6B).w
 		beq.s	.isSBZ3
 
 .chkdel:
-		lea	(v_objstate).l,a2
+		lea	(v_objstate).w,a2
 		moveq	#0,d0
 		move.b	obRespawnNo(a0),d0
 		beq.s	.delete
@@ -55,13 +55,13 @@ Sto_Main:	; Routine 0
 		move.w	#make_art_tile(ArtTile_Level+$1F0,2,0),obGfx(a0)
 		cmpi.w	#$A80,obX(a0)
 		bne.s	.isSBZ12
-		lea	(v_objstate).l,a2
+		lea	(v_objstate).w,a2
 		moveq	#0,d0
 		move.b	obRespawnNo(a0),d0
 		beq.s	.isSBZ12
 		btst	#0,2(a2,d0.w)
 		beq.s	.isSBZ12
-		clr.b	(v_obj6B).l
+		clr.b	(v_obj6B).w
 		bra.s	.chkdel
 ; ===========================================================================
 
@@ -84,7 +84,7 @@ Sto_Main:	; Routine 0
 		bset	#4,obRender(a0)
 
 .chkgone:
-		lea	(v_objstate).l,a2
+		lea	(v_objstate).w,a2
 		moveq	#0,d0
 		move.b	obRespawnNo(a0),d0
 		beq.s	Sto_Action
@@ -115,10 +115,10 @@ Sto_Action:	; Routine 2
 		jmp	(DisplaySprite).l
 
 .chkgone:
-		cmpi.b	#id_LZ,(v_zone).l
+		cmpi.b	#id_LZ,(v_zone).w
 		bne.s	.delete
-		clr.b	(v_obj6B).l
-		lea	(v_objstate).l,a2
+		clr.b	(v_obj6B).w
+		lea	(v_objstate).w,a2
 		moveq	#0,d0
 		move.b	obRespawnNo(a0),d0
 		beq.s	.delete
@@ -139,7 +139,7 @@ Sto_Action:	; Routine 2
 .type01:
 		tst.b	sto_active(a0)
 		bne.s	.isactive01
-		lea	(f_switch).l,a2
+		lea	(f_switch).w,a2
 		moveq	#0,d0
 		move.b	objoff_3E(a0),d0
 		btst	#0,(a2,d0.w)
@@ -170,7 +170,7 @@ Sto_Action:	; Routine 2
 		addq.b	#1,obSubtype(a0)
 		move.w	#$B4,objoff_36(a0)
 		clr.b	sto_active(a0)
-		lea	(v_objstate).l,a2
+		lea	(v_objstate).w,a2
 		moveq	#0,d0
 		move.b	obRespawnNo(a0),d0
 		beq.s	.loc_15DC2
@@ -207,7 +207,7 @@ Sto_Action:	; Routine 2
 .loc_15E3C:
 		subq.b	#1,obSubtype(a0)
 		clr.b	sto_active(a0)
-		lea	(v_objstate).l,a2
+		lea	(v_objstate).w,a2
 		moveq	#0,d0
 		move.b	obRespawnNo(a0),d0
 		beq.s	.loc_15E1E
@@ -297,13 +297,13 @@ Sto_Action:	; Routine 2
 .type05:
 		tst.b	sto_active(a0)
 		bne.s	.loc_15F3E
-		lea	(f_switch).l,a2
+		lea	(f_switch).w,a2
 		moveq	#0,d0
 		move.b	objoff_3E(a0),d0
 		btst	#0,(a2,d0.w)
 		beq.s	.locret_15F5C
 		move.b	#1,sto_active(a0)
-		lea	(v_objstate).l,a2
+		lea	(v_objstate).w,a2
 		moveq	#0,d0
 		move.b	obRespawnNo(a0),d0
 		beq.s	.loc_15F3E

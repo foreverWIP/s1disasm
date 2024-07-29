@@ -75,7 +75,7 @@ Cbal_Display:
 		; Moved to prevent a display-and-delete bug.
 		bsr.w	DisplaySprite
 	endif
-		move.w	(v_limitbtm2).l,d0
+		move.w	(v_limitbtm2).w,d0
 		addi.w	#$E0,d0
 		cmp.w	obY(a0),d0	; has object fallen off	the level?
 		blo.w	DeleteObject	; if yes, branch

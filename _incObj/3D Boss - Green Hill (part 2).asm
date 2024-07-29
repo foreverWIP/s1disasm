@@ -71,9 +71,9 @@ loc_17984:
 		clr.w	obVelX(a0)
 		addq.b	#2,ob2ndRout(a0)
 		move.w	#-$26,objoff_3C(a0)
-		tst.b	(v_bossstatus).l
+		tst.b	(v_bossstatus).w
 		bne.s	locret_179AA
-		move.b	#1,(v_bossstatus).l
+		move.b	#1,(v_bossstatus).w
 
 locret_179AA:
 		rts	
@@ -120,9 +120,9 @@ loc_179EE:
 loc_179F6:
 		move.w	#$400,obVelX(a0)
 		move.w	#-$40,obVelY(a0)
-		cmpi.w	#boss_ghz_end,(v_limitright2).l
+		cmpi.w	#boss_ghz_end,(v_limitright2).w
 		beq.s	loc_17A10
-		addq.w	#2,(v_limitright2).l
+		addq.w	#2,(v_limitright2).w
 		bra.s	loc_17A16
 ; ===========================================================================
 
@@ -171,7 +171,7 @@ loc_17A46:
 ; ===========================================================================
 
 loc_17A50:
-		cmpi.b	#4,(v_player+obRoutine).l
+		cmpi.b	#4,(v_player+obRoutine).w
 		blo.s	loc_17A5A
 		moveq	#4,d1
 

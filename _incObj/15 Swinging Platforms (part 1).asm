@@ -112,7 +112,7 @@ Swing_Main:	; Routine 0
 		move.b	#$81,obColType(a0) ; make object hurt when touched
 
 .not1X:
-		cmpi.b	#id_SBZ,(v_zone).l ; is zone SBZ?
+		cmpi.b	#id_SBZ,(v_zone).w ; is zone SBZ?
 		beq.s	Swing_Action	; if yes, branch
 
 Swing_SetSolid:	; Routine 2

@@ -3,8 +3,6 @@
 
 FindWall:
 		bsr.w	FindNearestTile
-		cmpa.l	#0,a1
-		beq.s	loc_14B1E
 		move.w	(a1),d0
 		move.w	d0,d4
 		andi.w	#$7FF,d0
@@ -86,8 +84,6 @@ loc_14BA6:
 
 FindWall2:
 		bsr.w	FindNearestTile
-		cmpa.l	#0,a1
-		beq.s	loc_14BC6
 		move.w	(a1),d0
 		move.w	d0,d4
 		andi.w	#$7FF,d0

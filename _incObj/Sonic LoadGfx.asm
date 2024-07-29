@@ -8,10 +8,10 @@
 Sonic_LoadGfx:
 		moveq	#0,d0
 		move.b	obFrame(a0),d0	; load frame number
-		cmp.b	(v_sonframenum).l,d0 ; has frame changed?
+		cmp.b	(v_sonframenum).w,d0 ; has frame changed?
 		beq.s	.nochange	; if not, branch
 
-		move.b	d0,(v_sonframenum).l
+		move.b	d0,(v_sonframenum).w
 		lea	(SonicDynPLC).l,a2 ; load PLC script
 		add.w	d0,d0
 		adda.w	(a2,d0.w),a2
@@ -19,8 +19,8 @@ Sonic_LoadGfx:
 		move.b	(a2)+,d1	; read "number of entries" value
 		subq.b	#1,d1
 		bmi.s	.nochange	; if zero, branch
-		lea	(v_sgfx_buffer).l,a3
-		move.b	#1,(f_sonframechg).l ; set flag for Sonic graphics DMA
+		lea	(v_sgfx_buffer).w,a3
+		move.b	#1,(f_sonframechg).w ; set flag for Sonic graphics DMA
 
 .readentry:
 		moveq	#0,d2

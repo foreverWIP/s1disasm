@@ -5,11 +5,8 @@
 ramaddr function x,(-(x&$80000000)<<1)|x
 
 ; Variables (v) and Flags (f)
-		if MMD_Enabled
-	phase ramaddr ( $C0000 )
-		else
+
 	phase ramaddr ( $FFFF0000 )
-		endif
 v_ram_start:
 
 v_256x256:		ds.b	$52*$200	; 256x256 tile mappings ($52 chunks)
@@ -389,10 +386,8 @@ v_limitbtmdb:		ds.w	1		; level bottom boundary, buffered for debug mode
 v_timingvariables_end:
 
 v_chunk0collision:	ds.w	1		; very subtly (and perhaps unintentionally) used by FindNearestTile when encountering chunk 0
-	if MMD_Enabled==0
 	if v_chunk0collision<>ramaddr($FFFFFF00)
 		fatal "v_chunk0collision needs to be at address $FFFFFF00 so that FindNearestTile works correctly."
-	endif
 	endif
 			ds.b	$E		; unused
 v_screenposx_dup:	ds.l	1		; screen position x (duplicate)
@@ -437,11 +432,9 @@ v_megadrive:		ds.b	1		; Megadrive machine type
 f_debugmode:		ds.w	1		; debug mode flag
 v_init:			ds.l	1		; 'init' text string
 v_ram_end:
-	if MMD_Enabled==0
     if * > 0	; Don't declare more space than the RAM can contain!
 	fatal "The RAM variable declarations are too large by $\{*} bytes."
     endif
-	endif
 	dephase
 
 ; Special stage

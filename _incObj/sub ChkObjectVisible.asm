@@ -10,13 +10,13 @@
 
 ChkObjectVisible:
 		move.w	obX(a0),d0	; get object x-position
-		sub.w	(v_screenposx).l,d0 ; subtract screen x-position
+		sub.w	(v_screenposx).w,d0 ; subtract screen x-position
 		bmi.s	.offscreen
 		cmpi.w	#320,d0		; is object on the screen?
 		bge.s	.offscreen	; if not, branch
 
 		move.w	obY(a0),d1	; get object y-position
-		sub.w	(v_screenposy).l,d1 ; subtract screen y-position
+		sub.w	(v_screenposy).w,d1 ; subtract screen y-position
 		bmi.s	.offscreen
 		cmpi.w	#224,d1		; is object on the screen?
 		bge.s	.offscreen	; if not, branch
@@ -44,7 +44,7 @@ ChkPartiallyVisible:
 		moveq	#0,d1
 		move.b	obActWid(a0),d1
 		move.w	obX(a0),d0	; get object x-position
-		sub.w	(v_screenposx).l,d0 ; subtract screen x-position
+		sub.w	(v_screenposx).w,d0 ; subtract screen x-position
 		add.w	d1,d0		; add object width
 		bmi.s	.offscreen2
 		add.w	d1,d1
@@ -53,7 +53,7 @@ ChkPartiallyVisible:
 		bge.s	.offscreen2
 
 		move.w	obY(a0),d1
-		sub.w	(v_screenposy).l,d1
+		sub.w	(v_screenposy).w,d1
 		bmi.s	.offscreen2
 		cmpi.w	#224,d1
 		bge.s	.offscreen2

@@ -2,7 +2,7 @@
 
 
 Swing_Move:
-		move.b	(v_oscillate+$1A).l,d0
+		move.b	(v_oscillate+$1A).w,d0
 		move.w	#$80,d1
 		btst	#0,obStatus(a0)
 		beq.s	loc_7B78

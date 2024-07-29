@@ -6,7 +6,7 @@
 
 
 Sonic_Jump:
-		move.b	(v_jpadpress2).l,d0
+		move.b	(v_jpadpress2).w,d0
 		andi.b	#btnABC,d0	; is A, B or C pressed?
 		beq.w	locret_1348E	; if not, branch
 		moveq	#0,d0

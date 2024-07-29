@@ -19,7 +19,7 @@ eson_time = objoff_30	; time to wait between events
 ; ===========================================================================
 
 ESon_Main:	; Routine 0
-		cmpi.b	#6,(v_emeralds).l ; do you have all 6 emeralds?
+		cmpi.b	#6,(v_emeralds).w ; do you have all 6 emeralds?
 		beq.s	ESon_Main2	; if yes, branch
 		addi.b	#$10,ob2ndRout(a0) ; else, skip emerald sequence
 		move.w	#216,eson_time(a0)
@@ -42,7 +42,7 @@ ESon_MakeEmeralds:
 		bne.s	ESon_Wait
 		addq.b	#2,ob2ndRout(a0)
 		move.w	#1,obAnim(a0)
-		move.b	#id_EndChaos,(v_endemeralds).l ; load chaos emeralds objects
+		move.b	#id_EndChaos,(v_endemeralds).w ; load chaos emeralds objects
 
 ESon_Wait:
 		rts	
@@ -51,7 +51,7 @@ ESon_Wait:
 Obj87_LookUp:	; Routine 6
 		cmpi.w	#$2000,((v_endemeralds+echa_radius)&$FFFFFF).l
 		bne.s	locret_5480
-		move.w	#1,(f_restart).l ; set level to	restart	(causes	flash)
+		move.w	#1,(f_restart).w ; set level to	restart	(causes	flash)
 		move.w	#90,eson_time(a0)
 		addq.b	#2,ob2ndRout(a0)
 
@@ -63,13 +63,13 @@ Obj87_ClrObjRam:
 		; Routine 8
 		subq.w	#1,eson_time(a0)
 		bne.s	ESon_Wait2
-		lea	(v_endemeralds).l,a1
+		lea	(v_endemeralds).w,a1
 		move.w	#(v_endemeralds_end-v_endemeralds)/4-1,d1
 
 Obj87_ClrLoop:
 		clr.l	(a1)+
 		dbf	d1,Obj87_ClrLoop ; clear the object RAM
-		move.w	#1,(f_restart).l
+		move.w	#1,(f_restart).w
 		addq.b	#2,ob2ndRout(a0)
 		move.b	#1,obAnim(a0)
 		move.w	#60,eson_time(a0)
@@ -84,7 +84,7 @@ Obj87_MakeLogo:	; Routine $C
 		addq.b	#2,ob2ndRout(a0)
 		move.w	#180,eson_time(a0)
 		move.b	#2,obAnim(a0)
-		move.b	#id_EndSTH,(v_endlogo).l ; load "SONIC THE HEDGEHOG" object
+		move.b	#id_EndSTH,(v_endlogo).w ; load "SONIC THE HEDGEHOG" object
 
 ESon_Wait3:
 		rts	
@@ -106,7 +106,7 @@ Obj87_Leap:	; Routine $10
 		move.b	#2,obPriority(a0)
 		move.b	#5,obFrame(a0)
 		move.b	#2,obAnim(a0)	; use "leaping"	animation
-		move.b	#id_EndSTH,(v_endlogo).l ; load "SONIC THE HEDGEHOG" object
+		move.b	#id_EndSTH,(v_endlogo).w ; load "SONIC THE HEDGEHOG" object
 		bra.s	Obj87_Animate
 ; ===========================================================================
 

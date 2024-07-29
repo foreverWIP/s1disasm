@@ -30,7 +30,7 @@ SBall_Main:	; Routine 0
 		move.w	obX(a0),sball_origX(a0)
 		move.w	obY(a0),sball_origY(a0)
 		move.b	#$98,obColType(a0) ; SYZ specific code (chain hurts Sonic)
-		cmpi.b	#id_LZ,(v_zone).l ; check if level is LZ
+		cmpi.b	#id_LZ,(v_zone).w ; check if level is LZ
 		bne.s	.notlz
 
 		move.b	#0,obColType(a0) ; LZ specific code (chain doesn't hurt)
@@ -87,7 +87,7 @@ SBall_Main:	; Routine 0
 		move.b	obColType(a0),obColType(a1)
 		subi.b	#$10,d3
 		move.b	d3,sball_radius(a1)
-		cmpi.b	#id_LZ,(v_zone).l ; check if level is LZ
+		cmpi.b	#id_LZ,(v_zone).w ; check if level is LZ
 		bne.s	.notlzagain
 
 		tst.b	d3
@@ -103,7 +103,7 @@ SBall_Main:	; Routine 0
 		lsr.w	#object_size_bits,d5
 		andi.w	#$7F,d5
 		move.b	d5,(a2)+
-		cmpi.b	#id_LZ,(v_zone).l ; check if level is LZ
+		cmpi.b	#id_LZ,(v_zone).w ; check if level is LZ
 		bne.s	SBall_Move
 
 		move.b	#$8B,obColType(a0) ; if yes, make last spikeball larger

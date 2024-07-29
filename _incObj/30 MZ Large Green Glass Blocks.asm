@@ -134,13 +134,13 @@ Glass_Type00:
 ; ===========================================================================
 
 Glass_Type01:
-		move.b	(v_oscillate+$12).l,d0
+		move.b	(v_oscillate+$12).w,d0
 		move.w	#$40,d1
 		bra.s	loc_B514
 ; ===========================================================================
 
 Glass_Type02:
-		move.b	(v_oscillate+$12).l,d0
+		move.b	(v_oscillate+$12).w,d0
 		move.w	#$40,d1
 		neg.w	d0
 		add.w	d1,d0
@@ -160,7 +160,7 @@ loc_B526:
 Glass_Type03:
 		btst	#3,obSubtype(a0)
 		beq.s	loc_B53E
-		move.b	(v_oscillate+$12).l,d0
+		move.b	(v_oscillate+$12).w,d0
 		subi.w	#$10,d0
 		bra.w	loc_B5EE
 ; ===========================================================================
@@ -211,7 +211,7 @@ loc_B5AA:
 Glass_Type04:
 		btst	#3,obSubtype(a0)
 		beq.s	Glass_ChkSwitch
-		move.b	(v_oscillate+$12).l,d0
+		move.b	(v_oscillate+$12).w,d0
 		subi.w	#$10,d0
 		bra.s	loc_B5EE
 ; ===========================================================================
@@ -219,7 +219,7 @@ Glass_Type04:
 Glass_ChkSwitch:
 		tst.b	objoff_34(a0)
 		bne.s	loc_B5E0
-		lea	(f_switch).l,a2
+		lea	(f_switch).w,a2
 		moveq	#0,d0
 		move.b	obSubtype(a0),d0 ; load object type number
 		lsr.w	#4,d0		; read only the	first nybble

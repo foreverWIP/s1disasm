@@ -22,7 +22,7 @@ PushB_Main:	; Routine 0
 		move.b	#$F,obWidth(a0)
 		move.l	#Map_Push,obMap(a0)
 		move.w	#make_art_tile(ArtTile_MZ_Block,2,0),obGfx(a0) ; MZ specific code
-		cmpi.b	#id_LZ,(v_zone).l
+		cmpi.b	#id_LZ,(v_zone).w
 		bne.s	.notLZ
 		move.w	#make_art_tile(ArtTile_LZ_Push_Block,2,0),obGfx(a0) ; LZ specific code
 
@@ -43,7 +43,7 @@ PushB_Main:	; Routine 0
 		move.w	#make_art_tile(ArtTile_MZ_Block,2,1),obGfx(a0)
 
 .chkgone:
-		lea	(v_objstate).l,a2
+		lea	(v_objstate).w,a2
 		moveq	#0,d0
 		move.b	obRespawnNo(a0),d0
 		beq.s	loc_BF6E
@@ -61,7 +61,7 @@ loc_BF6E:	; Routine 2
 		move.w	#$11,d3
 		move.w	obX(a0),d4
 		bsr.w	loc_C186
-		cmpi.w	#(id_MZ<<8)+0,(v_zone).l ; is the level MZ act 1?
+		cmpi.w	#(id_MZ<<8)+0,(v_zone).w ; is the level MZ act 1?
 		bne.s	loc_BFC6	; if not, branch
 		bclr	#7,obSubtype(a0)
 		move.w	obX(a0),d0
@@ -69,10 +69,10 @@ loc_BF6E:	; Routine 2
 		blo.s	loc_BFC6
 		cmpi.w	#$AA1,d0
 		bhs.s	loc_BFC6
-		move.w	(v_obj31ypos).l,d0
+		move.w	(v_obj31ypos).w,d0
 		subi.w	#$1C,d0
 		move.w	d0,obY(a0)
-		bset	#7,(v_obj31ypos).l
+		bset	#7,(v_obj31ypos).w
 		bset	#7,obSubtype(a0)
 
 loc_BFC6:
@@ -89,7 +89,7 @@ loc_ppppp:
 ; ===========================================================================
 
 loc_C016:
-		lea	(v_objstate).l,a2
+		lea	(v_objstate).w,a2
 		moveq	#0,d0
 		move.b	obRespawnNo(a0),d0
 		beq.s	loc_C028
@@ -187,14 +187,14 @@ loc_C0E6:
 
 loc_C104:
 		move.w	(sp)+,d4
-		lea	(v_player).l,a1
+		lea	(v_player).w,a1
 		bclr	#3,obStatus(a1)
 		bclr	#3,obStatus(a0)
 		bra.w	loc_ppppp
 ; ===========================================================================
 
 PushB_ChkLava:
-		cmpi.w	#(id_MZ<<8)+1,(v_zone).l ; is the level MZ act 2?
+		cmpi.w	#(id_MZ<<8)+1,(v_zone).w ; is the level MZ act 2?
 		bne.s	PushB_ChkLava2	; if not, branch
 		move.w	#-$20,d2
 		cmpi.w	#$DD0,obX(a0)
@@ -207,7 +207,7 @@ PushB_ChkLava:
 ; ===========================================================================
 
 PushB_ChkLava2:
-		cmpi.w	#(id_MZ<<8)+2,(v_zone).l ; is the level MZ act 3?
+		cmpi.w	#(id_MZ<<8)+2,(v_zone).w ; is the level MZ act 3?
 		bne.s	PushB_NoLava	; if not, branch
 		move.w	#$20,d2
 		cmpi.w	#$560,obX(a0)
@@ -332,7 +332,7 @@ loc_C268:
 		move.w	#-$40,d1
 
 loc_C294:
-		lea	(v_player).l,a1
+		lea	(v_player).w,a1
 		add.w	d0,obX(a1)
 		move.w	d1,obInertia(a1)
 		move.w	#0,obVelX(a1)

@@ -163,7 +163,6 @@ af2ndRoutine:	equ $FA	; increment 2nd routine counter
 
 ; Background music
 bgm__First:	equ $81
-		if MMD_Enabled==0
 bgm_GHZ:	equ ((ptr_mus81-MusicIndex)/4)+bgm__First
 bgm_LZ:		equ ((ptr_mus82-MusicIndex)/4)+bgm__First
 bgm_MZ:		equ ((ptr_mus83-MusicIndex)/4)+bgm__First
@@ -184,32 +183,9 @@ bgm_Credits:	equ ((ptr_mus91-MusicIndex)/4)+bgm__First
 bgm_Drowning:	equ ((ptr_mus92-MusicIndex)/4)+bgm__First
 bgm_Emerald:	equ ((ptr_mus93-MusicIndex)/4)+bgm__First
 bgm__Last:	equ ((ptr_musend-MusicIndex-4)/4)+bgm__First
-		else
-bgm_GHZ:	equ $81
-bgm_LZ:		equ $82
-bgm_MZ:		equ $83
-bgm_SLZ:	equ $84
-bgm_SYZ:	equ $85
-bgm_SBZ:	equ $86
-bgm_Invincible:	equ $87
-bgm_ExtraLife:	equ $88
-bgm_SS:		equ $89
-bgm_Title:	equ $8A
-bgm_Ending:	equ $8B
-bgm_Boss:	equ $8C
-bgm_FZ:		equ $8D
-bgm_GotThrough:	equ $8E
-bgm_GameOver:	equ $8F
-bgm_Continue:	equ $90
-bgm_Credits:	equ $91
-bgm_Drowning:	equ $92
-bgm_Emerald:	equ $93
-bgm__Last:	equ $94
-		endif
 
 ; Sound effects
 sfx__First:	equ $A0
-		if MMD_Enabled==0
 sfx_Jump:	equ ((ptr_sndA0-SoundIndex)/4)+sfx__First
 sfx_Lamppost:	equ ((ptr_sndA1-SoundIndex)/4)+sfx__First
 sfx_A2:		equ ((ptr_sndA2-SoundIndex)/4)+sfx__First
@@ -259,82 +235,18 @@ sfx_Switch:	equ ((ptr_sndCD-SoundIndex)/4)+sfx__First
 sfx_RingLeft:	equ ((ptr_sndCE-SoundIndex)/4)+sfx__First
 sfx_Signpost:	equ ((ptr_sndCF-SoundIndex)/4)+sfx__First
 sfx__Last:	equ ((ptr_sndend-SoundIndex-4)/4)+sfx__First
-		else
-sfx_Jump:	equ $A0
-sfx_Lamppost:	equ $A1
-sfx_A2:		equ $A2
-sfx_Death:	equ $A3
-sfx_Skid:	equ $A4
-sfx_A5:		equ $A5
-sfx_HitSpikes:	equ $A6
-sfx_Push:	equ $A7
-sfx_SSGoal:	equ $A8
-sfx_SSItem:	equ $A9
-sfx_Splash:	equ $AA
-sfx_AB:		equ $AB
-sfx_HitBoss:	equ $AC
-sfx_Bubble:	equ $AD
-sfx_Fireball:	equ $AE
-sfx_Shield:	equ $AF
-sfx_Saw:	equ $B0
-sfx_Electric:	equ $B1
-sfx_Drown:	equ $B2
-sfx_Flamethrower:equ $B3
-sfx_Bumper:	equ $B4
-sfx_Ring:	equ $B5
-sfx_SpikesMove:	equ $B6
-sfx_Rumbling:	equ $B7
-sfx_B8:		equ $B8
-sfx_Collapse:	equ $B9
-sfx_SSGlass:	equ $BA
-sfx_Door:	equ $BB
-sfx_Teleport:	equ $BC
-sfx_ChainStomp:	equ $BD
-sfx_Roll:	equ $BE
-sfx_Continue:	equ $BF
-sfx_Basaran:	equ $C0
-sfx_BreakItem:	equ $C1
-sfx_Warning:	equ $C2
-sfx_GiantRing:	equ $C3
-sfx_Bomb:	equ $C4
-sfx_Cash:	equ $C5
-sfx_RingLoss:	equ $C6
-sfx_ChainRise:	equ $C7
-sfx_Burning:	equ $C8
-sfx_Bonus:	equ $C9
-sfx_EnterSS:	equ $CA
-sfx_WallSmash:	equ $CB
-sfx_Spring:	equ $CC
-sfx_Switch:	equ $CD
-sfx_RingLeft:	equ $CE
-sfx_Signpost:	equ $CF
-sfx__Last:	equ $D0
-		endif
 
 ; Special sound effects
 spec__First:	equ $D0
-		if MMD_Enabled==0
 sfx_Waterfall:	equ ((ptr_sndD0-SpecSoundIndex)/4)+spec__First
 spec__Last:	equ ((ptr_specend-SpecSoundIndex-4)/4)+spec__First
-		else
-sfx_Waterfall:	equ $D0
-spec__Last:	equ $D1
-		endif
 
 flg__First:	equ $E0
-		if MMD_Enabled==0
 bgm_Fade:	equ ((ptr_flgE0-Sound_ExIndex)/4)+flg__First
 bgm_Speedup:	equ ((ptr_flgE2-Sound_ExIndex)/4)+flg__First
 bgm_Slowdown:	equ ((ptr_flgE3-Sound_ExIndex)/4)+flg__First
 bgm_Stop:	equ ((ptr_flgE4-Sound_ExIndex)/4)+flg__First
 flg__Last:	equ ((ptr_flgend-Sound_ExIndex-4)/4)+flg__First
-		else
-bgm_Fade:	equ $E0
-bgm_Speedup:	equ $E1
-bgm_Slowdown:	equ $E2
-bgm_Stop:	equ $E3
-flg__Last:	equ $E4
-		endif
 
 ; Sonic frame IDs
 fr_Null:	equ 0
