@@ -10,30 +10,22 @@ AnimateLevelGfx:
 		bne.s	.ispaused	; if yes, branch
 		lea	(vdp_data_port).l,a6
 		bsr.w	AniArt_GiantRing
-		if MMD_Is_GHZ
-		goto	AniArt_GHZ
-		endif
-		if MMD_Is_MZ
-		goto	AniArt_MZ
-		endif
-		if MMD_Is_SYZ
-		endif
-		if MMD_Is_LZ
-		endif
-		if MMD_Is_SLZ
-		endif
-		if MMD_Is_SBZ
-		goto	AniArt_SBZ
-		endif
-		if MMD_Is_FZ
-		endif
-		if MMD_Is_Ending
-		goto	AniArt_Ending
-		endif
+		moveq	#0,d0
+		move.b	(v_zone).w,d0
+		add.w	d0,d0
+		move.w	AniArt_Index(pc,d0.w),d0
+		jmp	AniArt_Index(pc,d0.w)
 
 .ispaused:
 		rts	
 
+; ===========================================================================
+AniArt_Index:	dc.w AniArt_GHZ-AniArt_Index, AniArt_none-AniArt_Index
+		dc.w AniArt_MZ-AniArt_Index, AniArt_none-AniArt_Index
+		dc.w AniArt_none-AniArt_Index, AniArt_SBZ-AniArt_Index
+		zonewarning AniArt_Index,2
+		dc.w AniArt_Ending-AniArt_Index
+; ===========================================================================
 ; ---------------------------------------------------------------------------
 ; Animated pattern routine - Green Hill
 ; ---------------------------------------------------------------------------

@@ -851,7 +851,9 @@ FadeIn_FromBlack:
 		bsr.s	FadeIn_AddColour ; increase colour
 		dbf	d0,.addcolour	; repeat for size of palette
 
-		if MMD_Is_LZ
+		cmpi.b	#id_LZ,(v_zone).w	; is level Labyrinth?
+		bne.s	.exit		; if not, branch
+
 		moveq	#0,d0
 		lea	(v_palette_water).w,a0
 		lea	(v_palette_water_fading).w,a1
@@ -863,7 +865,8 @@ FadeIn_FromBlack:
 .addcolour2:
 		bsr.s	FadeIn_AddColour ; increase colour again
 		dbf	d0,.addcolour2 ; repeat
-		endif
+
+.exit:
 		rts	
 ; End of function FadeIn_FromBlack
 
@@ -1037,7 +1040,8 @@ WhiteIn_FromWhite:
 		bsr.s	WhiteIn_DecColour ; decrease colour
 		dbf	d0,.decolour	; repeat for size of palette
 
-		if MMD_Is_LZ
+		cmpi.b	#id_LZ,(v_zone).w	; is level Labyrinth?
+		bne.s	.exit		; if not, branch
 		moveq	#0,d0
 		lea	(v_palette_water).w,a0
 		lea	(v_palette_water_fading).w,a1
@@ -1049,7 +1053,8 @@ WhiteIn_FromWhite:
 .decolour2:
 		bsr.s	WhiteIn_DecColour
 		dbf	d0,.decolour2
-		endif
+
+.exit:
 		rts	
 ; End of function WhiteIn_FromWhite
 
@@ -1324,6 +1329,42 @@ MusicList:
 		include	"_inc/LZWaterFeatures.asm"
 		include	"_inc/MoveSonicInDemo.asm"
 		endif
+
+; ---------------------------------------------------------------------------
+; Collision index pointer loading subroutine
+; ---------------------------------------------------------------------------
+
+; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
+
+
+ColIndexLoad:
+		moveq	#0,d0
+		move.b	(v_zone).w,d0
+		lsl.w	#2,d0
+		move.l	ColPointers(pc,d0.w),(v_collindex).w
+		rts	
+; End of function ColIndexLoad
+
+; ===========================================================================
+; ---------------------------------------------------------------------------
+; Collision index pointers
+; ---------------------------------------------------------------------------
+colptr macro zone
+	if MMD_Is_zone
+	dc.l Col_zone
+	else
+	dc.l 0
+	endif
+	endm
+ColPointers:
+		colptr GHZ
+		colptr LZ
+		colptr MZ
+		colptr SLZ
+		colptr SYZ
+		colptr SBZ
+		zonewarning ColPointers,4
+;		dc.l Col_GHZ ; Pointer for Ending is missing by default.
 
 		include	"_inc/Oscillatory Routines.asm"
 
