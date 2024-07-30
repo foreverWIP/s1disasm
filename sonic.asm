@@ -28,10 +28,16 @@ zeroOffsetOptimization = 0	; if 1, makes a handful of zero-offset instructions s
 	include	"Constants.asm"
 	include	"Variables.asm"
 	include	"Macros.asm"
+	if MMD_Enabled
+	include "_mcd/subcpu.asm"
+	include "_mcd/mmd.asm"
+	endif
+	include "mmddefs.asm"
 
 ; ===========================================================================
 
 StartOfRom:
+		if ~~MMD_Enabled
 Vectors:	dc.l v_systemstack&$FFFFFF	; Initial stack pointer value
 		dc.l EntryPoint			; Start of program
 		dc.l BusError			; Bus error
@@ -141,6 +147,9 @@ RomEndLoc:	dc.l EndOfRom-1		; End address of ROM
 		dc.b "                                                    " ; Notes (unused, anything can be put in this space, but it has to be 52 bytes.)
 		dc.b "JUE             " ; Region (Country code)
 EndOfHeader:
+		else
+		MMD 0,WORDRAM2M,0,EntryPoint,HBlank,VBlank
+		endif
 
 		include "_debugger/DebuggerBlob.asm"
 
@@ -8706,9 +8715,20 @@ ObjPos_Null:	dc.b $FF, $FF, 0, 0, 0,	0
 		include "allart.asm"
 
 SoundDriver:	include "s1.sounddriver.asm"
+	if MMD_Enabled
+		dephase
+	endif
 
 ; end of 'ROM'
+	if (*)&(*-1)
+		cnop	-1,2<<lastbit(*-1)
+		dc.b	0
+	else
 		even
+	endif
 EndOfRom:
+	if MOMPASS=2
+		message "ROM size is $\{EndOfRom-StartOfRom} bytes"
+	endif
 
 		END
