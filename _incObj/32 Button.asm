@@ -17,7 +17,7 @@ But_Main:	; Routine 0
 		addq.b	#2,obRoutine(a0)
 		move.l	#Map_But,obMap(a0)
 		move.w	#make_art_tile(ArtTile_Button+4,2,0),obGfx(a0) ; MZ specific code
-		cmpi.b	#id_MZ,(v_zone).w ; is level Marble Zone?
+		cmpi.b	#id_MZ,(v_zone).l ; is level Marble Zone?
 		beq.s	But_IsMZ	; if yes, branch
 
 		move.w	#make_art_tile(ArtTile_Button+4,0,0),obGfx(a0)	; SYZ, LZ and SBZ specific code
@@ -39,7 +39,7 @@ But_Pressed:	; Routine 2
 		bclr	#0,obFrame(a0)	; use "unpressed" frame
 		move.b	obSubtype(a0),d0
 		andi.w	#$F,d0
-		lea	(f_switch).w,a3
+		lea	(f_switch).l,a3
 		lea	(a3,d0.w),a3
 		moveq	#0,d3
 		btst	#6,obSubtype(a0)
@@ -105,7 +105,7 @@ But_MZBlock:
 		subq.w	#8,d3
 		move.w	#$20,d4
 		move.w	#$10,d5
-		lea	(v_lvlobjspace).w,a1 ; begin checking object RAM
+		lea	(v_lvlobjspace).l,a1 ; begin checking object RAM
 		move.w	#(v_lvlobjend-v_lvlobjspace)/object_size-1,d6
 
 But_MZLoop:

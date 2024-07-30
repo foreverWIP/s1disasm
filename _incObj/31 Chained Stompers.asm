@@ -111,7 +111,7 @@ CStom_Var2:	dc.b $38, 0		; width, frame number
 
 loc_B798:	; Routine 2
 		bsr.w	CStom_Types
-		move.w	obY(a0),(v_obj31ypos).w
+		move.w	obY(a0),(v_obj31ypos).l
 		moveq	#0,d1
 		move.b	obActWid(a0),d1
 		addi.w	#$B,d1
@@ -124,7 +124,7 @@ loc_B798:	; Routine 2
 		cmpi.b	#$10,objoff_32(a0)
 		bhs.s	CStom_Display
 		movea.l	a0,a2
-		lea	(v_player).w,a0
+		lea	(v_player).l,a0
 		jsr	(KillSonic).l
 		movea.l	a2,a0
 
@@ -184,12 +184,12 @@ CStom_TypeIndex:dc.w CStom_Type00-CStom_TypeIndex
 ; ===========================================================================
 
 CStom_Type00:
-		lea	(f_switch).w,a2	; load switch statuses
+		lea	(f_switch).l,a2	; load switch statuses
 		moveq	#0,d0
 		move.b	CStom_switch(a0),d0 ; move number 0 or 1 to d0
 		tst.b	(a2,d0.w)	; has switch (d0) been pressed?
 		beq.s	loc_B8A8	; if not, branch
-		tst.w	(v_obj31ypos).w
+		tst.w	(v_obj31ypos).l
 		bpl.s	loc_B872
 		cmpi.b	#$10,objoff_32(a0)
 		beq.s	loc_B8A0
@@ -197,7 +197,7 @@ CStom_Type00:
 loc_B872:
 		tst.w	objoff_32(a0)
 		beq.s	loc_B8A0
-		move.b	(v_vbla_byte).w,d0
+		move.b	(v_vbla_byte).l,d0
 		andi.b	#$F,d0
 		bne.s	loc_B892
 		tst.b	obRender(a0)
@@ -249,7 +249,7 @@ CStom_Type01:
 ; ===========================================================================
 
 loc_B902:
-		move.b	(v_vbla_byte).w,d0
+		move.b	(v_vbla_byte).l,d0
 		andi.b	#$F,d0
 		bne.s	loc_B91C
 		tst.b	obRender(a0)
@@ -289,7 +289,7 @@ loc_B97C:
 ; ===========================================================================
 
 CStom_Type03:
-		move.w	(v_player+obX).w,d0
+		move.w	(v_player+obX).l,d0
 		sub.w	obX(a0),d0
 		bcc.s	loc_B98C
 		neg.w	d0

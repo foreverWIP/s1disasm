@@ -24,7 +24,7 @@ Mon_Main:	; Routine 0
 		move.b	#4,obRender(a0)
 		move.b	#3,obPriority(a0)
 		move.b	#$F,obActWid(a0)
-		lea	(v_objstate).w,a2
+		lea	(v_objstate).l,a2
 		moveq	#0,d0
 		move.b	obRespawnNo(a0),d0
 		bclr	#7,2(a2,d0.w)
@@ -157,7 +157,7 @@ Mon_Explode:
 		move.w	obY(a0),obY(a1)
 
 .fail:
-		lea	(v_objstate).w,a2
+		lea	(v_objstate).l,a2
 		moveq	#0,d0
 		move.b	obRespawnNo(a0),d0
 		bset	#0,2(a2,d0.w)

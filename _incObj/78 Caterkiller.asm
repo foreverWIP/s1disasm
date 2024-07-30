@@ -35,7 +35,7 @@ Cat_Main:	; Routine 0
 		addq.b	#2,obRoutine(a0)
 		move.l	#Map_Cat,obMap(a0)
 		move.w	#make_art_tile(ArtTile_SBZ_Caterkiller,1,0),obGfx(a0)
-		cmpi.b	#id_SBZ,(v_zone).w ; if level is SBZ, branch
+		cmpi.b	#id_SBZ,(v_zone).l ; if level is SBZ, branch
 		beq.s	.isscrapbrain
 		move.w	#make_art_tile(ArtTile_MZ_SYZ_Caterkiller,1,0),obGfx(a0) ; MZ/SYZ specific code
 
@@ -119,7 +119,7 @@ Cat_Head:	; Routine 2
 		jmp	(DisplaySprite).l
 
 Cat_ChkGone:
-		lea	(v_objstate).w,a2
+		lea	(v_objstate).l,a2
 		moveq	#0,d0
 		move.b	obRespawnNo(a0),d0
 		beq.s	.delete

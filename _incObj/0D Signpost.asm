@@ -33,15 +33,15 @@ Sign_Main:	; Routine 0
 		move.b	#4,obPriority(a0)
 
 Sign_Touch:	; Routine 2
-		move.w	(v_player+obX).w,d0
+		move.w	(v_player+obX).l,d0
 		sub.w	obX(a0),d0
 		bcs.s	.notouch
 		cmpi.w	#$20,d0		; is Sonic within $20 pixels of	the signpost?
 		bhs.s	.notouch	; if not, branch
 		move.w	#sfx_Signpost,d0
 		jsr	(PlaySound).l	; play signpost sound
-		clr.b	(f_timecount).w	; stop time counter
-		move.w	(v_limitright2).w,(v_limitleft2).w ; lock screen position
+		clr.b	(f_timecount).l	; stop time counter
+		move.w	(v_limitright2).l,(v_limitleft2).l ; lock screen position
 		addq.b	#2,obRoutine(a0)
 
 .notouch:
@@ -98,33 +98,33 @@ Sign_SparkPos:	dc.b -$18,-$10		; x-position, y-position
 ; ===========================================================================
 
 Sign_SonicRun:	; Routine 6
-		tst.w	(v_debuguse).w	; is debug mode	on?
+		tst.w	(v_debuguse).l	; is debug mode	on?
 		bne.w	locret_ECEE	; if yes, branch
 	if FixBugs
 		; This function's checks are a mess, creating an edgecase where it's
 		; possible for the player to avoid having their controls locked by
 		; jumping at the right side of the screen just as the score tally
 		; appears.
-		tst.b	(v_player+obID).w	; Check if Sonic's object has been deleted (because he entered the giant ring)
+		tst.b	(v_player+obID).l	; Check if Sonic's object has been deleted (because he entered the giant ring)
 		beq.s	loc_EC86
-		btst	#1,(v_player+obStatus).w
+		btst	#1,(v_player+obStatus).l
 		bne.w	locret_ECEE
 	else
-		btst	#1,(v_player+obStatus).w
+		btst	#1,(v_player+obStatus).l
 		bne.s	loc_EC70
 	endif
-		move.b	#1,(f_lockctrl).w ; lock controls
-		move.w	#btnR<<8,(v_jpadhold2).w ; make Sonic run to the right
+		move.b	#1,(f_lockctrl).l ; lock controls
+		move.w	#btnR<<8,(v_jpadhold2).l ; make Sonic run to the right
 	if ~~FixBugs
 loc_EC70:
-		tst.b	(v_player+obID).w	; Check if Sonic's object has been deleted (because he entered the giant ring)
+		tst.b	(v_player+obID).l	; Check if Sonic's object has been deleted (because he entered the giant ring)
 		beq.s	loc_EC86
 	endif
-		move.w	(v_player+obX).w,d0
-		move.w	(v_limitright2).w,d1
+		move.w	(v_player+obX).l,d0
+		move.w	(v_limitright2).l,d1
 		addi.w	#$128,d1
 		cmp.w	d1,d0
-		blo.s	locret_ECEE
+		blo.w	locret_ECEE
 
 loc_EC86:
 		addq.b	#2,obRoutine(a0)
@@ -138,20 +138,20 @@ loc_EC86:
 
 
 GotThroughAct:
-		tst.b	(v_endcard).w
+		tst.b	(v_endcard).l
 		bne.s	locret_ECEE
-		move.w	(v_limitright2).w,(v_limitleft2).w
-		clr.b	(v_invinc).w	; disable invincibility
-		clr.b	(f_timecount).w	; stop time counter
-		move.b	#id_GotThroughCard,(v_endcard).w
+		move.w	(v_limitright2).l,(v_limitleft2).l
+		clr.b	(v_invinc).l	; disable invincibility
+		clr.b	(f_timecount).l	; stop time counter
+		move.b	#id_GotThroughCard,(v_endcard).l
 		moveq	#plcid_TitleCard,d0
 		jsr	(NewPLC).l	; load title card patterns
-		move.b	#1,(f_endactbonus).w
+		move.b	#1,(f_endactbonus).l
 		moveq	#0,d0
-		move.b	(v_timemin).w,d0
+		move.b	(v_timemin).l,d0
 		mulu.w	#60,d0		; convert minutes to seconds
 		moveq	#0,d1
-		move.b	(v_timesec).w,d1
+		move.b	(v_timesec).l,d1
 		add.w	d1,d0		; add up your time
 		divu.w	#15,d0		; divide by 15
 		moveq	#$14,d1
@@ -161,10 +161,10 @@ GotThroughAct:
 
 .hastimebonus:
 		add.w	d0,d0
-		move.w	TimeBonuses(pc,d0.w),(v_timebonus).w ; set time bonus
-		move.w	(v_rings).w,d0	; load number of rings
+		move.w	TimeBonuses(pc,d0.w),(v_timebonus).l ; set time bonus
+		move.w	(v_rings).l,d0	; load number of rings
 		mulu.w	#10,d0		; multiply by 10
-		move.w	d0,(v_ringbonus).w ; set ring bonus
+		move.w	d0,(v_ringbonus).l ; set ring bonus
 		move.w	#bgm_GotThrough,d0
 		jsr	(PlaySound_Special).l	; play "Sonic got through" music
 

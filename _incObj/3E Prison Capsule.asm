@@ -54,7 +54,7 @@ Pri_Main:	; Routine 0
 ; ===========================================================================
 
 Pri_BodyMain:	; Routine 2
-		cmpi.b	#2,(v_bossstatus).w
+		cmpi.b	#2,(v_bossstatus).l
 		beq.s	.chkopened
 		move.w	#$2B,d1
 		move.w	#$18,d2
@@ -67,8 +67,8 @@ Pri_BodyMain:	; Routine 2
 		tst.b	ob2ndRout(a0)	; has the prison been opened?
 		beq.s	.open		; if yes, branch
 		clr.b	ob2ndRout(a0)
-		bclr	#3,(v_player+obStatus).w
-		bset	#1,(v_player+obStatus).w
+		bclr	#3,(v_player+obStatus).l
+		bset	#1,(v_player+obStatus).l
 
 .open:
 		move.b	#2,obFrame(a0)	; use frame number 2 (destroyed	prison)
@@ -90,13 +90,13 @@ Pri_Switched:	; Routine 4
 		addq.w	#8,obY(a0)
 		move.b	#$A,obRoutine(a0)
 		move.w	#60,obTimeFrame(a0) ; set time between animal spawns
-		clr.b	(f_timecount).w	; stop time counter
-		clr.b	(f_lockscreen).w ; lock screen position
-		move.b	#1,(f_lockctrl).w ; lock controls
-		move.w	#(btnR<<8),(v_jpadhold2).w ; make Sonic run to the right
+		clr.b	(f_timecount).l	; stop time counter
+		clr.b	(f_lockscreen).l ; lock screen position
+		move.b	#1,(f_lockctrl).l ; lock controls
+		move.w	#(btnR<<8),(v_jpadhold2).l ; make Sonic run to the right
 		clr.b	ob2ndRout(a0)
-		bclr	#3,(v_player+obStatus).w
-		bset	#1,(v_player+obStatus).w
+		bclr	#3,(v_player+obStatus).l
+		bset	#1,(v_player+obStatus).l
 
 .open2:
 		rts	
@@ -104,7 +104,7 @@ Pri_Switched:	; Routine 4
 
 Pri_Explosion:	; Routine 6, 8, $A
 		moveq	#7,d0
-		and.b	(v_vbla_byte).w,d0
+		and.b	(v_vbla_byte).l,d0
 		bne.s	.noexplosion
 		jsr	(FindFreeObj).l
 		bne.s	.noexplosion
@@ -128,7 +128,7 @@ Pri_Explosion:	; Routine 6, 8, $A
 ; ===========================================================================
 
 .makeanimal:
-		move.b	#2,(v_bossstatus).w
+		move.b	#2,(v_bossstatus).l
 		move.b	#$C,obRoutine(a0)	; replace explosions with animals
 		move.b	#6,obFrame(a0)
 		move.w	#150,obTimeFrame(a0)
@@ -155,7 +155,7 @@ Pri_Explosion:	; Routine 6, 8, $A
 
 Pri_Animals:	; Routine $C
 		moveq	#7,d0
-		and.b	(v_vbla_byte).w,d0
+		and.b	(v_vbla_byte).l,d0
 		bne.s	.noanimal
 		jsr	(FindFreeObj).l
 		bne.s	.noanimal
@@ -192,9 +192,9 @@ Pri_EndAct:	; Routine $E
 		moveq	#id_Animals,d1
 		moveq	#object_size,d2
 	if FixBugs
-		lea	(v_lvlobjspace).w,a1
+		lea	(v_lvlobjspace).l,a1
 	else
-		lea	(v_objspace+object_size*1).w,a1 ; Nonsensical starting point, since dynamic object allocations begin at v_lvlobjspace.
+		lea	(v_objspace+object_size*1).l,a1 ; Nonsensical starting point, since dynamic object allocations begin at v_lvlobjspace.
 	endif
 
 .findanimal:

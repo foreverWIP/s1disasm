@@ -104,7 +104,7 @@ loc_1A550:
 
 loc_1A55C:
 		move.b	d0,obFrame(a0)
-		move.w	(v_player+obX).w,d0
+		move.w	(v_player+obX).l,d0
 		sub.w	obX(a0),d0
 		bmi.s	loc_1A578
 		subi.w	#$140,d0

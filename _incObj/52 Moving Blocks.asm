@@ -26,14 +26,14 @@ MBlock_Main:	; Routine 0
 		addq.b	#2,obRoutine(a0)
 		move.l	#Map_MBlock,obMap(a0)
 		move.w	#make_art_tile(ArtTile_MZ_Block,2,0),obGfx(a0)
-		cmpi.b	#id_LZ,(v_zone).w ; check if level is LZ
+		cmpi.b	#id_LZ,(v_zone).l ; check if level is LZ
 		bne.s	loc_FE44
 		move.l	#Map_MBlockLZ,obMap(a0) ; LZ specific code
 		move.w	#make_art_tile(ArtTile_LZ_Moving_Block,2,0),obGfx(a0)
 		move.b	#7,obHeight(a0)
 
 loc_FE44:
-		cmpi.b	#id_SBZ,(v_zone).w ; check if level is SBZ
+		cmpi.b	#id_SBZ,(v_zone).l ; check if level is SBZ
 		bne.s	loc_FE60
 		move.w	#make_art_tile(ArtTile_SBZ_Moving_Block_Short,1,0),obGfx(a0) ; SBZ specific code (object 5228)
 		cmpi.b	#$28,obSubtype(a0) ; is object 5228 ?
@@ -108,7 +108,7 @@ MBlock_Type00:
 ; ===========================================================================
 
 MBlock_Type01:
-		move.b	(v_oscillate+$E).w,d0
+		move.b	(v_oscillate+$E).l,d0
 		move.w	#$60,d1
 		btst	#0,obStatus(a0)
 		beq.s	loc_FF26
@@ -178,7 +178,7 @@ locret_FFA0:
 ; ===========================================================================
 
 MBlock_Type07:
-		tst.b	(f_switch+2).w	; has switch number 02 been pressed?
+		tst.b	(f_switch+2).l	; has switch number 02 been pressed?
 		beq.s	MBlock_07_ChkDel
 		subq.b	#3,obSubtype(a0) ; if yes, change object type to 04
 
@@ -192,7 +192,7 @@ MBlock_07_ChkDel:
 ; ===========================================================================
 
 MBlock_Type08:
-		move.b	(v_oscillate+$1E).w,d0
+		move.b	(v_oscillate+$1E).l,d0
 		move.w	#$80,d1
 		btst	#0,obStatus(a0)
 		beq.s	loc_FFE2

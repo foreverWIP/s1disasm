@@ -32,13 +32,13 @@ Shi_Main:	; Routine 0
 ; ===========================================================================
 
 Shi_Shield:	; Routine 2
-		tst.b	(v_invinc).w	; does Sonic have invincibility?
+		tst.b	(v_invinc).l	; does Sonic have invincibility?
 		bne.s	.remove		; if yes, branch
-		tst.b	(v_shield).w	; does Sonic have shield?
+		tst.b	(v_shield).l	; does Sonic have shield?
 		beq.s	.delete		; if not, branch
-		move.w	(v_player+obX).w,obX(a0)
-		move.w	(v_player+obY).w,obY(a0)
-		move.b	(v_player+obStatus).w,obStatus(a0)
+		move.w	(v_player+obX).l,obX(a0)
+		move.w	(v_player+obY).l,obY(a0)
+		move.b	(v_player+obStatus).l,obStatus(a0)
 		lea	(Ani_Shield).l,a1
 		jsr	(AnimateSprite).l
 		jmp	(DisplaySprite).l
@@ -51,9 +51,9 @@ Shi_Shield:	; Routine 2
 ; ===========================================================================
 
 Shi_Stars:	; Routine 4
-		tst.b	(v_invinc).w	; does Sonic have invincibility?
+		tst.b	(v_invinc).l	; does Sonic have invincibility?
 		beq.s	Shi_Start_Delete		; if not, branch
-		move.w	(v_trackpos).w,d0 ; get index value for tracking data
+		move.w	(v_trackpos).l,d0 ; get index value for tracking data
 		move.b	obAnim(a0),d1
 		subq.b	#1,d1
 		bra.s	.trail
@@ -87,11 +87,11 @@ Shi_Stars:	; Routine 4
 		move.b	d1,objoff_30(a0)
 
 .b:
-		lea	(v_tracksonic).w,a1
+		lea	(v_tracksonic).l,a1
 		lea	(a1,d0.w),a1
 		move.w	(a1)+,obX(a0)
 		move.w	(a1)+,obY(a0)
-		move.b	(v_player+obStatus).w,obStatus(a0)
+		move.b	(v_player+obStatus).l,obStatus(a0)
 		lea	(Ani_Shield).l,a1
 		jsr	(AnimateSprite).l
 		jmp	(DisplaySprite).l

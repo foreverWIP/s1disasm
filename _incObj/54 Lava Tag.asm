@@ -26,7 +26,7 @@ LTag_Main:	; Routine 0
 LTag_ChkDel:	; Routine 2
 		move.w	obX(a0),d0
 		andi.w	#$FF80,d0
-		move.w	(v_screenposx).w,d1
+		move.w	(v_screenposx).l,d1
 		subi.w	#$80,d1
 		andi.w	#$FF80,d1
 		sub.w	d1,d0

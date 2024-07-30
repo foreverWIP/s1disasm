@@ -91,7 +91,7 @@ Bri_Solid:
 		move.w	d1,d2
 		addq.w	#8,d1
 		add.w	d2,d2
-		lea	(v_player).w,a1
+		lea	(v_player).l,a1
 		tst.w	obVelY(a1)
 		bmi.w	Plat_Exit
 		move.w	obX(a1),d0

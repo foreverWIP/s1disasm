@@ -116,14 +116,14 @@ off_19E80:	dc.w loc_19E90-off_19E80, loc_19EA8-off_19E80
 ; ===========================================================================
 
 loc_19E90:
-		tst.l	(v_plc_buffer).w
+		tst.l	(v_plc_buffer).l
 		bne.s	loc_19EA2
-		cmpi.w	#boss_fz_x,(v_screenposx).w
+		cmpi.w	#boss_fz_x,(v_screenposx).l
 		blo.s	loc_19EA2
 		addq.b	#2,objoff_34(a0)
 
 loc_19EA2:
-		addq.l	#1,(v_random).w
+		addq.l	#1,(v_random).l
 		rts	
 ; ===========================================================================
 
@@ -162,7 +162,7 @@ loc_19F10:
 		tst.w	objoff_32(a0)
 		bmi.w	loc_19FA6
 		bclr	#0,obStatus(a0)
-		move.w	(v_player+obX).w,d0
+		move.w	(v_player+obX).l,d0
 		sub.w	obX(a0),d0
 		bcs.s	loc_19F2E
 		bset	#0,obStatus(a0)
@@ -183,8 +183,8 @@ loc_19F48:
 ; ===========================================================================
 
 loc_19F50:
-		addq.w	#7,(v_random).w
-		cmpi.b	#id_Roll,(v_player+obAnim).w
+		addq.w	#7,(v_random).l
+		cmpi.b	#id_Roll,(v_player+obAnim).l
 		bne.s	loc_19F48
 		move.w	#$300,d0
 		btst	#0,obStatus(a0)
@@ -192,7 +192,7 @@ loc_19F50:
 		neg.w	d0
 
 loc_19F6A:
-		move.w	d0,(v_player+obVelX).w
+		move.w	d0,(v_player+obVelX).l
 		tst.b	objoff_35(a0)
 		bne.s	loc_19F88
 		subq.b	#1,obColProp(a0)
@@ -250,7 +250,7 @@ loc_19FE6:
 
 loc_1A000:
 		moveq	#$F,d0
-		and.w	(v_vbla_word).w,d0
+		and.w	(v_vbla_word).l,d0
 		bne.s	loc_1A00A
 		bsr.s	loc_1A020
 
@@ -291,7 +291,7 @@ loc_1A02A:
 		endif
 		move.w	#$100,obVelX(a0)
 		move.w	#-$100,obVelY(a0)
-		addq.b	#2,(v_dle_routine).w
+		addq.b	#2,(v_dle_routine).l
 
 loc_1A070:
 		bra.w	loc_1A166
@@ -309,7 +309,7 @@ loc_1A074:
 loc_1A09A:
 		move.w	#$400,obVelX(a0)
 		move.w	obX(a0),d0
-		sub.w	(v_player+obX).w,d0
+		sub.w	(v_player+obX).l,d0
 		bpl.s	loc_1A0B4
 		move.w	#$500,obVelX(a0)
 		bra.w	loc_1A0F2
@@ -375,9 +375,9 @@ loc_1A15C:
 		jsr	(AnimateSprite).l
 
 loc_1A166:
-		cmpi.w	#boss_fz_end,(v_limitright2).w
+		cmpi.w	#boss_fz_end,(v_limitright2).l
 		bge.s	loc_1A172
-		addq.w	#2,(v_limitright2).w
+		addq.w	#2,(v_limitright2).l
 
 loc_1A172:
 		cmpi.b	#$C,objoff_34(a0)
@@ -434,26 +434,26 @@ loc_1A210:
 		move.b	#$F,obColType(a0)
 
 loc_1A216:
-		cmpi.w	#boss_fz_end+$90,(v_player+obX).w
+		cmpi.w	#boss_fz_end+$90,(v_player+obX).l
 		blt.s	loc_1A23A
-		move.b	#1,(f_lockctrl).w
-		move.w	#0,(v_jpadhold2).w
-		clr.w	(v_player+obInertia).w
+		move.b	#1,(f_lockctrl).l
+		move.w	#0,(v_jpadhold2).l
+		clr.w	(v_player+obInertia).l
 		tst.w	obVelY(a0)
 		bpl.s	loc_1A248
-		move.w	#$100,(v_jpadhold2).w
+		move.w	#$100,(v_jpadhold2).l
 
 loc_1A23A:
-		cmpi.w	#boss_fz_end+$E0,(v_player+obX).w
+		cmpi.w	#boss_fz_end+$E0,(v_player+obX).l
 		blt.s	loc_1A248
-		move.w	#boss_fz_end+$E0,(v_player+obX).w
+		move.w	#boss_fz_end+$E0,(v_player+obX).l
 
 loc_1A248:
 		cmpi.w	#boss_fz_end+$200,obX(a0)
 		blo.s	loc_1A260
 		tst.b	obRender(a0)
 		bmi.s	loc_1A260
-		move.b	#id_Ending,(v_gamemode).w
+		move.b	#id_Ending,(v_gamemode).l
 		bra.w	BossFinal_Delete
 ; ===========================================================================
 
@@ -560,7 +560,7 @@ loc_1A38A:
 
 loc_1A38E:	; Routine $A
 		move.b	#$B,obFrame(a0)
-		move.w	(v_player+obX).w,d0
+		move.w	(v_player+obX).l,d0
 		sub.w	obX(a0),d0
 		bcs.s	loc_1A3A6
 		tst.b	obRender(a0)

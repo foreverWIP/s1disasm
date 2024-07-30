@@ -52,7 +52,7 @@ loc_1A86C:
 		move.w	#$11,d3
 		move.w	obX(a0),d4
 		jsr	(SolidObject).l
-		move.w	(v_player+obX).w,d0
+		move.w	(v_player+obX).l,d0
 		sub.w	obX(a0),d0
 		bmi.s	loc_1A89A
 		subi.w	#$140,d0
@@ -173,7 +173,7 @@ loc_1A9E6:
 		move.b	#$9A,obColType(a0)
 		move.w	#$B4,obSubtype(a0)
 		moveq	#0,d0
-		move.w	(v_player+obX).w,d0
+		move.w	(v_player+obX).l,d0
 		sub.w	obX(a0),d0
 		move.w	d0,obVelX(a0)
 		move.w	#$140,obVelY(a0)

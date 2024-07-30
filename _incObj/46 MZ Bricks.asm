@@ -63,7 +63,7 @@ Brick_Type00:
 ; ===========================================================================
 
 Brick_Type02:
-		move.w	(v_player+obX).w,d0
+		move.w	(v_player+obX).l,d0
 		sub.w	obX(a0),d0
 		bcc.s	loc_E888
 		neg.w	d0
@@ -75,7 +75,7 @@ loc_E888:
 
 Brick_Type01:
 		moveq	#0,d0
-		move.b	(v_oscillate+$16).w,d0
+		move.b	(v_oscillate+$16).l,d0
 		btst	#3,obSubtype(a0)
 		beq.s	loc_E8A8
 		neg.w	d0
@@ -114,7 +114,7 @@ locret_E8EE:
 
 Brick_Type04:
 		moveq	#0,d0
-		move.b	(v_oscillate+$12).w,d0
+		move.b	(v_oscillate+$12).l,d0
 		lsr.w	#3,d0
 		move.w	brick_origY(a0),d1
 		sub.w	d0,d1

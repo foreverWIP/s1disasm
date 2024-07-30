@@ -20,14 +20,14 @@ card_finalX = objoff_32		; position for card to finish on
 Card_CheckSBZ3:	; Routine 0
 		movea.l	a0,a1
 		moveq	#0,d0
-		move.b	(v_zone).w,d0
-		cmpi.w	#(id_LZ<<8)+3,(v_zone).w ; check if level is SBZ 3
+		move.b	(v_zone).l,d0
+		cmpi.w	#(id_LZ<<8)+3,(v_zone).l ; check if level is SBZ 3
 		bne.s	Card_CheckFZ
 		moveq	#5,d0		; load title card number 5 (SBZ)
 
 Card_CheckFZ:
 		move.w	d0,d2
-		cmpi.w	#(id_SBZ<<8)+2,(v_zone).w ; check if level is FZ
+		cmpi.w	#(id_SBZ<<8)+2,(v_zone).l ; check if level is FZ
 		bne.s	Card_LoadConfig
 		moveq	#6,d0		; load title card number 6 (FZ)
 		moveq	#$B,d2		; use "FINAL" mappings
@@ -53,8 +53,8 @@ Card_Loop:
 Card_ActNumber:
 		cmpi.b	#7,d0
 		bne.s	Card_MakeSprite
-		add.b	(v_act).w,d0
-		cmpi.b	#3,(v_act).w
+		add.b	(v_act).l,d0
+		cmpi.b	#3,(v_act).l
 		bne.s	Card_MakeSprite
 		subq.b	#1,d0
 
@@ -128,7 +128,7 @@ Card_ChangeArt:
 		moveq	#plcid_Explode,d0
 		jsr	(AddPLC).l	; load explosion patterns
 		moveq	#0,d0
-		move.b	(v_zone).w,d0
+		move.b	(v_zone).l,d0
 		addi.w	#plcid_GHZAnimals,d0
 		jsr	(AddPLC).l	; load animal patterns
 

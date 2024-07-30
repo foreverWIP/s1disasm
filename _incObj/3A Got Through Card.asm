@@ -23,7 +23,7 @@ got_finalX = objoff_32		; position for card to finish on
 ; ===========================================================================
 
 Got_ChkPLC:	; Routine 0
-		tst.l	(v_plc_buffer).w ; are the pattern load cues empty?
+		tst.l	(v_plc_buffer).l ; are the pattern load cues empty?
 		beq.s	Got_Main	; if yes, branch
 		rts	
 ; ===========================================================================
@@ -43,7 +43,7 @@ Got_Loop:
 		move.b	(a2)+,d0
 		cmpi.b	#6,d0
 		bne.s	loc_C5CA
-		add.b	(v_act).w,d0	; add act number to frame number
+		add.b	(v_act).l,d0	; add act number to frame number
 
 loc_C5CA:
 		move.b	d0,obFrame(a1)
@@ -82,7 +82,7 @@ loc_C610:
 ; ===========================================================================
 
 loc_C61A:
-		cmpi.b	#$E,(v_endcardring+obRoutine).w
+		cmpi.b	#$E,(v_endcardring+obRoutine).l
 		beq.s	loc_C610
 		cmpi.b	#4,obFrame(a0)
 		bne.s	loc_C5FE
@@ -100,18 +100,18 @@ Got_Display:
 
 Got_TimeBonus:	; Routine 6
 		bsr.w	DisplaySprite
-		move.b	#1,(f_endactbonus).w ; set time/ring bonus update flag
+		move.b	#1,(f_endactbonus).l ; set time/ring bonus update flag
 		moveq	#0,d0
-		tst.w	(v_timebonus).w	; is time bonus	= zero?
+		tst.w	(v_timebonus).l	; is time bonus	= zero?
 		beq.s	Got_RingBonus	; if yes, branch
 		addi.w	#10,d0		; add 10 to score
-		subi.w	#10,(v_timebonus).w ; subtract 10 from time bonus
+		subi.w	#10,(v_timebonus).l ; subtract 10 from time bonus
 
 Got_RingBonus:
-		tst.w	(v_ringbonus).w	; is ring bonus	= zero?
+		tst.w	(v_ringbonus).l	; is ring bonus	= zero?
 		beq.s	Got_ChkBonus	; if yes, branch
 		addi.w	#10,d0		; add 10 to score
-		subi.w	#10,(v_ringbonus).w ; subtract 10 from ring bonus
+		subi.w	#10,(v_ringbonus).l ; subtract 10 from ring bonus
 
 Got_ChkBonus:
 		tst.w	d0		; is there any bonus?
@@ -119,7 +119,7 @@ Got_ChkBonus:
 		move.w	#sfx_Cash,d0
 		jsr	(PlaySound_Special).l	; play "ker-ching" sound
 		addq.b	#2,obRoutine(a0)
-		cmpi.w	#(id_SBZ<<8)+1,(v_zone).w
+		cmpi.w	#(id_SBZ<<8)+1,(v_zone).l
 		bne.s	Got_SetDelay
 		addq.b	#4,obRoutine(a0)
 
@@ -132,7 +132,7 @@ locret_C692:
 
 Got_AddBonus:
 		jsr	(AddPoints).l
-		move.b	(v_vbla_byte).w,d0
+		move.b	(v_vbla_byte).l,d0
 		andi.b	#3,d0
 		bne.s	locret_C692
 		move.w	#sfx_Switch,d0
@@ -140,31 +140,31 @@ Got_AddBonus:
 ; ===========================================================================
 
 Got_NextLevel:	; Routine $A
-		move.b	(v_zone).w,d0
+		move.b	(v_zone).l,d0
 		andi.w	#7,d0
 		lsl.w	#3,d0
-		move.b	(v_act).w,d1
+		move.b	(v_act).l,d1
 		andi.w	#3,d1
 		add.w	d1,d1
 		add.w	d1,d0
 		move.w	LevelOrder(pc,d0.w),d0 ; load level from level order array
-		move.w	d0,(v_zone).w	; set level number
+		move.w	d0,(v_zone).l	; set level number
 		tst.w	d0
 		bne.s	Got_ChkSS
-		move.b	#id_Sega,(v_gamemode).w
+		move.b	#id_Sega,(v_gamemode).l
 		bra.s	Got_Display2
 ; ===========================================================================
 
 Got_ChkSS:
-		clr.b	(v_lastlamp).w	; clear	lamppost counter
-		tst.b	(f_bigring).w	; has Sonic jumped into	a giant	ring?
+		clr.b	(v_lastlamp).l	; clear	lamppost counter
+		tst.b	(f_bigring).l	; has Sonic jumped into	a giant	ring?
 		beq.s	loc_C6EA	; if not, branch
-		move.b	#id_Special,(v_gamemode).w ; set game mode to Special Stage (10)
+		move.b	#id_Special,(v_gamemode).l ; set game mode to Special Stage (10)
 		bra.s	Got_Display2
 ; ===========================================================================
 
 loc_C6EA:
-		move.w	#1,(f_restart).w ; restart level
+		move.w	#1,(f_restart).l ; restart level
 
 Got_Display2:
 		bra.w	DisplaySprite
@@ -237,14 +237,14 @@ Got_SBZ2:
 		cmpi.b	#4,obFrame(a0)
 		bne.w	DeleteObject
 		addq.b	#2,obRoutine(a0)
-		clr.b	(f_lockctrl).w	; unlock controls
+		clr.b	(f_lockctrl).l	; unlock controls
 		move.w	#bgm_FZ,d0
 		jmp	(PlaySound).l	; play FZ music
 ; ===========================================================================
 
 loc_C766:	; Routine $10
-		addq.w	#2,(v_limitright2).w
-		cmpi.w	#$2100,(v_limitright2).w
+		addq.w	#2,(v_limitright2).l
+		cmpi.w	#$2100,(v_limitright2).l
 		beq.w	DeleteObject
 		rts	
 ; ===========================================================================

@@ -20,14 +20,14 @@ Plat_Main:	; Routine 0
 		move.w	#make_art_tile(ArtTile_Level,2,0),obGfx(a0)
 		move.l	#Map_Plat_GHZ,obMap(a0)
 		move.b	#$20,obActWid(a0)
-		cmpi.b	#id_SYZ,(v_zone).w ; check if level is SYZ
+		cmpi.b	#id_SYZ,(v_zone).l ; check if level is SYZ
 		bne.s	.notSYZ
 
 		move.l	#Map_Plat_SYZ,obMap(a0) ; SYZ specific code
 		move.b	#$20,obActWid(a0)
 
 .notSYZ:
-		cmpi.b	#id_SLZ,(v_zone).w ; check if level is SLZ
+		cmpi.b	#id_SLZ,(v_zone).l ; check if level is SLZ
 		bne.s	.notSLZ
 		move.l	#Map_Plat_SLZ,obMap(a0) ; SLZ specific code
 		move.b	#$20,obActWid(a0)
@@ -157,7 +157,7 @@ Plat_Move:
 
 .type0C:
 		move.w	objoff_34(a0),d0
-		move.b	(v_oscillate+$E).w,d1 ; load platform-motion variable
+		move.b	(v_oscillate+$E).l,d1 ; load platform-motion variable
 		neg.b	d1		; reverse platform-motion
 		addi.b	#$30,d1
 		bra.s	.type02_move
@@ -165,7 +165,7 @@ Plat_Move:
 
 .type0B:
 		move.w	objoff_34(a0),d0
-		move.b	(v_oscillate+$E).w,d1 ; load platform-motion variable
+		move.b	(v_oscillate+$E).l,d1 ; load platform-motion variable
 		subi.b	#$30,d1
 		bra.s	.type02_move
 ; ===========================================================================
@@ -233,7 +233,7 @@ Plat_Move:
 		add.l	d0,d3
 		move.l	d3,objoff_2C(a0)
 		addi.w	#$38,obVelY(a0)
-		move.w	(v_limitbtm2).w,d0
+		move.w	(v_limitbtm2).l,d0
 		addi.w	#$E0,d0
 		cmp.w	objoff_2C(a0),d0
 		bhs.s	.locret_8074
@@ -246,7 +246,7 @@ Plat_Move:
 .type07:
 		tst.w	objoff_3A(a0)		; is time delay	set?
 		bne.s	.type07_wait	; if yes, branch
-		lea	(f_switch).w,a2	; load switch statuses
+		lea	(f_switch).l,a2	; load switch statuses
 		moveq	#0,d0
 		move.b	obSubtype(a0),d0 ; move object type ($x7) to d0
 		lsr.w	#4,d0		; divide d0 by 8, round	down
@@ -286,7 +286,7 @@ Plat_Move:
 		move.w	d0,objoff_2C(a0)	; change position on y-axis
 
 .chgmotion:
-		move.b	(v_oscillate+$1A).w,objoff_26(a0) ; update platform-movement variable
+		move.b	(v_oscillate+$1A).l,objoff_26(a0) ; update platform-movement variable
 		rts	
 ; ===========================================================================
 
