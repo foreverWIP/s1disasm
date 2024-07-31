@@ -3,6 +3,7 @@
 ; ---------------------------------------------------------------------------
 
 EndChaos:
+		if MMD_Is_Ending
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	ECha_Index(pc,d0.w),d1
@@ -82,4 +83,5 @@ ECha_Rise:
 		subq.w	#1,echa_origY(a0) ; make circle rise
 
 ECha_End:
+		endif
 		rts	

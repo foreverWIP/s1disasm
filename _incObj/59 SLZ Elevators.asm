@@ -7,6 +7,7 @@ elev_origY = objoff_30		; original y-axis position
 elev_dist = objoff_3C		; distance to move (2 bytes)
 
 Elevator:
+		if MMD_Is_SLZ
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	Elev_Index(pc,d0.w),d1
@@ -249,4 +250,5 @@ Elev_MakeMulti:	; Routine 6
 .chkdel:
 		addq.l	#4,sp
 		out_of_range.w	DeleteObject
+		endif
 		rts	

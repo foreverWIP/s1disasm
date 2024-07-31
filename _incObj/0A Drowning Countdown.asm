@@ -4,6 +4,7 @@
 ; ---------------------------------------------------------------------------
 
 DrownCount:
+		if MMD_Is_LZ
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	Drown_Index(pc,d0.w),d1
@@ -150,6 +151,7 @@ Drown_ShowNumber:
 
 .nonumber:
 		rts	
+		endif
 ; ===========================================================================
 Drown_WobbleData:
 		if Revision=0
@@ -180,7 +182,7 @@ Drown_WobbleData:
 		dc.b -3, -3, -3, -3, -3, -3, -2, -2, -2, -2, -2, -1, -1, -1, -1, -1
 		endif
 ; ===========================================================================
-
+		if MMD_Is_LZ
 Drown_Countdown:; Routine $A
 		tst.w	objoff_2C(a0)
 		bne.w	.loc_13F86
@@ -336,3 +338,4 @@ Drown_Countdown:; Routine $A
 
 .nocountdown:
 		rts	
+		endif

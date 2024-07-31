@@ -3,6 +3,7 @@
 ; ---------------------------------------------------------------------------
 
 ChainStomp:
+		if MMD_Is_MZ
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	CStom_Index(pc,d0.w),d1
@@ -301,3 +302,6 @@ loc_B98C:
 
 loc_B996:
 		bra.w	CStom_Restart
+		else
+		rts
+		endif

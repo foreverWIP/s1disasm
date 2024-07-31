@@ -3,6 +3,7 @@
 ; ---------------------------------------------------------------------------
 
 Conveyor:
+		if MMD_Is_SBZ
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	Conv_Index(pc,d0.w),d1
@@ -61,4 +62,5 @@ Conv_Action:	; Routine 2
 		add.w	d0,obX(a1)
 
 .notonconveyor:
+		endif
 		rts	

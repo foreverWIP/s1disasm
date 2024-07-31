@@ -7,6 +7,7 @@ EggmanCylinder_Delete:
 ; ===========================================================================
 
 EggmanCylinder:
+		if MMD_Is_FZ
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	EggmanCylinder_Index(pc,d0.w),d0
@@ -201,4 +202,5 @@ loc_1A656:
 		clr.b	objoff_29(a0)
 
 locret_1A674:
+		endif
 		rts	

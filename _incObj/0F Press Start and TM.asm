@@ -3,6 +3,7 @@
 ; ---------------------------------------------------------------------------
 
 PSBTM:
+		if MMD_Is_Title
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	PSB_Index(pc,d0.w),d1
@@ -38,3 +39,6 @@ PSB_Exit:	; Routine 4
 PSB_PrsStart:	; Routine 2
 		lea	(Ani_PSBTM).l,a1
 		bra.w	AnimateSprite	; "PRESS START" is animated
+		else
+		rts
+		endif

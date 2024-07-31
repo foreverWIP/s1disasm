@@ -3,6 +3,7 @@
 ; ---------------------------------------------------------------------------
 
 LZWaterFeatures:
+		if MMD_Is_LZ
 		cmpi.b	#id_LZ,(v_zone).l ; check if level is LZ
 		bne.s	.notlabyrinth	; if not, branch
 		if Revision<>0
@@ -456,3 +457,6 @@ Slide_Chunks:
 ; byte_3FCF
 Slide_Chunks_End
 		even
+		else
+		rts
+		endif

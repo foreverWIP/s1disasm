@@ -268,6 +268,7 @@ PLC_Warpend:
 ; Pattern load cues - special stage
 ; ---------------------------------------------------------------------------
 PLC_SpecialStage:	dc.w ((PLC_SpeStageend-PLC_SpecialStage-2)/6)-1
+		if MMD_Is_SS
 		plcm	Nem_SSBgCloud,  ArtTile_SS_Background_Clouds ; bubble and cloud background
 		plcm	Nem_SSBgFish,   ArtTile_SS_Background_Fish   ; bird and fish background
 		plcm	Nem_SSWalls,    ArtTile_SS_Wall              ; walls
@@ -285,11 +286,14 @@ PLC_SpecialStage:	dc.w ((PLC_SpeStageend-PLC_SpecialStage-2)/6)-1
 		plcm	Nem_SSZone1,    ArtTile_SS_Zone_1            ; ZONE 1 block
 		plcm	Nem_SSZone2,    ArtTile_SS_Zone_2            ; ZONE 2 block
 		plcm	Nem_SSZone3,    ArtTile_SS_Zone_3            ; ZONE 3 block
+		endif
 PLC_SpeStageend:
 		; Unused
+		if MMD_Is_SS
 		plcm	Nem_SSZone4,    ArtTile_SS_Zone_4            ; ZONE 4 block
 		plcm	Nem_SSZone5,    ArtTile_SS_Zone_5            ; ZONE 5 block
 		plcm	Nem_SSZone6,    ArtTile_SS_Zone_6            ; ZONE 6 block
+		endif
 ; ---------------------------------------------------------------------------
 ; Pattern load cues - GHZ animals
 ; ---------------------------------------------------------------------------
@@ -336,8 +340,10 @@ PLC_SBZAnimalsend:
 ; Pattern load cues - special stage results screen
 ; ---------------------------------------------------------------------------
 PLC_SSResult:dc.w ((PLC_SpeStResultend-PLC_SSResult-2)/6)-1
+		if MMD_Is_SS
 		plcm	Nem_ResultEm,  ArtTile_SS_Results_Emeralds ; emeralds
 		plcm	Nem_MiniSonic, ArtTile_Mini_Sonic          ; mini Sonic
+		endif
 PLC_SpeStResultend:
 ; ---------------------------------------------------------------------------
 ; Pattern load cues - ending sequence

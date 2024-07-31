@@ -3,6 +3,7 @@
 ; ---------------------------------------------------------------------------
 
 LavaBall:
+		if MMD_Is_MZ||MMD_Is_SLZ
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	LBall_Index(pc,d0.w),d1
@@ -164,3 +165,6 @@ LBall_Type08:
 
 LBall_Delete:
 		bra.w	DeleteObject
+		else
+		rts
+		endif

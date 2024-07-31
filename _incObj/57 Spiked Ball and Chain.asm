@@ -3,6 +3,7 @@
 ; ---------------------------------------------------------------------------
 
 SpikeBall:
+		if MMD_Is_SYZ||MMD_Is_LZ
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	SBall_Index(pc,d0.w),d1
@@ -170,3 +171,6 @@ SBall_Move:	; Routine 2
 
 SBall_Display:	; Routine 4
 		bra.w	DisplaySprite
+		else
+		rts
+		endif

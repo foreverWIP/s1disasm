@@ -3,6 +3,7 @@
 ; ---------------------------------------------------------------------------
 
 Basaran:
+		if MMD_Is_MZ
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	Bas_Index(pc,d0.w),d1
@@ -166,4 +167,5 @@ Bas_Action:	; Routine 2
 		bsr.w	DisplaySprite
 		tst.b	obRender(a0)
 		bpl.w	DeleteObject
+		endif
 		rts	

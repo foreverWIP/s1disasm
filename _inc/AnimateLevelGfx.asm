@@ -31,9 +31,8 @@ AniArt_Index:	dc.w AniArt_GHZ-AniArt_Index, AniArt_none-AniArt_Index
 ; ---------------------------------------------------------------------------
 
 AniArt_GHZ:
-
+		if MMD_Is_GHZ
 AniArt_GHZ_Waterfall:
-
 .size		= 8	; number of tiles per frame
 
 		subq.b	#1,(v_lani0_time).l ; decrement timer
@@ -102,6 +101,7 @@ AniArt_GHZ_Smallflower:
 		bsr.w	LoadTiles
 
 .end:
+		endif
 		rts	
 
 .sequence:	dc.b 0,	1, 2, 1
@@ -111,7 +111,7 @@ AniArt_GHZ_Smallflower:
 ; ---------------------------------------------------------------------------
 
 AniArt_MZ:
-
+		if MMD_Is_MZ
 AniArt_MZ_Lava:
 
 .size		= 8	; number of tiles per frame
@@ -188,6 +188,7 @@ AniArt_MZ_Torch:
 		bra.w	LoadTiles
 
 .end:
+		endif
 		rts	
 ; ===========================================================================
 ; ---------------------------------------------------------------------------
@@ -195,7 +196,7 @@ AniArt_MZ_Torch:
 ; ---------------------------------------------------------------------------
 
 AniArt_SBZ:
-
+		if MMD_Is_SBZ
 .size		= 12	; number of tiles per frame
 
 		tst.b	(v_lani2_frame).l
@@ -266,6 +267,7 @@ AniArt_SBZ:
 ; ===========================================================================
 
 .end:
+		endif
 		rts	
 ; ===========================================================================
 ; ---------------------------------------------------------------------------
@@ -273,7 +275,7 @@ AniArt_SBZ:
 ; ---------------------------------------------------------------------------
 
 AniArt_Ending:
-
+		if MMD_Is_Ending
 AniArt_Ending_BigFlower:
 
 .size		= 16	; number of tiles per frame
@@ -371,6 +373,7 @@ AniArt_Ending_Flower4:
 ; ===========================================================================
 
 .end:
+		endif
 		rts	
 ; ===========================================================================
 
@@ -403,6 +406,7 @@ LoadTiles:
 ; End of function LoadTiles
 
 ; ===========================================================================
+		if MMD_Is_MZ
 ; ---------------------------------------------------------------------------
 ; Animated pattern routine - more Marble Zone
 ; ---------------------------------------------------------------------------
@@ -551,6 +555,7 @@ loc_1C4FA:
 		lea	$10(a1),a1
 		dbf	d1,loc_1C4FA
 		rts	
+		endif
 
 ; ---------------------------------------------------------------------------
 ; Animated pattern routine - giant ring

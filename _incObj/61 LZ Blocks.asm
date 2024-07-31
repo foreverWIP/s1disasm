@@ -3,6 +3,7 @@
 ; ---------------------------------------------------------------------------
 
 LabyrinthBlock:
+		if MMD_Is_LZ
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	LBlk_Index(pc,d0.w),d1
@@ -205,4 +206,5 @@ loc_121A6:
 		move.w	d0,obY(a0)
 
 locret_121C0:
+		endif
 		rts	

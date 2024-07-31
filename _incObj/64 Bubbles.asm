@@ -3,6 +3,7 @@
 ; ---------------------------------------------------------------------------
 
 Bubble:
+		if MMD_Is_LZ||MMD_Is_SBZ_3
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	Bub_Index(pc,d0.w),d1
@@ -248,4 +249,5 @@ Bub_ChkSonic:
 
 .loc_12998:
 		moveq	#0,d0
+		endif
 		rts	

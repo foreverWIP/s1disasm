@@ -3,6 +3,7 @@
 ; ---------------------------------------------------------------------------
 
 Teleport:
+		if MMD_Is_SBZ
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	Tele_Index(pc,d0.w),d1
@@ -239,3 +240,6 @@ Tele_Data:	dc.w .type00-Tele_Data, .type01-Tele_Data, .type02-Tele_Data
 		dc.w $14A4, $FF98, $1494
 		dc.w $FF70, $1494, $FD90
 .type07:	dc.w 4,	$894, $90
+		else
+		rts
+		endif

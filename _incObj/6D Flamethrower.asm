@@ -3,6 +3,7 @@
 ; ---------------------------------------------------------------------------
 
 Flamethrower:
+		if MMD_Is_SBZ
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	Flame_Index(pc,d0.w),d1
@@ -57,3 +58,6 @@ loc_E57A:
 Flame_ChkDel:
 		out_of_range.w	DeleteObject
 		bra.w	DisplaySprite
+		else
+		rts
+		endif

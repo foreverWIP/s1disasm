@@ -3,6 +3,7 @@
 ; ---------------------------------------------------------------------------
 
 FalseFloor:
+		if MMD_Is_SBZ
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	FFloor_Index(pc,d0.w),d1
@@ -160,3 +161,6 @@ FFloor_FragPos:	dc.w -8, -8
 		dc.w $10, 0
 		dc.w 0,	$10
 		dc.w $10, $10
+		else
+		rts
+		endif

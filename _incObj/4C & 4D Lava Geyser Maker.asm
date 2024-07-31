@@ -3,6 +3,7 @@
 ; ---------------------------------------------------------------------------
 
 GeyserMaker:
+		if MMD_Is_MZ
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	GMake_Index(pc,d0.w),d1
@@ -118,6 +119,7 @@ GMake_Delete:	; Routine $A
 		; double-delete and display-and-delete bugs.
 		out_of_range.w	DeleteObject
 	endif
+		endif
 		rts	
 
 
@@ -126,6 +128,7 @@ GMake_Delete:	; Routine $A
 ; ---------------------------------------------------------------------------
 
 LavaGeyser:
+		if MMD_Is_MZ
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	Geyser_Index(pc,d0.w),d1
@@ -299,3 +302,6 @@ loc_F04C:
 
 Geyser_Delete:	; Routine 6
 		bra.w	DeleteObject
+		else
+		rts
+		endif

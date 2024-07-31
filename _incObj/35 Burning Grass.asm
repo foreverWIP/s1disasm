@@ -4,6 +4,7 @@
 ; ---------------------------------------------------------------------------
 
 GrassFire:
+		if MMD_Is_MZ
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	GFire_Index(pc,d0.w),d1
@@ -78,3 +79,6 @@ GFire_Animate:
 		lea	(Ani_GFire).l,a1
 		bsr.w	AnimateSprite
 		bra.w	DisplaySprite
+		else
+		rts
+		endif

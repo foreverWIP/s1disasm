@@ -3,6 +3,7 @@
 ; ---------------------------------------------------------------------------
 
 BossMarble:
+		if MMD_Is_MZ
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	BossMarble_Index(pc,d0.w),d1
@@ -445,3 +446,6 @@ loc_18688:
 
 BossMarble_TubeDel:
 		jmp	(DeleteObject).l
+		else
+		rts
+		endif

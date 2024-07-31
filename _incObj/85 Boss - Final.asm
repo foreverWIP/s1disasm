@@ -7,6 +7,7 @@ BossFinal_Delete:
 ; ===========================================================================
 
 BossFinal:
+		if MMD_Is_FZ
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	BossFinal_Index(pc,d0.w),d0
@@ -581,3 +582,6 @@ loc_1A3AC:	; Routine $C
 
 loc_1A3D0:
 		bra.w	loc_1A2A6
+		else
+		rts
+		endif

@@ -3,6 +3,7 @@
 ; ---------------------------------------------------------------------------
 
 WaterSound:
+		if MMD_Is_GHZ
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	WSnd_Index(pc,d0.w),d1
@@ -25,4 +26,5 @@ WSnd_PlaySnd:	; Routine 2
 
 WSnd_ChkDel:
 		out_of_range.w	DeleteObject
+		endif
 		rts	

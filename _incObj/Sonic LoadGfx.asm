@@ -6,6 +6,7 @@
 
 
 Sonic_LoadGfx:
+		if MMD_Has_Sonic
 		moveq	#0,d0
 		move.b	obFrame(a0),d0	; load frame number
 		cmp.b	(v_sonframenum).l,d0 ; has frame changed?
@@ -42,6 +43,7 @@ Sonic_LoadGfx:
 		dbf	d1,.readentry	; repeat for number of entries
 
 .nochange:
+		endif
 		rts	
 
 ; End of function Sonic_LoadGfx

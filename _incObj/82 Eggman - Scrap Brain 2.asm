@@ -3,6 +3,7 @@
 ; ---------------------------------------------------------------------------
 
 ScrapEggman:
+		if MMD_Is_SBZ_2
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	SEgg_Index(pc,d0.w),d1
@@ -160,3 +161,6 @@ loc_199E6:
 
 SEgg_SwDisplay:
 		jmp	(DisplaySprite).l
+		else
+		rts
+		endif

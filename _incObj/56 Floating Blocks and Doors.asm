@@ -3,6 +3,7 @@
 ; ---------------------------------------------------------------------------
 
 FloatingBlock:
+		if MMD_Is_SYZ||MMD_Is_SLZ||MMD_Is_LZ
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	FBlock_Index(pc,d0.w),d1
@@ -499,4 +500,5 @@ FBlock_Action:	; Routine 2
 		neg.w	d1
 		add.w	fb_origX(a0),d1
 		move.w	d1,obX(a0)
+		endif
 		rts	

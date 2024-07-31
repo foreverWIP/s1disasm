@@ -3,6 +3,7 @@
 ; ---------------------------------------------------------------------------
 
 Bomb:
+		if MMD_Is_SLZ||MMD_Is_SBZ
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	Bom_Index(pc,d0.w),d1
@@ -196,3 +197,6 @@ Bom_End:	; Routine 6
 		bra.w	DisplaySprite
 ; ===========================================================================
 Bom_ShrSpeed:	dc.w -$200, -$300, -$100, -$200, $200, -$300, $100, -$200
+		else
+		rts
+		endif

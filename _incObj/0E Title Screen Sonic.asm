@@ -3,6 +3,7 @@
 ; ---------------------------------------------------------------------------
 
 TitleSonic:
+		if MMD_Is_Title
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	TSon_Index(pc,d0.w),d1
@@ -51,5 +52,5 @@ TSon_Animate:	; Routine 6
 		lea	(Ani_TSon).l,a1
 		bsr.w	AnimateSprite
 		bra.w	DisplaySprite
-
+		endif
 		rts	

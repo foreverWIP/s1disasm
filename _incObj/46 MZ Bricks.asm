@@ -3,6 +3,7 @@
 ; ---------------------------------------------------------------------------
 
 MarbleBrick:
+		if MMD_Is_MZ
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	Brick_Index(pc,d0.w),d1
@@ -119,4 +120,5 @@ Brick_Type04:
 		move.w	brick_origY(a0),d1
 		sub.w	d0,d1
 		move.w	d1,obY(a0)	; make the block wobble
+		endif
 		rts	

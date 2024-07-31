@@ -3,6 +3,7 @@
 ; ---------------------------------------------------------------------------
 
 Jaws:
+		if MMD_Is_LZ||MMD_Is_SBZ_3
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	Jaws_Index(pc,d0.w),d1
@@ -47,3 +48,6 @@ Jaws_Turn:	; Routine 2
 		bsr.w	AnimateSprite
 		bsr.w	SpeedToPos
 		bra.w	RememberState
+		else
+		rts
+		endif

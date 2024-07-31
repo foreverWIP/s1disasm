@@ -3,6 +3,7 @@
 ; ---------------------------------------------------------------------------
 
 BossBall:
+		if MMD_Is_GHZ
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	GBall_Index(pc,d0.w),d1
@@ -167,3 +168,6 @@ GBall_Vanish:
 
 GBall_Display4:
 		jmp	(DisplaySprite).l
+		else
+		rts
+		endif

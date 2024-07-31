@@ -3,6 +3,7 @@
 ; ---------------------------------------------------------------------------
 
 LabyrinthConvey:
+		if MMD_Is_LZ
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	LCon_Index(pc,d0.w),d1
@@ -216,9 +217,9 @@ loc_12552:
 
 loc_1256A:
 		bsr.w	SpeedToPos
+		endif
 		rts	
 ; End of function sub_12502
-
 
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
 

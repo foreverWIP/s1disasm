@@ -3,6 +3,7 @@
 ; ---------------------------------------------------------------------------
 
 BossBlock:
+		if MMD_Is_SYZ
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	BossBlock_Index(pc,d0.w),d1
@@ -153,3 +154,6 @@ BossBlock_FragPos:
 		dc.w $10, 0
 		dc.w 0,	$10
 		dc.w $10, $10
+		else
+		rts
+		endif

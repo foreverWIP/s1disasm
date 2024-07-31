@@ -55,10 +55,12 @@ local mmd_names = {
 	"CREDITS",
 }
 local build_file = function(k, v, mmd_format)
-	print("Assembling " .. v .. "...")
 	local out_name = "build/md/" .. v
 	if mmd_format then
+		print("Assembling " .. v .. " for Mega CD...")
 		out_name = "build/mmd/" .. v
+	else
+		print("Assembling " .. v .. " for Mega Drive...")
 	end
 	local mmd_enabled = 0
 	if mmd_format then

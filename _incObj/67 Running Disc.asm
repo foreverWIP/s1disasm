@@ -3,6 +3,7 @@
 ; ---------------------------------------------------------------------------
 
 RunningDisc:
+		if MMD_Is_SBZ
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	Disc_Index(pc,d0.w),d1
@@ -160,3 +161,6 @@ Disc_ChkDel:
 
 .delete:
 		jmp	(DeleteObject).l
+		else
+		rts
+		endif

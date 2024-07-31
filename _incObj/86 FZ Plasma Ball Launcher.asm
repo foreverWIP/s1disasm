@@ -3,6 +3,7 @@
 ; ---------------------------------------------------------------------------
 
 BossPlasma:
+		if MMD_Is_FZ
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	BossPlasma_Index(pc,d0.w),d0
@@ -199,3 +200,7 @@ loc_1AA34:
 		addq.l	#4,sp
 	endif
 		bra.w	EggmanCylinder_Delete
+
+		else
+		rts
+		endif

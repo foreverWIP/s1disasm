@@ -3,6 +3,7 @@
 ; ---------------------------------------------------------------------------
 
 EdgeWalls:
+		if MMD_Is_GHZ
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	Edge_Index(pc,d0.w),d1
@@ -43,3 +44,6 @@ Edge_Display:	; Routine 4
 		out_of_range.w	DeleteObject
 		rts
 	endif
+		else
+		rts
+		endif

@@ -3,6 +3,7 @@
 ; ---------------------------------------------------------------------------
 
 Girder:
+		if MMD_Is_SBZ
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	Gird_Index(pc,d0.w),d1
@@ -81,3 +82,6 @@ Gird_ChgMove:
 		dc.w	  0,  $100,   $30,     0 ; down
 		dc.w  -$100,  -$40,   $60,     0 ; up/left
 		dc.w	  0, -$100,   $18,     0 ; up
+		else
+		rts
+		endif

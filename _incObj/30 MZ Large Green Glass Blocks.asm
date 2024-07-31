@@ -3,6 +3,7 @@
 ; ---------------------------------------------------------------------------
 
 GlassBlock:
+		if MMD_Is_MZ
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	Glass_Index(pc,d0.w),d1
@@ -239,4 +240,5 @@ loc_B5EE:
 		move.w	objoff_30(a0),d1
 		sub.w	d0,d1
 		move.w	d1,obY(a0)
+		endif
 		rts	

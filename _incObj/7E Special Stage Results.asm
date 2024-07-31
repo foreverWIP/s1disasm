@@ -3,6 +3,7 @@
 ; ---------------------------------------------------------------------------
 
 SSResult:
+		if MMD_Is_SS
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	SSR_Index(pc,d0.w),d1
@@ -165,3 +166,6 @@ SSR_Config:	dc.w $20, $120,	$C4	; start	x-pos, main x-pos, y-pos
 		dc.b 2,	3
 		dc.w $3A0, $120, $138
 		dc.b 2,	6
+		else
+		rts
+		endif

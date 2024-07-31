@@ -3,6 +3,7 @@
 ; ---------------------------------------------------------------------------
 
 Crabmeat:
+		if MMD_Is_GHZ||MMD_Is_SYZ
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	Crab_Index(pc,d0.w),d1
@@ -224,4 +225,7 @@ Crab_BallMove:	; Routine 8
 
 .delete:
 		bra.w	DeleteObject
+	endif
+	else
+	rts
 	endif

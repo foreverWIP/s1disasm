@@ -3,6 +3,7 @@
 ; ---------------------------------------------------------------------------
 
 BasicPlatform:
+		if MMD_Is_GHZ||MMD_Is_SYZ||MMD_Is_SLZ
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	Plat_Index(pc,d0.w),d1
@@ -297,3 +298,6 @@ Plat_ChkDel:
 
 Plat_Delete:	; Routine 6
 		bra.w	DeleteObject
+		else
+		rts
+		endif

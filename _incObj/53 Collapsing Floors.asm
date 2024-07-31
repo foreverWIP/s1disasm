@@ -3,6 +3,7 @@
 ; ---------------------------------------------------------------------------
 
 CollapseFloor:
+		if MMD_Is_MZ||MMD_Is_SLZ||MMD_Is_SBZ
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	CFlo_Index(pc,d0.w),d1
@@ -135,3 +136,6 @@ loc_846C:
 		moveq	#7,d1
 		addq.b	#1,obFrame(a0)
 		bra.s	loc_8486
+		else
+		rts
+		endif

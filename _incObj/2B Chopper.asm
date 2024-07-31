@@ -3,6 +3,7 @@
 ; ---------------------------------------------------------------------------
 
 Chopper:
+		if MMD_Is_GHZ
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	Chop_Index(pc,d0.w),d1
@@ -48,4 +49,5 @@ Chop_ChgSpeed:	; Routine 2
 		move.b	#2,obAnim(a0)	; use stationary animation
 
 .nochg:
+		endif
 		rts

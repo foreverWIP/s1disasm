@@ -3,6 +3,7 @@
 ; ---------------------------------------------------------------------------
 
 MovingBlock:
+		if MMD_Is_MZ||MMD_Is_LZ||MMD_Is_SBZ
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	MBlock_Index(pc,d0.w),d1
@@ -248,4 +249,5 @@ MBlock_0A_Back:
 MBlock_0A_Reset:
 		clr.w	objoff_36(a0)
 		subq.b	#1,obSubtype(a0)
+		endif
 		rts	

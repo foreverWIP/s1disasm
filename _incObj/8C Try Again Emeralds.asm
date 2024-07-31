@@ -3,6 +3,7 @@
 ; ---------------------------------------------------------------------------
 
 TryChaos:
+		if MMD_Is_Credits
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	TCha_Index(pc,d0.w),d1
@@ -97,4 +98,5 @@ loc_5B96:
 		move.w	d0,obScreenY(a0)
 
 locret_5BBA:
+		endif
 		rts	

@@ -3,6 +3,7 @@
 ; ---------------------------------------------------------------------------
 
 LargeGrass:
+		if MMD_Is_MZ
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	LGrass_Index(pc,d0.w),d1
@@ -282,3 +283,6 @@ LGrass_Data2:	binclude	"misc/mz_pfm2.bin"
 		even
 LGrass_Data3:	binclude	"misc/mz_pfm3.bin"
 		even
+		else
+		rts
+		endif

@@ -151,7 +151,9 @@ EndOfHeader:
 		MMD 0,WORDRAM2M,0,EntryPoint,HBlank,VBlank
 		endif
 
+		if ~~MMD_Enabled
 		include "_debugger/DebuggerBlob.asm"
+		endif
 
 ; ===========================================================================
 
@@ -299,7 +301,9 @@ zStartupCodeEndLoc:
 	restore
     padding off ; unfortunately our flags got reset so we have to set them again...
     else ; due to an address range limitation I could work around but don't think is worth doing so:
+	if MOMPASS==2
 	message "Warning: using pre-assembled Z80 startup code."
+	endif
 	dc.w $AF01,$D91F,$1127,$0021,$2600,$F977,$EDB0,$DDE1,$FDE1,$ED47,$ED4F,$D1E1,$F108,$D9C1,$D1E1,$F1F9,$F3ED,$5636,$E9E9
     endif
 
@@ -1603,109 +1607,6 @@ WhiteOut_AddColour:
 		addq.w	#2,a0
 		rts	
 ; End of function WhiteOut_AddColour
-
-; ---------------------------------------------------------------------------
-; Palette cycling routine - Sega logo
-; ---------------------------------------------------------------------------
-
-; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
-
-
-PalCycle_Sega:
-		tst.b	(v_pcyc_time+1).l
-		bne.s	loc_206A
-		lea	(v_palette+$20).l,a1
-		lea	(Pal_Sega1).l,a0
-		moveq	#5,d1
-		move.w	(v_pcyc_num).l,d0
-
-loc_2020:
-		bpl.s	loc_202A
-		addq.w	#2,a0
-		subq.w	#1,d1
-		addq.w	#2,d0
-		bra.s	loc_2020
-; ===========================================================================
-
-loc_202A:
-		move.w	d0,d2
-		andi.w	#$1E,d2
-		bne.s	loc_2034
-		addq.w	#2,d0
-
-loc_2034:
-		cmpi.w	#$60,d0
-		bhs.s	loc_203E
-		move.w	(a0)+,(a1,d0.w)
-
-loc_203E:
-		addq.w	#2,d0
-		dbf	d1,loc_202A
-
-		move.w	(v_pcyc_num).l,d0
-		addq.w	#2,d0
-		move.w	d0,d2
-		andi.w	#$1E,d2
-		bne.s	loc_2054
-		addq.w	#2,d0
-
-loc_2054:
-		cmpi.w	#$64,d0
-		blt.s	loc_2062
-		move.w	#$401,(v_pcyc_time).l
-		moveq	#-$C,d0
-
-loc_2062:
-		move.w	d0,(v_pcyc_num).l
-		moveq	#1,d0
-		rts	
-; ===========================================================================
-
-loc_206A:
-		subq.b	#1,(v_pcyc_time).l
-		bpl.s	loc_20BC
-		move.b	#4,(v_pcyc_time).l
-		move.w	(v_pcyc_num).l,d0
-		addi.w	#$C,d0
-		cmpi.w	#$30,d0
-		blo.s	loc_2088
-		moveq	#0,d0
-		rts	
-; ===========================================================================
-
-loc_2088:
-		move.w	d0,(v_pcyc_num).l
-		lea	(Pal_Sega2).l,a0
-		lea	(a0,d0.w),a0
-		lea	(v_palette+$04).l,a1
-		move.l	(a0)+,(a1)+
-		move.l	(a0)+,(a1)+
-		move.w	(a0)+,(a1)
-		lea	(v_palette+$20).l,a1
-		moveq	#0,d0
-		moveq	#$2C,d1
-
-loc_20A8:
-		move.w	d0,d2
-		andi.w	#$1E,d2
-		bne.s	loc_20B2
-		addq.w	#2,d0
-
-loc_20B2:
-		move.w	(a0),(a1,d0.w)
-		addq.w	#2,d0
-		dbf	d1,loc_20A8
-
-loc_20BC:
-		moveq	#1,d0
-		rts	
-; End of function PalCycle_Sega
-
-; ===========================================================================
-
-Pal_Sega1:	binclude	"palette/Sega1.bin"
-Pal_Sega2:	binclude	"palette/Sega2.bin"
-
 ; ---------------------------------------------------------------------------
 ; Subroutines to load palettes
 
@@ -1718,10 +1619,13 @@ Pal_Sega2:	binclude	"palette/Sega2.bin"
 
 PalLoad_Fade:
 		lea	(PalPointers).l,a1
-		mulu.w	#10,d0
+		lsl.w	#3,d0
 		adda.w	d0,a1
 		movea.l	(a1)+,a2	; get palette data address
 		movea.w	(a1)+,a3	; get target RAM address
+		if MMD_Enabled
+		adda.l	$230000,a3
+		endif
 		adda.w	#v_palette_fading-v_palette,a3		; skip to "main" RAM address
 		move.w	(a1)+,d7	; get length of palette data
 
@@ -1737,10 +1641,13 @@ PalLoad_Fade:
 
 PalLoad:
 		lea	(PalPointers).l,a1
-		mulu.w	#10,d0
+		lsl.w	#3,d0
 		adda.w	d0,a1
 		movea.l	(a1)+,a2	; get palette data address
 		movea.w	(a1)+,a3	; get target RAM address
+		if MMD_Enabled
+		adda.l	$230000,a3
+		endif
 		move.w	(a1)+,d7	; get length of palette
 
 .loop:
@@ -1758,10 +1665,13 @@ PalLoad:
 
 PalLoad_Fade_Water:
 		lea	(PalPointers).l,a1
-		mulu.w	#10,d0
+		lsl.w	#3,d0
 		adda.w	d0,a1
 		movea.l	(a1)+,a2	; get palette data address
 		movea.w	(a1)+,a3	; get target RAM address
+		if MMD_Enabled
+		adda.l	$230000,a3
+		endif
 		suba.w	#v_palette-v_palette_water,a3		; skip to "main" RAM address
 		move.w	(a1)+,d7	; get length of palette data
 
@@ -1777,10 +1687,13 @@ PalLoad_Fade_Water:
 
 PalLoad_Water:
 		lea	(PalPointers).l,a1
-		mulu.w	#10,d0
+		lsl.w	#3,d0
 		adda.w	d0,a1
 		movea.l	(a1)+,a2	; get palette data address
 		movea.w	(a1)+,a3	; get target RAM address
+		if MMD_Enabled
+		adda.l	$230000,a3
+		endif
 		suba.w	#v_palette-v_palette_water_fading,a3
 		move.w	(a1)+,d7	; get length of palette data
 
@@ -1852,80 +1765,8 @@ WaitForVBla:
 ; ---------------------------------------------------------------------------
 
 GM_Sega:
-		move.b	#bgm_Stop,d0
-		bsr.w	PlaySound_Special ; stop music
-		bsr.w	ClearPLC
-		bsr.w	PaletteFadeOut
-		lea	(vdp_control_port).l,a6
-		move.w	#$8004,(a6)	; use 8-colour mode
-		move.w	#$8200+(vram_fg>>10),(a6) ; set foreground nametable address
-		move.w	#$8400+(vram_bg>>13),(a6) ; set background nametable address
-		move.w	#$8700,(a6)	; set background colour (palette entry 0)
-		move.w	#$8B00,(a6)	; full-screen vertical scrolling
-		clr.b	(f_wtr_state).l
-		disable_ints
-		move.w	(v_vdp_buffer1).l,d0
-		andi.b	#$BF,d0
-		move.w	d0,(vdp_control_port).l
-		bsr.w	ClearScreen
-		locVRAM	ArtTile_Sega_Tiles*tile_size
-		lea	(Nem_SegaLogo).l,a0 ; load Sega	logo patterns
-		bsr.w	NemDec
-		lea	(v_256x256&$FFFFFF).l,a1
-		lea	(Eni_SegaLogo).l,a0 ; load Sega	logo mappings
-		move.w	#make_art_tile(ArtTile_Sega_Tiles,0,FALSE),d0
-		bsr.w	EniDec
-
-		copyTilemap	v_256x256&$FFFFFF,vram_bg+$510,24,8
-		copyTilemap	(v_256x256+24*8*2)&$FFFFFF,vram_fg,40,28
-
-		if Revision<>0
-			tst.b   (v_megadrive).l	; is console Japanese?
-			bmi.s   .loadpal
-			copyTilemap	(v_256x256+$A40)&$FFFFFF,vram_fg+$53A,3,2 ; hide "TM" with a white rectangle
-		endif
-
-.loadpal:
-		moveq	#palid_SegaBG,d0
-		bsr.w	PalLoad	; load Sega logo palette
-		move.w	#-$A,(v_pcyc_num).l
-		move.w	#0,(v_pcyc_time).l
-		move.w	#0,(v_pal_buffer+$12).l
-		move.w	#0,(v_pal_buffer+$10).l
-		move.w	(v_vdp_buffer1).l,d0
-		ori.b	#$40,d0
-		move.w	d0,(vdp_control_port).l
-
-Sega_WaitPal:
-		move.b	#2,(v_vbla_routine).l
-		bsr.w	WaitForVBla
-		bsr.w	PalCycle_Sega
-		bne.s	Sega_WaitPal
-
-		move.b	#sfx_Sega,d0
-		bsr.w	PlaySound_Special	; play "SEGA" sound
-		move.b	#$14,(v_vbla_routine).l
-		bsr.w	WaitForVBla
-		move.w	#$1E,(v_demolength).l
-
-Sega_WaitEnd:
-		move.b	#2,(v_vbla_routine).l
-		bsr.w	WaitForVBla
-		tst.w	(v_demolength).l
-		beq.s	Sega_GotoTitle
-		andi.b	#btnStart,(v_jpadpress1).l ; is Start button pressed?
-		beq.s	Sega_WaitEnd	; if not, branch
-
-Sega_GotoTitle:
-		move.b	#id_Title,(v_gamemode).l ; go to title screen
-		rts	
-; ===========================================================================
-
-; ---------------------------------------------------------------------------
-; Title	screen
-; ---------------------------------------------------------------------------
-
 GM_Title:
+		if MMD_Is_Title
 		move.b	#bgm_Stop,d0
 		bsr.w	PlaySound_Special ; stop music
 		bsr.w	ClearPLC
@@ -2558,6 +2399,7 @@ LevelMenuText:	if Revision=0
 		binclude	"misc/Level Select Text (JP1).bin"
 		endif
 		even
+		endif
 ; ---------------------------------------------------------------------------
 ; Music	playlist
 ; ---------------------------------------------------------------------------
@@ -2572,7 +2414,6 @@ MusicList:
 		dc.b bgm_FZ	; Ending
 		even
 ; ===========================================================================
-
 ; ---------------------------------------------------------------------------
 ; Level
 ; ---------------------------------------------------------------------------
@@ -2626,6 +2467,7 @@ Level_ClrRam:
 		move.w	#$8720,(a6)		; set background colour (line 3; colour 0)
 		move.w	#$8A00+223,(v_hbla_hreg).l ; set palette change position (for water)
 		move.w	(v_hbla_hreg).l,(a6)
+		if MMD_Is_LZ
 		cmpi.b	#id_LZ,(v_zone).l ; is level LZ?
 		bne.s	Level_LoadPal	; if not, branch
 
@@ -2641,6 +2483,7 @@ Level_ClrRam:
 		clr.b	(v_wtr_routine).l ; clear water routine counter
 		clr.b	(f_wtr_state).l	; clear	water state
 		move.b	#1,(f_water).l	; enable water
+		endif
 
 Level_LoadPal:
 		move.w	#30,(v_air).l
@@ -2702,7 +2545,6 @@ Level_SkipTtlCard:
 		bset	#2,(v_fg_scroll_flags).l
 		bsr.w	LevelDataLoad ; load block mappings and palettes
 		bsr.w	LoadTilesFromStart
-		jsr	(ConvertCollisionArray).l
 		bsr.w	ColIndexLoad
 		bsr.w	LZWaterFeatures
 		move.b	#id_SonicPlayer,(v_player).l ; load Sonic object
@@ -3030,6 +2872,7 @@ Demo_SS:	binclude	"demodata/Intro - Special Stage.bin"
 ; ---------------------------------------------------------------------------
 
 GM_Special:
+		if MMD_Is_SS
 		move.w	#sfx_EnterSS,d0
 		bsr.w	PlaySound_Special ; play special stage entry sound
 		bsr.w	PaletteWhiteOut
@@ -3272,6 +3115,7 @@ loc_491C:
 		copyTilemap	v_ssbuffer1&$FFFFFF,ArtTile_SS_Plane_5*tile_size+plane_size_64x32,64,64
 		rts	
 ; End of function SS_BGLoad
+		endif
 
 ; ---------------------------------------------------------------------------
 ; Palette cycling routine - special stage
@@ -3445,6 +3289,7 @@ Pal_SSCyc1:	binclude	"palette/Cycle - Special Stage 1.bin"
 Pal_SSCyc2:	binclude	"palette/Cycle - Special Stage 2.bin"
 		even
 
+		if MMD_Is_SS
 ; ---------------------------------------------------------------------------
 ; Subroutine to	make the special stage background animated
 ; ---------------------------------------------------------------------------
@@ -3549,12 +3394,14 @@ byte_4CCC:	dc.b 8,	2, 4, $FF, 2, 3, 8, $FF, 4, 2, 2, 3, 8,	$FD, 4,	2, 2, 3, 2, $
 		even
 
 ; ===========================================================================
+		endif
 
 ; ---------------------------------------------------------------------------
 ; Continue screen
 ; ---------------------------------------------------------------------------
 
 GM_Continue:
+		if MMD_Is_Continue
 		bsr.w	PaletteFadeOut
 		disable_ints
 		move.w	(v_vdp_buffer1).l,d0
@@ -3639,18 +3486,23 @@ Cont_GotoLevel:
 		subq.b	#1,(v_continues).l ; subtract 1 from continues
 		rts	
 ; ===========================================================================
-
+		endif
 		include	"_incObj/80 Continue Screen Elements.asm"
 		include	"_incObj/81 Continue Screen Sonic.asm"
+		if MMD_Is_Continue
 		include	"_anim/Continue Screen Sonic.asm"
-Map_ContScr:	include	"_maps/Continue Screen.asm"
-
+		endif
+Map_ContScr:
+		if MMD_Is_Continue
+		include	"_maps/Continue Screen.asm"
+		endif
 ; ===========================================================================
 ; ---------------------------------------------------------------------------
 ; Ending sequence in Green Hill	Zone
 ; ---------------------------------------------------------------------------
 
 GM_Ending:
+		if MMD_Is_Ending
 		move.b	#bgm_Stop,d0
 		bsr.w	PlaySound_Special ; stop music
 		bsr.w	PaletteFadeOut
@@ -3851,18 +3703,30 @@ End_MoveSon3:
 		clr.w	(v_player+obRoutine).l
 
 End_MoveSonExit:
+		endif
 		rts	
 ; End of function End_MoveSonic
 
 ; ===========================================================================
 
 		include	"_incObj/87 Ending Sequence Sonic.asm"
+		if MMD_Is_Ending
 		include "_anim/Ending Sequence Sonic.asm"
+		endif
 		include	"_incObj/88 Ending Sequence Emeralds.asm"
 		include	"_incObj/89 Ending Sequence STH.asm"
-Map_ESon:	include	"_maps/Ending Sequence Sonic.asm"
-Map_ECha:	include	"_maps/Ending Sequence Emeralds.asm"
-Map_ESth:	include	"_maps/Ending Sequence STH.asm"
+Map_ESon:
+		if MMD_Is_Ending
+		include	"_maps/Ending Sequence Sonic.asm"
+		endif
+Map_ECha:
+		if MMD_Is_Ending
+		include	"_maps/Ending Sequence Emeralds.asm"
+		endif
+Map_ESth:
+		if MMD_Is_Ending
+		include	"_maps/Ending Sequence STH.asm"
+		endif
 
 ; ===========================================================================
 ; ---------------------------------------------------------------------------
@@ -3870,6 +3734,7 @@ Map_ESth:	include	"_maps/Ending Sequence STH.asm"
 ; ---------------------------------------------------------------------------
 
 GM_Credits:
+		if MMD_Is_Credits
 		bsr.w	ClearPLC
 		bsr.w	PaletteFadeOut
 		lea	(vdp_control_port).l,a6
@@ -4036,34 +3901,64 @@ TryAg_MainLoop:
 
 TryAg_Exit:
 		move.b	#id_Sega,(v_gamemode).l ; goto Sega screen
+		endif
 		rts	
 
 ; ===========================================================================
 
 		include	"_incObj/8B Try Again & End Eggman.asm"
+		if MMD_Is_Credits
 		include "_anim/Try Again & End Eggman.asm"
+		endif
 		include	"_incObj/8C Try Again Emeralds.asm"
-Map_EEgg:	include	"_maps/Try Again & End Eggman.asm"
+Map_EEgg:
+		if MMD_Is_Credits
+		include	"_maps/Try Again & End Eggman.asm"
+		endif
 
 ; ---------------------------------------------------------------------------
 ; Ending sequence demos
 ; ---------------------------------------------------------------------------
-Demo_EndGHZ1:	binclude	"demodata/Ending - GHZ1.bin"
+Demo_EndGHZ1:
+		if MMD_Is_Credits
+		binclude	"demodata/Ending - GHZ1.bin"
 		even
-Demo_EndMZ:	binclude	"demodata/Ending - MZ.bin"
+		endif
+Demo_EndMZ:
+		if MMD_Is_Credits
+		binclude	"demodata/Ending - MZ.bin"
 		even
-Demo_EndSYZ:	binclude	"demodata/Ending - SYZ.bin"
+		endif
+Demo_EndSYZ:
+		if MMD_Is_Credits
+		binclude	"demodata/Ending - SYZ.bin"
 		even
-Demo_EndLZ:	binclude	"demodata/Ending - LZ.bin"
+		endif
+Demo_EndLZ:
+		if MMD_Is_Credits
+		binclude	"demodata/Ending - LZ.bin"
 		even
-Demo_EndSLZ:	binclude	"demodata/Ending - SLZ.bin"
+		endif
+Demo_EndSLZ:
+		if MMD_Is_Credits
+		binclude	"demodata/Ending - SLZ.bin"
 		even
-Demo_EndSBZ1:	binclude	"demodata/Ending - SBZ1.bin"
+		endif
+Demo_EndSBZ1:
+		if MMD_Is_Credits
+		binclude	"demodata/Ending - SBZ1.bin"
 		even
-Demo_EndSBZ2:	binclude	"demodata/Ending - SBZ2.bin"
+		endif
+Demo_EndSBZ2:
+		if MMD_Is_Credits
+		binclude	"demodata/Ending - SBZ2.bin"
 		even
-Demo_EndGHZ2:	binclude	"demodata/Ending - GHZ2.bin"
+		endif
+Demo_EndGHZ2:
+		if MMD_Is_Credits
+		binclude	"demodata/Ending - GHZ2.bin"
 		even
+		endif
 
 		if Revision=0
 		include	"_inc/LevelSizeLoad & BgScrollSpeed.asm"
@@ -5328,7 +5223,8 @@ locret_75F2:
 ; End of function ExitPlatform
 
 		include	"_incObj/11 Bridge (part 3).asm"
-Map_Bri:	include	"_maps/Bridge.asm"
+Map_Bri:
+		include	"_maps/Bridge.asm"
 
 		include	"_incObj/15 Swinging Platforms (part 1).asm"
 
@@ -5377,17 +5273,37 @@ locret_7B62:
 ; End of function MvSonicOnPtfm2
 
 		include	"_incObj/15 Swinging Platforms (part 2).asm"
-Map_Swing_GHZ:	include	"_maps/Swinging Platforms (GHZ).asm"
-Map_Swing_SLZ:	include	"_maps/Swinging Platforms (SLZ).asm"
+Map_Swing_GHZ:
+		if MMD_Is_GHZ
+		include	"_maps/Swinging Platforms (GHZ).asm"
+		endif
+Map_Swing_SLZ:
+		if MMD_Is_SLZ
+		include	"_maps/Swinging Platforms (SLZ).asm"
+		endif
 		include	"_incObj/17 Spiked Pole Helix.asm"
-Map_Hel:	include	"_maps/Spiked Pole Helix.asm"
+Map_Hel:
+		if MMD_Is_GHZ
+		include	"_maps/Spiked Pole Helix.asm"
+		endif
 		include	"_incObj/18 Platforms.asm"
-Map_Plat_Unused:include	"_maps/Platforms (unused).asm"
-Map_Plat_GHZ:	include	"_maps/Platforms (GHZ).asm"
-Map_Plat_SYZ:	include	"_maps/Platforms (SYZ).asm"
-Map_Plat_SLZ:	include	"_maps/Platforms (SLZ).asm"
+Map_Plat_GHZ:
+		if MMD_Is_GHZ
+		include	"_maps/Platforms (GHZ).asm"
+		endif
+Map_Plat_SYZ:
+		if MMD_Is_SYZ
+		include	"_maps/Platforms (SYZ).asm"
+		endif
+Map_Plat_SLZ:
+		if MMD_Is_SLZ
+		include	"_maps/Platforms (SLZ).asm"
+		endif
 		include	"_incObj/19.asm"
-Map_GBall:	include	"_maps/GHZ Ball.asm"
+Map_GBall:
+		if MMD_Is_GHZ
+		include	"_maps/GHZ Ball.asm"
+		endif
 		include	"_incObj/1A Collapsing Ledge (part 1).asm"
 		include	"_incObj/53 Collapsing Floors.asm"
 
@@ -5495,18 +5411,27 @@ Ledge_SlopeData:
 		binclude	"misc/GHZ Collapsing Ledge Heightmap.bin"
 		even
 
-Map_Ledge:	include	"_maps/Collapsing Ledge.asm"
-Map_CFlo:	include	"_maps/Collapsing Floors.asm"
+Map_Ledge:
+		include	"_maps/Collapsing Ledge.asm"
+Map_CFlo:
+		include	"_maps/Collapsing Floors.asm"
 
 		include	"_incObj/1C Scenery.asm"
-Map_Scen:	include	"_maps/Scenery.asm"
+Map_Scen:
+		include	"_maps/Scenery.asm"
 
 		include	"_incObj/1D Unused Switch.asm"
-Map_Swi:	include	"_maps/Unused Switch.asm"
+Map_Swi:
+		include	"_maps/Unused Switch.asm"
 
 		include	"_incObj/2A SBZ Small Door.asm"
+		if MMD_Is_SBZ
 		include	"_anim/SBZ Small Door.asm"
-Map_ADoor:	include	"_maps/SBZ Small Door.asm"
+		endif
+Map_ADoor:
+		if MMD_Is_SBZ
+		include	"_maps/SBZ Small Door.asm"
+		endif
 
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
 
@@ -5634,9 +5559,17 @@ loc_8B48:
 		include	"_incObj/1E Ball Hog.asm"
 		include	"_incObj/20 Cannonball.asm"
 		include	"_incObj/24, 27 & 3F Explosions.asm"
+		if MMD_Is_SBZ
 		include	"_anim/Ball Hog.asm"
-Map_Hog:	include	"_maps/Ball Hog.asm"
-Map_MisDissolve:include	"_maps/Buzz Bomber Missile Dissolve.asm"
+		endif
+Map_Hog:
+		if MMD_Is_SBZ
+		include	"_maps/Ball Hog.asm"
+		endif
+Map_MisDissolve:
+		if MMD_Is_GHZ||MMD_Is_MZ
+		include	"_maps/Buzz Bomber Missile Dissolve.asm"
+		endif
 		include	"_maps/Explosions.asm"
 
 		include	"_incObj/28 Animals.asm"
@@ -5653,8 +5586,10 @@ Map_Crab:	include	"_maps/Crabmeat.asm"
 		include	"_incObj/23 Buzz Bomber Missile.asm"
 		include	"_anim/Buzz Bomber.asm"
 		include	"_anim/Buzz Bomber Missile.asm"
-Map_Buzz:	include	"_maps/Buzz Bomber.asm"
-Map_Missile:	include	"_maps/Buzz Bomber Missile.asm"
+Map_Buzz:
+		include	"_maps/Buzz Bomber.asm"
+Map_Missile:
+		include	"_maps/Buzz Bomber Missile.asm"
 
 		include	"_incObj/25 & 37 Rings.asm"
 		include	"_incObj/4B Giant Ring.asm"
@@ -5666,8 +5601,10 @@ Map_Ring:	include	"_maps/Rings.asm"
 		else
 Map_Ring:		include	"_maps/Rings (JP1).asm"
 		endif
-Map_GRing:	include	"_maps/Giant Ring.asm"
-Map_Flash:	include	"_maps/Ring Flash.asm"
+Map_GRing:
+		include	"_maps/Giant Ring.asm"
+Map_Flash:
+		include	"_maps/Ring Flash.asm"
 		include	"_incObj/26 Monitor.asm"
 		include	"_incObj/2E Monitor Content Power-Up.asm"
 		include	"_incObj/26 Monitor (SolidSides subroutine).asm"
@@ -5689,17 +5626,31 @@ Map_TSon:	include	"_maps/Title Screen Sonic.asm"
 		include	"_anim/Chopper.asm"
 Map_Chop:	include	"_maps/Chopper.asm"
 		include	"_incObj/2C Jaws.asm"
+		if MMD_Is_LZ||MMD_Is_SBZ_3
 		include	"_anim/Jaws.asm"
-Map_Jaws:	include	"_maps/Jaws.asm"
+		endif
+Map_Jaws:
+		if MMD_Is_LZ||MMD_Is_SBZ_3
+		include	"_maps/Jaws.asm"
+		endif
 		include	"_incObj/2D Burrobot.asm"
+		if MMD_Is_LZ||MMD_Is_SBZ_3
 		include	"_anim/Burrobot.asm"
-Map_Burro:	include	"_maps/Burrobot.asm"
+		endif
+Map_Burro:
+		if MMD_Is_LZ||MMD_Is_SBZ_3
+		include	"_maps/Burrobot.asm"
+		endif
 
 		include	"_incObj/2F MZ Large Grassy Platforms.asm"
 		include	"_incObj/35 Burning Grass.asm"
+		if MMD_Is_MZ
 		include	"_anim/Burning Grass.asm"
 Map_LGrass:	include	"_maps/MZ Large Grassy Platforms.asm"
+			endif
+			if MMD_Is_MZ||MMD_Is_SLZ
 Map_Fire:	include	"_maps/Fireballs.asm"
+			endif
 		include	"_incObj/30 MZ Large Green Glass Blocks.asm"
 Map_Glass:	include	"_maps/MZ Large Green Glass Blocks.asm"
 		include	"_incObj/31 Chained Stompers.asm"
@@ -5737,6 +5688,7 @@ Map_Card:	mappingsTable
 	mappingsTableEntry.w	M_Card_FZ
 
 M_Card_GHZ:	spriteHeader		; GREEN HILL
+	if MMD_Is_GHZ
 	spritePiece	-$4C, -8, 2, 2, $18, 0, 0, 0, 0
 	spritePiece	-$3C, -8, 2, 2, $3A, 0, 0, 0, 0
 	spritePiece	-$2C, -8, 2, 2, $10, 0, 0, 0, 0
@@ -5746,10 +5698,12 @@ M_Card_GHZ:	spriteHeader		; GREEN HILL
 	spritePiece	$24, -8, 1, 2, $20, 0, 0, 0, 0
 	spritePiece	$2C, -8, 2, 2, $26, 0, 0, 0, 0
 	spritePiece	$3C, -8, 2, 2, $26, 0, 0, 0, 0
+	endif
 M_Card_GHZ_End
 	even
 
 M_Card_LZ:	spriteHeader		; LABYRINTH
+	if MMD_Is_LZ
 	spritePiece	-$44, -8, 2, 2, $26, 0, 0, 0, 0
 	spritePiece	-$34, -8, 2, 2, 0, 0, 0, 0, 0
 	spritePiece	-$24, -8, 2, 2, 4, 0, 0, 0, 0
@@ -5759,20 +5713,24 @@ M_Card_LZ:	spriteHeader		; LABYRINTH
 	spritePiece	$14, -8, 2, 2, $2E, 0, 0, 0, 0
 	spritePiece	$24, -8, 2, 2, $42, 0, 0, 0, 0
 	spritePiece	$34, -8, 2, 2, $1C, 0, 0, 0, 0
+	endif
 M_Card_LZ_End
 	even
 
 M_Card_MZ:	spriteHeader		; MARBLE
+	if MMD_Is_MZ
 	spritePiece	-$31, -8, 2, 2, $2A, 0, 0, 0, 0
 	spritePiece	-$20, -8, 2, 2, 0, 0, 0, 0, 0
 	spritePiece	-$10, -8, 2, 2, $3A, 0, 0, 0, 0
 	spritePiece	 0, -8, 2, 2, 4, 0, 0, 0, 0
 	spritePiece	 $10, -8, 2, 2, $26, 0, 0, 0, 0
 	spritePiece	 $20, -8, 2, 2, $10, 0, 0, 0, 0
+	endif
 M_Card_MZ_End
 	even
 
 M_Card_SLZ:	spriteHeader		; STAR LIGHT
+	if MMD_Is_SLZ
 	spritePiece	-$4C, -8, 2, 2, $3E, 0, 0, 0, 0
 	spritePiece	-$3C, -8, 2, 2, $42, 0, 0, 0, 0
 	spritePiece	-$2C, -8, 2, 2, 0, 0, 0, 0, 0
@@ -5782,10 +5740,12 @@ M_Card_SLZ:	spriteHeader		; STAR LIGHT
 	spritePiece	$1C, -8, 2, 2, $18, 0, 0, 0, 0
 	spritePiece	$2C, -8, 2, 2, $1C, 0, 0, 0, 0
 	spritePiece	$3C, -8, 2, 2, $42, 0, 0, 0, 0
+	endif
 M_Card_SLZ_End
 	even
 
 M_Card_SYZ:	spriteHeader		; SPRING YARD
+	if MMD_Is_SYZ
 	spritePiece	-$54, -8, 2, 2, $3E, 0, 0, 0, 0
 	spritePiece	-$44, -8, 2, 2, $36, 0, 0, 0, 0
 	spritePiece	-$34, -8, 2, 2, $3A, 0, 0, 0, 0
@@ -5796,10 +5756,12 @@ M_Card_SYZ:	spriteHeader		; SPRING YARD
 	spritePiece	$24, -8, 2, 2, 0, 0, 0, 0, 0
 	spritePiece	$34, -8, 2, 2, $3A, 0, 0, 0, 0
 	spritePiece	$44, -8, 2, 2, $C, 0, 0, 0, 0
+	endif
 M_Card_SYZ_End
 	even
 
 M_Card_SBZ:	spriteHeader		; SCRAP BRAIN
+	if MMD_Is_SBZ
 	spritePiece	-$54, -8, 2, 2, $3E, 0, 0, 0, 0
 	spritePiece	-$44, -8, 2, 2, 8, 0, 0, 0, 0
 	spritePiece	-$34, -8, 2, 2, $3A, 0, 0, 0, 0
@@ -5810,6 +5772,7 @@ M_Card_SBZ:	spriteHeader		; SCRAP BRAIN
 	spritePiece	$2C, -8, 2, 2, 0, 0, 0, 0, 0
 	spritePiece	$3C, -8, 1, 2, $20, 0, 0, 0, 0
 	spritePiece	$44, -8, 2, 2, $2E, 0, 0, 0, 0
+	endif
 M_Card_SBZ_End
 	even
 
@@ -5854,11 +5817,13 @@ M_Card_Oval_End
 	even
 
 M_Card_FZ:	spriteHeader		; FINAL
+	if MMD_Is_FZ
 	spritePiece	-$24, -8, 2, 2, $14, 0, 0, 0, 0
 	spritePiece	-$14, -8, 1, 2, $20, 0, 0, 0, 0
 	spritePiece	-$C, -8, 2, 2, $2E, 0, 0, 0, 0
 	spritePiece	4, -8, 2, 2, 0, 0, 0, 0, 0
 	spritePiece	$14, -8, 2, 2, $26, 0, 0, 0, 0
+	endif
 M_Card_FZ_End
 	even
 
@@ -5927,6 +5892,7 @@ M_Got_RBonus:	spriteHeader		; RING BONUS
 	spritePiece	$48, -8, 1, 2, $170, 0, 0, 0, 0
 M_Got_RBonus_End
 	even
+	if MMD_Is_SS
 ; ---------------------------------------------------------------------------
 ; Sprite mappings - special stage results screen
 ; ---------------------------------------------------------------------------
@@ -6031,6 +5997,7 @@ M_SSR_GotAll_End
 	even
 
 Map_SSRC:	include	"_maps/SS Result Chaos Emeralds.asm"
+	endif
 
 		include	"_incObj/36 Spikes.asm"
 Map_Spike:	include	"_maps/Spikes.asm"
@@ -6747,31 +6714,45 @@ Map_Invis:	include	"_maps/Invisible Barriers.asm"
 		include	"_incObj/5D Fan.asm"
 Map_Fan:	include	"_maps/Fan.asm"
 		include	"_incObj/5E Seesaw.asm"
-Map_Seesaw:	include	"_maps/Seesaw.asm"
-Map_SSawBall:	include	"_maps/Seesaw Ball.asm"
+Map_Seesaw:
+		include	"_maps/Seesaw.asm"
+Map_SSawBall:
+		include	"_maps/Seesaw Ball.asm"
 		include	"_incObj/5F Bomb Enemy.asm"
 		include	"_anim/Bomb Enemy.asm"
-Map_Bomb:	include	"_maps/Bomb Enemy.asm"
+Map_Bomb:
+		include	"_maps/Bomb Enemy.asm"
 
 		include	"_incObj/60 Orbinaut.asm"
 		include	"_anim/Orbinaut.asm"
-Map_Orb:	include	"_maps/Orbinaut.asm"
+Map_Orb:
+		include	"_maps/Orbinaut.asm"
 
 		include	"_incObj/16 Harpoon.asm"
 		include	"_anim/Harpoon.asm"
-Map_Harp:	include	"_maps/Harpoon.asm"
+Map_Harp:
+		include	"_maps/Harpoon.asm"
 		include	"_incObj/61 LZ Blocks.asm"
-Map_LBlock:	include	"_maps/LZ Blocks.asm"
+Map_LBlock:
+		include	"_maps/LZ Blocks.asm"
 		include	"_incObj/62 Gargoyle.asm"
-Map_Gar:	include	"_maps/Gargoyle.asm"
+Map_Gar:
+		include	"_maps/Gargoyle.asm"
 		include	"_incObj/63 LZ Conveyor.asm"
-Map_LConv:	include	"_maps/LZ Conveyor.asm"
+Map_LConv:
+		include	"_maps/LZ Conveyor.asm"
 		include	"_incObj/64 Bubbles.asm"
 		include	"_anim/Bubbles.asm"
-Map_Bub:	include	"_maps/Bubbles.asm"
+Map_Bub:
+		include	"_maps/Bubbles.asm"
 		include	"_incObj/65 Waterfalls.asm"
+		if MMD_Is_LZ||MMD_Is_SBZ_3
 		include	"_anim/Waterfalls.asm"
-Map_WFall:	include	"_maps/Waterfalls.asm"
+		endif
+Map_WFall:
+		if MMD_Is_LZ||MMD_Is_SBZ_3
+		include	"_maps/Waterfalls.asm"
+		endif
 
 ; ===========================================================================
 ; ---------------------------------------------------------------------------
@@ -7014,136 +6995,36 @@ ResumeMusic:
 ; End of function ResumeMusic
 
 ; ===========================================================================
-
+		if MMD_Is_LZ||MMD_Is_SBZ_3
 		include	"_anim/Drowning Countdown.asm"
-Map_Drown:	include	"_maps/Drowning Countdown.asm"
+		endif
+Map_Drown:
+		if MMD_Is_LZ||MMD_Is_SBZ_3
+		include	"_maps/Drowning Countdown.asm"
+		endif
 
 		include	"_incObj/38 Shield and Invincibility.asm"
 		include	"_incObj/4A Special Stage Entry (Unused).asm"
 		include	"_incObj/08 Water Splash.asm"
 		include	"_anim/Shield and Invincibility.asm"
-Map_Shield:	include	"_maps/Shield and Invincibility.asm"
+Map_Shield:
+		include	"_maps/Shield and Invincibility.asm"
 		include	"_anim/Special Stage Entry (Unused).asm"
-Map_Vanish:	include	"_maps/Special Stage Entry (Unused).asm"
+Map_Vanish:
+		if MMD_Is_LZ||MMD_Is_SBZ_3
+		include	"_maps/Special Stage Entry (Unused).asm"
 		include	"_anim/Water Splash.asm"
-Map_Splash:	include	"_maps/Water Splash.asm"
+		endif
+Map_Splash:
+		if MMD_Is_LZ||MMD_Is_SBZ_3
+		include	"_maps/Water Splash.asm"
+		endif
 
 		include	"_incObj/Sonic AnglePos.asm"
 
 		include	"_incObj/sub FindNearestTile.asm"
 		include	"_incObj/sub FindFloor.asm"
 		include	"_incObj/sub FindWall.asm"
-
-; ---------------------------------------------------------------------------
-; This subroutine takes 'raw' bitmap-like collision block data as input and
-; converts it into the proper collision arrays (ColArray and ColArray2).
-; Pointers to said raw data are dummied out.
-; Curiously, an example of the original 'raw' data that this was intended
-; to process can be found in the J2ME version, in a file called 'blkcol.bct'.
-; ---------------------------------------------------------------------------
-
-RawColBlocks		equ CollArray1
-ConvRowColBlocks	equ CollArray1
-
-; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
-
-
-ConvertCollisionArray:
-		rts	
-; ---------------------------------------------------------------------------
-		; The raw format stores the collision data column by column for the normal collision array.
-		; This makes a copy of the data, but stored row by row, for the rotated collision array.
-		lea	(RawColBlocks).l,a1	; Source location of raw collision block data
-		lea	(ConvRowColBlocks).l,a2	; Destinatation location for row-converted collision block data
-
-		move.w	#$100-1,d3		; Number of blocks in collision data
-
-.blockLoop:
-		moveq	#16,d5			; Start on the 16th bit (the leftmost pixel)
-
-		move.w	#16-1,d2		; Width of a block in pixels
-
-.columnLoop:
-		moveq	#0,d4
-
-		move.w	#16-1,d1		; Height of a block in pixels
-
-.rowLoop:
-		move.w	(a1)+,d0		; Get row of collision bits
-		lsr.l	d5,d0			; Push the selected bit of this row into the 'eXtend' flag
-		addx.w	d4,d4			; Shift d4 to the left, and insert the selected bit into bit 0
-		dbf	d1,.rowLoop		; Loop for each row of pixels in a block
-
-		move.w	d4,(a2)+		; Store column of collision bits
-		suba.w	#2*16,a1		; Back to the start of the block
-		subq.w	#1,d5			; Get next bit in the row
-		dbf	d2,.columnLoop		; Loop for each column of pixels in a block
-
-		adda.w	#2*16,a1		; Next block
-		dbf	d3,.blockLoop		; Loop for each block in the raw collision block data
-
-		; This then converts the collision data into the final collision arrays
-		lea	(ConvRowColBlocks).l,a1
-		lea	(CollArray2).l,a2	; Convert the row-converted collision block data into final rotated collision array
-		bsr.s	.convertArray
-		lea	(RawColBlocks).l,a1
-		lea	(CollArray1).l,a2	; Convert the raw collision block data into final normal collision array
-
-
-.convertArray:
-		move.w	#$1000-1,d3		; Size of the collision array
-
-.processLoop:
-		moveq	#0,d2
-		move.w	#$F,d1
-		move.w	(a1)+,d0		; Get current column of collision pixels
-		beq.s	.noCollision		; Branch if there's no collision in this column
-		bmi.s	.topPixelSolid		; Branch if top pixel of collision is solid
-
-	; Here we count, starting from the bottom, how many pixels tall
-	; the collision in this column is.
-.processColumnLoop1:
-		lsr.w	#1,d0
-		bhs.s	.pixelNotSolid1
-		addq.b	#1,d2
-
-.pixelNotSolid1:
-		dbf	d1,.processColumnLoop1
-
-		bra.s	.columnProcessed
-; ===========================================================================
-
-.topPixelSolid:
-		cmpi.w	#$FFFF,d0		; Is entire column solid?
-		beq.s	.entireColumnSolid	; Branch if so
-
-	; Here we count, starting from the top, how many pixels tall
-	; the collision in this column is (the resulting number is negative).
-.processColumnLoop2:
-		lsl.w	#1,d0
-		bhs.s	.pixelNotSolid2
-		subq.b	#1,d2
-
-.pixelNotSolid2:
-		dbf	d1,.processColumnLoop2
-
-		bra.s	.columnProcessed
-; ===========================================================================
-
-.entireColumnSolid:
-		move.w	#$10,d0
-
-.noCollision:
-		move.w	d0,d2
-
-.columnProcessed:
-		move.b	d2,(a2)+		; Store column collision height
-		dbf	d3,.processLoop
-
-		rts	
-
-; End of function ConvertCollisionArray
-
 
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
 
@@ -7562,26 +7443,58 @@ locret_15098:
 ; ===========================================================================
 
 		include	"_incObj/66 Rotating Junction.asm"
-Map_Jun:	include	"_maps/Rotating Junction.asm"
+Map_Jun:
+		if MMD_Is_SBZ
+		include	"_maps/Rotating Junction.asm"
+		endif
 		include	"_incObj/67 Running Disc.asm"
-Map_Disc:	include	"_maps/Running Disc.asm"
+Map_Disc:
+		if MMD_Is_SBZ
+		include	"_maps/Running Disc.asm"
+		endif
 		include	"_incObj/68 Conveyor Belt.asm"
 		include	"_incObj/69 SBZ Spinning Platforms.asm"
+		if MMD_Is_SBZ
 		include	"_anim/SBZ Spinning Platforms.asm"
-Map_Trap:	include	"_maps/Trapdoor.asm"
-Map_Spin:	include	"_maps/SBZ Spinning Platforms.asm"
+		endif
+Map_Trap:
+		if MMD_Is_SBZ
+		include	"_maps/Trapdoor.asm"
+		endif
+Map_Spin:
+		if MMD_Is_SBZ
+		include	"_maps/SBZ Spinning Platforms.asm"
+		endif
 		include	"_incObj/6A Saws and Pizza Cutters.asm"
-Map_Saw:	include	"_maps/Saws and Pizza Cutters.asm"
+Map_Saw:
+		if MMD_Is_SBZ
+		include	"_maps/Saws and Pizza Cutters.asm"
+		endif
 		include	"_incObj/6B SBZ Stomper and Door.asm"
-Map_Stomp:	include	"_maps/SBZ Stomper and Door.asm"
+Map_Stomp:
+		if MMD_Is_SBZ
+		include	"_maps/SBZ Stomper and Door.asm"
+		endif
 		include	"_incObj/6C SBZ Vanishing Platforms.asm"
+		if MMD_Is_SBZ
 		include	"_anim/SBZ Vanishing Platforms.asm"
-Map_VanP:	include	"_maps/SBZ Vanishing Platforms.asm"
+		endif
+Map_VanP:
+		if MMD_Is_SBZ
+		include	"_maps/SBZ Vanishing Platforms.asm"
+		endif
 		include	"_incObj/6E Electrocuter.asm"
+		if MMD_Is_SBZ
 		include	"_anim/Electrocuter.asm"
-Map_Elec:	include	"_maps/Electrocuter.asm"
+		endif
+Map_Elec:
+		if MMD_Is_SBZ
+		include	"_maps/Electrocuter.asm"
+		endif
 		include	"_incObj/6F SBZ Spin Platform Conveyor.asm"
+		if MMD_Is_SBZ
 		include	"_anim/SBZ Spin Platform Conveyor.asm"
+		endif
 
 off_164A6:	dc.w word_164B2-off_164A6, word_164C6-off_164A6, word_164DA-off_164A6
 		dc.w word_164EE-off_164A6, word_16502-off_164A6, word_16516-off_164A6
@@ -7594,20 +7507,33 @@ word_16516:	dc.w $10, $1C80, $1C14,	$5E0, $1CEF, $572, $1CEF, $5B0,	$1C14, $61E
 ; ===========================================================================
 
 		include	"_incObj/70 Girder Block.asm"
-Map_Gird:	include	"_maps/Girder Block.asm"
+Map_Gird:
+		if MMD_Is_SLZ
+		include	"_maps/Girder Block.asm"
+		endif
 		include	"_incObj/72 Teleporter.asm"
 
 		include	"_incObj/78 Caterkiller.asm"
+		if MMD_Is_MZ||MMD_Is_SYZ
 		include	"_anim/Caterkiller.asm"
-Map_Cat:	include	"_maps/Caterkiller.asm"
+		endif
+Map_Cat:
+		if MMD_Is_MZ||MMD_Is_SYZ
+		include	"_maps/Caterkiller.asm"
+		endif
 
 		include	"_incObj/79 Lamppost.asm"
-Map_Lamp:	include	"_maps/Lamppost.asm"
+Map_Lamp:
+		include	"_maps/Lamppost.asm"
 		include	"_incObj/7D Hidden Bonuses.asm"
-Map_Bonus:	include	"_maps/Hidden Bonuses.asm"
+Map_Bonus:
+		include	"_maps/Hidden Bonuses.asm"
 
 		include	"_incObj/8A Credits.asm"
-Map_Cred:	include	"_maps/Credits.asm"
+Map_Cred:
+		if MMD_Is_Title||MMD_Is_Credits
+		include	"_maps/Credits.asm"
+		endif
 
 		include	"_incObj/3D Boss - Green Hill (part 1).asm"
 
@@ -7670,8 +7596,10 @@ BossMove:
 		include	"_incObj/3D Boss - Green Hill (part 2).asm"
 		include	"_incObj/48 Eggman's Swinging Ball.asm"
 		include	"_anim/Eggman.asm"
-Map_Eggman:	include	"_maps/Eggman.asm"
-Map_BossItems:	include	"_maps/Boss Items.asm"
+Map_Eggman:
+		include	"_maps/Eggman.asm"
+Map_BossItems:
+		include	"_maps/Boss Items.asm"
 		include	"_incObj/77 Boss - Labyrinth.asm"
 		include	"_incObj/73 Boss - Marble.asm"
 		include	"_incObj/74 MZ Boss Fire.asm"
@@ -7681,30 +7609,63 @@ BossStarLight_Delete:
 
 		include	"_incObj/7A Boss - Star Light.asm"
 		include	"_incObj/7B SLZ Boss Spikeball.asm"
-Map_BSBall:	include	"_maps/SLZ Boss Spikeball.asm"
+Map_BSBall:
+		if MMD_Is_SLZ
+		include	"_maps/SLZ Boss Spikeball.asm"
+		endif
 		include	"_incObj/75 Boss - Spring Yard.asm"
 		include	"_incObj/76 SYZ Boss Blocks.asm"
-Map_BossBlock:	include	"_maps/SYZ Boss Blocks.asm"
+Map_BossBlock:
+		if MMD_Is_SYZ
+		include	"_maps/SYZ Boss Blocks.asm"
+		endif
 
 loc_1982C:
 		jmp	(DeleteObject).l
 
 		include	"_incObj/82 Eggman - Scrap Brain 2.asm"
+		if MMD_Is_SBZ||MMD_Is_FZ
 		include	"_anim/Eggman - Scrap Brain 2 & Final.asm"
-Map_SEgg:	include	"_maps/Eggman - Scrap Brain 2.asm"
+		endif
+Map_SEgg:
+		if MMD_Is_SBZ||MMD_Is_FZ
+		include	"_maps/Eggman - Scrap Brain 2.asm"
+		endif
 		include	"_incObj/83 SBZ Eggman's Crumbling Floor.asm"
-Map_FFloor:	include	"_maps/SBZ Eggman's Crumbling Floor.asm"
+Map_FFloor:
+		if MMD_Is_SBZ
+		include	"_maps/SBZ Eggman's Crumbling Floor.asm"
+		endif
 		include	"_incObj/85 Boss - Final.asm"
+		if MMD_Is_FZ
 		include	"_anim/FZ Eggman in Ship.asm"
-Map_FZDamaged:	include	"_maps/FZ Damaged Eggmobile.asm"
-Map_FZLegs:	include	"_maps/FZ Eggmobile Legs.asm"
+		endif
+Map_FZDamaged:
+		if MMD_Is_FZ
+		include	"_maps/FZ Damaged Eggmobile.asm"
+		endif
+Map_FZLegs:
+		if MMD_Is_FZ
+		include	"_maps/FZ Eggmobile Legs.asm"
+		endif
 		include	"_incObj/84 FZ Eggman's Cylinders.asm"
-Map_EggCyl:	include	"_maps/FZ Eggman's Cylinders.asm"
+Map_EggCyl:
+		if MMD_Is_FZ
+		include	"_maps/FZ Eggman's Cylinders.asm"
+		endif
 		include	"_incObj/86 FZ Plasma Ball Launcher.asm"
+		if MMD_Is_FZ
 		include	"_anim/Plasma Ball Launcher.asm"
-Map_PLaunch:	include	"_maps/Plasma Ball Launcher.asm"
+		endif
+Map_PLaunch:
+		if MMD_Is_FZ
+		include	"_maps/Plasma Ball Launcher.asm"
 		include	"_anim/Plasma Balls.asm"
-Map_Plasma:	include	"_maps/Plasma Balls.asm"
+		endif
+Map_Plasma:
+		if MMD_Is_FZ
+		include	"_maps/Plasma Balls.asm"
+		endif
 
 		include	"_incObj/3E Prison Capsule.asm"
 		include	"_anim/Prison Capsule.asm"
@@ -7712,6 +7673,7 @@ Map_Pri:	include	"_maps/Prison Capsule.asm"
 
 		include	"_incObj/sub ReactToItem.asm"
 
+		if MMD_Is_SS
 ; ---------------------------------------------------------------------------
 ; Subroutine to	show the special stage layout
 ; ---------------------------------------------------------------------------
@@ -7967,6 +7929,7 @@ SS_WaRiVramSet:	dc.w $142, $6142, $142,	$142, $142, $142, $142,	$6142
 		dc.w $4142, $2142, $4142, $4142, $4142,	$4142, $4142, $2142
 		dc.w $6142, $4142, $6142, $6142, $6142,	$6142, $6142, $4142
 		dc.w $6142, $4142, $6142, $6142, $6142,	$6142, $6142, $4142
+		endif
 ; ---------------------------------------------------------------------------
 ; Subroutine to	remove items when you collect them in the special stage
 ; ---------------------------------------------------------------------------
@@ -7988,6 +7951,7 @@ locret_1B4CE:
 		rts	
 ; End of function SS_RemoveCollectedItem
 
+		if MMD_Is_SS
 ; ---------------------------------------------------------------------------
 ; Subroutine to	animate	special	stage items when you touch them
 ; ---------------------------------------------------------------------------
@@ -8251,7 +8215,6 @@ loc_1B730:
 
 		clr.l	(a1)+
 		dbf	d1,loc_1B730
-
 		rts	
 ; End of function SS_Load
 
@@ -8278,6 +8241,7 @@ Map_SS_Glass:	include	"_maps/SS Glass Block.asm"
 Map_SS_Up:	include	"_maps/SS UP Block.asm"
 Map_SS_Down:	include	"_maps/SS DOWN Block.asm"
 		include	"_maps/SS Chaos Emeralds.asm"
+		endif
 
 		include	"_incObj/09 Sonic in Special Stage.asm"
 
@@ -8351,6 +8315,7 @@ AddPoints:
 
 
 ContScrCounter:
+		if MMD_Is_Continue
 		locVRAM	ArtTile_Continue_Number*tile_size
 		lea	(vdp_data_port).l,a6
 		lea	(Hud_10).l,a2
@@ -8391,6 +8356,7 @@ loc_1C962:
 		move.l	(a3)+,(a6)
 		dbf	d6,ContScr_Loop	; repeat 1 more	time
 
+		endif
 		rts	
 ; End of function ContScrCounter
 
@@ -8402,8 +8368,14 @@ loc_1C962:
 		include	"_inc/LevelHeaders.asm"
 		include	"_inc/Pattern Load Cues.asm"
 
-Map_Sonic:	include	"_maps/Sonic.asm"
-SonicDynPLC:	include	"_maps/Sonic - Dynamic Gfx Script.asm"
+Map_Sonic:
+		if MMD_Has_Sonic
+		include	"_maps/Sonic.asm"
+		endif
+SonicDynPLC:
+		if MMD_Has_Sonic
+		include	"_maps/Sonic - Dynamic Gfx Script.asm"
+		endif
 
 ; ---------------------------------------------------------------------------
 ; Collision data
@@ -8414,39 +8386,82 @@ CollArray1:	binclude	"collide/Collision Array (Normal).bin"
 		even
 CollArray2:	binclude	"collide/Collision Array (Rotated).bin"
 		even
-Col_GHZ:	binclude	"collide/GHZ.bin"	; GHZ index
+Col_GHZ:
+		if MMD_Is_GHZ
+		binclude	"collide/GHZ.bin"	; GHZ index
 		even
-Col_LZ:		binclude	"collide/LZ.bin"	; LZ index
+		endif
+Col_LZ:
+		if MMD_Is_LZ
+		binclude	"collide/LZ.bin"	; LZ index
 		even
-Col_MZ:		binclude	"collide/MZ.bin"	; MZ index
+		endif
+Col_MZ:
+		if MMD_Is_MZ
+		binclude	"collide/MZ.bin"	; MZ index
 		even
-Col_SLZ:	binclude	"collide/SLZ.bin"	; SLZ index
+		endif
+Col_SLZ:
+		if MMD_Is_SLZ
+		binclude	"collide/SLZ.bin"	; SLZ index
 		even
-Col_SYZ:	binclude	"collide/SYZ.bin"	; SYZ index
+		endif
+Col_SYZ:
+		if MMD_Is_SYZ
+		binclude	"collide/SYZ.bin"	; SYZ index
 		even
-Col_SBZ:	binclude	"collide/SBZ.bin"	; SBZ index
+		endif
+Col_SBZ:
+		if MMD_Is_SBZ
+		binclude	"collide/SBZ.bin"	; SBZ index
 		even
+		endif
 ; ---------------------------------------------------------------------------
 ; Special Stage layouts
 ; ---------------------------------------------------------------------------
-SS_1:		binclude	"sslayout/1.eni"
+SS_1:
+		if MMD_Is_SS
+		binclude	"sslayout/1.eni"
 		even
-SS_2:		binclude	"sslayout/2.eni"
-		even
-SS_3:		binclude	"sslayout/3.eni"
-		even
-SS_4:		binclude	"sslayout/4.eni"
-		even
-		if Revision=0
-SS_5:		binclude	"sslayout/5.eni"
-		even
-SS_6:		binclude	"sslayout/6.eni"
-		else
-SS_5:		binclude	"sslayout/5 (JP1).eni"
-			even
-SS_6:		binclude	"sslayout/6 (JP1).eni"
 		endif
+SS_2:
+		if MMD_Is_SS
+		binclude	"sslayout/2.eni"
 		even
+		endif
+SS_3:
+		if MMD_Is_SS
+		binclude	"sslayout/3.eni"
+		even
+		endif
+SS_4:
+		if MMD_Is_SS
+		binclude	"sslayout/4.eni"
+		even
+		endif
+		if Revision=0
+SS_5:
+		if MMD_Is_SS
+		binclude	"sslayout/5.eni"
+		even
+		endif
+SS_6:
+		if MMD_Is_SS
+		binclude	"sslayout/6.eni"
+		even
+		endif
+		else
+SS_5:
+		if MMD_Is_SS
+		binclude	"sslayout/5 (JP1).eni"
+		even
+		endif
+SS_6:
+		if MMD_Is_SS
+		binclude	"sslayout/6 (JP1).eni"
+		even
+		endif
+		endif
 
 ; ---------------------------------------------------------------------------
 ; Level	layout index
@@ -8489,58 +8504,148 @@ Level_Index:
 		dc.w byte_6A320-Level_Index, byte_6A320-Level_Index, byte_6A320-Level_Index
 		dc.w byte_6A320-Level_Index, byte_6A320-Level_Index, byte_6A320-Level_Index
 
-Level_GHZ1:	binclude	"levels/ghz1.bin"
+Level_GHZ1:
+		if MMD_Is_GHZ
+		binclude	"levels/ghz1.bin"
 		even
-byte_68D70:	dc.b 0,	0, 0, 0
-Level_GHZ2:	binclude	"levels/ghz2.bin"
+		endif
+byte_68D70:
+		if MMD_Is_GHZ
+		dc.b 0,	0, 0, 0
+		endif
+Level_GHZ2:
+		if MMD_Is_GHZ
+		binclude	"levels/ghz2.bin"
 		even
-byte_68E3C:	dc.b 0,	0, 0, 0
-Level_GHZ3:	binclude	"levels/ghz3.bin"
+		endif
+byte_68E3C:
+		if MMD_Is_GHZ
+		dc.b 0,	0, 0, 0
+		endif
+Level_GHZ3:
+		if MMD_Is_GHZ
+		binclude	"levels/ghz3.bin"
 		even
-Level_GHZbg:	binclude	"levels/ghzbg.bin"
+		endif
+Level_GHZbg:
+		if MMD_Is_GHZ||MMD_Is_Title
+		binclude	"levels/ghzbg.bin"
 		even
-byte_68F84:	dc.b 0,	0, 0, 0
-byte_68F88:	dc.b 0,	0, 0, 0
+		endif
+byte_68F84:
+		if MMD_Is_GHZ
+		dc.b 0,	0, 0, 0
+		endif
+byte_68F88:
+		if MMD_Is_GHZ
+		dc.b 0,	0, 0, 0
+		endif
 
-Level_LZ1:	binclude	"levels/lz1.bin"
+Level_LZ1:
+		if MMD_Is_LZ
+		binclude	"levels/lz1.bin"
 		even
-Level_LZbg:	binclude	"levels/lzbg.bin"
+		endif
+Level_LZbg:
+		if MMD_Is_LZ
+		binclude	"levels/lzbg.bin"
 		even
-byte_69190:	dc.b 0,	0, 0, 0
-Level_LZ2:	binclude	"levels/lz2.bin"
+		endif
+byte_69190:
+		if MMD_Is_LZ
+		dc.b 0,	0, 0, 0
+		endif
+Level_LZ2:
+		if MMD_Is_LZ
+		binclude	"levels/lz2.bin"
 		even
-byte_6922E:	dc.b 0,	0, 0, 0
-Level_LZ3:	binclude	"levels/lz3.bin"
+		endif
+byte_6922E:
+		if MMD_Is_LZ
+		dc.b 0,	0, 0, 0
+		endif
+Level_LZ3:
+		if MMD_Is_LZ
+		binclude	"levels/lz3.bin"
 		even
-byte_6934C:	dc.b 0,	0, 0, 0
-Level_SBZ3:	binclude	"levels/sbz3.bin"
+		endif
+byte_6934C:
+		if MMD_Is_LZ
+		dc.b 0,	0, 0, 0
+		endif
+Level_SBZ3:
+		if MMD_Is_LZ
+		binclude	"levels/sbz3.bin"
 		even
-byte_6940A:	dc.b 0,	0, 0, 0
+		endif
+byte_6940A:
+		if MMD_Is_LZ
+		dc.b 0,	0, 0, 0
+		endif
 
-Level_MZ1:	binclude	"levels/mz1.bin"
+Level_MZ1:
+		if MMD_Is_MZ
+		binclude	"levels/mz1.bin"
 		even
-Level_MZ1bg:	binclude	"levels/mz1bg.bin"
+		endif
+Level_MZ1bg:
+		if MMD_Is_MZ
+		binclude	"levels/mz1bg.bin"
 		even
-Level_MZ2:	binclude	"levels/mz2.bin"
+		endif
+Level_MZ2:
+		if MMD_Is_MZ
+		binclude	"levels/mz2.bin"
 		even
-Level_MZ2bg:	binclude	"levels/mz2bg.bin"
+		endif
+Level_MZ2bg:
+		if MMD_Is_MZ
+		binclude	"levels/mz2bg.bin"
 		even
-byte_6965C:	dc.b 0,	0, 0, 0
-Level_MZ3:	binclude	"levels/mz3.bin"
+		endif
+byte_6965C:
+		if MMD_Is_MZ
+		dc.b 0,	0, 0, 0
+		endif
+Level_MZ3:
+		if MMD_Is_MZ
+		binclude	"levels/mz3.bin"
 		even
-Level_MZ3bg:	binclude	"levels/mz3bg.bin"
+		endif
+Level_MZ3bg:
+		if MMD_Is_MZ
+		binclude	"levels/mz3bg.bin"
 		even
-byte_697E6:	dc.b 0,	0, 0, 0
-byte_697EA:	dc.b 0,	0, 0, 0
+		endif
+byte_697E6:
+		if MMD_Is_MZ
+		dc.b 0,	0, 0, 0
+		endif
+byte_697EA:
+		if MMD_Is_MZ
+		dc.b 0,	0, 0, 0
+		endif
 
-Level_SLZ1:	binclude	"levels/slz1.bin"
+Level_SLZ1:
+		if MMD_Is_SLZ
+		binclude	"levels/slz1.bin"
 		even
-Level_SLZbg:	binclude	"levels/slzbg.bin"
+		endif
+Level_SLZbg:
+		if MMD_Is_SLZ
+		binclude	"levels/slzbg.bin"
 		even
-Level_SLZ2:	binclude	"levels/slz2.bin"
+		endif
+Level_SLZ2:
+		if MMD_Is_SLZ
+		binclude	"levels/slz2.bin"
 		even
-Level_SLZ3:	binclude	"levels/slz3.bin"
+		endif
+Level_SLZ3:
+		if MMD_Is_SLZ
+		binclude	"levels/slz3.bin"
 		even
+		endif
 byte_69B84:	dc.b 0,	0, 0, 0
 
 Level_SYZ1:	binclude	"levels/syz1.bin"
@@ -8552,22 +8657,40 @@ Level_SYZbg:	if Revision=0
 		endif
 		even
 byte_69C7E:	dc.b 0,	0, 0, 0
-Level_SYZ2:	binclude	"levels/syz2.bin"
+Level_SYZ2:
+		if MMD_Is_SYZ
+		binclude	"levels/syz2.bin"
 		even
+		endif
 byte_69D86:	dc.b 0,	0, 0, 0
-Level_SYZ3:	binclude	"levels/syz3.bin"
+Level_SYZ3:
+		if MMD_Is_SYZ
+		binclude	"levels/syz3.bin"
 		even
+		endif
 byte_69EE4:	dc.b 0,	0, 0, 0
 byte_69EE8:	dc.b 0,	0, 0, 0
 
-Level_SBZ1:	binclude	"levels/sbz1.bin"
+Level_SBZ1:
+		if MMD_Is_SBZ
+		binclude	"levels/sbz1.bin"
 		even
-Level_SBZ1bg:	binclude	"levels/sbz1bg.bin"
+		endif
+Level_SBZ1bg:
+		if MMD_Is_SBZ
+		binclude	"levels/sbz1bg.bin"
 		even
-Level_SBZ2:	binclude	"levels/sbz2.bin"
+		endif
+Level_SBZ2:
+		if MMD_Is_SBZ
+		binclude	"levels/sbz2.bin"
 		even
-Level_SBZ2bg:	binclude	"levels/sbz2bg.bin"
+		endif
+Level_SBZ2bg:
+		if MMD_Is_SBZ
+		binclude	"levels/sbz2bg.bin"
 		even
+		endif
 byte_6A2F8:	dc.b 0,	0, 0, 0
 byte_6A2FC:	dc.b 0,	0, 0, 0
 Level_End:	binclude	"levels/ending.bin"
@@ -8638,104 +8761,189 @@ ObjPos_GHZ3:	if Revision=0
 		binclude	"objpos/ghz3 (JP1).bin"
 		endif
 		even
-ObjPos_LZ1:	if Revision=0
+ObjPos_LZ1:
+		if MMD_Is_LZ_1
+		if Revision=0
 		binclude	"objpos/lz1.bin"
 		else
 		binclude	"objpos/lz1 (JP1).bin"
 		endif
 		even
-ObjPos_LZ2:	binclude	"objpos/lz2.bin"
+		endif
+ObjPos_LZ2:
+		if MMD_Is_LZ_2
+		binclude	"objpos/lz2.bin"
 		even
-ObjPos_LZ3:	if Revision=0
+		endif
+ObjPos_LZ3:
+		if MMD_Is_LZ_3
+		if Revision=0
 		binclude	"objpos/lz3.bin"
 		else
 		binclude	"objpos/lz3 (JP1).bin"
 		endif
 		even
-ObjPos_SBZ3:	binclude	"objpos/sbz3.bin"
+		endif
+ObjPos_SBZ3:
+		if MMD_Is_SBZ_3
+		binclude	"objpos/sbz3.bin"
 		even
-ObjPos_LZ1pf1:	binclude	"objpos/lz1pf1.bin"
+		endif
+ObjPos_LZ1pf1:
+		if MMD_Is_LZ_1
+		binclude	"objpos/lz1pf1.bin"
 		even
-ObjPos_LZ1pf2:	binclude	"objpos/lz1pf2.bin"
+		endif
+ObjPos_LZ1pf2:
+		if MMD_Is_LZ_1
+		binclude	"objpos/lz1pf2.bin"
 		even
-ObjPos_LZ2pf1:	binclude	"objpos/lz2pf1.bin"
+		endif
+ObjPos_LZ2pf1:
+		if MMD_Is_LZ_1
+		binclude	"objpos/lz2pf1.bin"
 		even
-ObjPos_LZ2pf2:	binclude	"objpos/lz2pf2.bin"
+		endif
+ObjPos_LZ2pf2:
+		if MMD_Is_LZ_2
+		binclude	"objpos/lz2pf2.bin"
 		even
-ObjPos_LZ3pf1:	binclude	"objpos/lz3pf1.bin"
+		endif
+ObjPos_LZ3pf1:
+		if MMD_Is_LZ_3
+		binclude	"objpos/lz3pf1.bin"
 		even
-ObjPos_LZ3pf2:	binclude	"objpos/lz3pf2.bin"
+		endif
+ObjPos_LZ3pf2:
+		if MMD_Is_LZ_3
+		binclude	"objpos/lz3pf2.bin"
 		even
-ObjPos_MZ1:	if Revision=0
+		endif
+ObjPos_MZ1:
+		if MMD_Is_MZ_1
+		if Revision=0
 		binclude	"objpos/mz1.bin"
 		else
 		binclude	"objpos/mz1 (JP1).bin"
 		endif
 		even
-ObjPos_MZ2:	binclude	"objpos/mz2.bin"
+		endif
+ObjPos_MZ2:
+		if MMD_Is_MZ_2
+		binclude	"objpos/mz2.bin"
 		even
-ObjPos_MZ3:	binclude	"objpos/mz3.bin"
+		endif
+ObjPos_MZ3:
+		if MMD_Is_MZ_3
+		binclude	"objpos/mz3.bin"
 		even
-ObjPos_SLZ1:	binclude	"objpos/slz1.bin"
+		endif
+ObjPos_SLZ1:
+		if MMD_Is_SLZ_1
+		binclude	"objpos/slz1.bin"
 		even
-ObjPos_SLZ2:	binclude	"objpos/slz2.bin"
+		endif
+ObjPos_SLZ2:
+		if MMD_Is_SLZ_2
+		binclude	"objpos/slz2.bin"
 		even
-ObjPos_SLZ3:	binclude	"objpos/slz3.bin"
+		endif
+ObjPos_SLZ3:
+		if MMD_Is_SLZ_3
+		binclude	"objpos/slz3.bin"
 		even
-ObjPos_SYZ1:	binclude	"objpos/syz1.bin"
+		endif
+ObjPos_SYZ1:
+		if MMD_Is_SYZ_1
+		binclude	"objpos/syz1.bin"
 		even
-ObjPos_SYZ2:	binclude	"objpos/syz2.bin"
+		endif
+ObjPos_SYZ2:
+		if MMD_Is_SYZ_2
+		binclude	"objpos/syz2.bin"
 		even
-ObjPos_SYZ3:	if Revision=0
+		endif
+ObjPos_SYZ3:
+		if MMD_Is_SYZ_3
+		if Revision=0
 		binclude	"objpos/syz3.bin"
 		else
 		binclude	"objpos/syz3 (JP1).bin"
 		endif
 		even
-ObjPos_SBZ1:	if Revision=0
+		endif
+ObjPos_SBZ1:
+		if MMD_Is_SBZ_1
+		if Revision=0
 		binclude	"objpos/sbz1.bin"
 		else
 		binclude	"objpos/sbz1 (JP1).bin"
 		endif
 		even
-ObjPos_SBZ2:	binclude	"objpos/sbz2.bin"
+		endif
+ObjPos_SBZ2:
+		if MMD_Is_SBZ_2
+		binclude	"objpos/sbz2.bin"
 		even
-ObjPos_FZ:	binclude	"objpos/fz.bin"
+		endif
+ObjPos_FZ:
+		if MMD_Is_FZ
+		binclude	"objpos/fz.bin"
 		even
-ObjPos_SBZ1pf1:	binclude	"objpos/sbz1pf1.bin"
+		endif
+ObjPos_SBZ1pf1:
+		if MMD_Is_SBZ_1
+		binclude	"objpos/sbz1pf1.bin"
 		even
-ObjPos_SBZ1pf2:	binclude	"objpos/sbz1pf2.bin"
+		endif
+ObjPos_SBZ1pf2:
+		if MMD_Is_SBZ_1
+		binclude	"objpos/sbz1pf2.bin"
 		even
-ObjPos_SBZ1pf3:	binclude	"objpos/sbz1pf3.bin"
+		endif
+ObjPos_SBZ1pf3:
+		if MMD_Is_SBZ_1
+		binclude	"objpos/sbz1pf3.bin"
 		even
-ObjPos_SBZ1pf4:	binclude	"objpos/sbz1pf4.bin"
+		endif
+ObjPos_SBZ1pf4:
+		if MMD_Is_SBZ_1
+		binclude	"objpos/sbz1pf4.bin"
 		even
-ObjPos_SBZ1pf5:	binclude	"objpos/sbz1pf5.bin"
+		endif
+ObjPos_SBZ1pf5:
+		if MMD_Is_SBZ_1
+		binclude	"objpos/sbz1pf5.bin"
 		even
-ObjPos_SBZ1pf6:	binclude	"objpos/sbz1pf6.bin"
+		endif
+ObjPos_SBZ1pf6:
+		if MMD_Is_SBZ_1
+		binclude	"objpos/sbz1pf6.bin"
 		even
+		endif
 ObjPos_End:	binclude	"objpos/ending.bin"
 		even
 ObjPos_Null:	dc.b $FF, $FF, 0, 0, 0,	0
 
+		include "allart.asm"
 		if MMD_Enabled
 		if *>$230000
-			fatal "Code must fit in $20000 bytes, is actually $\{*-$200000} bytes"
+			fatal "MMD must fit in $30000 bytes, is actually $\{*-$200000} bytes"
 		endif
 		endif
-		align $20000
-		include "allart.asm"
 
 		if ~~MMD_Enabled
 SoundDriver:	include "s1.sounddriver.asm"
 		endif
 
 ; end of 'ROM'
+	if ~~MMD_Enabled
 	if (*)&(*-1)
 		cnop	-1,2<<lastbit(*-1)
 		dc.b	0
 	else
 		even
+	endif
 	endif
 EndOfRom:
 	if MOMPASS=2
@@ -8743,5 +8951,6 @@ EndOfRom:
 	endif
 	if MMD_Enabled
 		dephase
+		align $40000
 	endif
 		END

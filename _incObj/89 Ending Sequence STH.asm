@@ -3,6 +3,7 @@
 ; ---------------------------------------------------------------------------
 
 EndSTH:
+		if MMD_Is_Ending
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	ESth_Index(pc,d0.w),d1
@@ -56,6 +57,9 @@ ESth_GotoCredits:
 ESth_Wait:
 		if Revision=0
 		bra.w	DisplaySprite
+		else
+		rts
+		endif
 		else
 		rts
 		endif

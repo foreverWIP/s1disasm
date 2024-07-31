@@ -3,6 +3,7 @@
 ; ---------------------------------------------------------------------------
 
 BossLabyrinth:
+		if MMD_Is_LZ
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	BossLabyrinth_Index(pc,d0.w),d1
@@ -404,3 +405,6 @@ BossLabyrinth_Display:
 		andi.b	#$FC,obRender(a0)
 		or.b	d0,obRender(a0)
 		jmp	(DisplaySprite).l
+		else
+		rts
+		endif

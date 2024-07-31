@@ -3,6 +3,7 @@
 ; ---------------------------------------------------------------------------
 
 BossStarLight:
+		if MMD_Is_SLZ
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	BossStarLight_Index(pc,d0.w),d1
@@ -434,3 +435,6 @@ loc_18CB8:
 		move.w	#make_art_tile(ArtTile_Eggman_Weapons,1,0),obGfx(a0)
 		move.b	#3,obFrame(a0)
 		bra.s	loc_18C78
+		else
+		rts
+		endif

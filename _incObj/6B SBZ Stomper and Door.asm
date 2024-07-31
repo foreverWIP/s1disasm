@@ -3,6 +3,7 @@
 ; ---------------------------------------------------------------------------
 
 ScrapStomp:
+		if MMD_Is_SBZ
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	Sto_Index(pc,d0.w),d1
@@ -323,4 +324,5 @@ Sto_Action:	; Routine 2
 .loc_15F5E:
 		clr.b	obSubtype(a0)
 		clr.b	sto_active(a0)
+		endif
 		rts	

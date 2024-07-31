@@ -3,6 +3,7 @@
 ; ---------------------------------------------------------------------------
 
 BigSpikeBall:
+		if MMD_Is_SYZ
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	BBall_Index(pc,d0.w),d1
@@ -108,4 +109,5 @@ BBall_Move:	; Routine 2
 		add.w	d3,d5
 		move.w	d4,obY(a0)	; move object circularly
 		move.w	d5,obX(a0)
+		endif
 		rts	

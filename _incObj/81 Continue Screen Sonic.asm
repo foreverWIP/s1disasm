@@ -3,6 +3,7 @@
 ; ---------------------------------------------------------------------------
 
 ContSonic:
+		if MMD_Is_Continue
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	CSon_Index(pc,d0.w),d1
@@ -72,3 +73,6 @@ CSon_ShowRun:
 		jsr	(SpeedToPos).l
 		jsr	(Sonic_Animate).l
 		jmp	(Sonic_LoadGfx).l
+		else
+		rts
+		endif

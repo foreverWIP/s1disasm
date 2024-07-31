@@ -3,6 +3,7 @@
 ; ---------------------------------------------------------------------------
 
 Burrobot:
+		if MMD_Is_LZ
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	Burro_Index(pc,d0.w),d1
@@ -151,5 +152,6 @@ Burro_ChkSonic2:
 
 loc_AE40:
 		cmp.w	d2,d0
+		endif
 		rts	
 ; End of function Burro_ChkSonic2

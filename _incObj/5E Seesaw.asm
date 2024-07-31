@@ -9,6 +9,7 @@ see_frame = objoff_3A		;
 see_parent = objoff_3C		; RAM address of parent object
 
 Seesaw:
+		if MMD_Is_SLZ
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	See_Index(pc,d0.w),d1
@@ -272,3 +273,6 @@ See_DataSlope:	binclude	"misc/slzssaw1.bin"
 		even
 See_DataFlat:	binclude	"misc/slzssaw2.bin"
 		even
+		else
+		rts
+		endif

@@ -3,6 +3,7 @@
 ; ---------------------------------------------------------------------------
 
 BossGreenHill:
+		if MMD_Is_GHZ_3
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	BGHZ_Index(pc,d0.w),d1
@@ -121,4 +122,5 @@ loc_1784C:
 		bsr.w	AddPoints
 		move.b	#8,ob2ndRout(a0)
 		move.w	#$B3,objoff_3C(a0)
+		endif
 		rts	

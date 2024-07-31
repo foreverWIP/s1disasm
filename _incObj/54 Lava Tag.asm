@@ -3,6 +3,7 @@
 ; ---------------------------------------------------------------------------
 
 LavaTag:
+		if MMD_Is_MZ
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	LTag_Index(pc,d0.w),d1
@@ -33,4 +34,5 @@ LTag_ChkDel:	; Routine 2
 		bmi.w	DeleteObject
 		cmpi.w	#$280,d0
 		bhi.w	DeleteObject
+		endif
 		rts	

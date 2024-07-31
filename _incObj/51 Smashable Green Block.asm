@@ -3,6 +3,7 @@
 ; ---------------------------------------------------------------------------
 
 SmashBlock:
+		if MMD_Is_MZ
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	Smab_Index(pc,d0.w),d1
@@ -107,3 +108,6 @@ Smab_Speeds:	dc.w -$200, -$200	; x-speed, y-speed
 		dc.w $100, -$100
 
 Smab_Scores:	dc.w 10, 20, 50, 100
+		else
+		rts
+		endif

@@ -3,6 +3,7 @@
 ; ---------------------------------------------------------------------------
 
 WaterSurface:
+		if MMD_Is_LZ
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	Surf_Index(pc,d0.w),d1
@@ -61,3 +62,6 @@ Surf_Action:	; Routine 2
 
 .display:
 		bra.w	DisplaySprite
+		else
+		rts
+		endif

@@ -3,6 +3,7 @@
 ; ---------------------------------------------------------------------------
 
 EndEggman:
+		if MMD_Is_Credits
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	EEgg_Index(pc,d0.w),d1
@@ -67,4 +68,5 @@ EEgg_Wait:	; Routine 6
 		move.b	#2,obRoutine(a0) ; goto EEgg_Animate next
 
 .nochg:
+		endif
 		rts	

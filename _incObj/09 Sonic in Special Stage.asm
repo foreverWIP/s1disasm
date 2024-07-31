@@ -3,6 +3,7 @@
 ; ---------------------------------------------------------------------------
 
 SonicSpecial:
+		if MMD_Is_SS
 		tst.w	(v_debuguse).l	; is debug mode	being used?
 		beq.s	Obj09_Normal	; if not, branch
 		bsr.w	SS_FixCamera
@@ -722,5 +723,6 @@ Obj09_GlassSnd:
 ; ===========================================================================
 
 Obj09_NoGlass:
+		endif
 		rts	
 ; End of function Obj09_ChkItems2

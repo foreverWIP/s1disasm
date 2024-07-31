@@ -3,6 +3,7 @@
 ; ---------------------------------------------------------------------------
 
 BossSpringYard:
+		if MMD_Is_SYZ
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	BossSpringYard_Index(pc,d0.w),d1
@@ -619,3 +620,6 @@ loc_19688:
 
 BossSpringYard_SpikeDelete:
 		jmp	(DeleteObject).l
+		else
+		rts
+		endif

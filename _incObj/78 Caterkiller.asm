@@ -3,6 +3,7 @@
 ; ---------------------------------------------------------------------------
 
 Caterkiller:
+		if MMD_Is_MZ||MMD_Is_SYZ
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	Cat_Index(pc,d0.w),d1
@@ -407,3 +408,6 @@ loc_16CE0:
 		tst.b	obRender(a0)
 		bpl.w	Cat_ChkGone
 		jmp	(DisplaySprite).l
+		else
+		rts
+		endif

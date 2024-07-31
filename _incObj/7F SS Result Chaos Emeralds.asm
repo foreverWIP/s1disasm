@@ -3,6 +3,7 @@
 ; ---------------------------------------------------------------------------
 
 SSRChaos:
+		if MMD_Is_SS
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	SSRC_Index(pc,d0.w),d1
@@ -51,3 +52,6 @@ SSRC_Flash:	; Routine 2
 
 SSRC_Display:
 		bra.w	DisplaySprite
+		else
+		rts
+		endif

@@ -3,6 +3,7 @@
 ; ---------------------------------------------------------------------------
 
 SideStomp:
+		if MMD_Is_MZ
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	SStom_Index(pc,d0.w),d1
@@ -163,4 +164,5 @@ loc_BB3C:
 		neg.w	d0
 		add.w	objoff_30(a0),d0
 		move.w	d0,obX(a0)
+		endif
 		rts	

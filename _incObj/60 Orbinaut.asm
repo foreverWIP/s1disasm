@@ -3,6 +3,7 @@
 ; ---------------------------------------------------------------------------
 
 Orbinaut:
+		if MMD_Is_LZ||MMD_Is_SLZ||MMD_Is_SBZ_3
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	Orb_Index(pc,d0.w),d1
@@ -185,3 +186,6 @@ Orb_ChkDel2:	; Routine 8
 		tst.b	obRender(a0)
 		bpl.w	DeleteObject
 		bra.w	DisplaySprite
+		else
+		rts
+		endif

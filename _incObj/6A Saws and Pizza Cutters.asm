@@ -3,6 +3,7 @@
 ; ---------------------------------------------------------------------------
 
 Saws:
+		if MMD_Is_SBZ
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	Saw_Index(pc,d0.w),d1
@@ -192,4 +193,5 @@ Saw_Action:	; Routine 2
 		bchg	#0,obFrame(a0)
 
 .sameframe04:
+		endif
 		rts	

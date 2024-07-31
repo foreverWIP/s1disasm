@@ -3,6 +3,7 @@
 ; ---------------------------------------------------------------------------
 
 ContScrItem:
+		if MMD_Is_Continue
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	CSI_Index(pc,d0.w),d1
@@ -98,3 +99,6 @@ CSI_Display2:
 
 CSI_Delete:
 		jmp	(DeleteObject).l
+		else
+		rts
+		endif

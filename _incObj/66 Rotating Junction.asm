@@ -3,6 +3,7 @@
 ; ---------------------------------------------------------------------------
 
 Junction:
+		if MMD_Is_SBZ
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	Jun_Index(pc,d0.w),d1
@@ -186,3 +187,6 @@ Jun_ChgPos:
 		dc.b  $18, -$18,   $E, -$1E
 		dc.b    0, -$20,  -$E, -$1E
 		dc.b -$18, -$18, -$1E,  -$E
+		else
+		rts
+		endif

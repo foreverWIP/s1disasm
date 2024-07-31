@@ -3,6 +3,7 @@
 ; ---------------------------------------------------------------------------
 
 Electro:
+		if MMD_Is_SBZ
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	Elec_Index(pc,d0.w),d1
@@ -47,3 +48,6 @@ Elec_Shock:	; Routine 2
 
 .display:
 		bra.w	RememberState
+		else
+		rts
+		endif

@@ -3,6 +3,7 @@
 ; ---------------------------------------------------------------------------
 
 VanishPlatform:
+		if MMD_Is_SBZ
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	VanP_Index(pc,d0.w),d1
@@ -103,3 +104,6 @@ VanP_Appear:	; Routine 4
 
 .display:
 		bra.w	RememberState
+		else
+		rts
+		endif

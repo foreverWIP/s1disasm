@@ -3,6 +3,7 @@
 ; ---------------------------------------------------------------------------
 
 Bumper:
+		if MMD_Is_SYZ
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	Bump_Index(pc,d0.w),d1
@@ -79,3 +80,6 @@ Bump_Hit:	; Routine 2
 
 .delete:
 		bra.w	DeleteObject
+		else
+		rts
+		endif

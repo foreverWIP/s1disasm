@@ -3,6 +3,7 @@
 ; ---------------------------------------------------------------------------
 
 PushBlock:
+		if MMD_Is_MZ||MMD_Is_LZ
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	PushB_Index(pc,d0.w),d1
@@ -361,4 +362,5 @@ loc_C2E0:
 		add.w	d1,obY(a0)
 
 locret_C2E4:
+		endif
 		rts	

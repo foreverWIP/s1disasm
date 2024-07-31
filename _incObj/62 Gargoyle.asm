@@ -3,6 +3,7 @@
 ; ---------------------------------------------------------------------------
 
 Gargoyle:
+		if MMD_Is_LZ
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	Gar_Index(pc,d0.w),d1
@@ -109,3 +110,5 @@ Gar_AniFire:	; Routine 6
 		addq.l	#4,sp
 		bra.w	DeleteObject
 	endif
+		else
+		endif

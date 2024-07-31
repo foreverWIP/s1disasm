@@ -3,6 +3,7 @@
 ; ---------------------------------------------------------------------------
 
 Splash:
+		if MMD_Is_LZ
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	Spla_Index(pc,d0.w),d1
@@ -31,3 +32,6 @@ Spla_Display:	; Routine 2
 
 Spla_Delete:	; Routine 4
 		jmp	(DeleteObject).l	; delete when animation	is complete
+		else
+		rts
+		endif

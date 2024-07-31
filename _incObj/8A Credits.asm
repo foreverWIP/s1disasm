@@ -3,6 +3,7 @@
 ; ---------------------------------------------------------------------------
 
 CreditsText:
+		if MMD_Is_Title||MMD_Is_Credits
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	Cred_Index(pc,d0.w),d1
@@ -39,3 +40,6 @@ Cred_Main:	; Routine 0
 
 Cred_Display:	; Routine 2
 		jmp	(DisplaySprite).l
+		else
+		rts
+		endif

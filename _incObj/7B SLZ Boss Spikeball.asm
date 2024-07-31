@@ -3,6 +3,7 @@
 ; ---------------------------------------------------------------------------
 
 BossSpikeball:
+		if MMD_Is_SLZ
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	BossSpikeball_Index(pc,d0.w),d0
@@ -375,4 +376,5 @@ BossSpikeball_MoveFrag:	; Routine $A
 		move.b	d0,obFrame(a0)
 		tst.b	obRender(a0)
 		bpl.w	BossStarLight_Delete
+		endif
 		rts	

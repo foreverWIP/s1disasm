@@ -3,6 +3,7 @@
 ; ---------------------------------------------------------------------------
 
 SpinConvey:
+		if MMD_Is_SBZ
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	SpinC_Index(pc,d0.w),d1
@@ -194,3 +195,6 @@ loc_16480:
 
 loc_16484:
 		jmp	(SpeedToPos).l
+		else
+		rts
+		endif

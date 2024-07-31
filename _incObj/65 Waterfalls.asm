@@ -3,6 +3,7 @@
 ; ---------------------------------------------------------------------------
 
 Waterfall:
+		if MMD_Is_LZ||MMD_Is_SBZ_3
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	WFall_Index(pc,d0.w),d1
@@ -67,3 +68,4 @@ loc_12B36:	; Routine 8
 
 .animate:
 		bra.s	WFall_Animate
+		endif

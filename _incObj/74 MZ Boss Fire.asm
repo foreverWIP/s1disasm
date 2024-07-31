@@ -3,6 +3,7 @@
 ; ---------------------------------------------------------------------------
 
 BossFire:
+		if MMD_Is_MZ
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	BossFire_Index(pc,d0.w),d0
@@ -222,3 +223,6 @@ BossFire_Animate:
 
 BossFire_Delete3:	; Routine 6
 		jmp	(DeleteObject).l
+		else
+		rts
+		endif

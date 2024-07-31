@@ -1,5 +1,6 @@
 
 BGHZ_MakeBall:
+		if MMD_Is_GHZ_3
 		move.w	#-$100,obVelX(a0)
 		move.w	#-$40,obVelY(a0)
 		bsr.w	BossMove
@@ -227,3 +228,6 @@ BGHZ_Display:
 		andi.b	#$FC,obRender(a0)
 		or.b	d0,obRender(a0)
 		jmp	(DisplaySprite).l
+		else
+		rts
+		endif

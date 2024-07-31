@@ -3,6 +3,7 @@
 ; ---------------------------------------------------------------------------
 
 Pole:
+		if MMD_Is_LZ
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	Pole_Index(pc,d0.w),d1
@@ -98,3 +99,6 @@ Pole_Action:	; Routine 2
 
 Pole_Display:	; Routine 4
 		bra.w	RememberState
+		else
+		rts
+		endif
