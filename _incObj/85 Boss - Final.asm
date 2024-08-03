@@ -145,7 +145,11 @@ loc_19EC6:
 		move.w	(a1,d0.w),d0
 		move.w	(a1,d1.w),d1
 		move.w	d0,objoff_30(a0)
+		if MMD_Enabled
+		move.l	#$23FF00,d2
+		else
 		moveq	#-1,d2
+		endif
 		move.w	objoff_38(a0,d0.w),d2
 		movea.l	d2,a1
 		move.b	#-1,objoff_29(a1)
@@ -240,7 +244,11 @@ word_19FD6:	dc.w 0,	2, 2, 4, 4, 6, 6, 0
 ; ===========================================================================
 
 loc_19FE6:
+		if MMD_Enabled
+		move.l	#$23FF00,d0
+		else
 		moveq	#-1,d0
+		endif
 		move.w	objoff_36(a0),d0
 		movea.l	d0,a1
 		tst.w	objoff_30(a0)

@@ -348,7 +348,22 @@ GameInit:
 		bsr.w	DACDriverLoad
 		endif
 		bsr.w	JoypadInit
-		move.b	#id_Sega,(v_gamemode).l ; set Game Mode to Sega Screen
+		if ~~MMD_Enabled
+			if MMD_Is_Title
+			move.b	#id_Title,(v_gamemode).l
+			endif
+			if MMD_Is_Level
+			move.w	#$8174,(vdp_control_port).l
+			move.b	#id_Level,(v_gamemode).l
+			endif
+			if MMD_Is_Demo
+			move.w	#$8174,(vdp_control_port).l
+			move.b	#id_Demo,(v_gamemode).l
+			endif
+			if MMD_Is_Continue
+			move.b	#id_Continue,(v_gamemode).l
+			endif
+		endif
 
 MainGameLoop:
 		move.b	(v_gamemode).l,d0 ; load Game Mode
@@ -379,19 +394,6 @@ ptr_GM_Ending:	bra.w	GM_Ending	; End of game sequence ($18)
 ptr_GM_Credits:	bra.w	GM_Credits	; Credits ($1C)
 
 		rts	
-; ===========================================================================
-
-CheckSumError:
-		bsr.w	VDPSetupGame
-		move.l	#$C0000000,(vdp_control_port).l ; set VDP to CRAM write
-		moveq	#$3F,d7
-
-.fillred:
-		move.w	#cRed,(vdp_data_port).l ; fill palette with red
-		dbf	d7,.fillred	; repeat $3F more times
-
-.endlessloop:
-		bra.s	.endlessloop
 ; ===========================================================================
 ; ---------------------------------------------------------------------------
 ; Vertical interrupt
@@ -1765,6 +1767,7 @@ WaitForVBla:
 ; ---------------------------------------------------------------------------
 
 GM_Sega:
+		move.b	#id_Title,(v_gamemode).l
 GM_Title:
 		if MMD_Is_Title
 		move.b	#bgm_Stop,d0
@@ -4723,7 +4726,11 @@ GetBlockData_2:
 		andi.w	#$7F,d0
 		; Get chunk from level layout
 		add.w	d3,d0
+		if MMD_Enabled
+		move.l	#$23FF00,d3
+		else
 		moveq	#-1,d3
+		endif
 		move.b	(a4,d0.w),d3
 		beq.s	locret_6C1E	; If chunk 00, just return a pointer to the first block (expected to be empty)
 		; Turn chunk ID into index into chunk table

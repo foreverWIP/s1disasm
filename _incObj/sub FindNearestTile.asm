@@ -21,7 +21,11 @@ FindNearestTile:
 		lsr.w	#8,d1
 		andi.w	#$7F,d1
 		add.w	d1,d0		; combine
+		if MMD_Enabled
+		move.l	#$23FF00,d1
+		else
 		moveq	#-1,d1
+		endif
 		lea	(v_lvllayout).l,a1
 		move.b	(a1,d0.w),d1	; get 256x256 tile number
 		beq.s	.blanktile	; branch if 0 (this causes $FFFFFF00 (v_chunk0collision) to be returned in a1!)

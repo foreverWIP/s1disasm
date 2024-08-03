@@ -78,7 +78,11 @@ FFloor_Solid:
 loc_19C36:	; Routine 4
 		subi.b	#$E,obTimeFrame(a0)
 		bcc.s	FFloor_Solid2
+		if MMD_Enabled
+		move.l	#$23FF00,d0
+		else
 		moveq	#-1,d0
+		endif
 		move.b	obFrame(a0),d0
 		ext.w	d0
 		add.w	d0,d0

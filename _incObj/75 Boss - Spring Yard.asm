@@ -208,7 +208,11 @@ loc_19302:
 		blo.s	loc_19344
 		move.w	#boss_syz_y+$8A,objoff_38(a0)
 		clr.w	objoff_3C(a0)
+		if MMD_Enabled
+		move.l	#$23FF00,d0
+		else
 		moveq	#-1,d0
+		endif
 		move.w	objoff_36(a0),d0
 		beq.s	loc_1933C
 		movea.l	d0,a1
@@ -288,7 +292,11 @@ loc_193D0:
 		subq.w	#1,objoff_3C(a0)
 		bgt.s	loc_19406
 		bmi.s	loc_193EE
+		if MMD_Enabled
+		move.l	#$23FF00,d0
+		else
 		moveq	#-1,d0
+		endif
 		move.w	objoff_36(a0),d0
 		beq.s	loc_193E8
 		movea.l	d0,a1

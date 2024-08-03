@@ -24,6 +24,10 @@ writeVRAM:	macro source,destination
 		move.w	#$4000+((destination)&$3FFF),(a5)
 		move.w	#$80+(((destination)&$C000)>>14),(v_vdp_buffer2).l
 		move.w	(v_vdp_buffer2).l,(a5)
+		if MMD_Enabled
+		locVRAM destination
+		move.w	(source).l,(vdp_data_port).l
+		endif
 		endm
 
 ; ---------------------------------------------------------------------------
@@ -39,6 +43,10 @@ writeCRAM:	macro source,destination
 		move.w	#$C000+(destination&$3FFF),(a5)
 		move.w	#$80+((destination&$C000)>>14),(v_vdp_buffer2).l
 		move.w	(v_vdp_buffer2).l,(a5)
+		if MMD_Enabled
+		move.l	#$C0000000+(destination<<16),(vdp_control_port).l
+		move.w	(source).l,(vdp_data_port).l
+		endif
 		endm
 
 ; ---------------------------------------------------------------------------
