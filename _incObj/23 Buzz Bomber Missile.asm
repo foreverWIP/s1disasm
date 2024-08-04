@@ -3,6 +3,7 @@
 ; ---------------------------------------------------------------------------
 
 Missile:
+		if MMD_Is_GHZ||MMD_Is_MZ||MMD_Is_SYZ
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	Msl_Index(pc,d0.w),d1
@@ -127,4 +128,5 @@ Msl_Animate2:
 		lea	(Ani_Missile).l,a1
 		bsr.w	AnimateSprite
 		bsr.w	DisplaySprite
+		endif
 		rts	

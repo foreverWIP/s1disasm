@@ -3,6 +3,7 @@
 ; ---------------------------------------------------------------------------
 
 Fan:
+		if MMD_Is_SLZ
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	Fan_Index(pc,d0.w),d1
@@ -96,4 +97,5 @@ Fan_Delay:	; Routine 2
 .chkdel:
 		bsr.w	DisplaySprite
 		out_of_range.w	DeleteObject
+		endif
 		rts	

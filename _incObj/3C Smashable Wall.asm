@@ -3,6 +3,7 @@
 ; ---------------------------------------------------------------------------
 
 SmashWall:
+		if MMD_Is_GHZ||MMD_Is_SLZ
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	Smash_Index(pc,d0.w),d1
@@ -72,4 +73,5 @@ Smash_FragMove:	; Routine 4
 		bsr.w	DisplaySprite
 		tst.b	obRender(a0)
 		bpl.w	DeleteObject
+		endif
 		rts	

@@ -3,6 +3,7 @@
 ; ---------------------------------------------------------------------------
 
 Pylon:
+		if MMD_Is_SLZ
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	Pyl_Index(pc,d0.w),d1
@@ -32,3 +33,6 @@ Pyl_Display:	; Routine 2
 		addi.w	#$100,d1
 		move.w	d1,obScreenY(a0)
 		bra.w	DisplaySprite
+		else
+		rts
+		endif

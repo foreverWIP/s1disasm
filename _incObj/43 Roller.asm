@@ -3,6 +3,7 @@
 ; ---------------------------------------------------------------------------
 
 Roller:
+		if MMD_Is_SYZ
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	Roll_Index(pc,d0.w),d1
@@ -154,5 +155,6 @@ Roll_Stop:
 		bset	#7,objoff_32(a0)
 
 locret_E188:
+		endif
 		rts	
 ; End of function Roll_Stop

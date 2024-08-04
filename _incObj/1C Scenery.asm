@@ -3,6 +3,7 @@
 ; ---------------------------------------------------------------------------
 
 Scenery:
+		if MMD_Is_GHZ||MMD_Is_SLZ
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	Scen_Index(pc,d0.w),d1
@@ -46,3 +47,6 @@ Scen_Values:	dc.l Map_Scen                                     ; mappings addres
 		dc.w make_art_tile(ArtTile_GHZ_Bridge,2,0)
 		dc.b 1,	$10, 1,	0
 		even
+		else
+		rts
+		endif

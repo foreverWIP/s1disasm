@@ -8,6 +8,7 @@ stair_origY = objoff_32		; original y-axis position
 stair_parent = objoff_3C	; address of parent object (4 bytes)
 
 Staircase:
+		if MMD_Is_SLZ
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	Stair_Index(pc,d0.w),d1
@@ -175,4 +176,5 @@ Stair_Type01:
 
 locret_11038:
 		rts	
+		endif
 		rts	

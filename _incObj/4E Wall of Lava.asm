@@ -3,6 +3,7 @@
 ; ---------------------------------------------------------------------------
 
 LavaWall:
+		if MMD_Is_MZ
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	LWall_Index(pc,d0.w),d1
@@ -127,3 +128,6 @@ LWall_Move:	; Routine 6
 
 LWall_Delete:	; Routine 8
 		bra.w	DeleteObject
+		else
+		rts
+		endif

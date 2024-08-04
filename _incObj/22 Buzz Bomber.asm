@@ -4,6 +4,7 @@
 ; ---------------------------------------------------------------------------
 
 BuzzBomber:
+		if MMD_Is_GHZ||MMD_Is_MZ||MMD_Is_SYZ
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	Buzz_Index(pc,d0.w),d1
@@ -126,4 +127,5 @@ Buzz_Action:	; Routine 2
 
 Buzz_Delete:	; Routine 4
 		bsr.w	DeleteObject
+		endif
 		rts	

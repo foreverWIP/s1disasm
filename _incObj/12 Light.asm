@@ -3,6 +3,7 @@
 ; ---------------------------------------------------------------------------
 
 SpinningLight:
+		if MMD_Is_SYZ
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	Light_Index(pc,d0.w),d1
@@ -32,3 +33,6 @@ Light_Animate:	; Routine 2
 .chkdel:
 		out_of_range.w	DeleteObject
 		bra.w	DisplaySprite
+		else
+		rts
+		endif

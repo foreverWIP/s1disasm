@@ -3,6 +3,7 @@
 ; ---------------------------------------------------------------------------
 
 Cannonball:
+		if MMD_Is_SBZ
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	Cbal_Index(pc,d0.w),d1
@@ -84,3 +85,6 @@ Cbal_Display:
 	else
 		rts	
 	endif
+		else
+		rts
+		endif

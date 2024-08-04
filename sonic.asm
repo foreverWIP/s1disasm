@@ -151,9 +151,13 @@ EndOfHeader:
 		MMD 0,WORDRAM2M,0,EntryPoint,HBlank,VBlank
 		endif
 
-		if ~~MMD_Enabled
-		include "_debugger/DebuggerBlob.asm"
-		endif
+ErrorTrap:
+		nop
+		nop
+		bra.s	ErrorTrap
+
+		include "_debugger/skcompat.asm"
+		include "_debugger/Debugger.asm"
 
 ; ===========================================================================
 
@@ -5232,7 +5236,9 @@ locret_75F2:
 
 		include	"_incObj/11 Bridge (part 3).asm"
 Map_Bri:
+		if MMD_Is_GHZ
 		include	"_maps/Bridge.asm"
+		endif
 
 		include	"_incObj/15 Swinging Platforms (part 1).asm"
 
@@ -5420,17 +5426,25 @@ Ledge_SlopeData:
 		even
 
 Map_Ledge:
+		if MMD_Is_GHZ
 		include	"_maps/Collapsing Ledge.asm"
+		endif
 Map_CFlo:
+		if MMD_Is_MZ||MMD_Is_SLZ||MMD_Is_SBZ
 		include	"_maps/Collapsing Floors.asm"
+		endif
 
 		include	"_incObj/1C Scenery.asm"
 Map_Scen:
+		if MMD_Is_GHZ||MMD_Is_SLZ
 		include	"_maps/Scenery.asm"
+		endif
 
 		include	"_incObj/1D Unused Switch.asm"
 Map_Swi:
+		if 0
 		include	"_maps/Unused Switch.asm"
+		endif
 
 		include	"_incObj/2A SBZ Small Door.asm"
 		if MMD_Is_SBZ
@@ -5588,16 +5602,27 @@ Map_Animal3:	include	"_maps/Animals 3.asm"
 Map_Poi:	include	"_maps/Points.asm"
 
 		include	"_incObj/1F Crabmeat.asm"
+		if MMD_Is_GHZ||MMD_Is_SYZ
 		include	"_anim/Crabmeat.asm"
-Map_Crab:	include	"_maps/Crabmeat.asm"
+		endif
+Map_Crab:
+		if MMD_Is_GHZ||MMD_Is_SYZ
+		include	"_maps/Crabmeat.asm"
+		endif
 		include	"_incObj/22 Buzz Bomber.asm"
 		include	"_incObj/23 Buzz Bomber Missile.asm"
+		if MMD_Is_GHZ||MMD_Is_MZ||MMD_Is_SYZ
 		include	"_anim/Buzz Bomber.asm"
 		include	"_anim/Buzz Bomber Missile.asm"
+		endif
 Map_Buzz:
+		if MMD_Is_GHZ||MMD_Is_MZ||MMD_Is_SYZ
 		include	"_maps/Buzz Bomber.asm"
+		endif
 Map_Missile:
+		if MMD_Is_GHZ||MMD_Is_MZ||MMD_Is_SYZ
 		include	"_maps/Buzz Bomber Missile.asm"
+		endif
 
 		include	"_incObj/25 & 37 Rings.asm"
 		include	"_incObj/4B Giant Ring.asm"
@@ -5622,17 +5647,30 @@ Map_Monitor:	include	"_maps/Monitor.asm"
 		include	"_incObj/0E Title Screen Sonic.asm"
 		include	"_incObj/0F Press Start and TM.asm"
 
+		if MMD_Is_Title
 		include	"_anim/Title Screen Sonic.asm"
 		include	"_anim/Press Start and TM.asm"
+		endif
 
 		include	"_incObj/sub AnimateSprite.asm"
 
-Map_PSB:	include	"_maps/Press Start and TM.asm"
-Map_TSon:	include	"_maps/Title Screen Sonic.asm"
+Map_PSB:
+		if MMD_Is_Title
+		include	"_maps/Press Start and TM.asm"
+		endif
+Map_TSon:
+		if MMD_Is_Title
+		include	"_maps/Title Screen Sonic.asm"
+		endif
 
 		include	"_incObj/2B Chopper.asm"
+		if MMD_Is_GHZ
 		include	"_anim/Chopper.asm"
-Map_Chop:	include	"_maps/Chopper.asm"
+		endif
+Map_Chop:
+		if MMD_Is_GHZ
+		include	"_maps/Chopper.asm"
+		endif
 		include	"_incObj/2C Jaws.asm"
 		if MMD_Is_LZ||MMD_Is_SBZ
 		include	"_anim/Jaws.asm"
@@ -5660,17 +5698,29 @@ Map_LGrass:	include	"_maps/MZ Large Grassy Platforms.asm"
 Map_Fire:	include	"_maps/Fireballs.asm"
 			endif
 		include	"_incObj/30 MZ Large Green Glass Blocks.asm"
-Map_Glass:	include	"_maps/MZ Large Green Glass Blocks.asm"
+Map_Glass:
+		if MMD_Is_MZ
+		include	"_maps/MZ Large Green Glass Blocks.asm"
+		endif
 		include	"_incObj/31 Chained Stompers.asm"
 		include	"_incObj/45 Sideways Stomper.asm"
-Map_CStom:	include	"_maps/Chained Stompers.asm"
-Map_SStom:	include	"_maps/Sideways Stomper.asm"
+Map_CStom:
+		if MMD_Is_MZ
+		include	"_maps/Chained Stompers.asm"
+		endif
+Map_SStom:
+		if MMD_Is_MZ
+		include	"_maps/Sideways Stomper.asm"
+		endif
 
 		include	"_incObj/32 Button.asm"
 Map_But:	include	"_maps/Button.asm"
 
 		include	"_incObj/33 Pushable Blocks.asm"
-Map_Push:	include	"_maps/Pushable Blocks.asm"
+Map_Push:
+		if MMD_Is_MZ
+		include	"_maps/Pushable Blocks.asm"
+		endif
 
 		include	"_incObj/34 Title Cards.asm"
 		include	"_incObj/39 Game Over.asm"
@@ -6011,7 +6061,10 @@ Map_SSRC:	include	"_maps/SS Result Chaos Emeralds.asm"
 Map_Spike:	include	"_maps/Spikes.asm"
 		include	"_incObj/3B Purple Rock.asm"
 		include	"_incObj/49 Waterfall Sound.asm"
-Map_PRock:	include	"_maps/Purple Rock.asm"
+Map_PRock:
+		if MMD_Is_GHZ
+		include	"_maps/Purple Rock.asm"
+		endif
 		include	"_incObj/3C Smashable Wall.asm"
 
 		include	"_incObj/sub SmashObject.asm"
@@ -6630,14 +6683,25 @@ locret_DA8A:
 Map_Spring:	include	"_maps/Springs.asm"
 
 		include	"_incObj/42 Newtron.asm"
+		if MMD_Is_GHZ
 		include	"_anim/Newtron.asm"
-Map_Newt:	include	"_maps/Newtron.asm"
+		endif
+Map_Newt:
+		if MMD_Is_GHZ
+		include	"_maps/Newtron.asm"
+		endif
 		include	"_incObj/43 Roller.asm"
+		if MMD_Is_SYZ
 		include	"_anim/Roller.asm"
-Map_Roll:	include	"_maps/Roller.asm"
+		endif
+Map_Roll:
+		if MMD_Is_SYZ
+		include	"_maps/Roller.asm"
+		endif
 
 		include	"_incObj/44 GHZ Edge Walls.asm"
-Map_Edge:	include	"_maps/GHZ Edge Walls.asm"
+Map_Edge:
+		include	"_maps/GHZ Edge Walls.asm"
 
 		include	"_incObj/13 Lava Ball Maker.asm"
 		include	"_incObj/14 Lava Ball.asm"
@@ -6645,16 +6709,26 @@ Map_Edge:	include	"_maps/GHZ Edge Walls.asm"
 
 		include	"_incObj/6D Flamethrower.asm"
 		include	"_anim/Flamethrower.asm"
-Map_Flame:	include	"_maps/Flamethrower.asm"
+Map_Flame:
+		include	"_maps/Flamethrower.asm"
 
 		include	"_incObj/46 MZ Bricks.asm"
-Map_Brick:	include	"_maps/MZ Bricks.asm"
+Map_Brick:
+		if MMD_Is_MZ
+		include	"_maps/MZ Bricks.asm"
+		endif
 
 		include	"_incObj/12 Light.asm"
-Map_Light	include	"_maps/Light.asm"
+Map_Light:
+		include	"_maps/Light.asm"
 		include	"_incObj/47 Bumper.asm"
+		if MMD_Is_SYZ
 		include	"_anim/Bumper.asm"
-Map_Bump:	include	"_maps/Bumper.asm"
+		endif
+Map_Bump:
+		if MMD_Is_SYZ
+		include	"_maps/Bumper.asm"
+		endif
 
 		include	"_incObj/0D Signpost.asm" ; includes "GotThroughAct" subroutine
 		include	"_anim/Signpost.asm"
@@ -6663,69 +6737,131 @@ Map_Sign:	include	"_maps/Signpost.asm"
 		include	"_incObj/4C & 4D Lava Geyser Maker.asm"
 		include	"_incObj/4E Wall of Lava.asm"
 		include	"_incObj/54 Lava Tag.asm"
-Map_LTag:	include	"_maps/Lava Tag.asm"
+Map_LTag:
+		if MMD_Is_MZ
+		include	"_maps/Lava Tag.asm"
 		include	"_anim/Lava Geyser.asm"
 		include	"_anim/Wall of Lava.asm"
-Map_Geyser:	include	"_maps/Lava Geyser.asm"
-Map_LWall:	include	"_maps/Wall of Lava.asm"
+		endif
+Map_Geyser:
+		if MMD_Is_MZ
+		include	"_maps/Lava Geyser.asm"
+		endif
+Map_LWall:
+		if MMD_Is_MZ
+		include	"_maps/Wall of Lava.asm"
+		endif
 
 		include	"_incObj/40 Moto Bug.asm" ; includes "_incObj/sub RememberState.asm"
+		if MMD_Is_GHZ
 		include	"_anim/Moto Bug.asm"
-Map_Moto:	include	"_maps/Moto Bug.asm"
+		endif
+Map_Moto:
+		if MMD_Is_GHZ
+		include	"_maps/Moto Bug.asm"
+		endif
 		include	"_incObj/4F.asm"
 
 		include	"_incObj/50 Yadrin.asm"
+		if MMD_Is_MZ||MMD_Is_SYZ
 		include	"_anim/Yadrin.asm"
-Map_Yad:	include	"_maps/Yadrin.asm"
+		endif
+Map_Yad:
+		if MMD_Is_MZ||MMD_Is_SYZ
+		include	"_maps/Yadrin.asm"
+		endif
 
 		include	"_incObj/sub SolidObject.asm"
 
 		include	"_incObj/51 Smashable Green Block.asm"
-Map_Smab:	include	"_maps/Smashable Green Block.asm"
+Map_Smab:
+		if MMD_Is_MZ
+		include	"_maps/Smashable Green Block.asm"
+		endif
 
 		include	"_incObj/52 Moving Blocks.asm"
-Map_MBlock:	include	"_maps/Moving Blocks (MZ and SBZ).asm"
-Map_MBlockLZ:	include	"_maps/Moving Blocks (LZ).asm"
+Map_MBlock:
+		if MMD_Is_MZ||MMD_Is_SBZ
+		include	"_maps/Moving Blocks (MZ and SBZ).asm"
+		endif
+Map_MBlockLZ:
+		if MMD_Is_LZ
+		include	"_maps/Moving Blocks (LZ).asm"
+		endif
 
 		include	"_incObj/55 Basaran.asm"
 		include	"_anim/Basaran.asm"
-Map_Bas:	include	"_maps/Basaran.asm"
+Map_Bas:
+		include	"_maps/Basaran.asm"
 
 		include	"_incObj/56 Floating Blocks and Doors.asm"
-Map_FBlock:	include	"_maps/Floating Blocks and Doors.asm"
+Map_FBlock:
+		include	"_maps/Floating Blocks and Doors.asm"
 
 		include	"_incObj/57 Spiked Ball and Chain.asm"
-Map_SBall:	include	"_maps/Spiked Ball and Chain (SYZ).asm"
-Map_SBall2:	include	"_maps/Spiked Ball and Chain (LZ).asm"
+Map_SBall:
+		if MMD_Is_SYZ
+		include	"_maps/Spiked Ball and Chain (SYZ).asm"
+		endif
+Map_SBall2:
+		if MMD_Is_LZ
+		include	"_maps/Spiked Ball and Chain (LZ).asm"
+		endif
 		include	"_incObj/58 Big Spiked Ball.asm"
-Map_BBall:	include	"_maps/Big Spiked Ball.asm"
+Map_BBall:
+		if MMD_Is_SLZ
+		include	"_maps/Big Spiked Ball.asm"
+		endif
 		include	"_incObj/59 SLZ Elevators.asm"
-Map_Elev:	include	"_maps/SLZ Elevators.asm"
+Map_Elev:
+		if MMD_Is_SLZ
+		include	"_maps/SLZ Elevators.asm"
+		endif
 		include	"_incObj/5A SLZ Circling Platform.asm"
-Map_Circ:	include	"_maps/SLZ Circling Platform.asm"
+Map_Circ:
+		if MMD_Is_SLZ
+		include	"_maps/SLZ Circling Platform.asm"
+		endif
 		include	"_incObj/5B Staircase.asm"
-Map_Stair:	include	"_maps/Staircase.asm"
+Map_Stair:
+		if MMD_Is_SLZ
+		include	"_maps/Staircase.asm"
+		endif
 		include	"_incObj/5C Pylon.asm"
-Map_Pylon:	include	"_maps/Pylon.asm"
+Map_Pylon:
+		if MMD_Is_SLZ
+		include	"_maps/Pylon.asm"
+		endif
 
 		include	"_incObj/1B Water Surface.asm"
-Map_Surf:	include	"_maps/Water Surface.asm"
+Map_Surf:
+		include	"_maps/Water Surface.asm"
 		include	"_incObj/0B Pole that Breaks.asm"
-Map_Pole:	include	"_maps/Pole that Breaks.asm"
+Map_Pole:
+		include	"_maps/Pole that Breaks.asm"
 		include	"_incObj/0C Flapping Door.asm"
 		include	"_anim/Flapping Door.asm"
-Map_Flap:	include	"_maps/Flapping Door.asm"
+Map_Flap:
+		include	"_maps/Flapping Door.asm"
 
 		include	"_incObj/71 Invisible Barriers.asm"
-Map_Invis:	include	"_maps/Invisible Barriers.asm"
+Map_Invis:
+		include	"_maps/Invisible Barriers.asm"
 
 		include	"_incObj/5D Fan.asm"
-Map_Fan:	include	"_maps/Fan.asm"
+Map_Fan:
+		if MMD_Is_SLZ
+		include	"_maps/Fan.asm"
+		endif
 		include	"_incObj/5E Seesaw.asm"
 Map_Seesaw:
+		if MMD_Is_SLZ
 		include	"_maps/Seesaw.asm"
+		endif
 Map_SSawBall:
+		if MMD_Is_SLZ
 		include	"_maps/Seesaw Ball.asm"
+		endif
 		include	"_incObj/5F Bomb Enemy.asm"
 		include	"_anim/Bomb Enemy.asm"
 Map_Bomb:
@@ -6737,22 +6873,36 @@ Map_Orb:
 		include	"_maps/Orbinaut.asm"
 
 		include	"_incObj/16 Harpoon.asm"
+		if MMD_Is_LZ||MMD_Is_SBZ
 		include	"_anim/Harpoon.asm"
+		endif
 Map_Harp:
+		if MMD_Is_LZ||MMD_Is_SBZ
 		include	"_maps/Harpoon.asm"
+		endif
 		include	"_incObj/61 LZ Blocks.asm"
 Map_LBlock:
+		if MMD_Is_LZ||MMD_Is_SBZ
 		include	"_maps/LZ Blocks.asm"
+		endif
 		include	"_incObj/62 Gargoyle.asm"
 Map_Gar:
+		if MMD_Is_LZ||MMD_Is_SBZ
 		include	"_maps/Gargoyle.asm"
+		endif
 		include	"_incObj/63 LZ Conveyor.asm"
 Map_LConv:
+		if MMD_Is_LZ
 		include	"_maps/LZ Conveyor.asm"
+		endif
 		include	"_incObj/64 Bubbles.asm"
+		if MMD_Is_LZ||MMD_Is_SBZ
 		include	"_anim/Bubbles.asm"
+		endif
 Map_Bub:
+		if MMD_Is_LZ||MMD_Is_SBZ
 		include	"_maps/Bubbles.asm"
+		endif
 		include	"_incObj/65 Waterfalls.asm"
 		if MMD_Is_LZ||MMD_Is_SBZ
 		include	"_anim/Waterfalls.asm"
@@ -7017,7 +7167,9 @@ Map_Drown:
 		include	"_anim/Shield and Invincibility.asm"
 Map_Shield:
 		include	"_maps/Shield and Invincibility.asm"
+		if 0
 		include	"_anim/Special Stage Entry (Unused).asm"
+		endif
 Map_Vanish:
 		if MMD_Is_LZ||MMD_Is_SBZ
 		include	"_maps/Special Stage Entry (Unused).asm"

@@ -6,6 +6,7 @@ circ_origX = objoff_32		; original x-axis position
 circ_origY = objoff_30		; original y-axis position
 
 CirclingPlatform:
+		if MMD_Is_SLZ
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	Circ_Index(pc,d0.w),d1
@@ -108,4 +109,5 @@ Circ_Types:
 		move.w	d1,obX(a0)
 		add.w	circ_origY(a0),d2
 		move.w	d2,obY(a0)
+		endif
 		rts	

@@ -3,6 +3,7 @@
 ; ---------------------------------------------------------------------------
 
 Harpoon:
+		if MMD_Is_LZ
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	Harp_Index(pc,d0.w),d1
@@ -46,3 +47,6 @@ Harp_Wait:	; Routine 4
 
 .chkdel:
 		bra.w	RememberState
+		else
+		rts
+		endif

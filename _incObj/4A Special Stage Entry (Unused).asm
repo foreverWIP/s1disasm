@@ -3,6 +3,7 @@
 ; ---------------------------------------------------------------------------
 
 VanishSonic:
+		if 0
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	Van_Index(pc,d0.w),d1
@@ -54,4 +55,5 @@ Van_LoadSonic:	; Routine 4
 		jmp	(DeleteObject).l
 
 .wait:
+		endif
 		rts	

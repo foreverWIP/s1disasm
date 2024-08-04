@@ -3,6 +3,7 @@
 ; ---------------------------------------------------------------------------
 
 MotoBug:
+		if MMD_Is_GHZ
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	Moto_Index(pc,d0.w),d1
@@ -50,9 +51,13 @@ Moto_Action:	; Routine 2
 		jsr	Moto_ActIndex(pc,d1.w)
 		lea	(Ani_Moto).l,a1
 		bsr.w	AnimateSprite
+		else
+		rts
+		endif
 
 		include	"_incObj/sub RememberState.asm" ; Moto_Action terminates in this file
 
+		if MMD_Is_GHZ
 ; ===========================================================================
 Moto_ActIndex:	dc.w .move-Moto_ActIndex
 		dc.w .findfloor-Moto_ActIndex
@@ -113,3 +118,4 @@ Moto_Animate:	; Routine 4
 
 Moto_Delete:	; Routine 6
 		bra.w	DeleteObject
+		endif

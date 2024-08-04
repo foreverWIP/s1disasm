@@ -3,6 +3,7 @@
 ; ---------------------------------------------------------------------------
 
 Helix:
+		if MMD_Is_GHZ
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	Hel_Index(pc,d0.w),d1
@@ -128,3 +129,6 @@ Hel_Delete:	; Routine 6
 Hel_Display:	; Routine 8
 		bsr.w	Hel_RotateSpikes
 		bra.w	DisplaySprite
+		else
+		rts
+		endif

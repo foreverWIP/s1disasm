@@ -3,6 +3,7 @@
 ; ---------------------------------------------------------------------------
 
 PurpleRock:
+		if MMD_Is_GHZ
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	Rock_Index(pc,d0.w),d1
@@ -38,3 +39,6 @@ Rock_Solid:	; Routine 2
 		out_of_range.w	DeleteObject
 		rts
 	endif
+		else
+		rts
+		endif
