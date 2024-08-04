@@ -1,6 +1,6 @@
 
 BGHZ_MakeBall:
-		if MMD_Is_GHZ_3
+		if MMD_Is_GHZ
 		move.w	#-$100,obVelX(a0)
 		move.w	#-$40,obVelY(a0)
 		bsr.w	BossMove

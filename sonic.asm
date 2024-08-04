@@ -349,26 +349,22 @@ GameInit:
 		endif
 		bsr.w	JoypadInit
 		if ~~MMD_Enabled
-			if MMD_Is_Title
-			move.b	#id_Title,(v_gamemode).l
-			endif
 			if MMD_Is_Level
 			move.w	#$8174,(vdp_control_port).l
-			move.b	#id_Level,(v_gamemode).l
 			endif
-			if MMD_Is_Demo
-			move.w	#$8174,(vdp_control_port).l
-			move.b	#id_Demo,(v_gamemode).l
-			endif
-			if MMD_Is_Continue
-			move.b	#id_Continue,(v_gamemode).l
-			endif
+			;if MMD_Is_Demo
+			;move.w	#$8174,(vdp_control_port).l
+			;endif
 		endif
 
 MainGameLoop:
 		move.b	(v_gamemode).l,d0 ; load Game Mode
 		andi.w	#$1C,d0	; limit Game Mode value to $1C max (change to a maximum of 7C to add more game modes)
 		jsr	GameModeArray(pc,d0.w) ; jump to apt location in ROM
+		tst.b	(v_gamemode).l
+		beq.s	.keepgoing
+		rts
+.keepgoing:
 		bra.s	MainGameLoop	; loop indefinitely
 ; ===========================================================================
 ; ---------------------------------------------------------------------------
@@ -2045,12 +2041,14 @@ LevSel_PlaySnd:
 
 LevSel_Ending:
 		move.b	#id_Ending,(v_gamemode).l ; set screen mode to $18 (Ending)
+		move.b	#1,(v_return_from_mmd).l
 		move.w	#(id_EndZ<<8),(v_zone).l ; set level to 0600 (Ending)
 		rts	
 ; ===========================================================================
 
 LevSel_Credits:
 		move.b	#id_Credits,(v_gamemode).l ; set screen mode to $1C (Credits)
+		move.b	#1,(v_return_from_mmd).l
 		move.b	#bgm_Credits,d0
 		bsr.w	PlaySound_Special ; play credits music
 		move.w	#0,(v_creditsnum).l
@@ -2113,6 +2111,7 @@ LevSel_Level_SS:
 		cmpi.w	#id_SS*$100,d0	; check	if level is 0700 (Special Stage)
 		bne.s	LevSel_Level	; if not, branch
 		move.b	#id_Special,(v_gamemode).l ; set screen mode to $10 (Special Stage)
+		move.b	#1,(v_return_from_mmd).l
 		clr.w	(v_zone).l	; clear	level
 		move.b	#3,(v_lives).l	; set lives to 3
 		moveq	#0,d0
@@ -2131,6 +2130,7 @@ LevSel_Level:
 
 PlayLevel:
 		move.b	#id_Level,(v_gamemode).l ; set screen mode to $0C (level)
+		move.b	#1,(v_return_from_mmd).l
 		move.b	#3,(v_lives).l	; set lives to 3
 		moveq	#0,d0
 		move.w	d0,(v_rings).l	; clear rings
@@ -2181,6 +2181,7 @@ loc_33B6:
 		cmpi.w	#$1C00,d0
 		blo.s	loc_33E4
 		move.b	#id_Sega,(v_gamemode).l
+		move.b	#1,(v_return_from_mmd).l
 		rts	
 ; ===========================================================================
 
@@ -5633,19 +5634,19 @@ Map_TSon:	include	"_maps/Title Screen Sonic.asm"
 		include	"_anim/Chopper.asm"
 Map_Chop:	include	"_maps/Chopper.asm"
 		include	"_incObj/2C Jaws.asm"
-		if MMD_Is_LZ||MMD_Is_SBZ_3
+		if MMD_Is_LZ||MMD_Is_SBZ
 		include	"_anim/Jaws.asm"
 		endif
 Map_Jaws:
-		if MMD_Is_LZ||MMD_Is_SBZ_3
+		if MMD_Is_LZ||MMD_Is_SBZ
 		include	"_maps/Jaws.asm"
 		endif
 		include	"_incObj/2D Burrobot.asm"
-		if MMD_Is_LZ||MMD_Is_SBZ_3
+		if MMD_Is_LZ||MMD_Is_SBZ
 		include	"_anim/Burrobot.asm"
 		endif
 Map_Burro:
-		if MMD_Is_LZ||MMD_Is_SBZ_3
+		if MMD_Is_LZ||MMD_Is_SBZ
 		include	"_maps/Burrobot.asm"
 		endif
 
@@ -6753,11 +6754,11 @@ Map_LConv:
 Map_Bub:
 		include	"_maps/Bubbles.asm"
 		include	"_incObj/65 Waterfalls.asm"
-		if MMD_Is_LZ||MMD_Is_SBZ_3
+		if MMD_Is_LZ||MMD_Is_SBZ
 		include	"_anim/Waterfalls.asm"
 		endif
 Map_WFall:
-		if MMD_Is_LZ||MMD_Is_SBZ_3
+		if MMD_Is_LZ||MMD_Is_SBZ
 		include	"_maps/Waterfalls.asm"
 		endif
 
@@ -7002,11 +7003,11 @@ ResumeMusic:
 ; End of function ResumeMusic
 
 ; ===========================================================================
-		if MMD_Is_LZ||MMD_Is_SBZ_3
+		if MMD_Is_LZ||MMD_Is_SBZ
 		include	"_anim/Drowning Countdown.asm"
 		endif
 Map_Drown:
-		if MMD_Is_LZ||MMD_Is_SBZ_3
+		if MMD_Is_LZ||MMD_Is_SBZ
 		include	"_maps/Drowning Countdown.asm"
 		endif
 
@@ -7018,12 +7019,12 @@ Map_Shield:
 		include	"_maps/Shield and Invincibility.asm"
 		include	"_anim/Special Stage Entry (Unused).asm"
 Map_Vanish:
-		if MMD_Is_LZ||MMD_Is_SBZ_3
+		if MMD_Is_LZ||MMD_Is_SBZ
 		include	"_maps/Special Stage Entry (Unused).asm"
 		include	"_anim/Water Splash.asm"
 		endif
 Map_Splash:
-		if MMD_Is_LZ||MMD_Is_SBZ_3
+		if MMD_Is_LZ||MMD_Is_SBZ
 		include	"_maps/Water Splash.asm"
 		endif
 
@@ -8769,7 +8770,7 @@ ObjPos_GHZ3:	if Revision=0
 		endif
 		even
 ObjPos_LZ1:
-		if MMD_Is_LZ_1
+		if MMD_Is_LZ
 		if Revision=0
 		binclude	"objpos/lz1.bin"
 		else
@@ -8778,12 +8779,12 @@ ObjPos_LZ1:
 		even
 		endif
 ObjPos_LZ2:
-		if MMD_Is_LZ_2
+		if MMD_Is_LZ
 		binclude	"objpos/lz2.bin"
 		even
 		endif
 ObjPos_LZ3:
-		if MMD_Is_LZ_3
+		if MMD_Is_LZ
 		if Revision=0
 		binclude	"objpos/lz3.bin"
 		else
@@ -8792,42 +8793,42 @@ ObjPos_LZ3:
 		even
 		endif
 ObjPos_SBZ3:
-		if MMD_Is_SBZ_3
+		if MMD_Is_SBZ
 		binclude	"objpos/sbz3.bin"
 		even
 		endif
 ObjPos_LZ1pf1:
-		if MMD_Is_LZ_1
+		if MMD_Is_LZ
 		binclude	"objpos/lz1pf1.bin"
 		even
 		endif
 ObjPos_LZ1pf2:
-		if MMD_Is_LZ_1
+		if MMD_Is_LZ
 		binclude	"objpos/lz1pf2.bin"
 		even
 		endif
 ObjPos_LZ2pf1:
-		if MMD_Is_LZ_1
+		if MMD_Is_LZ
 		binclude	"objpos/lz2pf1.bin"
 		even
 		endif
 ObjPos_LZ2pf2:
-		if MMD_Is_LZ_2
+		if MMD_Is_LZ
 		binclude	"objpos/lz2pf2.bin"
 		even
 		endif
 ObjPos_LZ3pf1:
-		if MMD_Is_LZ_3
+		if MMD_Is_LZ
 		binclude	"objpos/lz3pf1.bin"
 		even
 		endif
 ObjPos_LZ3pf2:
-		if MMD_Is_LZ_3
+		if MMD_Is_LZ
 		binclude	"objpos/lz3pf2.bin"
 		even
 		endif
 ObjPos_MZ1:
-		if MMD_Is_MZ_1
+		if MMD_Is_MZ
 		if Revision=0
 		binclude	"objpos/mz1.bin"
 		else
@@ -8836,42 +8837,42 @@ ObjPos_MZ1:
 		even
 		endif
 ObjPos_MZ2:
-		if MMD_Is_MZ_2
+		if MMD_Is_MZ
 		binclude	"objpos/mz2.bin"
 		even
 		endif
 ObjPos_MZ3:
-		if MMD_Is_MZ_3
+		if MMD_Is_MZ
 		binclude	"objpos/mz3.bin"
 		even
 		endif
 ObjPos_SLZ1:
-		if MMD_Is_SLZ_1
+		if MMD_Is_SLZ
 		binclude	"objpos/slz1.bin"
 		even
 		endif
 ObjPos_SLZ2:
-		if MMD_Is_SLZ_2
+		if MMD_Is_SLZ
 		binclude	"objpos/slz2.bin"
 		even
 		endif
 ObjPos_SLZ3:
-		if MMD_Is_SLZ_3
+		if MMD_Is_SLZ
 		binclude	"objpos/slz3.bin"
 		even
 		endif
 ObjPos_SYZ1:
-		if MMD_Is_SYZ_1
+		if MMD_Is_SYZ
 		binclude	"objpos/syz1.bin"
 		even
 		endif
 ObjPos_SYZ2:
-		if MMD_Is_SYZ_2
+		if MMD_Is_SYZ
 		binclude	"objpos/syz2.bin"
 		even
 		endif
 ObjPos_SYZ3:
-		if MMD_Is_SYZ_3
+		if MMD_Is_SYZ
 		if Revision=0
 		binclude	"objpos/syz3.bin"
 		else
@@ -8880,7 +8881,7 @@ ObjPos_SYZ3:
 		even
 		endif
 ObjPos_SBZ1:
-		if MMD_Is_SBZ_1
+		if MMD_Is_SBZ
 		if Revision=0
 		binclude	"objpos/sbz1.bin"
 		else
@@ -8889,7 +8890,7 @@ ObjPos_SBZ1:
 		even
 		endif
 ObjPos_SBZ2:
-		if MMD_Is_SBZ_2
+		if MMD_Is_SBZ
 		binclude	"objpos/sbz2.bin"
 		even
 		endif
@@ -8899,32 +8900,32 @@ ObjPos_FZ:
 		even
 		endif
 ObjPos_SBZ1pf1:
-		if MMD_Is_SBZ_1
+		if MMD_Is_SBZ
 		binclude	"objpos/sbz1pf1.bin"
 		even
 		endif
 ObjPos_SBZ1pf2:
-		if MMD_Is_SBZ_1
+		if MMD_Is_SBZ
 		binclude	"objpos/sbz1pf2.bin"
 		even
 		endif
 ObjPos_SBZ1pf3:
-		if MMD_Is_SBZ_1
+		if MMD_Is_SBZ
 		binclude	"objpos/sbz1pf3.bin"
 		even
 		endif
 ObjPos_SBZ1pf4:
-		if MMD_Is_SBZ_1
+		if MMD_Is_SBZ
 		binclude	"objpos/sbz1pf4.bin"
 		even
 		endif
 ObjPos_SBZ1pf5:
-		if MMD_Is_SBZ_1
+		if MMD_Is_SBZ
 		binclude	"objpos/sbz1pf5.bin"
 		even
 		endif
 ObjPos_SBZ1pf6:
-		if MMD_Is_SBZ_1
+		if MMD_Is_SBZ
 		binclude	"objpos/sbz1pf6.bin"
 		even
 		endif

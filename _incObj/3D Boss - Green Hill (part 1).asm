@@ -3,7 +3,7 @@
 ; ---------------------------------------------------------------------------
 
 BossGreenHill:
-		if MMD_Is_GHZ_3
+		if MMD_Is_GHZ
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	BGHZ_Index(pc,d0.w),d1

@@ -434,13 +434,34 @@ Nem_MiniSonic:
 ; ---------------------------------------------------------------------------
 ; Compressed graphics - animals
 ; ---------------------------------------------------------------------------
-Nem_Rabbit:	includealigned	"artnem/Animal Rabbit.nem"
-Nem_Chicken:	includealigned	"artnem/Animal Chicken.nem"
-Nem_Penguin:	includealigned	"artnem/Animal Penguin.nem"
-Nem_Seal:	includealigned	"artnem/Animal Seal.nem"
-Nem_Pig:	includealigned	"artnem/Animal Pig.nem"
-Nem_Flicky:	includealigned	"artnem/Animal Flicky.nem"
-Nem_Squirrel:	includealigned	"artnem/Animal Squirrel.nem"
+Nem_Rabbit:
+		if MMD_Is_GHZ||MMD_Is_SBZ||MMD_Is_Ending
+		includealigned	"artnem/Animal Rabbit.nem"
+		endif
+Nem_Chicken:
+		if MMD_Is_SYZ||MMD_Is_SBZ||MMD_Is_Ending
+		includealigned	"artnem/Animal Chicken.nem"
+		endif
+Nem_Penguin:
+		if MMD_Is_LZ||MMD_Is_SBZ||MMD_Is_Ending
+		includealigned	"artnem/Animal Penguin.nem"
+		endif
+Nem_Seal:
+		if MMD_Is_MZ||MMD_Is_LZ||MMD_Is_SBZ||MMD_Is_Ending
+		includealigned	"artnem/Animal Seal.nem"
+		endif
+Nem_Pig:
+		if MMD_Is_SYZ||MMD_Is_SLZ||MMD_Is_Ending
+		includealigned	"artnem/Animal Pig.nem"
+		endif
+Nem_Flicky:
+		if MMD_Is_GHZ||MMD_Is_SLZ||MMD_Is_Ending
+		includealigned	"artnem/Animal Flicky.nem"
+		endif
+Nem_Squirrel:
+		if MMD_Is_MZ||MMD_Is_Ending
+		includealigned	"artnem/Animal Squirrel.nem"
+		endif
 ; ---------------------------------------------------------------------------
 ; Animated uncompressed graphics
 ; ---------------------------------------------------------------------------
@@ -473,7 +494,9 @@ Art_SbzSmoke:
 		includealigned	"artunc/SBZ Background Smoke.bin"
 		endif
 Art_BigRing:
+		if ~~MMD_Is_SBZ
 		includealigned	"artunc/Giant Ring.bin"
+		endif
 Eni_Title:
 		if MMD_Is_Title
 		includealigned	"tilemaps/Title Screen.eni" ; title screen foreground (mappings)
@@ -600,17 +623,11 @@ Nem_ResultEm:
 ; Compressed graphics - bosses and ending sequence
 ; ---------------------------------------------------------------------------
 Nem_Eggman:
-		if MMD_Act_ID==2
 		includealigned	"artnem/Boss - Main.nem"
-		endif
 Nem_Weapons:
-		if MMD_Act_ID==2
 		includealigned	"artnem/Boss - Weapons.nem"
-		endif
 Nem_Prison:
-		if MMD_Act_ID==2
 		includealigned	"artnem/Prison Capsule.nem"
-		endif
 Nem_Sbz2Eggman:
 		if MMD_Is_SBZ
 		includealigned	"artnem/Boss - Eggman in SBZ2 & FZ.nem"
