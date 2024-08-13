@@ -32,7 +32,11 @@ ArtTile_ArtKos_TerminalFont      = $0021
 TerminalFont_Len                 = tiles_to_bytes($60)
 ; ===========================================================================
 ; Location in RAM. Just use this default.
+		if MMD_Enabled
+TerminalBuffer                   = ramaddr($230000)
+		else
 TerminalBuffer                   = ramaddr($FFFF0000)
+		endif
 TerminalBuffer_end = TerminalFont_Len
 ; ===========================================================================
 ; Locations in VRAM. Just use this default.
@@ -234,6 +238,7 @@ InitTerminal:
 	dmaFillVRAM 0,$0000,$10000
 
 	; Decode and load graphics.
+	if ~~MMD_Enabled
 	lea	ArtKos_TerminalFont(pc),a0
 	lea	(Chunk_Table).l,a1
 	ifdef debugger_blob
@@ -242,6 +247,9 @@ InitTerminal:
 		jsr	(KosDec).l
 	endif
 	dma68kToVDP TerminalBuffer,tiles_to_bytes(ArtTile_ArtKos_TerminalFont),TerminalFont_Len,VRAM
+	else
+		jsr	($000328).l
+	endif
 
 	vtcls								; Clear screen
 	rts

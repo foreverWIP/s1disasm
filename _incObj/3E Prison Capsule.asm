@@ -3,6 +3,7 @@
 ; ---------------------------------------------------------------------------
 
 Prison:
+		if ~~MMD_Is_SBZ
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	Pri_Index(pc,d0.w),d1
@@ -207,4 +208,5 @@ Pri_EndAct:	; Routine $E
 		jmp	(DeleteObject).l
 
 .found:
+		endif
 		rts	

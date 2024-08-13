@@ -3,7 +3,7 @@
 ; ---------------------------------------------------------------------------
 
 Waterfall:
-		if MMD_Is_LZ||MMD_Is_SBZ
+		if MMD_Is_LZ
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	WFall_Index(pc,d0.w),d1

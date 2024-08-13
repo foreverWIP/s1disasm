@@ -40,6 +40,7 @@ MDemo_On:
 		tst.w	(f_demo).l	; is this an ending sequence demo?
 		bmi.s	.dontquit	; if yes, branch
 		move.b	#id_Title,(v_gamemode).l ; go to title screen
+		quitModule
 
 .dontquit:
 		lea	(DemoDataPtr).l,a1

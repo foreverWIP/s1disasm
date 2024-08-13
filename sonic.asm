@@ -162,12 +162,17 @@ ErrorTrap:
 ; ===========================================================================
 
 EntryPoint:
+		if MMD_Enabled
+		move.l	sp,(v_initial_sp).l
+		endif
+		if ~~MMD_Enabled
 		tst.l	(z80_port_1_control).l ; test port A & B control registers
 		bne.s	PortA_Ok
 		tst.w	(z80_expansion_control).l ; test port C control register
 
 PortA_Ok:
 		bne.s	SkipSetup ; Skip the VDP and Z80 setup code if port A, B or C is ok...?
+		endif
 		lea	SetupValues(pc),a5	; Load setup values array address.
 		movem.w	(a5)+,d5-d7
 		movem.l	(a5)+,a0-a4
@@ -180,7 +185,11 @@ SkipSecurity:
 		move.w	(a4),d0	; clear write-pending flag in VDP to prevent issues if the 68k has been reset in the middle of writing a command long word to the VDP.
 		moveq	#0,d0	; clear d0
 		movea.l	d0,a6	; clear a6
+		if ~~MMD_Enabled
 		move.l	a6,usp	; set usp to $0
+		else
+		move.l	sp,usp	; set usp to $0
+		endif
 
 		moveq	#$17,d1
 VDPInitLoop:
@@ -191,6 +200,7 @@ VDPInitLoop:
 		
 		move.l	(a5)+,(a4)
 		move.w	d0,(a3)		; clear	the VRAM
+		if ~~MMD_Enabled
 		move.w	d7,(a1)		; stop the Z80
 		move.w	d7,(a2)		; reset	the Z80
 
@@ -233,6 +243,7 @@ PSGInitLoop:
 		disable_ints
 
 SkipSetup:
+		endif
 		bra.s	GameProgram	; begin game
 
 ; ===========================================================================
@@ -327,12 +338,14 @@ GameProgram:
 		beq.w	GameInit	; if yes, branch
 
 CheckSumOk:
+		if ~~MMD_Enabled
 		lea	(v_crossresetram).l,a6
 		moveq	#0,d7
 		move.w	#(v_ram_end-v_crossresetram)/4-1,d6
 .clearRAM:
 		move.l	d7,(a6)+
 		dbf	d6,.clearRAM	; clear RAM ($FE00-$FFFF)
+		endif
 
 		move.b	(z80_version).l,d0
 		andi.b	#$C0,d0
@@ -340,12 +353,14 @@ CheckSumOk:
 		move.l	#'init',(v_init).l ; set flag so checksum won't run again
 
 GameInit:
+		if ~~MMD_Enabled
 		lea	(v_ram_start&$FFFFFF).l,a6
 		moveq	#0,d7
 		move.w	#(v_crossresetram-v_ram_start)/4-1,d6
 .clearRAM:
 		move.l	d7,(a6)+
 		dbf	d6,.clearRAM	; clear RAM ($0000-$FDFF)
+		endif
 
 		bsr.w	VDPSetupGame
 		if ~~MMD_Enabled
@@ -355,20 +370,23 @@ GameInit:
 		if ~~MMD_Enabled
 			if MMD_Is_Level
 			move.w	#$8174,(vdp_control_port).l
+			move.b	#id_Level,(v_gamemode).l
 			endif
 			;if MMD_Is_Demo
 			;move.w	#$8174,(vdp_control_port).l
+			;move.b	#id_Demo,(v_gamemode).l
 			;endif
+			if MMD_Is_SS
+			move.b	#id_Special,(v_gamemode).l
+			endif
+		else
+		move.w	#$8174,(vdp_control_port).l
 		endif
 
 MainGameLoop:
 		move.b	(v_gamemode).l,d0 ; load Game Mode
 		andi.w	#$1C,d0	; limit Game Mode value to $1C max (change to a maximum of 7C to add more game modes)
 		jsr	GameModeArray(pc,d0.w) ; jump to apt location in ROM
-		tst.b	(v_gamemode).l
-		beq.s	.keepgoing
-		rts
-.keepgoing:
 		bra.s	MainGameLoop	; loop indefinitely
 ; ===========================================================================
 ; ---------------------------------------------------------------------------
@@ -1626,7 +1644,11 @@ PalLoad_Fade:
 		movea.l	(a1)+,a2	; get palette data address
 		movea.w	(a1)+,a3	; get target RAM address
 		if MMD_Enabled
-		adda.l	$230000,a3
+		move.l	d0,-(sp)
+		move.l	#$230000,d0
+		move.w	a3,d0
+		movea.l	d0,a3
+		move.l	(sp)+,d0
 		endif
 		adda.w	#v_palette_fading-v_palette,a3		; skip to "main" RAM address
 		move.w	(a1)+,d7	; get length of palette data
@@ -1648,7 +1670,11 @@ PalLoad:
 		movea.l	(a1)+,a2	; get palette data address
 		movea.w	(a1)+,a3	; get target RAM address
 		if MMD_Enabled
-		adda.l	$230000,a3
+		move.l	d0,-(sp)
+		move.l	#$230000,d0
+		move.w	a3,d0
+		movea.l	d0,a3
+		move.l	(sp)+,d0
 		endif
 		move.w	(a1)+,d7	; get length of palette
 
@@ -1672,7 +1698,11 @@ PalLoad_Fade_Water:
 		movea.l	(a1)+,a2	; get palette data address
 		movea.w	(a1)+,a3	; get target RAM address
 		if MMD_Enabled
-		adda.l	$230000,a3
+		move.l	d0,-(sp)
+		move.l	#$230000,d0
+		move.w	a3,d0
+		movea.l	d0,a3
+		move.l	(sp)+,d0
 		endif
 		suba.w	#v_palette-v_palette_water,a3		; skip to "main" RAM address
 		move.w	(a1)+,d7	; get length of palette data
@@ -1694,7 +1724,11 @@ PalLoad_Water:
 		movea.l	(a1)+,a2	; get palette data address
 		movea.w	(a1)+,a3	; get target RAM address
 		if MMD_Enabled
-		adda.l	$230000,a3
+		move.l	d0,-(sp)
+		move.l	#$230000,d0
+		move.w	a3,d0
+		movea.l	d0,a3
+		move.l	(sp)+,d0
 		endif
 		suba.w	#v_palette-v_palette_water_fading,a3
 		move.w	(a1)+,d7	; get length of palette data
@@ -1873,14 +1907,7 @@ Tit_LoadText:
 		move.b	#0,(f_debugmode).l ; disable debug mode
 		move.w	#$178,(v_demolength).l ; run title screen for $178 frames
 		
-	if FixBugs
 		clearRAM v_sonicteam,v_sonicteam+object_size
-	else
-		; Bug: this only clears half of the "SONIC TEAM PRESENTS" slot.
-		; This is responsible for why the "PRESS START BUTTON" text doesn't
-		; show up, as the routine ID isn't reset.
-		clearRAM v_sonicteam,v_sonicteam+object_size/2
-	endif
 
 		move.b	#id_TitleSonic,(v_titlesonic).l ; load big Sonic object
 		move.b	#id_PSBTM,(v_pressstart).l ; load "PRESS START BUTTON" object
@@ -1923,6 +1950,7 @@ Tit_MainLoop:
 		blo.s	Tit_ChkRegion	; if not, branch
 
 		move.b	#id_Sega,(v_gamemode).l ; go to Sega screen
+		quitModule
 		rts	
 ; ===========================================================================
 
@@ -2045,17 +2073,17 @@ LevSel_PlaySnd:
 
 LevSel_Ending:
 		move.b	#id_Ending,(v_gamemode).l ; set screen mode to $18 (Ending)
-		move.b	#1,(v_return_from_mmd).l
 		move.w	#(id_EndZ<<8),(v_zone).l ; set level to 0600 (Ending)
+		quitModule
 		rts	
 ; ===========================================================================
 
 LevSel_Credits:
 		move.b	#id_Credits,(v_gamemode).l ; set screen mode to $1C (Credits)
-		move.b	#1,(v_return_from_mmd).l
 		move.b	#bgm_Credits,d0
 		bsr.w	PlaySound_Special ; play credits music
 		move.w	#0,(v_creditsnum).l
+		quitModule
 		rts	
 ; ===========================================================================
 ; ---------------------------------------------------------------------------
@@ -2115,7 +2143,6 @@ LevSel_Level_SS:
 		cmpi.w	#id_SS*$100,d0	; check	if level is 0700 (Special Stage)
 		bne.s	LevSel_Level	; if not, branch
 		move.b	#id_Special,(v_gamemode).l ; set screen mode to $10 (Special Stage)
-		move.b	#1,(v_return_from_mmd).l
 		clr.w	(v_zone).l	; clear	level
 		move.b	#3,(v_lives).l	; set lives to 3
 		moveq	#0,d0
@@ -2125,6 +2152,7 @@ LevSel_Level_SS:
 		if Revision<>0
 			move.l	#5000,(v_scorelife).l ; extra life is awarded at 50000 points
 		endif
+		quitModule
 		rts	
 ; ===========================================================================
 
@@ -2134,7 +2162,6 @@ LevSel_Level:
 
 PlayLevel:
 		move.b	#id_Level,(v_gamemode).l ; set screen mode to $0C (level)
-		move.b	#1,(v_return_from_mmd).l
 		move.b	#3,(v_lives).l	; set lives to 3
 		moveq	#0,d0
 		move.w	d0,(v_rings).l	; clear rings
@@ -2150,6 +2177,7 @@ PlayLevel:
 		endif
 		move.b	#bgm_Fade,d0
 		bsr.w	PlaySound_Special ; fade out music
+		quitModule
 		rts	
 ; ===========================================================================
 ; ---------------------------------------------------------------------------
@@ -2185,7 +2213,7 @@ loc_33B6:
 		cmpi.w	#$1C00,d0
 		blo.s	loc_33E4
 		move.b	#id_Sega,(v_gamemode).l
-		move.b	#1,(v_return_from_mmd).l
+		quitModule
 		rts	
 ; ===========================================================================
 
@@ -2224,6 +2252,7 @@ Demo_Level:
 		if Revision<>0
 			move.l	#5000,(v_scorelife).l ; extra life is awarded at 50000 points
 		endif
+		quitModule
 		rts	
 ; ===========================================================================
 ; ---------------------------------------------------------------------------
@@ -2427,6 +2456,7 @@ MusicList:
 ; ---------------------------------------------------------------------------
 
 GM_Level:
+		if MMD_Is_Level
 		bset	#7,(v_gamemode).l ; add $80 to screen mode (for pre level sequence)
 		tst.w	(f_demo).l
 		bmi.s	Level_NoMusicFade
@@ -2454,6 +2484,8 @@ Level_NoMusicFade:
 		bsr.w	AddPLC		; load level patterns
 
 loc_37FC:
+		moveq	#plcid_Main,d0
+		bsr.w	QuickPLC
 		moveq	#plcid_Main2,d0
 		bsr.w	AddPLC		; load standard	patterns
 
@@ -2719,6 +2751,7 @@ Level_ChkDemo:
 		cmpi.b	#id_Demo,(v_gamemode).l
 		beq.w	Level_MainLoop	; if mode is 8 (demo), branch
 		move.b	#id_Sega,(v_gamemode).l ; go to Sega screen
+		quitModule
 		rts	
 ; ===========================================================================
 
@@ -2750,6 +2783,8 @@ Level_FDLoop:
 loc_3BC8:
 		tst.w	(v_demolength).l
 		bne.s	Level_FDLoop
+		endif
+		quitModule
 		rts	
 ; ===========================================================================
 
@@ -3041,16 +3076,19 @@ SS_NormalExit:
 		move.w	#sfx_EnterSS,d0
 		bsr.w	PlaySound_Special ; play special stage exit sound
 		bsr.w	PaletteWhiteOut
+		quitModule
 		rts	
 ; ===========================================================================
 
 SS_ToSegaScreen:
 		move.b	#id_Sega,(v_gamemode).l ; goto Sega screen
+		quitModule
 		rts
 
 		if Revision<>0
 SS_ToLevel:	cmpi.b	#id_Level,(v_gamemode).l
 		beq.s	SS_ToSegaScreen
+		quitModule
 		rts
 		endif
 
@@ -3480,6 +3518,7 @@ loc_4DF2:
 		tst.w	(v_demolength).l
 		bne.w	Cont_MainLoop
 		move.b	#id_Sega,(v_gamemode).l ; go to Sega screen
+		quitModule
 		rts	
 ; ===========================================================================
 
@@ -3492,6 +3531,7 @@ Cont_GotoLevel:
 		move.l	d0,(v_score).l	; clear score
 		move.b	d0,(v_lastlamp).l ; clear lamppost count
 		subq.b	#1,(v_continues).l ; subtract 1 from continues
+		quitModule
 		rts	
 ; ===========================================================================
 		endif
@@ -3621,6 +3661,7 @@ End_MainLoop:
 		move.b	#bgm_Credits,d0
 		bsr.w	PlaySound_Special ; play credits music
 		move.w	#0,(v_creditsnum).l ; set credits index number to 0
+		quitModule
 		rts	
 ; ===========================================================================
 
@@ -3833,6 +3874,7 @@ EndDemo_LampLoad:
 		dbf	d0,EndDemo_LampLoad
 
 EndDemo_Exit:
+		quitModule
 		rts	
 ; End of function EndingDemoLoad
 
@@ -3910,6 +3952,7 @@ TryAg_MainLoop:
 TryAg_Exit:
 		move.b	#id_Sega,(v_gamemode).l ; goto Sega screen
 		endif
+		quitModule
 		rts	
 
 ; ===========================================================================
@@ -4363,6 +4406,14 @@ locj_6E28:
 			move.b	(a0,d0.w),d0
 			lea	(locj_6FE4).l,a3
 			movea.w	(a3,d0.w),a3
+			if MMD_Enabled
+			move.l	d0,-(sp)
+			move.l	#$230000,d0
+			move.w	a3,d0
+			movea.l	d0,a3
+			move.l	(sp)+,d0
+			cmpa.w	#0,a3
+			endif
 			beq.s	locj_6E5E
 			moveq	#-16,d5
 			movem.l	d4/d5,-(sp)
@@ -4457,7 +4508,11 @@ locj_6F66:
 			move.b	(a0,d0.w),d0
 			movea.w	locj_6FE4(pc,d0.w),a3
 			if MMD_Enabled
-			addi.l	#$230000,a3
+			move.l	d0,-(sp)
+			move.l	#$230000,d0
+			move.w	a3,d0
+			movea.l	d0,a3
+			move.l	(sp)+,d0
 			cmpa.w	#0,a3
 			endif
 			beq.s	locj_6F9A
@@ -4509,8 +4564,12 @@ locj_6FF4:
 			btst	d0,(a2)
 			beq.s	locj_701C
 			movea.w	locj_6FE4(pc,d0.w),a3
-			if ~~MMD_Enabled
-			addi.l	#$230000,a3
+			if MMD_Enabled
+			move.l	d0,-(sp)
+			move.l	#$230000,d0
+			move.w	a3,d0
+			movea.l	d0,a3
+			move.l	(sp)+,d0
 			endif
 			movem.l	d4/d5/a0,-(sp)
 			movem.l	d4/d5,-(sp)
@@ -4924,7 +4983,11 @@ locj_72Ba:
 			move.b	(a0,d0.w),d0
 			movea.w	locj_72B2(pc,d0.w),a3
 			if MMD_Enabled
-			addi.l	#$230000,a3
+			move.l	d0,-(sp)
+			move.l	#$230000,d0
+			move.w	a3,d0
+			movea.l	d0,a3
+			move.l	(sp)+,d0
 			cmpa.w	#0,a3
 			endif
 			beq.s	locj_72da
@@ -5635,7 +5698,9 @@ Map_Ring:	include	"_maps/Rings.asm"
 Map_Ring:		include	"_maps/Rings (JP1).asm"
 		endif
 Map_GRing:
+		if ~~MMD_Is_SBZ
 		include	"_maps/Giant Ring.asm"
+		endif
 Map_Flash:
 		include	"_maps/Ring Flash.asm"
 		include	"_incObj/26 Monitor.asm"
@@ -5672,19 +5737,19 @@ Map_Chop:
 		include	"_maps/Chopper.asm"
 		endif
 		include	"_incObj/2C Jaws.asm"
-		if MMD_Is_LZ||MMD_Is_SBZ
+		if MMD_Is_LZ
 		include	"_anim/Jaws.asm"
 		endif
 Map_Jaws:
-		if MMD_Is_LZ||MMD_Is_SBZ
+		if MMD_Is_LZ
 		include	"_maps/Jaws.asm"
 		endif
 		include	"_incObj/2D Burrobot.asm"
-		if MMD_Is_LZ||MMD_Is_SBZ
+		if MMD_Is_LZ
 		include	"_anim/Burrobot.asm"
 		endif
 Map_Burro:
-		if MMD_Is_LZ||MMD_Is_SBZ
+		if MMD_Is_LZ
 		include	"_maps/Burrobot.asm"
 		endif
 
@@ -6090,7 +6155,10 @@ Smash_FragSpd2:	dc.w -$600, -$600
 		dc.w -$600, $100
 		dc.w -$400, $500
 
-Map_Smash:	include	"_maps/Smashable Walls.asm"
+Map_Smash:
+		if ~~MMD_Is_SBZ
+		include	"_maps/Smashable Walls.asm"
+		endif
 
 ; ---------------------------------------------------------------------------
 ; Object code execution subroutine
@@ -6179,6 +6247,13 @@ BuildSprites:
 
 	.objectLoop:
 		movea.w	(a4,d6.w),a0	; load object ID
+		if MMD_Enabled
+		move.l	d0,-(sp)
+		move.l	#$230000,d0
+		move.w	a0,d0
+		movea.l	d0,a0
+		move.l	(sp)+,d0
+		endif
 		tst.b	(a0)		; if null, branch
 		beq.w	.skipObject
 		bclr	#7,obRender(a0)		; set as not visible
@@ -6701,16 +6776,22 @@ Map_Roll:
 
 		include	"_incObj/44 GHZ Edge Walls.asm"
 Map_Edge:
+		if MMD_Is_GHZ
 		include	"_maps/GHZ Edge Walls.asm"
+		endif
 
 		include	"_incObj/13 Lava Ball Maker.asm"
 		include	"_incObj/14 Lava Ball.asm"
 		include	"_anim/Fireballs.asm"
 
 		include	"_incObj/6D Flamethrower.asm"
+		if MMD_Is_SBZ
 		include	"_anim/Flamethrower.asm"
+		endif
 Map_Flame:
+		if MMD_Is_SBZ
 		include	"_maps/Flamethrower.asm"
+		endif
 
 		include	"_incObj/46 MZ Bricks.asm"
 Map_Brick:
@@ -6720,7 +6801,9 @@ Map_Brick:
 
 		include	"_incObj/12 Light.asm"
 Map_Light:
+		if MMD_Is_SYZ
 		include	"_maps/Light.asm"
+		endif
 		include	"_incObj/47 Bumper.asm"
 		if MMD_Is_SYZ
 		include	"_anim/Bumper.asm"
@@ -6790,9 +6873,13 @@ Map_MBlockLZ:
 		endif
 
 		include	"_incObj/55 Basaran.asm"
+		if MMD_Is_MZ
 		include	"_anim/Basaran.asm"
+		endif
 Map_Bas:
+		if MMD_Is_MZ
 		include	"_maps/Basaran.asm"
+		endif
 
 		include	"_incObj/56 Floating Blocks and Doors.asm"
 Map_FBlock:
@@ -6835,14 +6922,20 @@ Map_Pylon:
 
 		include	"_incObj/1B Water Surface.asm"
 Map_Surf:
+		if MMD_Is_LZ
 		include	"_maps/Water Surface.asm"
+		endif
 		include	"_incObj/0B Pole that Breaks.asm"
 Map_Pole:
+		if MMD_Is_LZ
 		include	"_maps/Pole that Breaks.asm"
+		endif
 		include	"_incObj/0C Flapping Door.asm"
 		include	"_anim/Flapping Door.asm"
 Map_Flap:
+		if MMD_Is_LZ
 		include	"_maps/Flapping Door.asm"
+		endif
 
 		include	"_incObj/71 Invisible Barriers.asm"
 Map_Invis:
@@ -6873,21 +6966,21 @@ Map_Orb:
 		include	"_maps/Orbinaut.asm"
 
 		include	"_incObj/16 Harpoon.asm"
-		if MMD_Is_LZ||MMD_Is_SBZ
+		if MMD_Is_LZ
 		include	"_anim/Harpoon.asm"
 		endif
 Map_Harp:
-		if MMD_Is_LZ||MMD_Is_SBZ
+		if MMD_Is_LZ
 		include	"_maps/Harpoon.asm"
 		endif
 		include	"_incObj/61 LZ Blocks.asm"
 Map_LBlock:
-		if MMD_Is_LZ||MMD_Is_SBZ
+		if MMD_Is_LZ
 		include	"_maps/LZ Blocks.asm"
 		endif
 		include	"_incObj/62 Gargoyle.asm"
 Map_Gar:
-		if MMD_Is_LZ||MMD_Is_SBZ
+		if MMD_Is_LZ
 		include	"_maps/Gargoyle.asm"
 		endif
 		include	"_incObj/63 LZ Conveyor.asm"
@@ -6896,19 +6989,19 @@ Map_LConv:
 		include	"_maps/LZ Conveyor.asm"
 		endif
 		include	"_incObj/64 Bubbles.asm"
-		if MMD_Is_LZ||MMD_Is_SBZ
+		if MMD_Is_LZ
 		include	"_anim/Bubbles.asm"
 		endif
 Map_Bub:
-		if MMD_Is_LZ||MMD_Is_SBZ
+		if MMD_Is_LZ
 		include	"_maps/Bubbles.asm"
 		endif
 		include	"_incObj/65 Waterfalls.asm"
-		if MMD_Is_LZ||MMD_Is_SBZ
+		if MMD_Is_LZ
 		include	"_anim/Waterfalls.asm"
 		endif
 Map_WFall:
-		if MMD_Is_LZ||MMD_Is_SBZ
+		if MMD_Is_LZ
 		include	"_maps/Waterfalls.asm"
 		endif
 
@@ -7153,11 +7246,11 @@ ResumeMusic:
 ; End of function ResumeMusic
 
 ; ===========================================================================
-		if MMD_Is_LZ||MMD_Is_SBZ
+		if MMD_Is_LZ
 		include	"_anim/Drowning Countdown.asm"
 		endif
 Map_Drown:
-		if MMD_Is_LZ||MMD_Is_SBZ
+		if MMD_Is_LZ
 		include	"_maps/Drowning Countdown.asm"
 		endif
 
@@ -7171,12 +7264,12 @@ Map_Shield:
 		include	"_anim/Special Stage Entry (Unused).asm"
 		endif
 Map_Vanish:
-		if MMD_Is_LZ||MMD_Is_SBZ
+		if MMD_Is_LZ
 		include	"_maps/Special Stage Entry (Unused).asm"
 		include	"_anim/Water Splash.asm"
 		endif
 Map_Splash:
-		if MMD_Is_LZ||MMD_Is_SBZ
+		if MMD_Is_LZ
 		include	"_maps/Water Splash.asm"
 		endif
 
@@ -7828,8 +7921,13 @@ Map_Plasma:
 		endif
 
 		include	"_incObj/3E Prison Capsule.asm"
+		if ~~MMD_Is_SBZ
 		include	"_anim/Prison Capsule.asm"
-Map_Pri:	include	"_maps/Prison Capsule.asm"
+		endif
+Map_Pri:
+		if ~~MMD_Is_SBZ
+		include	"_maps/Prison Capsule.asm"
+		endif
 
 		include	"_incObj/sub ReactToItem.asm"
 
@@ -8670,18 +8768,14 @@ Level_GHZ1:
 		even
 		endif
 byte_68D70:
-		if MMD_Is_GHZ
 		dc.b 0,	0, 0, 0
-		endif
 Level_GHZ2:
 		if MMD_Is_GHZ
 		binclude	"levels/ghz2.bin"
 		even
 		endif
 byte_68E3C:
-		if MMD_Is_GHZ
 		dc.b 0,	0, 0, 0
-		endif
 Level_GHZ3:
 		if MMD_Is_GHZ
 		binclude	"levels/ghz3.bin"
@@ -8693,13 +8787,9 @@ Level_GHZbg:
 		even
 		endif
 byte_68F84:
-		if MMD_Is_GHZ
 		dc.b 0,	0, 0, 0
-		endif
 byte_68F88:
-		if MMD_Is_GHZ
 		dc.b 0,	0, 0, 0
-		endif
 
 Level_LZ1:
 		if MMD_Is_LZ
@@ -8712,36 +8802,28 @@ Level_LZbg:
 		even
 		endif
 byte_69190:
-		if MMD_Is_LZ
 		dc.b 0,	0, 0, 0
-		endif
 Level_LZ2:
 		if MMD_Is_LZ
 		binclude	"levels/lz2.bin"
 		even
 		endif
 byte_6922E:
-		if MMD_Is_LZ
 		dc.b 0,	0, 0, 0
-		endif
 Level_LZ3:
 		if MMD_Is_LZ
 		binclude	"levels/lz3.bin"
 		even
 		endif
 byte_6934C:
-		if MMD_Is_LZ
 		dc.b 0,	0, 0, 0
-		endif
 Level_SBZ3:
 		if MMD_Is_LZ
 		binclude	"levels/sbz3.bin"
 		even
 		endif
 byte_6940A:
-		if MMD_Is_LZ
 		dc.b 0,	0, 0, 0
-		endif
 
 Level_MZ1:
 		if MMD_Is_MZ
@@ -8764,9 +8846,7 @@ Level_MZ2bg:
 		even
 		endif
 byte_6965C:
-		if MMD_Is_MZ
 		dc.b 0,	0, 0, 0
-		endif
 Level_MZ3:
 		if MMD_Is_MZ
 		binclude	"levels/mz3.bin"
@@ -8778,13 +8858,9 @@ Level_MZ3bg:
 		even
 		endif
 byte_697E6:
-		if MMD_Is_MZ
 		dc.b 0,	0, 0, 0
-		endif
 byte_697EA:
-		if MMD_Is_MZ
 		dc.b 0,	0, 0, 0
-		endif
 
 Level_SLZ1:
 		if MMD_Is_SLZ

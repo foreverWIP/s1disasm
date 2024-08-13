@@ -49,38 +49,48 @@ plcm:	macro gfx,vram
 ; Pattern load cues - standard block 1
 ; ---------------------------------------------------------------------------
 PLC_Main:	dc.w ((PLC_Mainend-PLC_Main-2)/6)-1
+		if MMD_Is_Level
 		plcm	Nem_Lamp,   ArtTile_Lamppost      ; lamppost
 		plcm	Nem_Hud,    ArtTile_HUD           ; HUD
 		plcm	Nem_Lives,  ArtTile_Lives_Counter ; lives counter
 		plcm	Nem_Ring,   ArtTile_Ring          ; rings
 		plcm	Nem_Points, ArtTile_Points        ; points from enemy
+		endif
 PLC_Mainend:
 ; ---------------------------------------------------------------------------
 ; Pattern load cues - standard block 2
 ; ---------------------------------------------------------------------------
 PLC_Main2:	dc.w ((PLC_Main2end-PLC_Main2-2)/6)-1
+		if MMD_Is_Level
 		plcm	Nem_Monitors, ArtTile_Monitor       ; monitors
 		plcm	Nem_Shield,   ArtTile_Shield        ; shield
 		plcm	Nem_Stars,    ArtTile_Invincibility ; invincibility stars
+		endif
 PLC_Main2end:
 ; ---------------------------------------------------------------------------
 ; Pattern load cues - explosion
 ; ---------------------------------------------------------------------------
 PLC_Explode:	dc.w ((PLC_Explodeend-PLC_Explode-2)/6)-1
+		if MMD_Is_Level
 		plcm	Nem_Explode, ArtTile_Explosion ; explosion
+		endif
 PLC_Explodeend:
 ; ---------------------------------------------------------------------------
 ; Pattern load cues - game/time	over
 ; ---------------------------------------------------------------------------
 PLC_GameOver:	dc.w ((PLC_GameOverend-PLC_GameOver-2)/6)-1
+		if MMD_Is_Level
 		plcm	Nem_GameOver, ArtTile_Game_Over ; game/time over
+		endif
 PLC_GameOverend:
 ; ---------------------------------------------------------------------------
 ; Pattern load cues - Green Hill
 ; ---------------------------------------------------------------------------
 PLC_GHZ:	dc.w ((PLC_GHZ2-PLC_GHZ-2)/6)-1
+		if MMD_Is_GHZ||MMD_Is_Title
 		plcm	Nem_GHZ_1st,   ArtTile_Level                  ; GHZ main patterns
 		plcm	Nem_GHZ_2nd,   ArtTile_Level+$1CD             ; GHZ secondary patterns
+		if MMD_Is_GHZ
 		plcm	Nem_Stalk,     ArtTile_GHZ_Flower_Stalk       ; flower stalk
 		plcm	Nem_PplRock,   ArtTile_GHZ_Purple_Rock        ; purple rock
 		plcm	Nem_Crabmeat,  ArtTile_Crabmeat               ; crabmeat enemy
@@ -91,19 +101,24 @@ PLC_GHZ:	dc.w ((PLC_GHZ2-PLC_GHZ-2)/6)-1
 		plcm	Nem_Spikes,    ArtTile_Spikes                 ; spikes
 		plcm	Nem_HSpring,   ArtTile_Spring_Horizontal      ; horizontal spring
 		plcm	Nem_VSpring,   ArtTile_Spring_Vertical        ; vertical spring
+		endif
+		endif
 
 PLC_GHZ2:	dc.w ((PLC_GHZ2end-PLC_GHZ2-2)/6)-1
+		if MMD_Is_GHZ
 		plcm	Nem_Swing,     ArtTile_GHZ_MZ_Swing           ; swinging platform
 		plcm	Nem_Bridge,    ArtTile_GHZ_Bridge             ; bridge
 		plcm	Nem_SpikePole, ArtTile_GHZ_Spike_Pole         ; spiked pole
 		plcm	Nem_Ball,      ArtTile_GHZ_Giant_Ball         ; giant ball
 		plcm	Nem_GhzWall1,  ArtTile_GHZ_SLZ_Smashable_Wall ; breakable wall
 		plcm	Nem_GhzWall2,  ArtTile_GHZ_Edge_Wall          ; normal wall
+		endif
 PLC_GHZ2end:
 ; ---------------------------------------------------------------------------
 ; Pattern load cues - Labyrinth
 ; ---------------------------------------------------------------------------
 PLC_LZ:		dc.w ((PLC_LZ2-PLC_LZ-2)/6)-1
+		if MMD_Is_LZ
 		plcm	Nem_LZ,          ArtTile_Level              ; LZ main patterns
 		plcm	Nem_LzBlock1,    ArtTile_LZ_Block_1         ; block
 		plcm	Nem_LzBlock2,    ArtTile_LZ_Block_2         ; blocks
@@ -116,8 +131,10 @@ PLC_LZ:		dc.w ((PLC_LZ2-PLC_LZ-2)/6)-1
 		plcm	Nem_LzDoor1,     ArtTile_LZ_Door            ; vertical door
 		plcm	Nem_Harpoon,     ArtTile_LZ_Harpoon         ; harpoon
 		plcm	Nem_Burrobot,    ArtTile_Burrobot           ; burrobot enemy
+		endif
 
 PLC_LZ2:	dc.w ((PLC_LZ2end-PLC_LZ2-2)/6)-1
+		if MMD_Is_LZ
 		plcm	Nem_LzPole,      ArtTile_LZ_Pole            ; pole that breaks
 		plcm	Nem_LzDoor2,     ArtTile_LZ_Blocks          ; large horizontal door
 		plcm	Nem_LzWheel,     ArtTile_LZ_Conveyor_Belt   ; wheel
@@ -133,6 +150,7 @@ PLC_LZ2:	dc.w ((PLC_LZ2end-PLC_LZ2-2)/6)-1
 		plcm	Nem_Spikes,      ArtTile_Spikes             ; spikes
 		plcm	Nem_HSpring,     ArtTile_Spring_Horizontal  ; horizontal spring
 		plcm	Nem_VSpring,     ArtTile_Spring_Vertical    ; vertical spring
+		endif
 PLC_LZ2end:
 ; ---------------------------------------------------------------------------
 ; Pattern load cues - Marble
@@ -160,6 +178,7 @@ PLC_MZ2end:
 ; Pattern load cues - Star Light
 ; ---------------------------------------------------------------------------
 PLC_SLZ:	dc.w ((PLC_SLZ2-PLC_SLZ-2)/6)-1
+		if MMD_Is_SLZ
 		plcm	Nem_SLZ,       ArtTile_Level                    ; SLZ main patterns
 		plcm	Nem_Bomb,      ArtTile_Bomb                     ; bomb enemy
 		plcm	Nem_Orbinaut,  ArtTile_SLZ_Orbinaut             ; orbinaut enemy
@@ -169,26 +188,32 @@ PLC_SLZ:	dc.w ((PLC_SLZ2-PLC_SLZ-2)/6)-1
 		plcm	Nem_Spikes,    ArtTile_Spikes                   ; spikes
 		plcm	Nem_HSpring,   ArtTile_Spring_Horizontal        ; horizontal spring
 		plcm	Nem_VSpring,   ArtTile_Spring_Vertical          ; vertical spring
+		endif
 
 PLC_SLZ2:	dc.w ((PLC_SLZ2end-PLC_SLZ2-2)/6)-1
+		if MMD_Is_SLZ
 		plcm	Nem_Seesaw,    ArtTile_SLZ_Seesaw                ; seesaw
 		plcm	Nem_Fan,       ArtTile_SLZ_Fan                   ; fan
 		plcm	Nem_Pylon,     ArtTile_SLZ_Pylon                 ; foreground pylon
 		plcm	Nem_SlzSwing,  ArtTile_SLZ_Swing                 ; swinging platform
 		plcm	Nem_SlzCannon, ArtTile_SLZ_Fireball_Launcher     ; fireball launcher
 		plcm	Nem_SlzSpike,  ArtTile_SLZ_Spikeball             ; spikeball
+		endif
 PLC_SLZ2end:
 ; ---------------------------------------------------------------------------
 ; Pattern load cues - Spring Yard
 ; ---------------------------------------------------------------------------
 PLC_SYZ:	dc.w ((PLC_SYZ2-PLC_SYZ-2)/6)-1
+		if MMD_Is_SYZ
 		plcm	Nem_SYZ,       ArtTile_Level               ; SYZ main patterns
 		plcm	Nem_Crabmeat,  ArtTile_Crabmeat            ; crabmeat enemy
 		plcm	Nem_Buzz,      ArtTile_Buzz_Bomber         ; buzz bomber enemy
 		plcm	Nem_Yadrin,    ArtTile_Yadrin              ; yadrin enemy
 		plcm	Nem_Roller,    ArtTile_Roller              ; roller enemy
+		endif
 
 PLC_SYZ2:	dc.w ((PLC_SYZ2end-PLC_SYZ2-2)/6)-1
+		if MMD_Is_SYZ
 		plcm	Nem_Bumper,    ArtTile_SYZ_Bumper          ; bumper
 		plcm	Nem_SyzSpike1, ArtTile_SYZ_Big_Spikeball   ; large spikeball
 		plcm	Nem_SyzSpike2, ArtTile_SYZ_Spikeball_Chain ; small spikeball
@@ -197,14 +222,18 @@ PLC_SYZ2:	dc.w ((PLC_SYZ2end-PLC_SYZ2-2)/6)-1
 		plcm	Nem_Spikes,    ArtTile_Spikes              ; spikes
 		plcm	Nem_HSpring,   ArtTile_Spring_Horizontal   ; horizontal spring
 		plcm	Nem_VSpring,   ArtTile_Spring_Vertical     ; vertical spring
+		endif
 PLC_SYZ2end:
 ; ---------------------------------------------------------------------------
 ; Pattern load cues - Scrap Brain
 ; ---------------------------------------------------------------------------
 PLC_SBZ:	dc.w ((PLC_SBZ2-PLC_SBZ-2)/6)-1
+		if MMD_Is_SBZ||MMD_Is_FZ
 		plcm	Nem_SBZ,       ArtTile_Level                   ; SBZ main patterns
-		plcm	Nem_Stomper,   ArtTile_SBZ_Moving_Block_Short  ; moving platform and stomper
 		plcm	Nem_SbzDoor1,  ArtTile_SBZ_Door                ; door
+		endif
+		if MMD_Is_SBZ
+		plcm	Nem_Stomper,   ArtTile_SBZ_Moving_Block_Short  ; moving platform and stomper
 		plcm	Nem_Girder,    ArtTile_SBZ_Girder              ; girder
 		plcm	Nem_BallHog,   ArtTile_Ball_Hog                ; ball hog enemy
 		plcm	Nem_SbzWheel1, ArtTile_SBZ_Disc                ; spot on large wheel
@@ -214,14 +243,18 @@ PLC_SBZ:	dc.w ((PLC_SBZ2-PLC_SBZ-2)/6)-1
 		plcm	Nem_FlamePipe, ArtTile_SBZ_Flamethrower        ; flaming pipe
 		plcm	Nem_SbzFloor,  ArtTile_SBZ_Collapsing_Floor    ; collapsing floor
 		plcm	Nem_SbzBlock,  ArtTile_SBZ_Vanishing_Block     ; vanishing block
+		endif
 
 PLC_SBZ2:	dc.w ((PLC_SBZ2end-PLC_SBZ2-2)/6)-1
+		if MMD_Is_SBZ||MMD_Is_FZ
+		plcm	Nem_Electric,   ArtTile_SBZ_Electric_Orb       ; electric orb
+		endif
+		if MMD_Is_SBZ
 		plcm	Nem_Cater,      ArtTile_SBZ_Caterkiller        ; caterkiller enemy
 		plcm	Nem_Bomb,       ArtTile_Bomb                   ; bomb enemy
 		plcm	Nem_Orbinaut,   ArtTile_SBZ_Orbinaut           ; orbinaut enemy
 		plcm	Nem_SlideFloor, ArtTile_SBZ_Moving_Block_Long  ; floor that slides away
 		plcm	Nem_SbzDoor2,   ArtTile_SBZ_Horizontal_Door    ; horizontal door
-		plcm	Nem_Electric,   ArtTile_SBZ_Electric_Orb       ; electric orb
 		plcm	Nem_TrapDoor,   ArtTile_SBZ_Trap_Door          ; trapdoor
 		plcm	Nem_SbzFloor,   ArtTile_SBZ_Collapsing_Floor+4 ; collapsing floor
 		plcm	Nem_SpinPform,  ArtTile_SBZ_Spinning_Platform  ; small spinning platform
@@ -229,6 +262,7 @@ PLC_SBZ2:	dc.w ((PLC_SBZ2end-PLC_SBZ2-2)/6)-1
 		plcm	Nem_Spikes,     ArtTile_Spikes                 ; spikes
 		plcm	Nem_HSpring,    ArtTile_Spring_Horizontal      ; horizontal spring
 		plcm	Nem_VSpring,    ArtTile_Spring_Vertical        ; vertical spring
+		endif
 PLC_SBZ2end:
 ; ---------------------------------------------------------------------------
 ; Pattern load cues - title card
@@ -349,6 +383,7 @@ PLC_SpeStResultend:
 ; Pattern load cues - ending sequence
 ; ---------------------------------------------------------------------------
 PLC_Ending:	dc.w ((PLC_Endingend-PLC_Ending-2)/6)-1
+		if MMD_Is_Ending
 		plcm	Nem_GHZ_1st,   ArtTile_Level            ; GHZ main patterns
 		plcm	Nem_GHZ_2nd,   ArtTile_Level+$1CD       ; GHZ secondary patterns
 		plcm	Nem_Stalk,     ArtTile_GHZ_Flower_Stalk ; flower stalk
@@ -366,6 +401,7 @@ PLC_Ending:	dc.w ((PLC_Endingend-PLC_Ending-2)/6)-1
 		plcm	Nem_Flicky,    ArtTile_Ending_Flicky    ; flicky
 		plcm	Nem_Squirrel,  ArtTile_Ending_Squirrel  ; squirrel
 		plcm	Nem_EndStH,    ArtTile_Ending_STH       ; "SONIC THE HEDGEHOG"
+		endif
 PLC_Endingend:
 ; ---------------------------------------------------------------------------
 ; Pattern load cues - "TRY AGAIN" and "END" screens
@@ -379,19 +415,23 @@ PLC_TryAgainend:
 ; Pattern load cues - Eggman on SBZ 2
 ; ---------------------------------------------------------------------------
 PLC_EggmanSBZ2:	dc.w ((PLC_EggmanSBZ2end-PLC_EggmanSBZ2-2)/6)-1
+		if MMD_Is_SBZ
 		plcm	Nem_SbzBlock,   ArtTile_Eggman_Trap_Floor ; block
 		plcm	Nem_Sbz2Eggman, ArtTile_Eggman            ; Eggman
 		plcm	Nem_LzSwitch,   ArtTile_Eggman_Button-4   ; switch
+		endif
 PLC_EggmanSBZ2end:
 ; ---------------------------------------------------------------------------
 ; Pattern load cues - final boss
 ; ---------------------------------------------------------------------------
 PLC_FZBoss:	dc.w ((PLC_FZBossend-PLC_FZBoss-2)/6)-1
+		if MMD_Is_FZ
 		plcm	Nem_FzEggman,   ArtTile_FZ_Eggman_Fleeing    ; Eggman after boss
 		plcm	Nem_FzBoss,     ArtTile_FZ_Boss              ; FZ boss
 		plcm	Nem_Eggman,     ArtTile_Eggman               ; Eggman main patterns
 		plcm	Nem_Sbz2Eggman, ArtTile_FZ_Eggman_No_Vehicle ; Eggman without ship
 		plcm	Nem_Exhaust,    ArtTile_Eggman_Exhaust       ; exhaust flame
+		endif
 PLC_FZBossend:
 
 ; ---------------------------------------------------------------------------

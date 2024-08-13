@@ -1,12 +1,12 @@
 includealigned: macro file
 name:
 	binclude file
-	if ((*)&$1FFFF)<(name&$1FFFF)
-name_length: equ *-name
-	rorg -name_length
-	align $20000
-	binclude file
-	endif
+;	if ((*)&$1FFFF)<(name&$1FFFF)
+;name_length: equ *-name
+;	rorg -name_length
+;	align $20000
+;	binclude file
+;	endif
 	even
 	endm
 
@@ -14,6 +14,23 @@ Art_Text:	includealigned	"artunc/menutext.bin" ; text used in level select and d
 Art_Text_End:	even
 Art_Hud:	includealigned	"artunc/HUD Numbers.bin" ; 8x16 pixel numbers on HUD
 Art_LivesNums:	includealigned	"artunc/Lives Counter Numbers.bin" ; 8x8 pixel numbers on lives counter
+
+Eni_Title:
+		if MMD_Is_Title
+		includealigned	"tilemaps/Title Screen.eni" ; title screen foreground (mappings)
+		endif
+Nem_TitleFg:
+		if MMD_Is_Title
+		includealigned	"artnem/Title Screen Foreground.nem"
+		endif
+Nem_TitleSonic:
+		if MMD_Is_Title
+		includealigned	"artnem/Title Screen Sonic.nem"
+		endif
+Nem_TitleTM:
+		if MMD_Is_Title
+		includealigned	"artnem/Title Screen TM.nem"
+		endif
 
 ; ---------------------------------------------------------------------------
 ; Compressed graphics - primary patterns and block mappings
@@ -39,7 +56,7 @@ Blk16_SYZ:
 		includealigned	"map16/SYZ.eni"
 		endif
 Blk16_SBZ:
-		if MMD_Is_SBZ
+		if MMD_Is_SBZ||MMD_Is_FZ
 		includealigned	"map16/SBZ.eni"
 		endif
 Blk256_GHZ:
@@ -67,7 +84,7 @@ Blk256_SYZ:
 		includealigned	"map256/SYZ.kos"
 		endif
 Blk256_SBZ:
-		if MMD_Is_SBZ
+		if MMD_Is_SBZ||MMD_Is_FZ
 		if Revision=0
 		includealigned	"map256/SBZ.kos"
 		else
@@ -78,12 +95,27 @@ Blk256_SBZ:
 ; ---------------------------------------------------------------------------
 ; Compressed graphics - various
 ; ---------------------------------------------------------------------------
-Nem_Shield:	includealigned	"artnem/Shield.nem"
-Nem_Stars:	includealigned	"artnem/Invincibility Stars.nem"
+Nem_Shield:
+		if MMD_Is_Level
+		includealigned	"artnem/Shield.nem"
+		endif
+Nem_Stars:
+		if MMD_Is_Level
+		includealigned	"artnem/Invincibility Stars.nem"
+		endif
 		if Revision=0
-Nem_LzSonic:	includealigned	"artnem/Unused - LZ Sonic.nem" ; Sonic holding his breath
-Nem_Warp:	includealigned	"artnem/Unused - SStage Flash.nem" ; entry to special stage flash
-Nem_Goggle:	includealigned	"artnem/Unused - Goggles.nem" ; unused goggles
+Nem_LzSonic:
+		if MMD_Is_Level
+		includealigned	"artnem/Unused - LZ Sonic.nem" ; Sonic holding his breath
+		endif
+Nem_Warp:
+		if MMD_Is_Level
+		includealigned	"artnem/Unused - SStage Flash.nem" ; entry to special stage flash
+		endif
+Nem_Goggle:
+		if MMD_Is_Level
+		includealigned	"artnem/Unused - Goggles.nem" ; unused goggles
+		endif
 		endif
 
 ; ---------------------------------------------------------------------------
@@ -390,7 +422,9 @@ Nem_Yadrin:
 		includealigned	"artnem/Enemy Yadrin.nem"
 		endif
 Nem_Basaran:
+		if MMD_Is_MZ
 		includealigned	"artnem/Enemy Basaran.nem"
+		endif
 Nem_Bomb:
 		if MMD_Is_SLZ
 		includealigned	"artnem/Enemy Bomb.nem"
@@ -406,20 +440,62 @@ Nem_Cater:
 ; ---------------------------------------------------------------------------
 ; Compressed graphics - various
 ; ---------------------------------------------------------------------------
-Nem_TitleCard:	includealigned	"artnem/Title Cards.nem"
-Nem_Hud:	includealigned	"artnem/HUD.nem"	; HUD (rings, time, score)
-Nem_Lives:	includealigned	"artnem/HUD - Life Counter Icon.nem"
-Nem_Ring:	includealigned	"artnem/Rings.nem"
-Nem_Monitors:	includealigned	"artnem/Monitors.nem"
-Nem_Explode:	includealigned	"artnem/Explosion.nem"
-Nem_Points:	includealigned	"artnem/Points.nem"	; points from destroyed enemy or object
-Nem_GameOver:	includealigned	"artnem/Game Over.nem"	; game over / time over
-Nem_HSpring:	includealigned	"artnem/Spring Horizontal.nem"
-Nem_VSpring:	includealigned	"artnem/Spring Vertical.nem"
-Nem_SignPost:	includealigned	"artnem/Signpost.nem"	; end of level signpost
-Nem_Lamp:	includealigned	"artnem/Lamppost.nem"
-Nem_BigFlash:	includealigned	"artnem/Giant Ring Flash.nem"
-Nem_Bonus:	includealigned	"artnem/Hidden Bonuses.nem" ; hidden bonuses at end of a level
+Nem_TitleCard:
+		if MMD_Is_Level
+		includealigned	"artnem/Title Cards.nem"
+		endif
+Nem_Hud:
+		if MMD_Is_Level
+		includealigned	"artnem/HUD.nem"	; HUD (rings, time, score)
+		endif
+Nem_Lives:
+		if MMD_Is_Level
+		includealigned	"artnem/HUD - Life Counter Icon.nem"
+		endif
+Nem_Ring:
+		if MMD_Is_Level
+		includealigned	"artnem/Rings.nem"
+		endif
+Nem_Monitors:
+		if MMD_Is_Level
+		includealigned	"artnem/Monitors.nem"
+		endif
+Nem_Explode:
+		if MMD_Is_Level
+		includealigned	"artnem/Explosion.nem"
+		endif
+Nem_Points:
+		if MMD_Is_Level
+		includealigned	"artnem/Points.nem"	; points from destroyed enemy or object
+		endif
+Nem_GameOver:
+		if MMD_Is_Level
+		includealigned	"artnem/Game Over.nem"	; game over / time over
+		endif
+Nem_HSpring:
+		if MMD_Is_Level
+		includealigned	"artnem/Spring Horizontal.nem"
+		endif
+Nem_VSpring:
+		if MMD_Is_Level
+		includealigned	"artnem/Spring Vertical.nem"
+		endif
+Nem_SignPost:
+		if MMD_Is_Level
+		includealigned	"artnem/Signpost.nem"	; end of level signpost
+		endif
+Nem_Lamp:
+		if MMD_Is_Level
+		includealigned	"artnem/Lamppost.nem"
+		endif
+Nem_BigFlash:
+		if MMD_Is_Level
+		includealigned	"artnem/Giant Ring Flash.nem"
+		endif
+Nem_Bonus:
+		if MMD_Is_Level
+		includealigned	"artnem/Hidden Bonuses.nem" ; hidden bonuses at end of a level
+		endif
 ; ---------------------------------------------------------------------------
 ; Compressed graphics - continue screen
 ; ---------------------------------------------------------------------------
@@ -466,7 +542,7 @@ Nem_Squirrel:
 ; Animated uncompressed graphics
 ; ---------------------------------------------------------------------------
 Art_GhzWater:
-		if MMD_Is_GHZ
+		if MMD_Is_GHZ||MMD_Is_Title
 		includealigned	"artunc/GHZ Waterfall.bin"
 		endif
 Art_GhzFlower1:
@@ -496,22 +572,6 @@ Art_SbzSmoke:
 Art_BigRing:
 		if ~~MMD_Is_SBZ
 		includealigned	"artunc/Giant Ring.bin"
-		endif
-Eni_Title:
-		if MMD_Is_Title
-		includealigned	"tilemaps/Title Screen.eni" ; title screen foreground (mappings)
-		endif
-Nem_TitleFg:
-		if MMD_Is_Title
-		includealigned	"artnem/Title Screen Foreground.nem"
-		endif
-Nem_TitleSonic:
-		if MMD_Is_Title
-		includealigned	"artnem/Title Screen Sonic.nem"
-		endif
-Nem_TitleTM:
-		if MMD_Is_Title
-		includealigned	"artnem/Title Screen TM.nem"
 		endif
 Eni_JapNames:
 		if MMD_Is_Title
@@ -623,25 +683,33 @@ Nem_ResultEm:
 ; Compressed graphics - bosses and ending sequence
 ; ---------------------------------------------------------------------------
 Nem_Eggman:
+		if MMD_Is_Level
 		includealigned	"artnem/Boss - Main.nem"
+		endif
 Nem_Weapons:
+		if MMD_Is_Level
 		includealigned	"artnem/Boss - Weapons.nem"
+		endif
 Nem_Prison:
+		if MMD_Is_Level
 		includealigned	"artnem/Prison Capsule.nem"
+		endif
 Nem_Sbz2Eggman:
-		if MMD_Is_SBZ
+		if MMD_Is_SBZ||MMD_Is_FZ
 		includealigned	"artnem/Boss - Eggman in SBZ2 & FZ.nem"
 		endif
 Nem_FzBoss:
-		if MMD_Is_FZ
+		if MMD_Is_SBZ||MMD_Is_FZ
 		includealigned	"artnem/Boss - Final Zone.nem"
 		endif
 Nem_FzEggman:
-		if MMD_Is_FZ
+		if MMD_Is_SBZ||MMD_Is_FZ
 		includealigned	"artnem/Boss - Eggman after FZ Fight.nem"
 		endif
 Nem_Exhaust:
+		if MMD_Is_Level
 		includealigned	"artnem/Boss - Exhaust Flame.nem"
+		endif
 Nem_EndEm:
 		if MMD_Is_Ending
 		includealigned	"artnem/Ending - Emeralds.nem"
@@ -700,7 +768,7 @@ Nem_SYZ:
 		includealigned	"artnem/8x8 - SYZ.nem"	; SYZ primary patterns
 		endif
 Nem_SBZ:
-		if MMD_Is_SBZ
+		if MMD_Is_SBZ||MMD_Is_FZ
 		includealigned	"artnem/8x8 - SBZ.nem"	; SBZ primary patterns
 		endif
 

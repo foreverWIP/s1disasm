@@ -951,9 +951,17 @@ WordBranch_ScanSource:
 	movea.l	d0,a0						; Copy it to a0
 	cmpa.l	(ROMEndLoc).l,a0			; Is start address past the end of ROM?
 	bls.s	.start_in_rom_ram			; Branch if not
+	if MMD_Enabled
+	cmpa.l	#$230000,a0				; Is start address in RAM?
+	else
 	cmpa.l	#$FFFF0000,a0				; Is start address in RAM?
+	endif
 	bhs.s	.start_in_rom_ram			; Branch if yes
+	if MMD_Enabled
+	movea.l	#$230000,a0				; Set to start at the start of RAM
+	else
 	movea.l	#$FFFF0000,a0				; Set to start at the start of RAM
+	endif
 
 .start_in_rom_ram:
 	cmp.l	(ROMEndLoc).l,d0			; Is it before the end of ROM?

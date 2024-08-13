@@ -80,4 +80,5 @@ Over_ResetLvl:
 		move.w	#1,(f_restart).l ; restart level
 
 Over_Display:
+		quitModule
 		bra.w	DisplaySprite

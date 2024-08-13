@@ -1,3 +1,13 @@
+quitModule:	macro
+		if MMD_Enabled
+		disable_ints
+		move.l	(v_initial_sp).l,sp
+		rts
+		else
+		nop
+		endif
+		endm
+
 ; ---------------------------------------------------------------------------
 ; Set a VRAM address via the VDP control port.
 ; input: 16-bit VRAM address, control port (default is (vdp_control_port).l)
@@ -18,13 +28,20 @@ locVRAM:	macro loc,controlport
 
 writeVRAM:	macro source,destination
 		lea	(vdp_control_port).l,a5
+		if ~~MMD_Enabled
 		move.l	#$94000000+((((source_end-source)>>1)&$FF00)<<8)+$9300+(((source_end-source)>>1)&$FF),(a5)
 		move.l	#$96000000+(((source>>1)&$FF00)<<8)+$9500+((source>>1)&$FF),(a5)
 		move.w	#$9700+((((source>>1)&$FF0000)>>16)&$7F),(a5)
 		move.w	#$4000+((destination)&$3FFF),(a5)
 		move.w	#$80+(((destination)&$C000)>>14),(v_vdp_buffer2).l
 		move.w	(v_vdp_buffer2).l,(a5)
-		if MMD_Enabled
+		else
+		move.l	#$94000000+((((source_end-(source+2))>>1)&$FF00)<<8)+$9300+(((source_end-(source+2))>>1)&$FF),(a5)
+		move.l	#$96000000+((((source+2)>>1)&$FF00)<<8)+$9500+(((source+2)>>1)&$FF),(a5)
+		move.w	#$9700+(((((source+2)>>1)&$FF0000)>>16)&$7F),(a5)
+		move.w	#$4000+((destination)&$3FFF),(a5)
+		move.w	#$80+(((destination)&$C000)>>14),(v_vdp_buffer2).l
+		move.w	(v_vdp_buffer2).l,(a5)
 		locVRAM destination
 		move.w	(source).l,(vdp_data_port).l
 		endif
@@ -37,13 +54,20 @@ writeVRAM:	macro source,destination
 
 writeCRAM:	macro source,destination
 		lea	(vdp_control_port).l,a5
+		if ~~MMD_Enabled
 		move.l	#$94000000+((((source_end-source)>>1)&$FF00)<<8)+$9300+(((source_end-source)>>1)&$FF),(a5)
 		move.l	#$96000000+(((source>>1)&$FF00)<<8)+$9500+((source>>1)&$FF),(a5)
 		move.w	#$9700+((((source>>1)&$FF0000)>>16)&$7F),(a5)
 		move.w	#$C000+(destination&$3FFF),(a5)
 		move.w	#$80+((destination&$C000)>>14),(v_vdp_buffer2).l
 		move.w	(v_vdp_buffer2).l,(a5)
-		if MMD_Enabled
+		else
+		move.l	#$94000000+((((source_end-(source+2))>>1)&$FF00)<<8)+$9300+(((source_end-(source+2))>>1)&$FF),(a5)
+		move.l	#$96000000+((((source+2)>>1)&$FF00)<<8)+$9500+(((source+2)>>1)&$FF),(a5)
+		move.w	#$9700+(((((source+2)>>1)&$FF0000)>>16)&$7F),(a5)
+		move.w	#$C000+(destination&$3FFF),(a5)
+		move.w	#$80+((destination&$C000)>>14),(v_vdp_buffer2).l
+		move.w	(v_vdp_buffer2).l,(a5)
 		move.l	#$C0000000+(destination<<16),(vdp_control_port).l
 		move.w	(source).l,(vdp_data_port).l
 		endif

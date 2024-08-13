@@ -8,7 +8,7 @@ ramaddr function x,(-(x&$80000000)<<1)|x
 		if ~~MMD_Enabled
 	phase ramaddr ( $FFFF0000 )
 		else
-	phase ramaddr ( $00230000 )
+	phase ramaddr ( $230000 )
 		endif
 v_ram_start:
 
@@ -25,9 +25,8 @@ v_16x16:		ds.b	$1800		; 16x16 tile mappings
 
 v_sgfx_buffer:		ds.b	tile_size*23	; buffered Sonic graphics ($17 cells)
 v_sgfx_buffer_end:
-v_return_from_mmd:
-				ds.b	1
-			ds.b	$1F		; unused
+v_initial_sp:	ds.l	1
+			ds.b	$1C		; unused
 v_tracksonic:		ds.b	$100		; position tracking data for Sonic
 v_hscrolltablebuffer:	ds.b	$380		; scrolling table data
 v_hscrolltablebuffer_end:
