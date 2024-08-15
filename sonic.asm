@@ -29,8 +29,8 @@ zeroOffsetOptimization = 0	; if 1, makes a handful of zero-offset instructions s
 	include	"Variables.asm"
 	include	"Macros.asm"
 	if MMD_Enabled
-	include "_mcd/subcpu.asm"
-	include "_mcd/mmd.asm"
+	include "subcpu.asm"
+	include "mmd.asm"
 	endif
 	include "mmddefs.asm"
 
@@ -2456,6 +2456,8 @@ LevelMenuText:	if Revision=0
 		binclude	"misc/Level Select Text (JP1).bin"
 		endif
 		even
+		else
+		rts
 		endif
 ; ---------------------------------------------------------------------------
 ; Music	playlist

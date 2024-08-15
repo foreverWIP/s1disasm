@@ -49,8 +49,8 @@ local build_file = function(k, v, mmd_format)
 	os.remove(out_name .. ".lst")
 	os.rename("sonic.lst", out_name .. ".lst")
 	if out_name == "build/mmd/" .. v then
-		os.remove("../sonic/disc/" .. v .. ".BIN")
-		os.rename(out_name .. ".bin", "../sonic/disc/" .. v .. ".BIN")
+		os.remove("_mcd/disc/" .. v .. ".BIN")
+		os.rename(out_name .. ".bin", "_mcd/disc/" .. v .. ".BIN")
 	end
 
 	if message then
