@@ -109,5 +109,7 @@ BBall_Move:	; Routine 2
 		add.w	d3,d5
 		move.w	d4,obY(a0)	; move object circularly
 		move.w	d5,obX(a0)
-		endif
 		rts	
+		else
+		undefObjTrap
+		endif

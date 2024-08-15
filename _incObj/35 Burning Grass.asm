@@ -80,5 +80,5 @@ GFire_Animate:
 		bsr.w	AnimateSprite
 		bra.w	DisplaySprite
 		else
-		rts
+		undefObjTrap
 		endif

@@ -193,5 +193,7 @@ Saw_Action:	; Routine 2
 		bchg	#0,obFrame(a0)
 
 .sameframe04:
-		endif
 		rts	
+		else
+		undefObjTrap
+		endif

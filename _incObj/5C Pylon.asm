@@ -34,5 +34,5 @@ Pyl_Display:	; Routine 2
 		move.w	d1,obScreenY(a0)
 		bra.w	DisplaySprite
 		else
-		rts
+		undefObjTrap
 		endif

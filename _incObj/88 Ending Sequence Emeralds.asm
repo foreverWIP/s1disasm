@@ -83,5 +83,7 @@ ECha_Rise:
 		subq.w	#1,echa_origY(a0) ; make circle rise
 
 ECha_End:
-		endif
 		rts	
+		else
+		undefObjTrap
+		endif

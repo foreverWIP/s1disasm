@@ -155,6 +155,8 @@ Roll_Stop:
 		bset	#7,objoff_32(a0)
 
 locret_E188:
-		endif
 		rts	
+		else
+		undefObjTrap
+		endif
 ; End of function Roll_Stop

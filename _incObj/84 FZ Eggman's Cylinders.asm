@@ -202,5 +202,7 @@ loc_1A656:
 		clr.b	objoff_29(a0)
 
 locret_1A674:
-		endif
 		rts	
+		else
+		undefObjTrap
+		endif

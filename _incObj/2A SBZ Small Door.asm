@@ -62,5 +62,5 @@ ADoor_Animate:
 .remember:
 		bra.w	RememberState
 		else
-		rts
+		undefObjTrap
 		endif

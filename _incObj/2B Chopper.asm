@@ -49,5 +49,7 @@ Chop_ChgSpeed:	; Routine 2
 		move.b	#2,obAnim(a0)	; use stationary animation
 
 .nochg:
-		endif
 		rts
+		else
+		undefObjTrap
+		endif

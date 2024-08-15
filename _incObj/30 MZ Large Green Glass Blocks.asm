@@ -240,5 +240,7 @@ loc_B5EE:
 		move.w	objoff_30(a0),d1
 		sub.w	d0,d1
 		move.w	d1,obY(a0)
-		endif
 		rts	
+		else
+		undefObjTrap
+		endif

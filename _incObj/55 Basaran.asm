@@ -167,5 +167,7 @@ Bas_Action:	; Routine 2
 		bsr.w	DisplaySprite
 		tst.b	obRender(a0)
 		bpl.w	DeleteObject
-		endif
 		rts	
+		else
+		undefObjTrap
+		endif

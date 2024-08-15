@@ -52,5 +52,7 @@ TSon_Animate:	; Routine 6
 		lea	(Ani_TSon).l,a1
 		bsr.w	AnimateSprite
 		bra.w	DisplaySprite
-		endif
 		rts	
+		else
+		undefObjTrap
+		endif

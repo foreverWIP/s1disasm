@@ -188,5 +188,5 @@ Jun_ChgPos:
 		dc.b    0, -$20,  -$E, -$1E
 		dc.b -$18, -$18, -$1E,  -$E
 		else
-		rts
+		undefObjTrap
 		endif

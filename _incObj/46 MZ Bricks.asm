@@ -120,5 +120,7 @@ Brick_Type04:
 		move.w	brick_origY(a0),d1
 		sub.w	d0,d1
 		move.w	d1,obY(a0)	; make the block wobble
-		endif
 		rts	
+		else
+		undefObjTrap
+		endif

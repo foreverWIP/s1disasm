@@ -45,8 +45,8 @@ MapEng_Debugger:	BINCLUDE	"DebuggerMap.bin"
 ; Edit these to your name and e-mail. If the e-mail is empty (""), then nothing
 ; will be printed on the line. You can use all characters in the ASCII character
 ; set (see https://en.wikipedia.org/wiki/ASCII#ASCII_printable_characters).
-HackerName:	vtstring WHITE,"Your name  "
-EMailmsg:	vtstring BLUE ,"your.email@server.domain         "
+HackerName:	vtstring WHITE,"Amy Farbr. "
+EMailmsg:	vtstring BLUE ,"amywrightmail@protonmail.com     "
 ; ===========================================================================
 ; NO USER SERVICEABLE PARTS BELOW THIS POINT
 ; ===========================================================================

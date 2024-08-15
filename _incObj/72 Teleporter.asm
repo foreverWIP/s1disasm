@@ -241,5 +241,5 @@ Tele_Data:	dc.w .type00-Tele_Data, .type01-Tele_Data, .type02-Tele_Data
 		dc.w $FF70, $1494, $FD90
 .type07:	dc.w 4,	$894, $90
 		else
-		rts
+		undefObjTrap
 		endif

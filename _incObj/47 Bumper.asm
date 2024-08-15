@@ -81,5 +81,5 @@ Bump_Hit:	; Routine 2
 .delete:
 		bra.w	DeleteObject
 		else
-		rts
+		undefObjTrap
 		endif

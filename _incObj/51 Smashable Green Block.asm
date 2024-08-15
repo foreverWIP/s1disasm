@@ -109,5 +109,5 @@ Smab_Speeds:	dc.w -$200, -$200	; x-speed, y-speed
 
 Smab_Scores:	dc.w 10, 20, 50, 100
 		else
-		rts
+		undefObjTrap
 		endif

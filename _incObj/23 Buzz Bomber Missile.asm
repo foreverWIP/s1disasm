@@ -128,5 +128,7 @@ Msl_Animate2:
 		lea	(Ani_Missile).l,a1
 		bsr.w	AnimateSprite
 		bsr.w	DisplaySprite
-		endif
 		rts	
+		else
+		undefObjTrap
+		endif

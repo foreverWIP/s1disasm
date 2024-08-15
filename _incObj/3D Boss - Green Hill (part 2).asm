@@ -229,5 +229,5 @@ BGHZ_Display:
 		or.b	d0,obRender(a0)
 		jmp	(DisplaySprite).l
 		else
-		rts
+		undefObjTrap
 		endif

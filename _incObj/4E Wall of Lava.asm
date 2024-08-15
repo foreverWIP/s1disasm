@@ -129,5 +129,5 @@ LWall_Move:	; Routine 6
 LWall_Delete:	; Routine 8
 		bra.w	DeleteObject
 		else
-		rts
+		undefObjTrap
 		endif

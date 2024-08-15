@@ -208,5 +208,7 @@ Pri_EndAct:	; Routine $E
 		jmp	(DeleteObject).l
 
 .found:
-		endif
 		rts	
+		else
+		undefObjTrap
+		endif

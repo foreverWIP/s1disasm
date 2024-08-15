@@ -166,5 +166,5 @@ LBall_Type08:
 LBall_Delete:
 		bra.w	DeleteObject
 		else
-		rts
+		undefObjTrap
 		endif

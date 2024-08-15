@@ -76,5 +76,5 @@ Hog_Action:	; Routine 2
 .fail:
 		bra.s	.remember
 		else
-		rts
+		undefObjTrap
 		endif

@@ -62,5 +62,7 @@ Conv_Action:	; Routine 2
 		add.w	d0,obX(a1)
 
 .notonconveyor:
-		endif
 		rts	
+		else
+		undefObjTrap
+		endif

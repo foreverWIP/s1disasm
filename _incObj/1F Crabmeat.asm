@@ -227,5 +227,5 @@ Crab_BallMove:	; Routine 8
 		bra.w	DeleteObject
 	endif
 	else
-	rts
+	undefObjTrap
 	endif

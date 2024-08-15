@@ -112,5 +112,7 @@ Obj87_Leap:	; Routine $10
 ; ===========================================================================
 
 ESon_Wait4:
-		endif
 		rts	
+		else
+		undefObjTrap
+		endif

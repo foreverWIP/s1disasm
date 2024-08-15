@@ -100,5 +100,5 @@ Pole_Action:	; Routine 2
 Pole_Display:	; Routine 4
 		bra.w	RememberState
 		else
-		rts
+		undefObjTrap
 		endif

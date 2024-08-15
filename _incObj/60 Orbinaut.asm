@@ -187,5 +187,5 @@ Orb_ChkDel2:	; Routine 8
 		bpl.w	DeleteObject
 		bra.w	DisplaySprite
 		else
-		rts
+		undefObjTrap
 		endif

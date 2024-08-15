@@ -206,5 +206,7 @@ loc_121A6:
 		move.w	d0,obY(a0)
 
 locret_121C0:
-		endif
 		rts	
+		else
+		undefObjTrap
+		endif

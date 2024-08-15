@@ -58,5 +58,5 @@ Flap_OpenClose:	; Routine 2
 .display:
 		bra.w	RememberState
 		else
-		rts
+		undefObjTrap
 		endif

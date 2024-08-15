@@ -166,5 +166,5 @@ FFloor_FragPos:	dc.w -8, -8
 		dc.w 0,	$10
 		dc.w $10, $10
 		else
-		rts
+		undefObjTrap
 		endif

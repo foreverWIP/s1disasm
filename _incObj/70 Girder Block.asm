@@ -83,5 +83,5 @@ Gird_ChgMove:
 		dc.w  -$100,  -$40,   $60,     0 ; up/left
 		dc.w	  0, -$100,   $18,     0 ; up
 		else
-		rts
+		undefObjTrap
 		endif

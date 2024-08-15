@@ -48,5 +48,5 @@ Harp_Wait:	; Routine 4
 .chkdel:
 		bra.w	RememberState
 		else
-		rts
+		undefObjTrap
 		endif

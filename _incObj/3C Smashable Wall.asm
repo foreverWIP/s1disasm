@@ -73,5 +73,7 @@ Smash_FragMove:	; Routine 4
 		bsr.w	DisplaySprite
 		tst.b	obRender(a0)
 		bpl.w	DeleteObject
-		endif
 		rts	
+		else
+		undefObjTrap
+		endif

@@ -169,5 +169,5 @@ GBall_Vanish:
 GBall_Display4:
 		jmp	(DisplaySprite).l
 		else
-		rts
+		undefObjTrap
 		endif

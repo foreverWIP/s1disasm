@@ -74,5 +74,5 @@ CSon_ShowRun:
 		jsr	(Sonic_Animate).l
 		jmp	(Sonic_LoadGfx).l
 		else
-		rts
+		undefObjTrap
 		endif

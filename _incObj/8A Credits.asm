@@ -41,5 +41,5 @@ Cred_Main:	; Routine 0
 Cred_Display:	; Routine 2
 		jmp	(DisplaySprite).l
 		else
-		rts
+		undefObjTrap
 		endif

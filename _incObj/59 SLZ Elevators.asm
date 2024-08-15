@@ -250,5 +250,7 @@ Elev_MakeMulti:	; Routine 6
 .chkdel:
 		addq.l	#4,sp
 		out_of_range.w	DeleteObject
-		endif
 		rts	
+		else
+		undefObjTrap
+		endif

@@ -111,4 +111,5 @@ Gar_AniFire:	; Routine 6
 		bra.w	DeleteObject
 	endif
 		else
+		undefObjTrap
 		endif

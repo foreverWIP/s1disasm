@@ -119,8 +119,10 @@ GMake_Delete:	; Routine $A
 		; double-delete and display-and-delete bugs.
 		out_of_range.w	DeleteObject
 	endif
-		endif
 		rts	
+		else
+		undefObjTrap
+		endif
 
 
 ; ---------------------------------------------------------------------------
@@ -303,5 +305,5 @@ loc_F04C:
 Geyser_Delete:	; Routine 6
 		bra.w	DeleteObject
 		else
-		rts
+		undefObjTrap
 		endif

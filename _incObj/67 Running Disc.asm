@@ -162,5 +162,5 @@ Disc_ChkDel:
 .delete:
 		jmp	(DeleteObject).l
 		else
-		rts
+		undefObjTrap
 		endif

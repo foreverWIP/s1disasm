@@ -63,5 +63,5 @@ Surf_Action:	; Routine 2
 .display:
 		bra.w	DisplaySprite
 		else
-		rts
+		undefObjTrap
 		endif

@@ -109,5 +109,7 @@ Circ_Types:
 		move.w	d1,obX(a0)
 		add.w	circ_origY(a0),d2
 		move.w	d2,obY(a0)
-		endif
 		rts	
+		else
+		undefObjTrap
+		endif

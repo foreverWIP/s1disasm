@@ -40,5 +40,5 @@ PSB_PrsStart:	; Routine 2
 		lea	(Ani_PSBTM).l,a1
 		bra.w	AnimateSprite	; "PRESS START" is animated
 		else
-		rts
+		undefObjTrap
 		endif

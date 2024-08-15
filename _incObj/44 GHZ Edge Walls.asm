@@ -45,5 +45,5 @@ Edge_Display:	; Routine 4
 		rts
 	endif
 		else
-		rts
+		undefObjTrap
 		endif

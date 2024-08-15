@@ -447,5 +447,5 @@ loc_18688:
 BossMarble_TubeDel:
 		jmp	(DeleteObject).l
 		else
-		rts
+		undefObjTrap
 		endif

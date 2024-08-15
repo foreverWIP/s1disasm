@@ -33,5 +33,5 @@ Spla_Display:	; Routine 2
 Spla_Delete:	; Routine 4
 		jmp	(DeleteObject).l	; delete when animation	is complete
 		else
-		rts
+		undefObjTrap
 		endif

@@ -284,5 +284,5 @@ LGrass_Data2:	binclude	"misc/mz_pfm2.bin"
 LGrass_Data3:	binclude	"misc/mz_pfm3.bin"
 		even
 		else
-		rts
+		undefObjTrap
 		endif

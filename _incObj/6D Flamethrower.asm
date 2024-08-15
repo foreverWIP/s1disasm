@@ -59,5 +59,5 @@ Flame_ChkDel:
 		out_of_range.w	DeleteObject
 		bra.w	DisplaySprite
 		else
-		rts
+		undefObjTrap
 		endif

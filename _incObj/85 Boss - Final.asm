@@ -592,5 +592,5 @@ loc_1A3AC:	; Routine $C
 loc_1A3D0:
 		bra.w	loc_1A2A6
 		else
-		rts
+		undefObjTrap
 		endif

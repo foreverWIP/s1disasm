@@ -40,5 +40,5 @@ Rock_Solid:	; Routine 2
 		rts
 	endif
 		else
-		rts
+		undefObjTrap
 		endif

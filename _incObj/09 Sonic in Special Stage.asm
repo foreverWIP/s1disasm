@@ -724,6 +724,8 @@ Obj09_GlassSnd:
 ; ===========================================================================
 
 Obj09_NoGlass:
-		endif
 		rts	
+		else
+		undefObjTrap
+		endif
 ; End of function Obj09_ChkItems2

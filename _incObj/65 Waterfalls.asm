@@ -68,4 +68,6 @@ loc_12B36:	; Routine 8
 
 .animate:
 		bra.s	WFall_Animate
+		else
+		undefObjTrap
 		endif

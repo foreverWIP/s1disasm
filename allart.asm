@@ -312,7 +312,7 @@ Nem_SyzSpike2:
 		includealigned	"artnem/SYZ Small Spikeball.nem"
 		endif
 Nem_LzSwitch:
-		if MMD_Is_SYZ
+		if MMD_Is_SYZ||MMD_Is_LZ
 		includealigned	"artnem/Switch.nem"
 		endif
 Nem_SyzSpike1:

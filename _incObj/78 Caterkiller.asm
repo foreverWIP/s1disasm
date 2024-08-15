@@ -409,5 +409,5 @@ loc_16CE0:
 		bpl.w	Cat_ChkGone
 		jmp	(DisplaySprite).l
 		else
-		rts
+		undefObjTrap
 		endif

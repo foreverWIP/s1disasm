@@ -303,5 +303,5 @@ loc_B98C:
 loc_B996:
 		bra.w	CStom_Restart
 		else
-		rts
+		undefObjTrap
 		endif

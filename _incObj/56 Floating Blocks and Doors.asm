@@ -500,5 +500,7 @@ FBlock_Action:	; Routine 2
 		neg.w	d1
 		add.w	fb_origX(a0),d1
 		move.w	d1,obX(a0)
-		endif
 		rts	
+		else
+		undefObjTrap
+		endif

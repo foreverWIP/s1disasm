@@ -98,5 +98,7 @@ loc_5B96:
 		move.w	d0,obScreenY(a0)
 
 locret_5BBA:
-		endif
 		rts	
+		else
+		undefObjTrap
+		endif

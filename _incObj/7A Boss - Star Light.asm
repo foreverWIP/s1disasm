@@ -444,5 +444,5 @@ loc_18CB8:
 		move.b	#3,obFrame(a0)
 		bra.s	loc_18C78
 		else
-		rts
+		undefObjTrap
 		endif

@@ -8,6 +8,11 @@ quitModule:	macro
 		endif
 		endm
 
+undefObjTrap: macro
+		movea.l	#1,a0
+		move.w	(a0),d0
+		endm
+
 ; ---------------------------------------------------------------------------
 ; Set a VRAM address via the VDP control port.
 ; input: 16-bit VRAM address, control port (default is (vdp_control_port).l)

@@ -30,6 +30,8 @@ loc_F836:
 		moveq	#0,d0
 		rts	
 ; End of function Yad_ChkWall
+		else
+		undefObjTrap
 		endif
 ; ===========================================================================
 ; ---------------------------------------------------------------------------
@@ -116,5 +118,7 @@ Yad_Pause:
 		move.w	#59,yad_timedelay(a0) ; set pause time to 1 second
 		move.w	#0,obVelX(a0)
 		move.b	#0,obAnim(a0)
-		endif
 		rts	
+		else
+		undefObjTrap
+		endif

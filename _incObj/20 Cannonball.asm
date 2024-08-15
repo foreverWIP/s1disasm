@@ -86,5 +86,5 @@ Cbal_Display:
 		rts	
 	endif
 		else
-		rts
+		undefObjTrap
 		endif

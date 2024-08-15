@@ -105,5 +105,5 @@ VanP_Appear:	; Routine 4
 .display:
 		bra.w	RememberState
 		else
-		rts
+		undefObjTrap
 		endif

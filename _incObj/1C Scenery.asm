@@ -48,5 +48,5 @@ Scen_Values:	dc.l Map_Scen                                     ; mappings addres
 		dc.b 1,	$10, 1,	0
 		even
 		else
-		rts
+		undefObjTrap
 		endif

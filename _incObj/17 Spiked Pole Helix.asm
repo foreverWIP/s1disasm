@@ -130,5 +130,5 @@ Hel_Display:	; Routine 8
 		bsr.w	Hel_RotateSpikes
 		bra.w	DisplaySprite
 		else
-		rts
+		undefObjTrap
 		endif

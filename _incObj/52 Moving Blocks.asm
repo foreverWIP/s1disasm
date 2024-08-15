@@ -249,5 +249,7 @@ MBlock_0A_Back:
 MBlock_0A_Reset:
 		clr.w	objoff_36(a0)
 		subq.b	#1,obSubtype(a0)
-		endif
 		rts	
+		else
+		undefObjTrap
+		endif

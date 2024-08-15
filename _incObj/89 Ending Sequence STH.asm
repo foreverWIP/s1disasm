@@ -62,5 +62,5 @@ ESth_Wait:
 		rts
 		endif
 		else
-		rts
+		undefObjTrap
 		endif

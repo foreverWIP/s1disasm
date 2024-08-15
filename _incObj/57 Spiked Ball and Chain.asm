@@ -172,5 +172,5 @@ SBall_Move:	; Routine 2
 SBall_Display:	; Routine 4
 		bra.w	DisplaySprite
 		else
-		rts
+		undefObjTrap
 		endif

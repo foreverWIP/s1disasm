@@ -324,5 +324,7 @@ Sto_Action:	; Routine 2
 .loc_15F5E:
 		clr.b	obSubtype(a0)
 		clr.b	sto_active(a0)
-		endif
 		rts	
+		else
+		undefObjTrap
+		endif

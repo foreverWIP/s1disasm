@@ -167,5 +167,5 @@ SSR_Config:	dc.w $20, $120,	$C4	; start	x-pos, main x-pos, y-pos
 		dc.w $3A0, $120, $138
 		dc.b 2,	6
 		else
-		rts
+		undefObjTrap
 		endif

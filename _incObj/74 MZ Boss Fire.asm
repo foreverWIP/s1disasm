@@ -224,5 +224,5 @@ BossFire_Animate:
 BossFire_Delete3:	; Routine 6
 		jmp	(DeleteObject).l
 		else
-		rts
+		undefObjTrap
 		endif

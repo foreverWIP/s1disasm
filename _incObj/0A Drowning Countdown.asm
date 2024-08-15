@@ -151,6 +151,8 @@ Drown_ShowNumber:
 
 .nonumber:
 		rts	
+		else
+		undefObjTrap
 		endif
 ; ===========================================================================
 Drown_WobbleData:

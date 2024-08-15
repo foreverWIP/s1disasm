@@ -165,5 +165,5 @@ Newt_Action:	; Routine 2
 Newt_Delete:	; Routine 4
 		bra.w	DeleteObject
 		else
-		rts
+		undefObjTrap
 		endif

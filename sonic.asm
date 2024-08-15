@@ -176,12 +176,14 @@ PortA_Ok:
 		lea	SetupValues(pc),a5	; Load setup values array address.
 		movem.w	(a5)+,d5-d7
 		movem.l	(a5)+,a0-a4
+		if ~~MMD_Enabled
 		move.b	-$10FF(a1),d0	; get hardware version (from $A10001)
 		andi.b	#$F,d0
 		beq.s	SkipSecurity	; If the console has no TMSS, skip the security stuff.
 		move.l	#'SEGA',$2F00(a1) ; move "SEGA" to TMSS register ($A14000)
 
 SkipSecurity:
+		endif
 		move.w	(a4),d0	; clear write-pending flag in VDP to prevent issues if the 68k has been reset in the middle of writing a command long word to the VDP.
 		moveq	#0,d0	; clear d0
 		movea.l	d0,a6	; clear a6
@@ -240,10 +242,10 @@ PSGInitLoop:
 		dbf	d5,PSGInitLoop	; repeat for other channels
 		move.w	d0,(a2)
 		movem.l	(a6),d0-a6	; clear all registers
+		endif
 		disable_ints
 
 SkipSetup:
-		endif
 		bra.s	GameProgram	; begin game
 
 ; ===========================================================================
@@ -371,6 +373,24 @@ GameInit:
 			if MMD_Is_Level
 			move.w	#$8174,(vdp_control_port).l
 			move.b	#id_Level,(v_gamemode).l
+			if MMD_Is_GHZ
+			move.w	#(id_GHZ<<8),(v_zone).l
+			endif
+			if MMD_Is_MZ
+			move.w	#(id_MZ<<8),(v_zone).l
+			endif
+			if MMD_Is_SYZ
+			move.w	#(id_SYZ<<8),(v_zone).l
+			endif
+			if MMD_Is_LZ
+			move.w	#(id_LZ<<8),(v_zone).l
+			endif
+			if MMD_Is_SLZ
+			move.w	#(id_SLZ<<8),(v_zone).l
+			endif
+			if MMD_Is_SBZ
+			move.w	#(id_SBZ<<8),(v_zone).l
+			endif
 			endif
 			;if MMD_Is_Demo
 			;move.w	#$8174,(vdp_control_port).l
@@ -2511,7 +2531,12 @@ Level_ClrRam:
 		cmpi.b	#id_LZ,(v_zone).l ; is level LZ?
 		bne.s	Level_LoadPal	; if not, branch
 
+		if ~~MMD_Enabled
 		move.w	#$8014,(a6)	; enable H-interrupts
+		else
+		lea		(HBlank).l,a1
+		jsr		($294).l
+		endif
 		moveq	#0,d0
 		move.b	(v_act).l,d0
 		add.w	d0,d0

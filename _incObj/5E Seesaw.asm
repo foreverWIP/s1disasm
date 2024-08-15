@@ -274,5 +274,5 @@ See_DataSlope:	binclude	"misc/slzssaw1.bin"
 See_DataFlat:	binclude	"misc/slzssaw2.bin"
 		even
 		else
-		rts
+		undefObjTrap
 		endif

@@ -53,5 +53,5 @@ SSRC_Flash:	; Routine 2
 SSRC_Display:
 		bra.w	DisplaySprite
 		else
-		rts
+		undefObjTrap
 		endif

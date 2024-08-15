@@ -137,5 +137,5 @@ loc_846C:
 		addq.b	#1,obFrame(a0)
 		bra.s	loc_8486
 		else
-		rts
+		undefObjTrap
 		endif

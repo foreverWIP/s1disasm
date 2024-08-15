@@ -122,5 +122,7 @@ loc_1784C:
 		bsr.w	AddPoints
 		move.b	#8,ob2ndRout(a0)
 		move.w	#$B3,objoff_3C(a0)
-		endif
 		rts	
+		else
+		undefObjTrap
+		endif

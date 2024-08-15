@@ -376,5 +376,7 @@ BossSpikeball_MoveFrag:	; Routine $A
 		move.b	d0,obFrame(a0)
 		tst.b	obRender(a0)
 		bpl.w	BossStarLight_Delete
-		endif
 		rts	
+		else
+		undefObjTrap
+		endif

@@ -629,5 +629,5 @@ loc_19688:
 BossSpringYard_SpikeDelete:
 		jmp	(DeleteObject).l
 		else
-		rts
+		undefObjTrap
 		endif

@@ -299,5 +299,5 @@ Plat_ChkDel:
 Plat_Delete:	; Routine 6
 		bra.w	DeleteObject
 		else
-		rts
+		undefObjTrap
 		endif

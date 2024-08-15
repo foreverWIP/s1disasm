@@ -100,5 +100,5 @@ CSI_Display2:
 CSI_Delete:
 		jmp	(DeleteObject).l
 		else
-		rts
+		undefObjTrap
 		endif

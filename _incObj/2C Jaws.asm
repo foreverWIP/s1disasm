@@ -49,5 +49,5 @@ Jaws_Turn:	; Routine 2
 		bsr.w	SpeedToPos
 		bra.w	RememberState
 		else
-		rts
+		undefObjTrap
 		endif

@@ -52,7 +52,7 @@ Moto_Action:	; Routine 2
 		lea	(Ani_Moto).l,a1
 		bsr.w	AnimateSprite
 		else
-		rts
+		undefObjTrap
 		endif
 
 		include	"_incObj/sub RememberState.asm" ; Moto_Action terminates in this file
@@ -118,4 +118,6 @@ Moto_Animate:	; Routine 4
 
 Moto_Delete:	; Routine 6
 		bra.w	DeleteObject
+		else
+		undefObjTrap
 		endif

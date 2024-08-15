@@ -249,5 +249,7 @@ Bub_ChkSonic:
 
 .loc_12998:
 		moveq	#0,d0
-		endif
 		rts	
+		else
+		undefObjTrap
+		endif

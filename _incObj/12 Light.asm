@@ -34,5 +34,5 @@ Light_Animate:	; Routine 2
 		out_of_range.w	DeleteObject
 		bra.w	DisplaySprite
 		else
-		rts
+		undefObjTrap
 		endif

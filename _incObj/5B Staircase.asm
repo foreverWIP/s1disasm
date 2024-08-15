@@ -176,5 +176,6 @@ Stair_Type01:
 
 locret_11038:
 		rts	
+		else
+		undefObjTrap
 		endif
-		rts	

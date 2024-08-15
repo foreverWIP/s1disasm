@@ -196,5 +196,5 @@ loc_16480:
 loc_16484:
 		jmp	(SpeedToPos).l
 		else
-		rts
+		undefObjTrap
 		endif

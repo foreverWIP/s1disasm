@@ -217,8 +217,10 @@ loc_12552:
 
 loc_1256A:
 		bsr.w	SpeedToPos
-		endif
 		rts	
+		else
+		undefObjTrap
+		endif
 ; End of function sub_12502
 
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||

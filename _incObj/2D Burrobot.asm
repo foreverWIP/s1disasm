@@ -152,6 +152,8 @@ Burro_ChkSonic2:
 
 loc_AE40:
 		cmp.w	d2,d0
-		endif
 		rts	
+		else
+		undefObjTrap
+		endif
 ; End of function Burro_ChkSonic2

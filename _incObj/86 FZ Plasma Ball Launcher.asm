@@ -202,5 +202,5 @@ loc_1AA34:
 		bra.w	EggmanCylinder_Delete
 
 		else
-		rts
+		undefObjTrap
 		endif

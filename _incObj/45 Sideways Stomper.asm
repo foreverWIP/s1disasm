@@ -164,5 +164,7 @@ loc_BB3C:
 		neg.w	d0
 		add.w	objoff_30(a0),d0
 		move.w	d0,obX(a0)
-		endif
 		rts	
+		else
+		undefObjTrap
+		endif

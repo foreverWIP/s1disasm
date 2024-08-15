@@ -162,5 +162,5 @@ loc_199E6:
 SEgg_SwDisplay:
 		jmp	(DisplaySprite).l
 		else
-		rts
+		undefObjTrap
 		endif
