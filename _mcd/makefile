@@ -44,4 +44,6 @@ OPT_FLAGS:=-g -Og -fstack-usage -fconserve-stack
 
 M68K_PREFIX:=~/marsdev/mars/m68k-elf/bin/m68k-elf-
 
+AS_FLAGS:=-Wa,--bitwise-or -Wa,-I../_debugger/blob
+
 include $(MEGADEV_PATH)/makefile_global

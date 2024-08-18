@@ -163,6 +163,7 @@ afRoutine:	equ $FC	; increment routine counter
 afReset:	equ $FB	; reset animation and 2nd object routine counter
 af2ndRoutine:	equ $FA	; increment 2nd routine counter
 
+	if 0
 	if MMD_Enabled
 cursndid := $81*4
 declsndid macro name
@@ -252,6 +253,7 @@ ptr_specend: equ Sound_ExIndex
 	declsndid ptr_flgE3
 	declsndid ptr_flgE4
 ptr_flgend: equ $E5
+	endif
 	endif
 
 ; Background music

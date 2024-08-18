@@ -31,7 +31,13 @@ Sonic_LoadGfx:
 		lsl.w	#8,d2
 		move.b	(a2)+,d2
 		lsl.w	#5,d2
+		if ~~MMD_Enabled
 		lea	(Art_Sonic).l,a1
+		else
+		;lea	(v_sgfx_ptr).l,a1
+		;movea.l	(a1),a1
+		lea	($FF2C12).l,a1
+		endif
 		adda.l	d2,a1
 
 .loadtile:

@@ -1,12 +1,12 @@
 includealigned: macro file
 name:
 	binclude file
-;	if ((*)&$1FFFF)<(name&$1FFFF)
-;name_length: equ *-name
-;	rorg -name_length
-;	align $20000
-;	binclude file
-;	endif
+	if ((*)&$1FFFF)<(name&$1FFFF)
+name_length: equ *-name
+	rorg -name_length
+	align $20000
+	binclude file
+	endif
 	even
 	endm
 
@@ -772,7 +772,7 @@ Nem_SBZ:
 		includealigned	"artnem/8x8 - SBZ.nem"	; SBZ primary patterns
 		endif
 
-		if MMD_Has_Sonic
+		if ~~MMD_Enabled
 ; ---------------------------------------------------------------------------
 ; Uncompressed graphics	- Sonic
 ; ---------------------------------------------------------------------------

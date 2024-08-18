@@ -20,7 +20,7 @@ Revision	  = 1
 
 ZoneCount	  = 6	; discrete zones are: GHZ, MZ, SYZ, LZ, SLZ, and SBZ
 
-FixBugs		  = 0	; change to 1 to enable bugfixes
+FixBugs		  = 1	; change to 1 to enable bugfixes
 
 zeroOffsetOptimization = 0	; if 1, makes a handful of zero-offset instructions smaller
 
@@ -156,8 +156,10 @@ ErrorTrap:
 		nop
 		bra.s	ErrorTrap
 
+		if ~~MMD_Enabled
 		include "_debugger/skcompat.asm"
 		include "_debugger/Debugger.asm"
+		endif
 
 ; ===========================================================================
 
@@ -165,6 +167,7 @@ EntryPoint:
 		if MMD_Enabled
 		move.l	sp,(v_initial_sp).l
 		endif
+		if ~~MMD_Enabled
 		if ~~MMD_Enabled
 		tst.l	(z80_port_1_control).l ; test port A & B control registers
 		bne.s	PortA_Ok
@@ -186,10 +189,11 @@ SkipSecurity:
 		endif
 		move.w	(a4),d0	; clear write-pending flag in VDP to prevent issues if the 68k has been reset in the middle of writing a command long word to the VDP.
 		moveq	#0,d0	; clear d0
-		movea.l	d0,a6	; clear a6
 		if ~~MMD_Enabled
+		movea.l	d0,a6	; clear a6
 		move.l	a6,usp	; set usp to $0
 		else
+		movea.l	#$240000,a6
 		move.l	sp,usp	; set usp to $0
 		endif
 
@@ -209,19 +213,32 @@ VDPInitLoop:
 WaitForZ80:
 		btst	d0,(a1)		; has the Z80 stopped?
 		bne.s	WaitForZ80	; if not, branch
+		else
+		stopZ80
+		waitZ80
+		resetZ80
+		endif
 
 		moveq	#$25,d2
 Z80InitLoop:
 		move.b	(a5)+,(a0)+
 		dbf	d2,Z80InitLoop
 		
+		if ~~MMD_Enabled
 		move.w	d0,(a2)
 		move.w	d0,(a1)		; start	the Z80
 		move.w	d7,(a2)		; reset	the Z80
+		else
+		resetZ80a
+		startZ80
+		resetZ80
+		endif
 
+		if ~~MMD_Enabled
 ClrRAMLoop:
 		move.l	d0,-(a6)	; clear 4 bytes of RAM
 		dbf	d6,ClrRAMLoop	; repeat until the entire RAM is clear
+		endif
 		move.l	(a5)+,(a4)	; set VDP display mode and increment mode
 		move.l	(a5)+,(a4)	; set VDP to CRAM write
 
@@ -365,9 +382,7 @@ GameInit:
 		endif
 
 		bsr.w	VDPSetupGame
-		if ~~MMD_Enabled
 		bsr.w	DACDriverLoad
-		endif
 		bsr.w	JoypadInit
 		if ~~MMD_Enabled
 			if MMD_Is_Level
@@ -439,8 +454,9 @@ ptr_GM_Credits:	bra.w	GM_Credits	; Credits ($1C)
 
 VBlank:
 		movem.l	d0-a6,-(sp)
+		stopZ80
 		tst.b	(v_vbla_routine).l
-		beq.s	VBla_00
+		beq.w	VBla_00
 		move.w	(vdp_control_port).l,d0
 		move.l	#$40000010,(vdp_control_port).l
 		move.l	(v_scrposy_vdp).l,(vdp_data_port).l ; send screen y-axis pos. to VSRAM
@@ -460,12 +476,11 @@ VBlank:
 		jsr	VBla_Index(pc,d0.w)
 
 VBla_Music:
-		if ~~MMD_Enabled
 		jsr	(UpdateMusic).l
-		endif
 
 VBla_Exit:
 		addq.l	#1,(v_vbla_count).l
+		startZ80
 		movem.l	(sp)+,d0-a6
 		rte	
 ; ===========================================================================
@@ -782,9 +797,7 @@ loc_119E:
 		clr.b	(f_doupdatesinhblank).l
 		movem.l	d0-a6,-(sp)
 		bsr.w	Demo_Time
-		if ~~MMD_Enabled
 		jsr	(UpdateMusic).l
-		endif
 		movem.l	(sp)+,d0-a6
 		rte	
 ; End of function HBlank
@@ -925,7 +938,6 @@ ClearScreen:
 		rts	
 ; End of function ClearScreen
 
-		if ~~MMD_Enabled
 ; ---------------------------------------------------------------------------
 ; Subroutine to load the DAC driver
 ; ---------------------------------------------------------------------------
@@ -936,10 +948,13 @@ ClearScreen:
 DACDriverLoad:
 		nop	
 		stopZ80
+		waitZ80
 		resetZ80
+		if ~~MMD_Enabled
 		lea	(DACDriver).l,a0	; load DAC driver
 		lea	(z80_ram).l,a1		; target Z80 RAM
 		bsr.w	KosDec			; decompress
+		endif
 		resetZ80a
 		nop	
 		nop	
@@ -949,7 +964,6 @@ DACDriverLoad:
 		startZ80
 		rts	
 ; End of function DACDriverLoad
-		endif
 
 		include	"_incObj/sub PlaySound.asm"
 		include	"_inc/PauseGame.asm"
@@ -1829,9 +1843,7 @@ GM_Title:
 		bsr.w	ClearPLC
 		bsr.w	PaletteFadeOut
 		disable_ints
-		if ~~MMD_Enabled
 		bsr.w	DACDriverLoad
-		endif
 		lea	(vdp_control_port).l,a6
 		move.w	#$8004,(a6)	; 8-colour mode
 		move.w	#$8200+(vram_fg>>10),(a6) ; set foreground nametable address
@@ -2197,7 +2209,7 @@ PlayLevel:
 		endif
 		move.b	#bgm_Fade,d0
 		bsr.w	PlaySound_Special ; fade out music
-		quitModule
+		loadLevelModule
 		rts	
 ; ===========================================================================
 ; ---------------------------------------------------------------------------
@@ -2236,6 +2248,11 @@ loc_33B6:
 		quitModule
 		rts	
 ; ===========================================================================
+; ---------------------------------------------------------------------------
+; Levels used in demos
+; ---------------------------------------------------------------------------
+Demo_Levels:	binclude	"misc/Demo Level Order - Intro.bin"
+		even
 
 loc_33E4:
 		andi.b	#btnStart,(v_jpadpress1).l ; is Start button pressed?
@@ -2272,15 +2289,9 @@ Demo_Level:
 		if Revision<>0
 			move.l	#5000,(v_scorelife).l ; extra life is awarded at 50000 points
 		endif
-		quitModule
+		loadLevelModule
 		rts	
 ; ===========================================================================
-; ---------------------------------------------------------------------------
-; Levels used in demos
-; ---------------------------------------------------------------------------
-Demo_Levels:	binclude	"misc/Demo Level Order - Intro.bin"
-		even
-
 ; ---------------------------------------------------------------------------
 ; Subroutine to	change what you're selecting in the level select
 ; ---------------------------------------------------------------------------
@@ -4757,33 +4768,6 @@ DrawFlipXY:
 		rts	
 ; End of function DrawBlocks
 
-; ===========================================================================
-; unused garbage
-		if Revision=0
-; This is interesting. It draws a block, but not before
-; incrementing its palette lines by 1. This may have been
-; a debug function to discolour mirrored tiles, to test
-; if they're loading properly.
-		rts	
-		move.l	d0,(a5)
-		move.w	#$2000,d5
-		move.w	(a1)+,d4
-		add.w	d5,d4
-		move.w	d4,(a6)
-		move.w	(a1)+,d4
-		add.w	d5,d4
-		move.w	d4,(a6)
-		add.l	d7,d0
-		move.l	d0,(a5)
-		move.w	(a1)+,d4
-		add.w	d5,d4
-		move.w	d4,(a6)
-		move.w	(a1)+,d4
-		add.w	d5,d4
-		move.w	d4,(a6)
-		rts
-		endif
-
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
 
 ; Gets address of block at a certain coordinate
@@ -7198,26 +7182,6 @@ loc_12EA6:
 		include	"_incObj/Sonic Move.asm"
 		include	"_incObj/Sonic RollSpeed.asm"
 		include	"_incObj/Sonic JumpDirection.asm"
-
-; ===========================================================================
-; ---------------------------------------------------------------------------
-; Unused subroutine to squash Sonic
-; ---------------------------------------------------------------------------
-		move.b	obAngle(a0),d0
-		addi.b	#$20,d0
-		andi.b	#$C0,d0
-		bne.s	locret_13302
-		bsr.w	Sonic_DontRunOnWalls
-		tst.w	d1
-		bpl.s	locret_13302
-		move.w	#0,obInertia(a0) ; stop Sonic moving
-		move.w	#0,obVelX(a0)
-		move.w	#0,obVelY(a0)
-		move.b	#id_Warp3,obAnim(a0) ; use "warping" animation
-
-locret_13302:
-		rts	
-
 		include	"_incObj/Sonic LevelBound.asm"
 		include	"_incObj/Sonic Roll.asm"
 		include	"_incObj/Sonic Jump.asm"
@@ -9014,10 +8978,16 @@ ObjPosSBZPlatform_Index:
 		dc.w ObjPos_SBZ1pf5-ObjPos_Index, ObjPos_SBZ1pf6-ObjPos_Index
 		dc.w ObjPos_SBZ1pf1-ObjPos_Index, ObjPos_SBZ1pf2-ObjPos_Index
 		dc.b $FF, $FF, 0, 0, 0,	0
-ObjPos_GHZ1:	binclude	"objpos/ghz1.bin"
+ObjPos_GHZ1:
+		if MMD_Is_GHZ
+		binclude	"objpos/ghz1.bin"
 		even
-ObjPos_GHZ2:	binclude	"objpos/ghz2.bin"
+		endif
+ObjPos_GHZ2:
+		if MMD_Is_GHZ
+		binclude	"objpos/ghz2.bin"
 		even
+		endif
 ObjPos_GHZ3:	if Revision=0
 		binclude	"objpos/ghz3.bin"
 		else
@@ -9189,14 +9159,12 @@ ObjPos_End:	binclude	"objpos/ending.bin"
 ObjPos_Null:	dc.b $FF, $FF, 0, 0, 0,	0
 
 		include "allart.asm"
+
+SoundDriver:	include "s1.sounddriver.asm"
 		if MMD_Enabled
 		if *>$230000
 			fatal "MMD must fit in $30000 bytes, is actually $\{*-$200000} bytes"
 		endif
-		endif
-
-		if ~~MMD_Enabled
-SoundDriver:	include "s1.sounddriver.asm"
 		endif
 
 ; end of 'ROM'
@@ -9208,10 +9176,10 @@ SoundDriver:	include "s1.sounddriver.asm"
 		even
 	endif
 	endif
-EndOfRom:
 	if MOMPASS=2
 		message "ROM size is $\{EndOfRom-StartOfRom} bytes"
 	endif
+EndOfRom:
 	if MMD_Enabled
 		dephase
 		align $40000

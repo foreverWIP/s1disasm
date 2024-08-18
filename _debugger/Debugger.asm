@@ -165,8 +165,13 @@ CommonErrorInit:
 	bsr.w	InitTerminal
 
 	; Decode enigma-compressed plane mappings to RAM buffer.
+	if ~~MMD_Enabled
 	lea	MapEng_Debugger(pc),a0
 	lea	(Chunk_Table).l,a1
+	else
+	lea	MapEng_Debugger(pc),a1
+	lea	(Chunk_Table).l,a2
+	endif
 	move.w	#make_art_tile(ArtTile_VRAM_Start,0,0),d0
 	ifdef debugger_blob
 	jsr	EniDec(pc)

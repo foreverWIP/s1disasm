@@ -19,3 +19,8 @@ build
 
 _mcd/disc
 _mcd/build
+_debugger/**/*.bin
+_debugger/**/*.h
+_debugger/**/*.lst
+_debugger/**/*.p
+_mcd/src/debuggerblob/*.bin

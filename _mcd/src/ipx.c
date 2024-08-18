@@ -22,19 +22,18 @@ enum {
 	MMD_CREDITS,
 };
 
-static const u32 BusError = 0x201E8A;
-static const u32 AddressError = 0x201EA4;
-static const u32 TraceError = 0x201EBE;
-static const u32 SpuriousException = 0x201EDA;
-static const u32 ZeroDivideError = 0x201EF6;
-static const u32 CHKExceptionError = 0x201F16;
-static const u32 TRAPVError = 0x201F36;
-static const u32 IllegalInstrError = 0x201F56;
-static const u32 PrivilegeViolation = 0x201F72;
-static const u32 LineAEmulation = 0x201F8E;
-static const u32 LineFEmulation = 0x201FAA;
-static const u32 TrapVector = 0x201FC6;
-static const u32 HBlank = 0x2026A0;
+extern u32 Debugger_BusError;
+extern u32 Debugger_AddressError;
+extern u32 Debugger_TraceError;
+extern u32 Debugger_SpuriousException;
+extern u32 Debugger_ZeroDivideError;
+extern u32 Debugger_CHKExceptionError;
+extern u32 Debugger_TRAPVError;
+extern u32 Debugger_IllegalInstrError;
+extern u32 Debugger_PrivilegeViolation;
+extern u32 Debugger_LineAEmulation;
+extern u32 Debugger_LineFEmulation;
+extern u32 Debugger_TrapVector;
 
 static volatile u8* v_gamemode = (u8*)0x23F600;
 static u8 v_gamemode_backup;
@@ -43,6 +42,8 @@ static u8 v_zone_backup;
 static volatile u8* v_act = (u8*)0x23FE11;
 static u8 v_act_backup;
 static volatile u8* v_should_quit_module = (u8*)0x23CAE4;
+static volatile u32* v_sgfx_ptr = (u32*)0x23CAE4;
+extern u8* Sonic_Art;
 
 void vint_ex()
 {
@@ -56,8 +57,8 @@ void hint_ex()
 
 static void print_msg(const char* msg, u8 x, u8 y)
 {
-	blib_print(msg, (VDPPTR(NMT_POS_PLANE(x, y, _BLIB_PLANEA_ADDR)) | VRAM_W));
-	blib_vint_wait(0);
+	// blib_print(msg, (VDPPTR(NMT_POS_PLANE(x, y, _BLIB_PLANEA_ADDR)) | VRAM_W));
+	// blib_vint_wait(0);
 }
 
 // At this point, the full IPX binary has been copies to Work RAM and all
@@ -65,21 +66,30 @@ static void print_msg(const char* msg, u8 x, u8 y)
 // actually useful game code
 void main()
 {
-	memset8(0, (u8*)0x230000, 0x10000);
+	*(volatile u32*)(_MADRERR+2) = Debugger_AddressError;
+	*(volatile u32*)(_MDIVERR+2) = Debugger_ZeroDivideError;
+	*(volatile u32*)(_MONKERR+2) = Debugger_CHKExceptionError;
+	*(volatile u32*)(_MTRPERR+2) = Debugger_TRAPVError;
+  	*(volatile u32*)(_MSPVERR+2) = Debugger_PrivilegeViolation;
+	*(volatile u32*)(_MTRACE+2) = Debugger_TraceError;
+	*(volatile u32*)(_MNOCOD0+2) = Debugger_LineAEmulation;
+	*(volatile u32*)(_MNOCOD1+2) = Debugger_LineFEmulation;
+
+	memset8(0, (u8*)0x200000, 0x40000);
+
+	*v_sgfx_ptr = Sonic_Art;
+
+	for (u8 i = 0; i < 64; i++)
+	{
+		BLIB_PALETTE[i] = 0x0000;
+	}
 
 	do
 	{
 		MLEVEL6_VECTOR = (void *(*) ) _BLIB_VINT_HANDLER;
 		*BLIB_VINT_EX_PTR = vint_ex;
-		install_handlers();
-		blib_load_font_defaults();
-		for (u8 i = 0; i < 64; i++)
-		{
-			BLIB_PALETTE[i] = 0x0000;
-		}
-		BLIB_PALETTE[1] = 0xeee;
-		BLIB_VDP_UPDATE_FLAGS |= PAL_UPDATE_MSK;
-		blib_clear_tables();
+
+		blib_vint_wait(0);
 
 		// make sure that the Sub CPU controls 2M Word RAM before we request the
 		// file
@@ -175,6 +185,13 @@ void main()
 			if (*GA_COMSTAT0 == 0xff)
 			{
 				print_msg("Acknowledge error      \xff", 0, 1);
+				blib_load_font_defaults();
+				for (u8 i = 0; i < 64; i++)
+				{
+					BLIB_PALETTE[i] = 0x0000;
+				}
+				BLIB_PALETTE[1] = 0xeee;
+				BLIB_VDP_UPDATE_FLAGS |= PAL_UPDATE_MSK;
 				while (1)
 				{
 					asm ("nop");
@@ -194,21 +211,19 @@ void main()
 			if (*GA_COMSTAT0 == 0xff)
 			{
 				print_msg("Module load error\xff", 0, 2);
+				blib_load_font_defaults();
+				for (u8 i = 0; i < 64; i++)
+				{
+					BLIB_PALETTE[i] = 0x0000;
+				}
+				BLIB_PALETTE[1] = 0xeee;
+				BLIB_VDP_UPDATE_FLAGS |= PAL_UPDATE_MSK;
 				while (1)
 				{
 					asm ("nop");
 				}
 			}
 		} while (*GA_COMSTAT0 != 0);
-		
-		*(volatile u32*)(_MADRERR+2) = AddressError;
-		*(volatile u32*)(_MDIVERR+2) = ZeroDivideError;
-		*(volatile u32*)(_MONKERR+2) = CHKExceptionError;
-		*(volatile u32*)(_MTRPERR+2) = TRAPVError;
-  		*(volatile u32*)(_MSPVERR+2) = PrivilegeViolation;
-		*(volatile u32*)(_MTRACE+2) = TraceError;
-		*(volatile u32*)(_MNOCOD0+2) = LineAEmulation;
-		*(volatile u32*)(_MNOCOD1+2) = LineFEmulation;
 
 		// Sub CPU side work is complete and the MMD should now be in 2M Word RAM
 		// Run it!

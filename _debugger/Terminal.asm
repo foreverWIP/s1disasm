@@ -18,13 +18,16 @@
 ; Kosinski compressed art (60 tiles)
 ; Terminal font; contains all ASCII characters. For the full list of characters,
 ; see https://en.wikipedia.org/wiki/ASCII#ASCII_printable_characters
+	if ~~MMD_Enabled
 ArtKos_TerminalFont:	BINCLUDE	"TerminalFont.bin"
 	even
+	endif
 ; ---------------------------------------------------------------------------
 ; Palette
 ; The terminal palette
 TerminalPalette:		BINCLUDE	"TerminalPal.bin"
 TerminalPalette_end:
+TerminalPalette_Len:
 	even
 ; ===========================================================================
 ; Location of art in VRAM. Just use these defaults.
@@ -33,7 +36,7 @@ TerminalFont_Len                 = tiles_to_bytes($60)
 ; ===========================================================================
 ; Location in RAM. Just use this default.
 		if MMD_Enabled
-TerminalBuffer                   = ramaddr($230000)
+TerminalBuffer                   = $230000
 		else
 TerminalBuffer                   = ramaddr($FFFF0000)
 		endif
