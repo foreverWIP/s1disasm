@@ -2656,7 +2656,7 @@ Music8B:
 Music8C:	include "sound/music/Mus8C - Boss.asm"
 		even
 Music8D:
-		if MMD_Is_FZ
+		if MMD_Is_SBZ
 		include "sound/music/Mus8D - FZ.asm"
 		endif
 		even

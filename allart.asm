@@ -56,7 +56,7 @@ Blk16_SYZ:
 		includealigned	"map16/SYZ.eni"
 		endif
 Blk16_SBZ:
-		if MMD_Is_SBZ||MMD_Is_FZ
+		if MMD_Is_SBZ
 		includealigned	"map16/SBZ.eni"
 		endif
 Blk256_GHZ:
@@ -84,7 +84,7 @@ Blk256_SYZ:
 		includealigned	"map256/SYZ.kos"
 		endif
 Blk256_SBZ:
-		if MMD_Is_SBZ||MMD_Is_FZ
+		if MMD_Is_SBZ
 		if Revision=0
 		includealigned	"map256/SBZ.kos"
 		else
@@ -695,15 +695,15 @@ Nem_Prison:
 		includealigned	"artnem/Prison Capsule.nem"
 		endif
 Nem_Sbz2Eggman:
-		if MMD_Is_SBZ||MMD_Is_FZ
+		if MMD_Is_SBZ
 		includealigned	"artnem/Boss - Eggman in SBZ2 & FZ.nem"
 		endif
 Nem_FzBoss:
-		if MMD_Is_SBZ||MMD_Is_FZ
+		if MMD_Is_SBZ
 		includealigned	"artnem/Boss - Final Zone.nem"
 		endif
 Nem_FzEggman:
-		if MMD_Is_SBZ||MMD_Is_FZ
+		if MMD_Is_SBZ
 		includealigned	"artnem/Boss - Eggman after FZ Fight.nem"
 		endif
 Nem_Exhaust:
@@ -768,7 +768,7 @@ Nem_SYZ:
 		includealigned	"artnem/8x8 - SYZ.nem"	; SYZ primary patterns
 		endif
 Nem_SBZ:
-		if MMD_Is_SBZ||MMD_Is_FZ
+		if MMD_Is_SBZ
 		includealigned	"artnem/8x8 - SBZ.nem"	; SBZ primary patterns
 		endif
 

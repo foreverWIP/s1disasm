@@ -12,8 +12,7 @@ mmdCounter := mmdCounter + 1
 		mmdCheck LZ
 		mmdCheck SLZ
 		mmdCheck SBZ
-		mmdCheck FZ
-MMD_Is_Level = MMD_Is_GHZ||MMD_Is_MZ||MMD_Is_SYZ||MMD_Is_LZ||MMD_Is_SLZ||MMD_Is_SBZ||MMD_Is_FZ
+MMD_Is_Level = MMD_Is_GHZ||MMD_Is_MZ||MMD_Is_SYZ||MMD_Is_LZ||MMD_Is_SLZ||MMD_Is_SBZ
 		mmdCheck SS
 		mmdCheck Continue
 		mmdCheck Ending

@@ -27,7 +27,6 @@ local mmd_names = {
 	"LZ",
 	"SLZ",
 	"SBZ",
-	"FZ",
 	"SS",
 	"CONTINUE",
 	"ENDING",

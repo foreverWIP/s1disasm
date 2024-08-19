@@ -5951,7 +5951,7 @@ M_Card_Oval_End
 	even
 
 M_Card_FZ:	spriteHeader		; FINAL
-	if MMD_Is_FZ
+	if MMD_Is_SBZ
 	spritePiece	-$24, -8, 2, 2, $14, 0, 0, 0, 0
 	spritePiece	-$14, -8, 1, 2, $20, 0, 0, 0, 0
 	spritePiece	-$C, -8, 2, 2, $2E, 0, 0, 0, 0
@@ -7868,11 +7868,11 @@ loc_1982C:
 		jmp	(DeleteObject).l
 
 		include	"_incObj/82 Eggman - Scrap Brain 2.asm"
-		if MMD_Is_SBZ||MMD_Is_FZ
+		if MMD_Is_SBZ
 		include	"_anim/Eggman - Scrap Brain 2 & Final.asm"
 		endif
 Map_SEgg:
-		if MMD_Is_SBZ||MMD_Is_FZ
+		if MMD_Is_SBZ
 		include	"_maps/Eggman - Scrap Brain 2.asm"
 		endif
 		include	"_incObj/83 SBZ Eggman's Crumbling Floor.asm"
@@ -7881,33 +7881,33 @@ Map_FFloor:
 		include	"_maps/SBZ Eggman's Crumbling Floor.asm"
 		endif
 		include	"_incObj/85 Boss - Final.asm"
-		if MMD_Is_FZ
+		if MMD_Is_SBZ
 		include	"_anim/FZ Eggman in Ship.asm"
 		endif
 Map_FZDamaged:
-		if MMD_Is_FZ
+		if MMD_Is_SBZ
 		include	"_maps/FZ Damaged Eggmobile.asm"
 		endif
 Map_FZLegs:
-		if MMD_Is_FZ
+		if MMD_Is_SBZ
 		include	"_maps/FZ Eggmobile Legs.asm"
 		endif
 		include	"_incObj/84 FZ Eggman's Cylinders.asm"
 Map_EggCyl:
-		if MMD_Is_FZ
+		if MMD_Is_SBZ
 		include	"_maps/FZ Eggman's Cylinders.asm"
 		endif
 		include	"_incObj/86 FZ Plasma Ball Launcher.asm"
-		if MMD_Is_FZ
+		if MMD_Is_SBZ
 		include	"_anim/Plasma Ball Launcher.asm"
 		endif
 Map_PLaunch:
-		if MMD_Is_FZ
+		if MMD_Is_SBZ
 		include	"_maps/Plasma Ball Launcher.asm"
 		include	"_anim/Plasma Balls.asm"
 		endif
 Map_Plasma:
-		if MMD_Is_FZ
+		if MMD_Is_SBZ
 		include	"_maps/Plasma Balls.asm"
 		endif
 
@@ -9120,7 +9120,7 @@ ObjPos_SBZ2:
 		even
 		endif
 ObjPos_FZ:
-		if MMD_Is_FZ
+		if MMD_Is_SBZ
 		binclude	"objpos/fz.bin"
 		even
 		endif

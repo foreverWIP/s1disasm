@@ -39,8 +39,6 @@ static volatile u8* v_gamemode = (u8*)0x23F600;
 static u8 v_gamemode_backup;
 static volatile u8* v_zone = (u8*)0x23FE10;
 static u8 v_zone_backup;
-static volatile u8* v_act = (u8*)0x23FE11;
-static u8 v_act_backup;
 static volatile u8* v_should_quit_module = (u8*)0x23CAE4;
 static volatile u32* v_sgfx_ptr = (u32*)0x23CAE4;
 extern u8* Sonic_Art;
@@ -123,15 +121,7 @@ void main()
 						com_cmd = MMD_SYZ;
 						break;
 					case 5:
-						if (v_act_backup > 1)
-						{
-							print_msg("Requesting FZ\xff", 0, 0);
-							com_cmd = MMD_FZ;
-						}
-						else
-						{
-							print_msg("Requesting SBZ\xff", 0, 0);
-						}
+						print_msg("Requesting SBZ\xff", 0, 0);
 						com_cmd = MMD_SBZ;
 						break;
 					case 6:
@@ -232,6 +222,5 @@ void main()
 		*v_should_quit_module = 0;
 		v_gamemode_backup = *v_gamemode;
 		v_zone_backup = *v_zone;
-		v_act_backup = *v_act;
 	} while (1);
 }

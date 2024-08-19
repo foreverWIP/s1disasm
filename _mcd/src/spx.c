@@ -2,6 +2,7 @@
 #include "sub/cdrom.h"
 #include "sub/gatearr.h"
 #include "sub/memmap.h"
+#include "sub/pcm.h"
 
 void load_ipx();
 
@@ -15,7 +16,6 @@ char const * const filenames[] = {
 	"LZ.BIN;1",
 	"SLZ.BIN;1",
 	"SBZ.BIN;1",
-	"FZ.BIN;1",
 	"SS.BIN;1",
 	"CONTINUE.BIN;1",
 	"ENDING.BIN;1",
@@ -67,8 +67,6 @@ __attribute__((section(".init"))) void main()
 				break;
 		}
 
-		// not reaching here?
-		asm(".global test_label\ntest_label:");
 		*GA_COMSTAT0 = *GA_COMCMD0;
 		do
 		{

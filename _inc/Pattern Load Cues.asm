@@ -228,11 +228,9 @@ PLC_SYZ2end:
 ; Pattern load cues - Scrap Brain
 ; ---------------------------------------------------------------------------
 PLC_SBZ:	dc.w ((PLC_SBZ2-PLC_SBZ-2)/6)-1
-		if MMD_Is_SBZ||MMD_Is_FZ
+		if MMD_Is_SBZ
 		plcm	Nem_SBZ,       ArtTile_Level                   ; SBZ main patterns
 		plcm	Nem_SbzDoor1,  ArtTile_SBZ_Door                ; door
-		endif
-		if MMD_Is_SBZ
 		plcm	Nem_Stomper,   ArtTile_SBZ_Moving_Block_Short  ; moving platform and stomper
 		plcm	Nem_Girder,    ArtTile_SBZ_Girder              ; girder
 		plcm	Nem_BallHog,   ArtTile_Ball_Hog                ; ball hog enemy
@@ -246,10 +244,8 @@ PLC_SBZ:	dc.w ((PLC_SBZ2-PLC_SBZ-2)/6)-1
 		endif
 
 PLC_SBZ2:	dc.w ((PLC_SBZ2end-PLC_SBZ2-2)/6)-1
-		if MMD_Is_SBZ||MMD_Is_FZ
-		plcm	Nem_Electric,   ArtTile_SBZ_Electric_Orb       ; electric orb
-		endif
 		if MMD_Is_SBZ
+		plcm	Nem_Electric,   ArtTile_SBZ_Electric_Orb       ; electric orb
 		plcm	Nem_Cater,      ArtTile_SBZ_Caterkiller        ; caterkiller enemy
 		plcm	Nem_Bomb,       ArtTile_Bomb                   ; bomb enemy
 		plcm	Nem_Orbinaut,   ArtTile_SBZ_Orbinaut           ; orbinaut enemy
@@ -425,7 +421,7 @@ PLC_EggmanSBZ2end:
 ; Pattern load cues - final boss
 ; ---------------------------------------------------------------------------
 PLC_FZBoss:	dc.w ((PLC_FZBossend-PLC_FZBoss-2)/6)-1
-		if MMD_Is_FZ
+		if MMD_Is_SBZ
 		plcm	Nem_FzEggman,   ArtTile_FZ_Eggman_Fleeing    ; Eggman after boss
 		plcm	Nem_FzBoss,     ArtTile_FZ_Boss              ; FZ boss
 		plcm	Nem_Eggman,     ArtTile_Eggman               ; Eggman main patterns

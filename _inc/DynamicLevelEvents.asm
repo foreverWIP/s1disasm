@@ -664,7 +664,7 @@ loc_72C2:
 ; ===========================================================================
 
 DLE_FZ:
-		if MMD_Is_FZ
+		if MMD_Is_SBZ
 		moveq	#0,d0
 		move.b	(v_dle_routine).l,d0
 		move.w	off_72D8(pc,d0.w),d0
