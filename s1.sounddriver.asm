@@ -1,3 +1,8 @@
+GA_COMSTAT0: equ $A12020
+GA_COMCMD0: equ $A12010
+GA_COMCMD1: equ $A12012
+GA_COMCMD2: equ $A12014
+
 ; ---------------------------------------------------------------------------
 ; Modified SMPS 68k Type 1b sound driver
 ; The source code to a similar version of the driver can be found here:
@@ -135,8 +140,12 @@ UpdateMusic:
 		btst	#0,(z80_bus_request).l		; Is the z80 busy?
 		bne.s	.updateloop			; If so, wait
 
+		if ~~MMD_Enabled
 		btst	#7,(z80_ram+zDAC_Status).l	; Is DAC accepting new samples?
 		beq.s	.driverinput			; Branch if yes
+		else
+		bra.s	.driverinput
+		endif
 		startZ80
 		nop	
 		nop	
@@ -258,7 +267,7 @@ DoStartZ80:
 ; sub_71C4E: UpdateDAC:
 DACUpdateTrack:
 		subq.b	#1,SMPS_Track.DurationTimeout(a5)	; Has DAC sample timeout expired?
-		bne.s	.locret					; Return if not
+		bne.w	.locret					; Return if not
 		move.b	#$80,SMPS_RAM.f_updating_dac(a6)	; Set flag to indicate this is the DAC
 ;DACDoNext:
 		movea.l	SMPS_Track.DataPointer(a5),a4		; DAC track data pointer
@@ -296,7 +305,31 @@ DACUpdateTrack:
 		beq.s	.locret				; Return if yes
 		btst	#3,d0				; Is bit 3 set (samples between $88-$8F)?
 		bne.s	.timpani			; Various timpani
+		if ~~MMD_Enabled
 		move.b	d0,(z80_ram+zDAC_Sample).l
+		else
+		; $81 = kick
+		; $82 = snare
+		; $83+ = timpani?
+.waitfordoneplaying:
+		btst	#7,($A1200E+1).l
+		bne.s	.waitfordoneplaying
+.checkcomcmd:
+		tst.w	(GA_COMCMD0).l
+		bne.s	.waitforcomstatnot0
+		beq.s	.waitforcomstat0
+.waitforcomstatnot0:
+		tst.w	(GA_COMSTAT0).l
+		beq.s	.waitforcomstatnot0
+		move.w	#$0,(GA_COMCMD0).l
+		bra.s	.checkcomcmd
+.waitforcomstat0:
+		tst.w	(GA_COMSTAT0).l
+		bne.s	.waitforcomstat0
+.submitsample:
+		move.w	d0,(GA_COMCMD1).l
+		move.w	#$40,(GA_COMCMD0).l
+		endif
 ; locret_71CAA:
 .locret:
 		rts	
@@ -307,8 +340,10 @@ DACUpdateTrack:
 		move.b	DAC_sample_rate(pc,d0.w),d0
 		; Warning: this affects the raw pitch of sample $83, meaning it will
 		; use this value from then on.
+		if ~~MMD_Enabled
 		move.b	d0,(z80_ram+zTimpani_Pitch).l
 		move.b	#$83,(z80_ram+zDAC_Sample).l	; Use timpani
+		endif
 		rts	
 ; End of function DACUpdateTrack
 
@@ -728,7 +763,9 @@ ptr_flgend
 ; ---------------------------------------------------------------------------
 ; Sound_E1: PlaySega:
 PlaySegaSound:
+		if ~~MMD_Enabled
 		move.b	#$88,(z80_ram+zDAC_Sample).l	; Queue Sega PCM
+		endif
 		startZ80
 		move.w	#$11,d1
 ; loc_71FC0:
@@ -2585,13 +2622,9 @@ cfOpF9:
 ; DAC driver (Kosinski-compressed)
 ; ---------------------------------------------------------------------------
 ; Kos_Z80:
-		if MMD_Enabled
-CurPhasedPC = *
-		dephase
-		endif
-DACDriver:	include "sound/z80.asm"
-		if MMD_Enabled
-		phase CurPhasedPC+Size_of_DAC_driver_guess
+DACDriver:
+		if ~~MMD_Enabled
+		include "sound/z80.asm"
 		endif
 
 ; ---------------------------------------------------------------------------
@@ -2664,17 +2697,26 @@ Music8E:	include "sound/music/Mus8E - Sonic Got Through.asm"
 		even
 Music8F:	include "sound/music/Mus8F - Game Over.asm"
 		even
-Music90:	include "sound/music/Mus90 - Continue Screen.asm"
+Music90:
+		if MMD_Is_Continue
+		include "sound/music/Mus90 - Continue Screen.asm"
 		even
+		endif
 Music91:
 		if MMD_Is_Credits
 		include "sound/music/Mus91 - Credits.asm"
 		endif
 		even
-Music92:	include "sound/music/Mus92 - Drowning.asm"
+Music92:
+		if MMD_Is_LZ
+		include "sound/music/Mus92 - Drowning.asm"
 		even
-Music93:	include "sound/music/Mus93 - Get Emerald.asm"
+		endif
+Music93:
+		if MMD_Is_SS
+		include "sound/music/Mus93 - Get Emerald.asm"
 		even
+		endif
 
 ; ---------------------------------------------------------------------------
 ; Sound	effect pointers
@@ -2754,8 +2796,11 @@ SoundA5:	;include "sound/sfx/SndA5.asm"
 		even
 SoundA6:	include "sound/sfx/SndA6 - Hit Spikes.asm"
 		even
-SoundA7:	include "sound/sfx/SndA7 - Push Block.asm"
+SoundA7:
+		if MMD_Is_MZ
+		include "sound/sfx/SndA7 - Push Block.asm"
 		even
+		endif
 SoundA8:
 		if MMD_Is_SS
 		include "sound/sfx/SndA8 - SS Goal.asm"
@@ -2766,8 +2811,11 @@ SoundA9:
 		include "sound/sfx/SndA9 - SS Item.asm"
 		even
 		endif
-SoundAA:	include "sound/sfx/SndAA - Splash.asm"
+SoundAA:
+		if MMD_Is_LZ
+		include "sound/sfx/SndAA - Splash.asm"
 		even
+		endif
 SoundAB:	;include "sound/sfx/SndAB.asm"
 		even
 SoundAC:	include "sound/sfx/SndAC - Hit Boss.asm"
@@ -2777,8 +2825,11 @@ SoundAD:
 		include "sound/sfx/SndAD - Get Bubble.asm"
 		even
 		endif
-SoundAE:	include "sound/sfx/SndAE - Fireball.asm"
+SoundAE:
+		if MMD_Is_MZ
+		include "sound/sfx/SndAE - Fireball.asm"
 		even
+		endif
 SoundAF:	include "sound/sfx/SndAF - Shield.asm"
 		even
 SoundB0:
@@ -2822,14 +2873,20 @@ SoundBB:	include "sound/sfx/SndBB - Door.asm"
 		even
 SoundBC:	include "sound/sfx/SndBC - Teleport.asm"
 		even
-SoundBD:	include "sound/sfx/SndBD - ChainStomp.asm"
+SoundBD:
+		if MMD_Is_MZ
+		include "sound/sfx/SndBD - ChainStomp.asm"
 		even
+		endif
 SoundBE:	include "sound/sfx/SndBE - Roll.asm"
 		even
 SoundBF:	include "sound/sfx/SndBF - Get Continue.asm"
 		even
-SoundC0:	include "sound/sfx/SndC0 - Basaran Flap.asm"
+SoundC0:
+		if MMD_Is_MZ
+		include "sound/sfx/SndC0 - Basaran Flap.asm"
 		even
+		endif
 SoundC1:	include "sound/sfx/SndC1 - Break Item.asm"
 		even
 SoundC2:
@@ -2845,14 +2902,23 @@ SoundC5:	include "sound/sfx/SndC5 - Cash Register.asm"
 		even
 SoundC6:	include "sound/sfx/SndC6 - Ring Loss.asm"
 		even
-SoundC7:	include "sound/sfx/SndC7 - Chain Rising.asm"
+SoundC7:
+		if MMD_Is_MZ
+		include "sound/sfx/SndC7 - Chain Rising.asm"
 		even
-SoundC8:	include "sound/sfx/SndC8 - Burning.asm"
+		endif
+SoundC8:
+		if MMD_Is_MZ
+		include "sound/sfx/SndC8 - Burning.asm"
 		even
+		endif
 SoundC9:	include "sound/sfx/SndC9 - Hidden Bonus.asm"
 		even
-SoundCA:	include "sound/sfx/SndCA - Enter SS.asm"
+SoundCA:
+		if ~~MMD_Is_SBZ
+		include "sound/sfx/SndCA - Enter SS.asm"
 		even
+		endif
 SoundCB:	include "sound/sfx/SndCB - Wall Smash.asm"
 		even
 SoundCC:	include "sound/sfx/SndCC - Spring.asm"
@@ -2867,8 +2933,11 @@ SoundCF:	include "sound/sfx/SndCF - Signpost.asm"
 ; ---------------------------------------------------------------------------
 ; Special sound effect data
 ; ---------------------------------------------------------------------------
-SoundD0:	include "sound/sfx/SndD0 - Waterfall.asm"
+SoundD0:
+		if MMD_Is_GHZ||MMD_Is_LZ
+		include "sound/sfx/SndD0 - Waterfall.asm"
 		even
+		endif
 
 SegaPCM:
 SegaPCM_End

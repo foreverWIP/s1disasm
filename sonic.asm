@@ -9158,9 +9158,10 @@ ObjPos_End:	binclude	"objpos/ending.bin"
 		even
 ObjPos_Null:	dc.b $FF, $FF, 0, 0, 0,	0
 
-		include "allart.asm"
-
 SoundDriver:	include "s1.sounddriver.asm"
+
+		include "allart.asm"
+		
 		if MMD_Enabled
 		if *>$230000
 			fatal "MMD must fit in $30000 bytes, is actually $\{*-$200000} bytes"

@@ -92,6 +92,35 @@ Blk256_SBZ:
 		endif
 		endif
 
+Nem_GHZ_1st:
+		if MMD_Is_GHZ||MMD_Is_Title
+		includealigned	"artnem/8x8 - GHZ1.nem"	; GHZ primary patterns
+		endif
+Nem_GHZ_2nd:
+		if MMD_Is_GHZ||MMD_Is_Title
+		includealigned	"artnem/8x8 - GHZ2.nem"	; GHZ secondary patterns
+		endif
+Nem_LZ:
+		if MMD_Is_LZ
+		includealigned	"artnem/8x8 - LZ.nem"	; LZ primary patterns
+		endif
+Nem_MZ:
+		if MMD_Is_MZ
+		includealigned	"artnem/8x8 - MZ.nem"	; MZ primary patterns
+		endif
+Nem_SLZ:
+		if MMD_Is_SLZ
+		includealigned	"artnem/8x8 - SLZ.nem"	; SLZ primary patterns
+		endif
+Nem_SYZ:
+		if MMD_Is_SYZ
+		includealigned	"artnem/8x8 - SYZ.nem"	; SYZ primary patterns
+		endif
+Nem_SBZ:
+		if MMD_Is_SBZ
+		includealigned	"artnem/8x8 - SBZ.nem"	; SBZ primary patterns
+		endif
+
 ; ---------------------------------------------------------------------------
 ; Compressed graphics - various
 ; ---------------------------------------------------------------------------
@@ -489,7 +518,7 @@ Nem_Lamp:
 		includealigned	"artnem/Lamppost.nem"
 		endif
 Nem_BigFlash:
-		if MMD_Is_Level
+		if ~~MMD_Is_SBZ
 		includealigned	"artnem/Giant Ring Flash.nem"
 		endif
 Nem_Bonus:
@@ -519,11 +548,11 @@ Nem_Chicken:
 		includealigned	"artnem/Animal Chicken.nem"
 		endif
 Nem_Penguin:
-		if MMD_Is_LZ||MMD_Is_SBZ||MMD_Is_Ending
+		if MMD_Is_LZ||MMD_Is_Ending
 		includealigned	"artnem/Animal Penguin.nem"
 		endif
 Nem_Seal:
-		if MMD_Is_MZ||MMD_Is_LZ||MMD_Is_SBZ||MMD_Is_Ending
+		if MMD_Is_MZ||MMD_Is_LZ||MMD_Is_Ending
 		includealigned	"artnem/Animal Seal.nem"
 		endif
 Nem_Pig:
@@ -743,38 +772,7 @@ Nem_EndStH:
 		includealigned	"artnem/Ending - StH Logo.nem"
 		endif
 
-Nem_GHZ_1st:
-		if MMD_Is_GHZ||MMD_Is_Title
-		includealigned	"artnem/8x8 - GHZ1.nem"	; GHZ primary patterns
-		endif
-Nem_GHZ_2nd:
-		if MMD_Is_GHZ||MMD_Is_Title
-		includealigned	"artnem/8x8 - GHZ2.nem"	; GHZ secondary patterns
-		endif
-Nem_LZ:
-		if MMD_Is_LZ
-		includealigned	"artnem/8x8 - LZ.nem"	; LZ primary patterns
-		endif
-Nem_MZ:
-		if MMD_Is_MZ
-		includealigned	"artnem/8x8 - MZ.nem"	; MZ primary patterns
-		endif
-Nem_SLZ:
-		if MMD_Is_SLZ
-		includealigned	"artnem/8x8 - SLZ.nem"	; SLZ primary patterns
-		endif
-Nem_SYZ:
-		if MMD_Is_SYZ
-		includealigned	"artnem/8x8 - SYZ.nem"	; SYZ primary patterns
-		endif
-Nem_SBZ:
-		if MMD_Is_SBZ
-		includealigned	"artnem/8x8 - SBZ.nem"	; SBZ primary patterns
-		endif
-
-		if ~~MMD_Enabled
 ; ---------------------------------------------------------------------------
 ; Uncompressed graphics	- Sonic
 ; ---------------------------------------------------------------------------
 Art_Sonic:	includealigned	"artunc/Sonic.bin"	; Sonic
-		endif

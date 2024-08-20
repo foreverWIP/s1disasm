@@ -3,4 +3,3 @@ ipx_init.s
 ipx.c
 ip.bin
 debugger.s
-sonicart.s

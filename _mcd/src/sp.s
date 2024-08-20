@@ -19,6 +19,7 @@
 	interrupts (INT2) have been enabled.
 */
 GLABEL sp_init
+	move.l	#0,(spx_vint_ptr).l
 	// it's important to drvinit/cdbstat here even if bios already did it
 	// otherwise there may be issues with CD audio track playback
 	lea drvinit_tracklist, a0
@@ -92,3 +93,7 @@ GLABEL sp_fatal
 
 GLABEL sp_user
   rts
+
+.section .bss
+ .global spx_vint_ptr
+spx_vint_ptr: .long 0

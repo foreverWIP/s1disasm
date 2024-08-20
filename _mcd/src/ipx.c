@@ -40,8 +40,6 @@ static u8 v_gamemode_backup;
 static volatile u8* v_zone = (u8*)0x23FE10;
 static u8 v_zone_backup;
 static volatile u8* v_should_quit_module = (u8*)0x23CAE4;
-static volatile u32* v_sgfx_ptr = (u32*)0x23CAE4;
-extern u8* Sonic_Art;
 
 void vint_ex()
 {
@@ -74,8 +72,6 @@ void main()
 	*(volatile u32*)(_MNOCOD1+2) = Debugger_LineFEmulation;
 
 	memset8(0, (u8*)0x200000, 0x40000);
-
-	*v_sgfx_ptr = Sonic_Art;
 
 	for (u8 i = 0; i < 64; i++)
 	{
@@ -219,6 +215,15 @@ void main()
 		// Run it!
 		mmd_exec();
 		blib_disable_hint();
+		// wait for the playing flag to clear
+		while (*GA_COMFLAGS_SUB & 0x80)
+			;
+
+		while (*GA_COMSTAT0 == 0)
+			;
+		*GA_COMCMD0 = 0;
+		while (*GA_COMSTAT0 != 0)
+			;
 		*v_should_quit_module = 0;
 		v_gamemode_backup = *v_gamemode;
 		v_zone_backup = *v_zone;

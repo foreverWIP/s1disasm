@@ -62,7 +62,7 @@ local build_file = function(k, v, mmd_format)
 end
 
 for k,v in pairs(mmd_names) do
-	build_file(k, v, false)
+	--build_file(k, v, false)
 	build_file(k, v, true)
 end
 
