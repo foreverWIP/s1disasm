@@ -2289,7 +2289,7 @@ Demo_Level:
 		if Revision<>0
 			move.l	#5000,(v_scorelife).l ; extra life is awarded at 50000 points
 		endif
-		loadLevelModule
+		quitModule
 		rts	
 ; ===========================================================================
 ; ---------------------------------------------------------------------------
@@ -2942,10 +2942,22 @@ SignpostArtLoad:
 ; End of function SignpostArtLoad
 
 ; ===========================================================================
-Demo_GHZ:	binclude	"demodata/Intro - GHZ.bin"
-Demo_MZ:	binclude	"demodata/Intro - MZ.bin"
-Demo_SYZ:	binclude	"demodata/Intro - SYZ.bin"
-Demo_SS:	binclude	"demodata/Intro - Special Stage.bin"
+Demo_GHZ:
+			if MMD_Is_GHZ
+			binclude	"demodata/Intro - GHZ.bin"
+			endif
+Demo_MZ:
+			if MMD_Is_MZ
+			binclude	"demodata/Intro - MZ.bin"
+			endif
+Demo_SYZ:
+			if MMD_Is_SYZ
+			binclude	"demodata/Intro - SYZ.bin"
+			endif
+Demo_SS:
+			if MMD_Is_SS
+			binclude	"demodata/Intro - Special Stage.bin"
+			endif
 ; ===========================================================================
 
 ; ---------------------------------------------------------------------------
@@ -4940,6 +4952,7 @@ DrawChunks:
 
 		if Revision>=1
 Draw_GHz_Bg:
+			if MMD_Is_GHZ
 			moveq	#0,d4
 			moveq	#((224+16+16)/16)-1,d6
 locj_7224:			
@@ -4952,11 +4965,13 @@ locj_7224:
 			movem.l	(sp)+,d4-d6
 			addi.w	#16,d4
 			dbf	d6,locj_7224
+			endif
 			rts
 locj_724a:
 			dc.b $00,$00,$00,$00,$06,$06,$06,$04,$04,$04,$00,$00,$00,$00,$00,$00
 ;-------------------------------------------------------------------------------
 Draw_Mz_Bg:;locj_725a:
+			if MMD_Is_MZ
 			moveq	#-16,d4
 			moveq	#((224+16+16)/16)-1,d6
 locj_725E:			
@@ -4970,9 +4985,11 @@ locj_725E:
 			movem.l	(sp)+,d4-d6
 			addi.w	#16,d4
 			dbf	d6,locj_725E
+			endif
 			rts
 ;-------------------------------------------------------------------------------
 Draw_SBz_Bg:;locj_7288:
+			if MMD_Is_SBZ
 			moveq	#-16,d4
 			moveq	#((224+16+16)/16)-1,d6
 locj_728C:			
@@ -4985,6 +5002,7 @@ locj_728C:
 			movem.l	(sp)+,d4-d6
 			addi.w	#16,d4
 			dbf	d6,locj_728C
+			endif
 			rts
 ;-------------------------------------------------------------------------------
 locj_72B2:
@@ -6816,11 +6834,11 @@ Map_Light:
 		include	"_maps/Light.asm"
 		endif
 		include	"_incObj/47 Bumper.asm"
-		if MMD_Is_SYZ
+		if MMD_Is_SYZ||MMD_Is_SS
 		include	"_anim/Bumper.asm"
 		endif
 Map_Bump:
-		if MMD_Is_SYZ
+		if MMD_Is_SYZ||MMD_Is_SS
 		include	"_maps/Bumper.asm"
 		endif
 

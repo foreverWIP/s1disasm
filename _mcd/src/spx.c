@@ -171,6 +171,7 @@ __attribute__((section(".init"))) void main()
 
 			// load MMD
 			case 1:
+				*PCM_CTRL = 0;
 				load_file(ACC_OP_LOAD_CDC, filenames[cmd1], (u8 *) _WRDRAM_2M);
 				if (access_op_result != RESULT_OK)
 				{

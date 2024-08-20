@@ -2894,8 +2894,11 @@ SoundC2:
 		include "sound/sfx/SndC2 - Drown Warning.asm"
 		even
 		endif
-SoundC3:	include "sound/sfx/SndC3 - Giant Ring.asm"
+SoundC3:
+		if ~~MMD_Is_SBZ
+		include "sound/sfx/SndC3 - Giant Ring.asm"
 		even
+		endif
 SoundC4:	include "sound/sfx/SndC4 - Bomb.asm"
 		even
 SoundC5:	include "sound/sfx/SndC5 - Cash Register.asm"

@@ -15,7 +15,6 @@ enum {
 	MMD_LZ,
 	MMD_SLZ,
 	MMD_SBZ,
-	MMD_FZ,
 	MMD_SS,
 	MMD_CONTINUE,
 	MMD_ENDING,
@@ -40,6 +39,7 @@ static u8 v_gamemode_backup;
 static volatile u8* v_zone = (u8*)0x23FE10;
 static u8 v_zone_backup;
 static volatile u8* v_should_quit_module = (u8*)0x23CAE4;
+static volatile u16* v_lastlamp = (u16*)0x23FE30;
 
 void vint_ex()
 {
@@ -213,6 +213,7 @@ void main()
 
 		// Sub CPU side work is complete and the MMD should now be in 2M Word RAM
 		// Run it!
+		*v_lastlamp = 0;
 		mmd_exec();
 		blib_disable_hint();
 		// wait for the playing flag to clear

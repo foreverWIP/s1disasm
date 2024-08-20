@@ -333,7 +333,7 @@ Nem_SlzCannon:
 ; Compressed graphics - SYZ stuff
 ; ---------------------------------------------------------------------------
 Nem_Bumper:
-		if MMD_Is_SYZ
+		if MMD_Is_SYZ||MMD_Is_SS
 		includealigned	"artnem/SYZ Bumper.nem"
 		endif
 Nem_SyzSpike2:
@@ -419,7 +419,7 @@ Nem_Crabmeat:
 		includealigned	"artnem/Enemy Crabmeat.nem"
 		endif
 Nem_Buzz:
-		if MMD_Is_GHZ||MMD_Is_MZ
+		if MMD_Is_GHZ||MMD_Is_MZ||MMD_Is_SYZ
 		includealigned	"artnem/Enemy Buzz Bomber.nem"
 		endif
 Nem_Burrobot:
@@ -469,22 +469,13 @@ Nem_Cater:
 ; ---------------------------------------------------------------------------
 ; Compressed graphics - various
 ; ---------------------------------------------------------------------------
-Nem_TitleCard:
-		if MMD_Is_Level
-		includealigned	"artnem/Title Cards.nem"
-		endif
-Nem_Hud:
-		if MMD_Is_Level
-		includealigned	"artnem/HUD.nem"	; HUD (rings, time, score)
-		endif
+Nem_TitleCard:	includealigned	"artnem/Title Cards.nem"
+Nem_Hud:	includealigned	"artnem/HUD.nem"	; HUD (rings, time, score)
 Nem_Lives:
 		if MMD_Is_Level
 		includealigned	"artnem/HUD - Life Counter Icon.nem"
 		endif
-Nem_Ring:
-		if MMD_Is_Level
-		includealigned	"artnem/Rings.nem"
-		endif
+Nem_Ring:	includealigned	"artnem/Rings.nem"
 Nem_Monitors:
 		if MMD_Is_Level
 		includealigned	"artnem/Monitors.nem"
@@ -540,33 +531,19 @@ Nem_MiniSonic:
 ; Compressed graphics - animals
 ; ---------------------------------------------------------------------------
 Nem_Rabbit:
-		if MMD_Is_GHZ||MMD_Is_SBZ||MMD_Is_Ending
 		includealigned	"artnem/Animal Rabbit.nem"
-		endif
 Nem_Chicken:
-		if MMD_Is_SYZ||MMD_Is_SBZ||MMD_Is_Ending
 		includealigned	"artnem/Animal Chicken.nem"
-		endif
 Nem_Penguin:
-		if MMD_Is_LZ||MMD_Is_Ending
 		includealigned	"artnem/Animal Penguin.nem"
-		endif
 Nem_Seal:
-		if MMD_Is_MZ||MMD_Is_LZ||MMD_Is_Ending
 		includealigned	"artnem/Animal Seal.nem"
-		endif
 Nem_Pig:
-		if MMD_Is_SYZ||MMD_Is_SLZ||MMD_Is_Ending
 		includealigned	"artnem/Animal Pig.nem"
-		endif
 Nem_Flicky:
-		if MMD_Is_GHZ||MMD_Is_SLZ||MMD_Is_Ending
 		includealigned	"artnem/Animal Flicky.nem"
-		endif
 Nem_Squirrel:
-		if MMD_Is_MZ||MMD_Is_Ending
 		includealigned	"artnem/Animal Squirrel.nem"
-		endif
 ; ---------------------------------------------------------------------------
 ; Animated uncompressed graphics
 ; ---------------------------------------------------------------------------
@@ -720,7 +697,7 @@ Nem_Weapons:
 		includealigned	"artnem/Boss - Weapons.nem"
 		endif
 Nem_Prison:
-		if MMD_Is_Level
+		if ~~MMD_Is_SBZ
 		includealigned	"artnem/Prison Capsule.nem"
 		endif
 Nem_Sbz2Eggman:

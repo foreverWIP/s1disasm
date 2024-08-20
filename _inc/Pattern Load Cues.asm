@@ -49,12 +49,12 @@ plcm:	macro gfx,vram
 ; Pattern load cues - standard block 1
 ; ---------------------------------------------------------------------------
 PLC_Main:	dc.w ((PLC_Mainend-PLC_Main-2)/6)-1
-		if MMD_Is_Level
-		plcm	Nem_Lamp,   ArtTile_Lamppost      ; lamppost
 		plcm	Nem_Hud,    ArtTile_HUD           ; HUD
-		plcm	Nem_Lives,  ArtTile_Lives_Counter ; lives counter
-		plcm	Nem_Ring,   ArtTile_Ring          ; rings
 		plcm	Nem_Points, ArtTile_Points        ; points from enemy
+		plcm	Nem_Ring,   ArtTile_Ring          ; rings
+		if MMD_Is_Level
+		plcm	Nem_Lives,  ArtTile_Lives_Counter ; lives counter
+		plcm	Nem_Lamp,   ArtTile_Lamppost      ; lamppost
 		endif
 PLC_Mainend:
 ; ---------------------------------------------------------------------------
@@ -272,7 +272,9 @@ PLC_TitleCardend:
 PLC_Boss:	dc.w ((PLC_Bossend-PLC_Boss-2)/6)-1
 		plcm	Nem_Eggman,   ArtTile_Eggman           ; Eggman main patterns
 		plcm	Nem_Weapons,  ArtTile_Eggman_Weapons   ; Eggman's weapons
+		if ~~MMD_Is_SBZ
 		plcm	Nem_Prison,   ArtTile_Prison_Capsule   ; prison capsule
+		endif
 		plcm	Nem_Bomb,     ArtTile_Eggman_Spikeball ; bomb enemy (gets overwritten)
 		plcm	Nem_SlzSpike, ArtTile_Eggman_Spikeball ; spikeball (SLZ boss)
 		plcm	Nem_Exhaust,  ArtTile_Eggman_Exhaust   ; exhaust flame
