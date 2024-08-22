@@ -276,7 +276,9 @@ PLC_Boss:	dc.w ((PLC_Bossend-PLC_Boss-2)/6)-1
 		plcm	Nem_Prison,   ArtTile_Prison_Capsule   ; prison capsule
 		endif
 		plcm	Nem_Bomb,     ArtTile_Eggman_Spikeball ; bomb enemy (gets overwritten)
+		if MMD_Is_SLZ
 		plcm	Nem_SlzSpike, ArtTile_Eggman_Spikeball ; spikeball (SLZ boss)
+		endif
 		plcm	Nem_Exhaust,  ArtTile_Eggman_Exhaust   ; exhaust flame
 PLC_Bossend:
 ; ---------------------------------------------------------------------------

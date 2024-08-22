@@ -26,7 +26,8 @@ v_16x16:		ds.b	$1800		; 16x16 tile mappings
 v_sgfx_buffer:		ds.b	tile_size*23	; buffered Sonic graphics ($17 cells)
 v_sgfx_buffer_end:
 v_initial_sp:	ds.l	1
-			ds.b	$1C		; unused
+v_use_cd_audio:	ds.b	1
+			ds.b	$1B		; unused
 v_tracksonic:		ds.b	$100		; position tracking data for Sonic
 v_hscrolltablebuffer:	ds.b	$380		; scrolling table data
 v_hscrolltablebuffer_end:

@@ -36,7 +36,7 @@ Nem_TitleTM:
 ; Compressed graphics - primary patterns and block mappings
 ; ---------------------------------------------------------------------------
 Blk16_GHZ:
-		if MMD_Is_GHZ||MMD_Is_Title
+		if MMD_Is_GHZ||MMD_Is_Title||MMD_Is_Ending
 		includealigned	"map16/GHZ.eni"
 		endif
 Blk16_LZ:
@@ -60,7 +60,7 @@ Blk16_SBZ:
 		includealigned	"map16/SBZ.eni"
 		endif
 Blk256_GHZ:
-		if MMD_Is_GHZ||MMD_Is_Title
+		if MMD_Is_GHZ||MMD_Is_Title||MMD_Is_Ending
 		includealigned	"map256/GHZ.kos"
 		endif
 Blk256_LZ:
@@ -93,11 +93,11 @@ Blk256_SBZ:
 		endif
 
 Nem_GHZ_1st:
-		if MMD_Is_GHZ||MMD_Is_Title
+		if MMD_Is_GHZ||MMD_Is_Title||MMD_Is_Ending
 		includealigned	"artnem/8x8 - GHZ1.nem"	; GHZ primary patterns
 		endif
 Nem_GHZ_2nd:
-		if MMD_Is_GHZ||MMD_Is_Title
+		if MMD_Is_GHZ||MMD_Is_Title||MMD_Is_Ending
 		includealigned	"artnem/8x8 - GHZ2.nem"	; GHZ secondary patterns
 		endif
 Nem_LZ:
@@ -151,7 +151,7 @@ Nem_Goggle:
 ; Compressed graphics - GHZ stuff
 ; ---------------------------------------------------------------------------
 Nem_Stalk:
-		if MMD_Is_GHZ
+		if MMD_Is_GHZ||MMD_Is_Ending
 		includealigned	"artnem/GHZ Flower Stalk.nem"
 		endif
 Nem_Swing:
@@ -159,11 +159,11 @@ Nem_Swing:
 		includealigned	"artnem/GHZ Swinging Platform.nem"
 		endif
 Nem_Bridge:
-		if MMD_Is_GHZ
+		if MMD_Is_GHZ||MMD_Is_Ending
 		includealigned	"artnem/GHZ Bridge.nem"
 		endif
 Nem_GhzUnkBlock:
-		if MMD_Is_GHZ
+		if MMD_Is_GHZ||MMD_Is_Ending
 		includealigned	"artnem/Unused - GHZ Block.nem"
 		endif
 Nem_Ball:
@@ -181,7 +181,7 @@ Nem_SpikePole:
 		includealigned	"artnem/GHZ Spiked Log.nem"
 		endif
 Nem_PplRock:
-		if MMD_Is_GHZ
+		if MMD_Is_GHZ||MMD_Is_Ending
 		includealigned	"artnem/GHZ Purple Rock.nem"
 		endif
 Nem_GhzWall1:
@@ -189,7 +189,7 @@ Nem_GhzWall1:
 		includealigned	"artnem/GHZ Breakable Wall.nem"
 		endif
 Nem_GhzWall2:
-		if MMD_Is_GHZ
+		if MMD_Is_GHZ||MMD_Is_Ending
 		includealigned	"artnem/GHZ Edge Wall.nem"
 		endif
 ; ---------------------------------------------------------------------------
@@ -548,15 +548,15 @@ Nem_Squirrel:
 ; Animated uncompressed graphics
 ; ---------------------------------------------------------------------------
 Art_GhzWater:
-		if MMD_Is_GHZ||MMD_Is_Title
+		if MMD_Is_GHZ||MMD_Is_Title||MMD_Is_Ending
 		includealigned	"artunc/GHZ Waterfall.bin"
 		endif
 Art_GhzFlower1:
-		if MMD_Is_GHZ
+		if MMD_Is_GHZ||MMD_Is_Ending
 		includealigned	"artunc/GHZ Flower Large.bin"
 		endif
 Art_GhzFlower2:
-		if MMD_Is_GHZ
+		if MMD_Is_GHZ||MMD_Is_Ending
 		includealigned	"artunc/GHZ Flower Small.bin"
 		endif
 Art_MzLava1:

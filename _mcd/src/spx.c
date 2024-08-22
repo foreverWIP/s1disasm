@@ -3,6 +3,7 @@
 #include "sub/gatearr.h"
 #include "sub/memmap.h"
 #include "sub/pcm.h"
+#include "sub/bios.h"
 
 extern void sp_fatal();
 
@@ -20,12 +21,39 @@ char const * const filenames[] = {
 	"CREDITS.BIN;1",
 };
 
+const u16 cdda_track_offsets[] = {
+	2, // ghz
+	3, // lz
+	4, // mz
+	5, // slz
+	6, // syz
+	7, // sbz
+	8, // invincible
+	9, // extra life
+	10, // ss
+	11, // title
+	12, // ending
+	13, // boss
+	14, // fz
+	15, // got through
+	16, // game over
+	17, // continue
+	18, // credits
+	19, // drowning
+	20, // emerald
+};
+
 #define HZ_TO_SCD(hz) (((hz << 8) << 3) / 32252)
+
+
+const PcmChannelSettings splashPcmSettings = {
+	0xff, 0xff, (HZ_TO_SCD(11025) & 0xff), HZ_TO_SCD(11025) >> 8, 0, 0, 0x50
+};
 
 const PcmChannelSettings pcmSettings[] = {
 	{0xff, 0xff, (HZ_TO_SCD(8250) & 0xff), HZ_TO_SCD(8250) >> 8, 0, 0, 0x00},
-	{0xff, 0xff, (HZ_TO_SCD(24000) & 0xff), HZ_TO_SCD(24000) >> 8, 0, 0, 0x20},
-	{0xff, 0xff, (HZ_TO_SCD(7250) & 0xff), HZ_TO_SCD(7250) >> 8, 0, 0, 0x40},
+	{0xff, 0xff, (HZ_TO_SCD(24000) & 0xff), HZ_TO_SCD(24000) >> 8, 0, 0, 0x10},
+	{0xff, 0xff, (HZ_TO_SCD(7250) & 0xff), HZ_TO_SCD(7250) >> 8, 0, 0, 0x20},
 };
 
 const u32 pcm_sizes[] = {
@@ -85,7 +113,15 @@ void load_pcm (u8 * pcm_data, u32 pcm_data_size)
 void pcm_playback (u8 sample_id)
 {
 	*PCM_CDISABLE = 0xff;
-	pcm_config_channel_c (CHANNEL (1), &pcmSettings[sample_id]);
+	if (sample_id == 0xff)
+	{
+		pcm_config_channel_c (CHANNEL (1), &splashPcmSettings);
+	}
+	else
+	{
+		sample_id -= 0x81;
+		pcm_config_channel_c (CHANNEL (1), &pcmSettings[sample_id]);
+	}
 
 	cur_sample_id = sample_id;
 	starting_sample_pos = S_Chan_GetPosition(0);
@@ -96,19 +132,12 @@ void pcm_playback (u8 sample_id)
 
 extern u32* spx_vint_ptr;
 
-/*
-kick = 1674 bytes @ 8250hz
-8250 / 60 = 137.5
-1674 / 137.5 ~= 13
-snare = 3808 bytes @ 24000hz
-24000 / 60 = 400
-3808 / 400 ~= 10
-timpani = 8236 bytes @ 7250hz
-7250 / 60 ~= 120.83
-8236 / 120.83 ~= 69
-*/
 void vblank_sub()
 {
+	if (*GA_COMCMD0 != 0)
+	{
+		goto done;
+	}
 	/*if ((*GA_COMFLAGS_SUB & 0x80) != 0)
 	{
 		goto done;
@@ -123,6 +152,7 @@ void vblank_sub()
 	if (cur_sample_frame_count >= max_sample_frame_counts[cur_sample_id])
 	{
 		*PCM_CDISABLE = 0xff;
+		*PCM_CTRL = 0;
 	}
 	else
 	{
@@ -151,7 +181,7 @@ __attribute__((section(".init"))) void main()
 		sp_fatal();
 	}
 	pcm_clear_ram_c();
-	load_pcm((u8 *)_PRGRAM_1M_2, 0x8000);
+	load_pcm((u8 *)_PRGRAM_1M_2, 0xe000);
 
 	do
 	{
@@ -171,6 +201,8 @@ __attribute__((section(".init"))) void main()
 
 			// load MMD
 			case 1:
+				bios_mscstop();
+				*PCM_CDISABLE = 0xff;
 				*PCM_CTRL = 0;
 				load_file(ACC_OP_LOAD_CDC, filenames[cmd1], (u8 *) _WRDRAM_2M);
 				if (access_op_result != RESULT_OK)
@@ -179,12 +211,22 @@ __attribute__((section(".init"))) void main()
 					sp_fatal();
 				}
 				grant_2m();
+				*PCM_CTRL = 0x80;
 				break;
 			
+			// play a dac sample
 			case 0x40:
 				*GA_COMFLAGS_SUB |= 0x80;
-				pcm_playback(cmd1 - 0x81);
+				pcm_playback(cmd1);
 				*GA_COMFLAGS_SUB &= ~0x80;
+				break;
+			
+			// play a cd track
+			case 0x41:
+				bios_mscstop();
+				bios_fdrset(0x250);
+				bios_fdrset(0x8400);
+				bios_mscplayr(&cdda_track_offsets[cmd1 - 0x81]);
 				break;
 
 			// load IPX

@@ -40,6 +40,7 @@ static volatile u8* v_zone = (u8*)0x23FE10;
 static u8 v_zone_backup;
 static volatile u8* v_should_quit_module = (u8*)0x23CAE4;
 static volatile u16* v_lastlamp = (u16*)0x23FE30;
+static volatile u8* v_use_cd_audio = (u8*)0x23CAE4;
 
 void vint_ex()
 {
@@ -53,8 +54,8 @@ void hint_ex()
 
 static void print_msg(const char* msg, u8 x, u8 y)
 {
-	// blib_print(msg, (VDPPTR(NMT_POS_PLANE(x, y, _BLIB_PLANEA_ADDR)) | VRAM_W));
-	// blib_vint_wait(0);
+	blib_print(msg, (VDPPTR(NMT_POS_PLANE(x, y, _BLIB_PLANEA_ADDR)) | VRAM_W));
+	blib_vint_wait(0);
 }
 
 // At this point, the full IPX binary has been copies to Work RAM and all
@@ -71,6 +72,9 @@ void main()
 	*(volatile u32*)(_MNOCOD0+2) = Debugger_LineAEmulation;
 	*(volatile u32*)(_MNOCOD1+2) = Debugger_LineFEmulation;
 
+	v_gamemode_backup = 0;
+	v_zone_backup = 0;
+
 	memset8(0, (u8*)0x200000, 0x40000);
 
 	for (u8 i = 0; i < 64; i++)
@@ -82,6 +86,17 @@ void main()
 	{
 		MLEVEL6_VECTOR = (void *(*) ) _BLIB_VINT_HANDLER;
 		*BLIB_VINT_EX_PTR = vint_ex;
+
+{
+		blib_clear_tables();
+		blib_load_font_defaults();
+		for (u8 i = 0; i < 64; i++)
+		{
+			BLIB_PALETTE[i] = 0x0000;
+		}
+		BLIB_PALETTE[1] = 0xeee;
+		BLIB_VDP_UPDATE_FLAGS |= PAL_UPDATE_MSK;
+}
 
 		blib_vint_wait(0);
 
@@ -214,6 +229,7 @@ void main()
 		// Sub CPU side work is complete and the MMD should now be in 2M Word RAM
 		// Run it!
 		*v_lastlamp = 0;
+		// *v_use_cd_audio = 1;
 		mmd_exec();
 		blib_disable_hint();
 		// wait for the playing flag to clear

@@ -13,13 +13,26 @@ loadLevelModule: macro
 		quitModule
 		endm
 
-triggerAddrError: macro
-		movea.l	#1,a0
-		move.w	(a0),d0
+undefObjTrap: macro
+		jmp	(TriggerAddrError).l
 		endm
 
-undefObjTrap: macro
-		triggerAddrError
+sendSubCpuCommand: macro cmd0,cmd1
+.checkcomcmd:
+		tst.w	(GA_COMCMD0).l
+		bne.s	.waitforcomstatnot0
+		beq.s	.waitforcomstat0
+.waitforcomstatnot0:
+		tst.w	(GA_COMSTAT0).l
+		beq.s	.waitforcomstatnot0
+		move.w	#$0,(GA_COMCMD0).l
+		bra.s	.checkcomcmd
+.waitforcomstat0:
+		tst.w	(GA_COMSTAT0).l
+		bne.s	.waitforcomstat0
+.submitsample:
+		move.w	cmd1,(GA_COMCMD1).l
+		move.w	cmd0,(GA_COMCMD0).l
 		endm
 
 ; ---------------------------------------------------------------------------

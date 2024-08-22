@@ -151,11 +151,41 @@ EndOfHeader:
 		MMD 0,WORDRAM2M,0,EntryPoint,HBlank,VBlank
 		endif
 
+TriggerAddrError:
+		movea.l	#1,a0
+		move.w	(a0),d0
+
 ErrorTrap:
 		nop
 		nop
 		bra.s	ErrorTrap
 
+		if MMD_Is_Title
+SHCSplash:
+		binclude "shcsplash.bin"
+		; these are vdp regs set by the binary
+		; blob after it's done
+		dc.b    %00000100               ; $80
+		dc.b    %01110100               ; $81
+		dc.b    ((($C000)>>$0A)&$FF)    ; $82
+		dc.b    ((($A000)>>$0A)&$FF)    ; $83
+		dc.b    ((($E000)>>$0D)&$FF)    ; $84
+		dc.b    ((($F800)>>$09)&$FF)    ; $85
+		dc.b    %00000000               ; $86
+		dc.b    $20                     ; $87
+		dc.b    %00000000               ; $88
+		dc.b    %00000000               ; $89
+		dc.b    $00                     ; $8A
+		dc.b    %00000000               ; $8B
+		dc.b    %10000001               ; $8C
+		dc.b    ((($FC00)>>$0A)&$FF)    ; $8D
+		dc.b    %00000000               ; $8E
+		dc.b    $02                     ; $8F
+		dc.b    %00000001               ; $90
+		dc.b    $00                     ; $91
+		dc.b    $00                     ; $92
+		even 
+		endif
 		if ~~MMD_Enabled
 		include "_debugger/skcompat.asm"
 		include "_debugger/Debugger.asm"
@@ -1854,6 +1884,10 @@ GM_Title:
 		move.w	#$8720,(a6)	; set background colour (palette line 2, entry 0)
 		clr.b	(f_wtr_state).l
 		bsr.w	ClearScreen
+		if MMD_Enabled
+		sendSubCpuCommand #$40,#$FF
+		jsr		(SHCSplash).l
+		endif
 
 		clearRAM v_objspace
 
@@ -7954,7 +7988,7 @@ SS_ShowLayout:
 		move.w	d5,-(sp)
 		lea	(v_ssbuffer3).l,a1
 		move.b	(v_ssangle).l,d0
-		andi.b	#$FC,d0
+		;andi.b	#$FC,d0
 		jsr	(CalcSine).l
 		move.w	d0,d4
 		move.w	d1,d5
@@ -8654,7 +8688,7 @@ CollArray1:	binclude	"collide/Collision Array (Normal).bin"
 CollArray2:	binclude	"collide/Collision Array (Rotated).bin"
 		even
 Col_GHZ:
-		if MMD_Is_GHZ
+		if MMD_Is_GHZ||MMD_Is_Ending
 		binclude	"collide/GHZ.bin"	; GHZ index
 		even
 		endif

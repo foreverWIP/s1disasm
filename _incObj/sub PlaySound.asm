@@ -9,7 +9,16 @@
 
 
 PlaySound:
+		tst.b	(v_use_cd_audio).l
+		beq.s	.playfm
+		cmpi.b	#sfx__First,d0
+		bhs.s	.ret
+
+		sendSubCpuCommand #$41,d0
+		rts
+.playfm:
 		move.b	d0,(v_snddriver_ram.v_soundqueue0).l
+.ret:
 		rts	
 ; End of function PlaySound
 
@@ -21,7 +30,16 @@ PlaySound:
 
 
 PlaySound_Special:
+		tst.b	(v_use_cd_audio).l
+		beq.s	.playfm
+		cmpi.b	#sfx__First,d0
+		bhs.s	.ret
+
+		sendSubCpuCommand #$41,d0
+		rts
+.playfm:
 		move.b	d0,(v_snddriver_ram.v_soundqueue1).l
+.ret:
 		rts	
 ; End of function PlaySound_Special
 
@@ -31,5 +49,14 @@ PlaySound_Special:
 ; ---------------------------------------------------------------------------
 
 PlaySound_Unused:
+		tst.b	(v_use_cd_audio).l
+		beq.s	.playfm
+		cmpi.b	#sfx__First,d0
+		bhs.s	.ret
+
+		sendSubCpuCommand #$41,d0
+		rts
+.playfm:
 		move.b	d0,(v_snddriver_ram.v_soundqueue2).l
+.ret:
 		rts	

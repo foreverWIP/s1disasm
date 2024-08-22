@@ -311,24 +311,7 @@ DACUpdateTrack:
 		; $81 = kick
 		; $82 = snare
 		; $83+ = timpani?
-.waitfordoneplaying:
-		btst	#7,($A1200E+1).l
-		bne.s	.waitfordoneplaying
-.checkcomcmd:
-		tst.w	(GA_COMCMD0).l
-		bne.s	.waitforcomstatnot0
-		beq.s	.waitforcomstat0
-.waitforcomstatnot0:
-		tst.w	(GA_COMSTAT0).l
-		beq.s	.waitforcomstatnot0
-		move.w	#$0,(GA_COMCMD0).l
-		bra.s	.checkcomcmd
-.waitforcomstat0:
-		tst.w	(GA_COMSTAT0).l
-		bne.s	.waitforcomstat0
-.submitsample:
-		move.w	d0,(GA_COMCMD1).l
-		move.w	#$40,(GA_COMCMD0).l
+		sendSubCpuCommand #$40,d0
 		endif
 ; locret_71CAA:
 .locret:
