@@ -6,6 +6,7 @@
 #include "main/vdp.h"
 #include "system.h"
 #include "memory.h"
+#include "main/printval.h"
 
 enum {
 	MMD_TITLE = 0,
@@ -41,6 +42,7 @@ static u8 v_zone_backup;
 static volatile u8* v_should_quit_module = (u8*)0x23CAE4;
 static volatile u16* v_lastlamp = (u16*)0x23FE30;
 static volatile u8* v_use_cd_audio = (u8*)0x23CAE4;
+static volatile u8* v_undef_obj_id = (u8*)0x23CAE5;
 
 void vint_ex()
 {
@@ -56,6 +58,28 @@ static void print_msg(const char* msg, u8 x, u8 y)
 {
 	blib_print(msg, (VDPPTR(NMT_POS_PLANE(x, y, _BLIB_PLANEA_ADDR)) | VRAM_W));
 	blib_vint_wait(0);
+}
+
+void enable_debug_output()
+{
+	blib_clear_tables();
+	blib_load_font_defaults();
+	for (u8 i = 0; i < 64; i++)
+	{
+		BLIB_PALETTE[i] = 0x0000;
+	}
+	BLIB_PALETTE[1] = 0xeee;
+	BLIB_VDP_UPDATE_FLAGS |= PAL_UPDATE_MSK;
+}
+
+void undef_obj_error(u8 obj_id)
+{
+	char id_char_buf[4];
+	enable_debug_output();
+	print_msg("Undefined object!\xff", 0, 0);
+	printval_u8_c(obj_id, id_char_buf);
+	print_msg("ID: --\xff", 0, 1);
+	print_msg(id_char_buf, 4, 1);
 }
 
 // At this point, the full IPX binary has been copies to Work RAM and all
@@ -87,16 +111,7 @@ void main()
 		MLEVEL6_VECTOR = (void *(*) ) _BLIB_VINT_HANDLER;
 		*BLIB_VINT_EX_PTR = vint_ex;
 
-{
-		blib_clear_tables();
-		blib_load_font_defaults();
-		for (u8 i = 0; i < 64; i++)
-		{
-			BLIB_PALETTE[i] = 0x0000;
-		}
-		BLIB_PALETTE[1] = 0xeee;
-		BLIB_VDP_UPDATE_FLAGS |= PAL_UPDATE_MSK;
-}
+		enable_debug_output();
 
 		blib_vint_wait(0);
 
@@ -229,6 +244,7 @@ void main()
 		// Sub CPU side work is complete and the MMD should now be in 2M Word RAM
 		// Run it!
 		*v_lastlamp = 0;
+		*v_undef_obj_id = 0xff;
 		// *v_use_cd_audio = 1;
 		mmd_exec();
 		blib_disable_hint();
@@ -241,6 +257,10 @@ void main()
 		*GA_COMCMD0 = 0;
 		while (*GA_COMSTAT0 != 0)
 			;
+		if (*v_undef_obj_id != 0xff)
+		{
+			undef_obj_error(*v_undef_obj_id);
+		}
 		*v_should_quit_module = 0;
 		v_gamemode_backup = *v_gamemode;
 		v_zone_backup = *v_zone;

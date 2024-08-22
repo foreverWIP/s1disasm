@@ -17,4 +17,4 @@ MMD_Is_Level = MMD_Is_GHZ||MMD_Is_MZ||MMD_Is_SYZ||MMD_Is_LZ||MMD_Is_SLZ||MMD_Is_
 		mmdCheck Continue
 		mmdCheck Ending
 		mmdCheck Credits
-MMD_Has_Sonic = (MMD_Is_Level||MMD_Is_SS||MMD_Is_Ending)
+MMD_Has_Sonic = (MMD_Is_Level||MMD_Is_SS||MMD_Is_Ending||MMD_Is_Continue||MMD_Is_Credits)

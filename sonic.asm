@@ -151,10 +151,6 @@ EndOfHeader:
 		MMD 0,WORDRAM2M,0,EntryPoint,HBlank,VBlank
 		endif
 
-TriggerAddrError:
-		movea.l	#1,a0
-		move.w	(a0),d0
-
 ErrorTrap:
 		nop
 		nop

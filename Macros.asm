@@ -13,8 +13,13 @@ loadLevelModule: macro
 		quitModule
 		endm
 
-undefObjTrap: macro
-		jmp	(TriggerAddrError).l
+undefObjTrap: macro addrreg
+		if ("addrreg"=="")
+		move.b	(a0),(v_undef_obj_id).l
+		else
+		move.b	(addrreg),(v_undef_obj_id).l
+		endif
+		quitModule
 		endm
 
 sendSubCpuCommand: macro cmd0,cmd1

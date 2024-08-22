@@ -752,4 +752,7 @@ Nem_EndStH:
 ; ---------------------------------------------------------------------------
 ; Uncompressed graphics	- Sonic
 ; ---------------------------------------------------------------------------
-Art_Sonic:	includealigned	"artunc/Sonic.bin"	; Sonic
+Art_Sonic:
+		if MMD_Has_Sonic
+		includealigned	"artunc/Sonic.bin"	; Sonic
+		endif
