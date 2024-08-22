@@ -3,7 +3,7 @@
 ; ---------------------------------------------------------------------------
 
 ScrapStomp:
-		if MMD_Is_SBZ
+		if MMD_Is_SBZ||MMD_Is_LZ
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	Sto_Index(pc,d0.w),d1

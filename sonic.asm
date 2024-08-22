@@ -3890,7 +3890,9 @@ GM_Credits:
 		move.b	#id_CreditsText,(v_credits).l ; load credits object
 		jsr	(ExecuteObjects).l
 		jsr	(BuildSprites).l
+		if ~~MMD_Enabled
 		bsr.w	EndingDemoLoad
+		endif
 		moveq	#0,d0
 		move.b	(v_zone).l,d0
 		lsl.w	#4,d0
@@ -3904,7 +3906,11 @@ GM_Credits:
 Cred_SkipObjGfx:
 		moveq	#plcid_Main2,d0
 		bsr.w	AddPLC		; load standard	level graphics
+		if ~~MMD_Enabled
 		move.w	#120,(v_demolength).l ; display a credit for 2 seconds
+		else
+		move.w	#(120+540+60),(v_demolength).l
+		endif
 		bsr.w	PaletteFadeIn
 
 Cred_WaitLoop:
@@ -5410,7 +5416,7 @@ locret_7B62:
 
 		include	"_incObj/15 Swinging Platforms (part 2).asm"
 Map_Swing_GHZ:
-		if MMD_Is_GHZ
+		if MMD_Is_GHZ||MMD_Is_MZ
 		include	"_maps/Swinging Platforms (GHZ).asm"
 		endif
 Map_Swing_SLZ:
@@ -5943,7 +5949,7 @@ M_Card_SYZ_End
 	even
 
 M_Card_SBZ:	spriteHeader		; SCRAP BRAIN
-	if MMD_Is_SBZ
+	if MMD_Is_SBZ||MMD_Is_LZ
 	spritePiece	-$54, -8, 2, 2, $3E, 0, 0, 0, 0
 	spritePiece	-$44, -8, 2, 2, 8, 0, 0, 0, 0
 	spritePiece	-$34, -8, 2, 2, $3A, 0, 0, 0, 0
@@ -7764,7 +7770,7 @@ Map_Saw:
 		endif
 		include	"_incObj/6B SBZ Stomper and Door.asm"
 Map_Stomp:
-		if MMD_Is_SBZ
+		if MMD_Is_SBZ||MMD_Is_LZ
 		include	"_maps/SBZ Stomper and Door.asm"
 		endif
 		include	"_incObj/6C SBZ Vanishing Platforms.asm"
@@ -8821,7 +8827,7 @@ Level_GHZ3:
 		even
 		endif
 Level_GHZbg:
-		if MMD_Is_GHZ||MMD_Is_Title
+		if MMD_Is_GHZ||MMD_Is_Title||MMD_Is_Ending
 		binclude	"levels/ghzbg.bin"
 		even
 		endif
@@ -9066,7 +9072,7 @@ ObjPos_LZ3:
 		even
 		endif
 ObjPos_SBZ3:
-		if MMD_Is_SBZ
+		if MMD_Is_LZ
 		binclude	"objpos/sbz3.bin"
 		even
 		endif

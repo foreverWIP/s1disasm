@@ -69,6 +69,8 @@ void enable_debug_output()
 		BLIB_PALETTE[i] = 0x0000;
 	}
 	BLIB_PALETTE[1] = 0xeee;
+	MLEVEL6_VECTOR = (void *(*) ) _BLIB_VINT_HANDLER;
+	*BLIB_VINT_EX_PTR = vint_ex;
 	BLIB_VDP_UPDATE_FLAGS |= PAL_UPDATE_MSK;
 }
 
@@ -80,6 +82,10 @@ void undef_obj_error(u8 obj_id)
 	printval_u8_c(obj_id, id_char_buf);
 	print_msg("ID: --\xff", 0, 1);
 	print_msg(id_char_buf, 4, 1);
+	do
+	{
+		asm("nop");
+	} while (1);
 }
 
 // At this point, the full IPX binary has been copies to Work RAM and all
@@ -110,8 +116,6 @@ void main()
 	{
 		MLEVEL6_VECTOR = (void *(*) ) _BLIB_VINT_HANDLER;
 		*BLIB_VINT_EX_PTR = vint_ex;
-
-		enable_debug_output();
 
 		blib_vint_wait(0);
 
@@ -200,14 +204,8 @@ void main()
 			asm ("nop");
 			if (*GA_COMSTAT0 == 0xff)
 			{
+				enable_debug_output();
 				print_msg("Acknowledge error      \xff", 0, 1);
-				blib_load_font_defaults();
-				for (u8 i = 0; i < 64; i++)
-				{
-					BLIB_PALETTE[i] = 0x0000;
-				}
-				BLIB_PALETTE[1] = 0xeee;
-				BLIB_VDP_UPDATE_FLAGS |= PAL_UPDATE_MSK;
 				while (1)
 				{
 					asm ("nop");
@@ -226,14 +224,8 @@ void main()
 			asm ("nop");
 			if (*GA_COMSTAT0 == 0xff)
 			{
+				enable_debug_output();
 				print_msg("Module load error\xff", 0, 2);
-				blib_load_font_defaults();
-				for (u8 i = 0; i < 64; i++)
-				{
-					BLIB_PALETTE[i] = 0x0000;
-				}
-				BLIB_PALETTE[1] = 0xeee;
-				BLIB_VDP_UPDATE_FLAGS |= PAL_UPDATE_MSK;
 				while (1)
 				{
 					asm ("nop");
