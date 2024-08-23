@@ -119,6 +119,8 @@ void main()
 
 		blib_vint_wait(0);
 
+		enable_debug_output();
+
 		// make sure that the Sub CPU controls 2M Word RAM before we request the
 		// file
 		grant_2m();
@@ -131,6 +133,7 @@ void main()
 		u8 com_cmd = 0;
 		switch (v_gamemode_backup)
 		{
+			case 0x8:
 			case 0xc:
 				switch (v_zone_backup)
 				{

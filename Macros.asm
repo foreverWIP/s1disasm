@@ -6,9 +6,7 @@ hang: macro
 
 quitModule:	macro
 		if MMD_Enabled
-		disable_ints
-		move.l	(v_initial_sp).l,sp
-		rts
+		jsr ReturnToIPX
 		else
 		nop
 		endif

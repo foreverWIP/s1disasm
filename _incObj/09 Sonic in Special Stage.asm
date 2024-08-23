@@ -302,6 +302,7 @@ loc_1BC12:
 		jsr	(Sonic_Animate).l
 		jsr	(Sonic_LoadGfx).l
 		bsr.w	SS_FixCamera
+		quitModule
 		jmp	(DisplaySprite).l
 ; ===========================================================================
 

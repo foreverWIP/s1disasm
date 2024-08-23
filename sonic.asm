@@ -156,32 +156,16 @@ ErrorTrap:
 		nop
 		bra.s	ErrorTrap
 
+		if MMD_Enabled
+ReturnToIPX:
+		disable_ints
+		move.l	(v_initial_sp).l,sp
+		rts
+		endif
+
 		if MMD_Is_Title
 SHCSplashScreen:
-		;binclude "shcsplash.bin"
 		include "shcsplash.asm"
-		; these are vdp regs set by the binary
-		; blob after it's done
-		dc.b    %00000100               ; $80
-		dc.b    %01110100               ; $81
-		dc.b    ((($C000)>>$0A)&$FF)    ; $82
-		dc.b    ((($A000)>>$0A)&$FF)    ; $83
-		dc.b    ((($E000)>>$0D)&$FF)    ; $84
-		dc.b    ((($F800)>>$09)&$FF)    ; $85
-		dc.b    %00000000               ; $86
-		dc.b    $20                     ; $87
-		dc.b    %00000000               ; $88
-		dc.b    %00000000               ; $89
-		dc.b    $00                     ; $8A
-		dc.b    %00000000               ; $8B
-		dc.b    %10000001               ; $8C
-		dc.b    ((($FC00)>>$0A)&$FF)    ; $8D
-		dc.b    %00000000               ; $8E
-		dc.b    $02                     ; $8F
-		dc.b    %00000001               ; $90
-		dc.b    $00                     ; $91
-		dc.b    $00                     ; $92
-		even 
 		endif
 		if ~~MMD_Enabled
 		include "_debugger/skcompat.asm"
@@ -2012,7 +1996,6 @@ Tit_MainLoop:
 		blo.s	Tit_ChkRegion	; if not, branch
 
 		move.b	#id_Sega,(v_gamemode).l ; go to Sega screen
-		quitModule
 		rts	
 ; ===========================================================================
 
@@ -2275,7 +2258,6 @@ loc_33B6:
 		cmpi.w	#$1C00,d0
 		blo.s	loc_33E4
 		move.b	#id_Sega,(v_gamemode).l
-		quitModule
 		rts	
 ; ===========================================================================
 ; ---------------------------------------------------------------------------
@@ -4498,7 +4480,7 @@ locj_6E28:
 			move.w	a3,d0
 			movea.l	d0,a3
 			move.l	(sp)+,d0
-			cmpa.w	#0,a3
+			cmpi.w	#0,d0
 			endif
 			beq.s	locj_6E5E
 			moveq	#-16,d5
@@ -4599,7 +4581,7 @@ locj_6F66:
 			move.w	a3,d0
 			movea.l	d0,a3
 			move.l	(sp)+,d0
-			cmpa.w	#0,a3
+			cmpi.w	#0,d0
 			endif
 			beq.s	locj_6F9A
 			moveq	#-16,d5
@@ -4988,7 +4970,7 @@ DrawChunks:
 
 		if Revision>=1
 Draw_GHz_Bg:
-			if MMD_Is_GHZ
+			if MMD_Is_GHZ||MMD_Is_Ending
 			moveq	#0,d4
 			moveq	#((224+16+16)/16)-1,d6
 locj_7224:			
@@ -5053,7 +5035,7 @@ locj_72Ba:
 			move.w	a3,d0
 			movea.l	d0,a3
 			move.l	(sp)+,d0
-			cmpa.w	#0,a3
+			cmpi.w	#0,d0
 			endif
 			beq.s	locj_72da
 			moveq	#-16,d5

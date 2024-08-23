@@ -1,12 +1,11 @@
 .state_setup:
 	move.w	#$8200|($A000>>10),(vdp_control_port).l ; plane a
 	move.w	#$8400|($A000>>13),(vdp_control_port).l ; plane b
-	;move.w	#$8300|($E000>>10),(vdp_control_port).l ; window
-	;move.w	#$8500|($E000>>9),(vdp_control_port).l ; sprites
 	move.w	#$9003,(vdp_control_port).l ; plane size
 	move.w	#$8D00+(vram_hscroll>>10),(vdp_control_port).l ; hscroll
 	move.w	#$8B00,(vdp_control_port).l ; full screen scrolling
 	move.w	#$8F02,(vdp_control_port).l ; auto increment 2
+	fillVRAM 0,vram_sprites,vram_sprites+$280
 	writeVRAM .art,0
 	writeVRAM .mappings,$A000
 	moveq	#palid_SplashScreen,d0	; load Sonic's palette
