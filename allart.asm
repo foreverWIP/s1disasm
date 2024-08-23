@@ -1,13 +1,25 @@
-includealigned: macro file
-name:
-	binclude file
-	if ((*)&$1FFFF)<(name&$1FFFF)
-name_length: equ *-name
-	rorg -name_length
+includealigned: macro {INTLABEL},filename,cond
+	if ("cond"=="")
+.condition := 1
+	else
+.condition := cond
+	endif
+	if .condition
+.file_start := *
+	binclude filename
+.file_end := *
+	if ((*)&$1FFFF)<(.file_start&$1FFFF)
+	rorg -(.file_end-.file_start)
 	align $20000
-	binclude file
+__LABEL__ label *
+	binclude filename
+	else
+__LABEL__ label .file_start
 	endif
 	even
+	else
+__LABEL__ label *
+	endif
 	endm
 
 Art_Text:	includealigned	"artunc/menutext.bin" ; text used in level select and debug mode
@@ -15,744 +27,231 @@ Art_Text_End:	even
 Art_Hud:	includealigned	"artunc/HUD Numbers.bin" ; 8x16 pixel numbers on HUD
 Art_LivesNums:	includealigned	"artunc/Lives Counter Numbers.bin" ; 8x8 pixel numbers on lives counter
 
-Eni_Title:
-		if MMD_Is_Title
-		includealigned	"tilemaps/Title Screen.eni" ; title screen foreground (mappings)
-		endif
-Nem_TitleFg:
-		if MMD_Is_Title
-		includealigned	"artnem/Title Screen Foreground.nem"
-		endif
-Nem_TitleSonic:
-		if MMD_Is_Title
-		includealigned	"artnem/Title Screen Sonic.nem"
-		endif
-Nem_TitleTM:
-		if MMD_Is_Title
-		includealigned	"artnem/Title Screen TM.nem"
-		endif
+Eni_Title:	includealigned	"tilemaps/Title Screen.eni",MMD_Is_Title ; title screen foreground (mappings)
+Nem_TitleFg:	includealigned	"artnem/Title Screen Foreground.nem",MMD_Is_Title
+Nem_TitleSonic:	includealigned	"artnem/Title Screen Sonic.nem",MMD_Is_Title
+Nem_TitleTM:	includealigned	"artnem/Title Screen TM.nem",MMD_Is_Title
 
 ; ---------------------------------------------------------------------------
 ; Compressed graphics - primary patterns and block mappings
 ; ---------------------------------------------------------------------------
-Blk16_GHZ:
-		if MMD_Is_GHZ||MMD_Is_Title||MMD_Is_Ending
-		includealigned	"map16/GHZ.eni"
-		endif
-Blk16_LZ:
-		if MMD_Is_LZ
-		includealigned	"map16/LZ.eni"
-		endif
-Blk16_MZ:
-		if MMD_Is_MZ
-		includealigned	"map16/MZ.eni"
-		endif
-Blk16_SLZ:
-		if MMD_Is_SLZ
-		includealigned	"map16/SLZ.eni"
-		endif
-Blk16_SYZ:
-		if MMD_Is_SYZ
-		includealigned	"map16/SYZ.eni"
-		endif
-Blk16_SBZ:
-		if MMD_Is_SBZ
-		includealigned	"map16/SBZ.eni"
-		endif
-Blk256_GHZ:
-		if MMD_Is_GHZ||MMD_Is_Title||MMD_Is_Ending
-		includealigned	"map256/GHZ.kos"
-		endif
-Blk256_LZ:
-		if MMD_Is_LZ
-		includealigned	"map256/LZ.kos"
-		endif
-Blk256_MZ:
-		if MMD_Is_MZ
-		if Revision=0
-		includealigned	"map256/MZ.kos"
-		else
-		includealigned	"map256/MZ (JP1).kos"
-		endif
-		endif
-Blk256_SLZ:
-		if MMD_Is_SLZ
-		includealigned	"map256/SLZ.kos"
-		endif
-Blk256_SYZ:
-		if MMD_Is_SYZ
-		includealigned	"map256/SYZ.kos"
-		endif
-Blk256_SBZ:
-		if MMD_Is_SBZ
-		if Revision=0
-		includealigned	"map256/SBZ.kos"
-		else
-		includealigned	"map256/SBZ (JP1).kos"
-		endif
-		endif
+Blk16_GHZ:	includealigned	"map16/GHZ.eni",MMD_Is_GHZ||MMD_Is_Title||MMD_Is_Ending
+Blk16_LZ:	includealigned	"map16/LZ.eni",MMD_Is_LZ
+Blk16_MZ:	includealigned	"map16/MZ.eni",MMD_Is_MZ
+Blk16_SLZ:	includealigned	"map16/SLZ.eni",MMD_Is_SLZ
+Blk16_SYZ:	includealigned	"map16/SYZ.eni",MMD_Is_SYZ
+Blk16_SBZ:	includealigned	"map16/SBZ.eni",MMD_Is_SBZ
+Blk256_GHZ:	includealigned	"map256/GHZ.kos",MMD_Is_GHZ||MMD_Is_Title||MMD_Is_Ending
+Blk256_LZ:	includealigned	"map256/LZ.kos",MMD_Is_LZ
+Blk256_MZ:	includealigned	"map256/MZ (JP1).kos",MMD_Is_MZ
+Blk256_SLZ:	includealigned	"map256/SLZ.kos",MMD_Is_SLZ
+Blk256_SYZ:	includealigned	"map256/SYZ.kos",MMD_Is_SYZ
+Blk256_SBZ:	includealigned	"map256/SBZ (JP1).kos",MMD_Is_SBZ
 
-Nem_GHZ_1st:
-		if MMD_Is_GHZ||MMD_Is_Title||MMD_Is_Ending
-		includealigned	"artnem/8x8 - GHZ1.nem"	; GHZ primary patterns
-		endif
-Nem_GHZ_2nd:
-		if MMD_Is_GHZ||MMD_Is_Title||MMD_Is_Ending
-		includealigned	"artnem/8x8 - GHZ2.nem"	; GHZ secondary patterns
-		endif
-Nem_LZ:
-		if MMD_Is_LZ
-		includealigned	"artnem/8x8 - LZ.nem"	; LZ primary patterns
-		endif
-Nem_MZ:
-		if MMD_Is_MZ
-		includealigned	"artnem/8x8 - MZ.nem"	; MZ primary patterns
-		endif
-Nem_SLZ:
-		if MMD_Is_SLZ
-		includealigned	"artnem/8x8 - SLZ.nem"	; SLZ primary patterns
-		endif
-Nem_SYZ:
-		if MMD_Is_SYZ
-		includealigned	"artnem/8x8 - SYZ.nem"	; SYZ primary patterns
-		endif
-Nem_SBZ:
-		if MMD_Is_SBZ
-		includealigned	"artnem/8x8 - SBZ.nem"	; SBZ primary patterns
-		endif
+Nem_GHZ_1st:	includealigned	"artnem/8x8 - GHZ1.nem",MMD_Is_GHZ||MMD_Is_Title||MMD_Is_Ending
+Nem_GHZ_2nd:	includealigned	"artnem/8x8 - GHZ2.nem",MMD_Is_GHZ||MMD_Is_Title||MMD_Is_Ending
+Nem_LZ:	includealigned	"artnem/8x8 - LZ.nem",MMD_Is_LZ
+Nem_MZ:	includealigned	"artnem/8x8 - MZ.nem",MMD_Is_MZ
+Nem_SLZ:	includealigned	"artnem/8x8 - SLZ.nem",MMD_Is_SLZ
+Nem_SYZ:	includealigned	"artnem/8x8 - SYZ.nem",MMD_Is_SYZ
+Nem_SBZ:	includealigned	"artnem/8x8 - SBZ.nem",MMD_Is_SBZ
 
 ; ---------------------------------------------------------------------------
 ; Compressed graphics - various
 ; ---------------------------------------------------------------------------
-Nem_Shield:
-		if MMD_Is_Level
-		includealigned	"artnem/Shield.nem"
-		endif
-Nem_Stars:
-		if MMD_Is_Level
-		includealigned	"artnem/Invincibility Stars.nem"
-		endif
-		if Revision=0
-Nem_LzSonic:
-		if MMD_Is_Level
-		includealigned	"artnem/Unused - LZ Sonic.nem" ; Sonic holding his breath
-		endif
-Nem_Warp:
-		if MMD_Is_Level
-		includealigned	"artnem/Unused - SStage Flash.nem" ; entry to special stage flash
-		endif
-Nem_Goggle:
-		if MMD_Is_Level
-		includealigned	"artnem/Unused - Goggles.nem" ; unused goggles
-		endif
-		endif
+Nem_Shield:	includealigned	"artnem/Shield.nem",MMD_Is_Level
+Nem_Stars:	includealigned	"artnem/Invincibility Stars.nem",MMD_Is_Level
 
 ; ---------------------------------------------------------------------------
 ; Compressed graphics - GHZ stuff
 ; ---------------------------------------------------------------------------
-Nem_Stalk:
-		if MMD_Is_GHZ||MMD_Is_Ending
-		includealigned	"artnem/GHZ Flower Stalk.nem"
-		endif
-Nem_Swing:
-		if MMD_Is_GHZ
-		includealigned	"artnem/GHZ Swinging Platform.nem"
-		endif
-Nem_Bridge:
-		if MMD_Is_GHZ||MMD_Is_Ending
-		includealigned	"artnem/GHZ Bridge.nem"
-		endif
-Nem_GhzUnkBlock:
-		if MMD_Is_GHZ||MMD_Is_Ending
-		includealigned	"artnem/Unused - GHZ Block.nem"
-		endif
-Nem_Ball:
-		if MMD_Is_GHZ
-		includealigned	"artnem/GHZ Giant Ball.nem"
-		endif
-Nem_Spikes:
-		includealigned	"artnem/Spikes.nem"
-Nem_GhzLog:
-		if MMD_Is_GHZ
-		includealigned	"artnem/Unused - GHZ Log.nem"
-		endif
-Nem_SpikePole:
-		if MMD_Is_GHZ
-		includealigned	"artnem/GHZ Spiked Log.nem"
-		endif
-Nem_PplRock:
-		if MMD_Is_GHZ||MMD_Is_Ending
-		includealigned	"artnem/GHZ Purple Rock.nem"
-		endif
-Nem_GhzWall1:
-		if MMD_Is_GHZ
-		includealigned	"artnem/GHZ Breakable Wall.nem"
-		endif
-Nem_GhzWall2:
-		if MMD_Is_GHZ||MMD_Is_Ending
-		includealigned	"artnem/GHZ Edge Wall.nem"
-		endif
+Nem_Stalk:	includealigned	"artnem/GHZ Flower Stalk.nem",MMD_Is_GHZ||MMD_Is_Ending
+Nem_Swing:	includealigned	"artnem/GHZ Swinging Platform.nem",MMD_Is_GHZ
+Nem_Bridge:	includealigned	"artnem/GHZ Bridge.nem",MMD_Is_GHZ||MMD_Is_Ending
+Nem_GhzUnkBlock:	includealigned	"artnem/Unused - GHZ Block.nem",MMD_Is_GHZ||MMD_Is_Ending
+Nem_Ball:	includealigned	"artnem/GHZ Giant Ball.nem",MMD_Is_GHZ
+Nem_Spikes:	includealigned	"artnem/Spikes.nem"
+Nem_GhzLog:	includealigned	"artnem/Unused - GHZ Log.nem",MMD_Is_GHZ
+Nem_SpikePole:	includealigned	"artnem/GHZ Spiked Log.nem",MMD_Is_GHZ
+Nem_PplRock:	includealigned	"artnem/GHZ Purple Rock.nem",MMD_Is_GHZ||MMD_Is_Ending
+Nem_GhzWall1:	includealigned	"artnem/GHZ Breakable Wall.nem",MMD_Is_GHZ
+Nem_GhzWall2:	includealigned	"artnem/GHZ Edge Wall.nem",MMD_Is_GHZ||MMD_Is_Ending
 ; ---------------------------------------------------------------------------
 ; Compressed graphics - LZ stuff
 ; ---------------------------------------------------------------------------
-Nem_Water:
-		if MMD_Is_LZ
-		includealigned	"artnem/LZ Water Surface.nem"
-		endif
-Nem_Splash:
-		if MMD_Is_LZ
-		includealigned	"artnem/LZ Water & Splashes.nem"
-		endif
-Nem_LzSpikeBall:
-		if MMD_Is_LZ
-		includealigned	"artnem/LZ Spiked Ball & Chain.nem"
-		endif
-Nem_FlapDoor:
-		if MMD_Is_LZ
-		includealigned	"artnem/LZ Flapping Door.nem"
-		endif
-Nem_Bubbles:
-		if MMD_Is_LZ
-		includealigned	"artnem/LZ Bubbles & Countdown.nem"
-		endif
-Nem_LzBlock3:
-		if MMD_Is_LZ
-		includealigned	"artnem/LZ 32x16 Block.nem"
-		endif
-Nem_LzDoor1:
-		if MMD_Is_LZ
-		includealigned	"artnem/LZ Vertical Door.nem"
-		endif
-Nem_Harpoon:
-		if MMD_Is_LZ
-		includealigned	"artnem/LZ Harpoon.nem"
-		endif
-Nem_LzPole:
-		if MMD_Is_LZ
-		includealigned	"artnem/LZ Breakable Pole.nem"
-		endif
-Nem_LzDoor2:
-		if MMD_Is_LZ
-		includealigned	"artnem/LZ Horizontal Door.nem"
-		endif
-Nem_LzWheel:
-		if MMD_Is_LZ
-		includealigned	"artnem/LZ Wheel.nem"
-		endif
-Nem_Gargoyle:
-		if MMD_Is_LZ
-		includealigned	"artnem/LZ Gargoyle & Fireball.nem"
-		endif
-Nem_LzBlock2:
-		if MMD_Is_LZ
-		includealigned	"artnem/LZ Blocks.nem"
-		endif
-Nem_LzPlatfm:
-		if MMD_Is_LZ
-		includealigned	"artnem/LZ Rising Platform.nem"
-		endif
-Nem_Cork:
-		if MMD_Is_LZ
-		includealigned	"artnem/LZ Cork.nem"
-		endif
-Nem_LzBlock1:
-		if MMD_Is_LZ
-		includealigned	"artnem/LZ 32x32 Block.nem"
-		endif
+Nem_Water:	includealigned	"artnem/LZ Water Surface.nem",MMD_Is_LZ
+Nem_Splash:	includealigned	"artnem/LZ Water & Splashes.nem",MMD_Is_LZ
+Nem_LzSpikeBall:	includealigned	"artnem/LZ Spiked Ball & Chain.nem",MMD_Is_LZ
+Nem_FlapDoor:	includealigned	"artnem/LZ Flapping Door.nem",MMD_Is_LZ
+Nem_Bubbles:	includealigned	"artnem/LZ Bubbles & Countdown.nem",MMD_Is_LZ
+Nem_LzBlock3:	includealigned	"artnem/LZ 32x16 Block.nem",MMD_Is_LZ
+Nem_LzDoor1:	includealigned	"artnem/LZ Vertical Door.nem",MMD_Is_LZ
+Nem_Harpoon:	includealigned	"artnem/LZ Harpoon.nem",MMD_Is_LZ
+Nem_LzPole:	includealigned	"artnem/LZ Breakable Pole.nem",MMD_Is_LZ
+Nem_LzDoor2:	includealigned	"artnem/LZ Horizontal Door.nem",MMD_Is_LZ
+Nem_LzWheel:	includealigned	"artnem/LZ Wheel.nem",MMD_Is_LZ
+Nem_Gargoyle:	includealigned	"artnem/LZ Gargoyle & Fireball.nem",MMD_Is_LZ
+Nem_LzBlock2:	includealigned	"artnem/LZ Blocks.nem",MMD_Is_LZ
+Nem_LzPlatfm:	includealigned	"artnem/LZ Rising Platform.nem",MMD_Is_LZ
+Nem_Cork:	includealigned	"artnem/LZ Cork.nem",MMD_Is_LZ
+Nem_LzBlock1:	includealigned	"artnem/LZ 32x32 Block.nem",MMD_Is_LZ
 ; ---------------------------------------------------------------------------
 ; Compressed graphics - MZ stuff
 ; ---------------------------------------------------------------------------
-Nem_MzMetal:
-		if MMD_Is_MZ
-		includealigned	"artnem/MZ Metal Blocks.nem"
-		endif
-Nem_MzSwitch:
-		if MMD_Is_MZ
-		includealigned	"artnem/MZ Switch.nem"
-		endif
-Nem_MzGlass:
-		if MMD_Is_MZ
-		includealigned	"artnem/MZ Green Glass Block.nem"
-		endif
-Nem_UnkGrass:
-		if MMD_Is_MZ
-		includealigned	"artnem/Unused - Grass.nem"
-		endif
-Nem_MzFire:
-		if MMD_Is_MZ
-		includealigned	"artnem/Fireballs.nem"
-		endif
-Nem_Lava:
-		if MMD_Is_MZ
-		includealigned	"artnem/MZ Lava.nem"
-		endif
-Nem_MzBlock:
-		if MMD_Is_MZ
-		includealigned	"artnem/MZ Green Pushable Block.nem"
-		endif
-Nem_MzUnkBlock:
-		if MMD_Is_MZ
-		includealigned	"artnem/Unused - MZ Background.nem"
-		endif
+Nem_MzMetal:	includealigned	"artnem/MZ Metal Blocks.nem",MMD_Is_MZ
+Nem_MzSwitch:	includealigned	"artnem/MZ Switch.nem",MMD_Is_MZ
+Nem_MzGlass:	includealigned	"artnem/MZ Green Glass Block.nem",MMD_Is_MZ
+Nem_UnkGrass:	includealigned	"artnem/Unused - Grass.nem",MMD_Is_MZ
+Nem_MzFire:	includealigned	"artnem/Fireballs.nem",MMD_Is_MZ
+Nem_Lava:	includealigned	"artnem/MZ Lava.nem",MMD_Is_MZ
+Nem_MzBlock:	includealigned	"artnem/MZ Green Pushable Block.nem",MMD_Is_MZ
+Nem_MzUnkBlock:	includealigned	"artnem/Unused - MZ Background.nem",MMD_Is_MZ
 ; ---------------------------------------------------------------------------
 ; Compressed graphics - SLZ stuff
 ; ---------------------------------------------------------------------------
-Nem_Seesaw:
-		if MMD_Is_SLZ
-		includealigned	"artnem/SLZ Seesaw.nem"
-		endif
-Nem_SlzSpike:
-		if MMD_Is_SLZ
-		includealigned	"artnem/SLZ Little Spikeball.nem"
-		endif
-Nem_Fan:
-		if MMD_Is_SLZ
-		includealigned	"artnem/SLZ Fan.nem"
-		endif
-Nem_SlzWall:
-		if MMD_Is_SLZ
-		includealigned	"artnem/SLZ Breakable Wall.nem"
-		endif
-Nem_Pylon:
-		if MMD_Is_SLZ
-		includealigned	"artnem/SLZ Pylon.nem"
-		endif
-Nem_SlzSwing:
-		if MMD_Is_SLZ
-		includealigned	"artnem/SLZ Swinging Platform.nem"
-		endif
-Nem_SlzBlock:
-		if MMD_Is_SLZ
-		includealigned	"artnem/SLZ 32x32 Block.nem"
-		endif
-Nem_SlzCannon:
-		if MMD_Is_SLZ
-		includealigned	"artnem/SLZ Cannon.nem"
-		endif
+Nem_Seesaw:	includealigned	"artnem/SLZ Seesaw.nem",MMD_Is_SLZ
+Nem_SlzSpike:	includealigned	"artnem/SLZ Little Spikeball.nem",MMD_Is_SLZ
+Nem_Fan:	includealigned	"artnem/SLZ Fan.nem",MMD_Is_SLZ
+Nem_SlzWall:	includealigned	"artnem/SLZ Breakable Wall.nem",MMD_Is_SLZ
+Nem_Pylon:	includealigned	"artnem/SLZ Pylon.nem",MMD_Is_SLZ
+Nem_SlzSwing:	includealigned	"artnem/SLZ Swinging Platform.nem",MMD_Is_SLZ
+Nem_SlzBlock:	includealigned	"artnem/SLZ 32x32 Block.nem",MMD_Is_SLZ
+Nem_SlzCannon:	includealigned	"artnem/SLZ Cannon.nem",MMD_Is_SLZ
 ; ---------------------------------------------------------------------------
 ; Compressed graphics - SYZ stuff
 ; ---------------------------------------------------------------------------
-Nem_Bumper:
-		if MMD_Is_SYZ||MMD_Is_SS
-		includealigned	"artnem/SYZ Bumper.nem"
-		endif
-Nem_SyzSpike2:
-		if MMD_Is_SYZ
-		includealigned	"artnem/SYZ Small Spikeball.nem"
-		endif
-Nem_LzSwitch:
-		if MMD_Is_SYZ||MMD_Is_LZ
-		includealigned	"artnem/Switch.nem"
-		endif
-Nem_SyzSpike1:
-		if MMD_Is_SYZ
-		includealigned	"artnem/SYZ Large Spikeball.nem"
-		endif
+Nem_Bumper:	includealigned	"artnem/SYZ Bumper.nem",MMD_Is_SYZ||MMD_Is_SS
+Nem_SyzSpike2:	includealigned	"artnem/SYZ Small Spikeball.nem",MMD_Is_SYZ
+Nem_LzSwitch:	includealigned	"artnem/Switch.nem",MMD_Is_SYZ||MMD_Is_LZ
+Nem_SyzSpike1:	includealigned	"artnem/SYZ Large Spikeball.nem",MMD_Is_SYZ
 ; ---------------------------------------------------------------------------
 ; Compressed graphics - SBZ stuff
 ; ---------------------------------------------------------------------------
-Nem_SbzWheel1:
-		if MMD_Is_SBZ
-		includealigned	"artnem/SBZ Running Disc.nem"
-		endif
-Nem_SbzWheel2:
-		if MMD_Is_SBZ
-		includealigned	"artnem/SBZ Junction Wheel.nem"
-		endif
-Nem_Cutter:
-		if MMD_Is_SBZ
-		includealigned	"artnem/SBZ Pizza Cutter.nem"
-		endif
-Nem_Stomper:
-		if MMD_Is_SBZ
-		includealigned	"artnem/SBZ Stomper.nem"
-		endif
-Nem_SpinPform:
-		if MMD_Is_SBZ
-		includealigned	"artnem/SBZ Spinning Platform.nem"
-		endif
-Nem_TrapDoor:
-		if MMD_Is_SBZ
-		includealigned	"artnem/SBZ Trapdoor.nem"
-		endif
-Nem_SbzFloor:
-		if MMD_Is_SBZ
-		includealigned	"artnem/SBZ Collapsing Floor.nem"
-		endif
-Nem_Electric:
-		if MMD_Is_SBZ
-		includealigned	"artnem/SBZ Electrocuter.nem"
-		endif
-Nem_SbzBlock:
-		if MMD_Is_SBZ
-		includealigned	"artnem/SBZ Vanishing Block.nem"
-		endif
-Nem_FlamePipe:
-		if MMD_Is_SBZ
-		includealigned	"artnem/SBZ Flaming Pipe.nem"
-		endif
-Nem_SbzDoor1:
-		if MMD_Is_SBZ
-		includealigned	"artnem/SBZ Small Vertical Door.nem"
-		endif
-Nem_SlideFloor:
-		if MMD_Is_SBZ
-		includealigned	"artnem/SBZ Sliding Floor Trap.nem"
-		endif
-Nem_SbzDoor2:
-		if MMD_Is_SBZ
-		includealigned	"artnem/SBZ Large Horizontal Door.nem"
-		endif
-Nem_Girder:
-		if MMD_Is_SBZ
-		includealigned	"artnem/SBZ Crushing Girder.nem"
-		endif
+Nem_SbzWheel1:	includealigned	"artnem/SBZ Running Disc.nem",MMD_Is_SBZ
+Nem_SbzWheel2:	includealigned	"artnem/SBZ Junction Wheel.nem",MMD_Is_SBZ
+Nem_Cutter:	includealigned	"artnem/SBZ Pizza Cutter.nem",MMD_Is_SBZ
+Nem_Stomper:	includealigned	"artnem/SBZ Stomper.nem",MMD_Is_SBZ
+Nem_SpinPform:	includealigned	"artnem/SBZ Spinning Platform.nem",MMD_Is_SBZ
+Nem_TrapDoor:	includealigned	"artnem/SBZ Trapdoor.nem",MMD_Is_SBZ
+Nem_SbzFloor:	includealigned	"artnem/SBZ Collapsing Floor.nem",MMD_Is_SBZ
+Nem_Electric:	includealigned	"artnem/SBZ Electrocuter.nem",MMD_Is_SBZ
+Nem_SbzBlock:	includealigned	"artnem/SBZ Vanishing Block.nem",MMD_Is_SBZ
+Nem_FlamePipe:	includealigned	"artnem/SBZ Flaming Pipe.nem",MMD_Is_SBZ
+Nem_SbzDoor1:	includealigned	"artnem/SBZ Small Vertical Door.nem",MMD_Is_SBZ
+Nem_SlideFloor:	includealigned	"artnem/SBZ Sliding Floor Trap.nem",MMD_Is_SBZ
+Nem_SbzDoor2:	includealigned	"artnem/SBZ Large Horizontal Door.nem",MMD_Is_SBZ
+Nem_Girder:	includealigned	"artnem/SBZ Crushing Girder.nem",MMD_Is_SBZ
 ; ---------------------------------------------------------------------------
 ; Compressed graphics - enemies
 ; ---------------------------------------------------------------------------
-Nem_BallHog:
-		if MMD_Is_SBZ
-		includealigned	"artnem/Enemy Ball Hog.nem"
-		endif
-Nem_Crabmeat:
-		if MMD_Is_GHZ||MMD_Is_SYZ
-		includealigned	"artnem/Enemy Crabmeat.nem"
-		endif
-Nem_Buzz:
-		if MMD_Is_GHZ||MMD_Is_MZ||MMD_Is_SYZ
-		includealigned	"artnem/Enemy Buzz Bomber.nem"
-		endif
-Nem_Burrobot:
-		if MMD_Is_LZ
-		includealigned	"artnem/Enemy Burrobot.nem"
-		endif
-Nem_Chopper:
-		if MMD_Is_GHZ
-		includealigned	"artnem/Enemy Chopper.nem"
-		endif
-Nem_Jaws:
-		if MMD_Is_LZ
-		includealigned	"artnem/Enemy Jaws.nem"
-		endif
-Nem_Roller:
-		if MMD_Is_SYZ
-		includealigned	"artnem/Enemy Roller.nem"
-		endif
-Nem_Motobug:
-		if MMD_Is_GHZ
-		includealigned	"artnem/Enemy Motobug.nem"
-		endif
-Nem_Newtron:
-		if MMD_Is_GHZ
-		includealigned	"artnem/Enemy Newtron.nem"
-		endif
-Nem_Yadrin:	
-		if MMD_Is_SYZ
-		includealigned	"artnem/Enemy Yadrin.nem"
-		endif
-Nem_Basaran:
-		if MMD_Is_MZ
-		includealigned	"artnem/Enemy Basaran.nem"
-		endif
-Nem_Bomb:
-		if MMD_Is_SLZ
-		includealigned	"artnem/Enemy Bomb.nem"
-		endif
-Nem_Orbinaut:
-		if MMD_Is_LZ||MMD_Is_SLZ
-		includealigned	"artnem/Enemy Orbinaut.nem"
-		endif
-Nem_Cater:
-		if MMD_Is_MZ||MMD_Is_SYZ
-		includealigned	"artnem/Enemy Caterkiller.nem"
-		endif
+Nem_BallHog:	includealigned	"artnem/Enemy Ball Hog.nem",MMD_Is_SBZ
+Nem_Crabmeat:	includealigned	"artnem/Enemy Crabmeat.nem",MMD_Is_GHZ||MMD_Is_SYZ
+Nem_Buzz:	includealigned	"artnem/Enemy Buzz Bomber.nem",MMD_Is_GHZ||MMD_Is_MZ||MMD_Is_SYZ
+Nem_Burrobot:	includealigned	"artnem/Enemy Burrobot.nem",MMD_Is_LZ
+Nem_Chopper:	includealigned	"artnem/Enemy Chopper.nem",MMD_Is_GHZ
+Nem_Jaws:	includealigned	"artnem/Enemy Jaws.nem",MMD_Is_LZ
+Nem_Roller:	includealigned	"artnem/Enemy Roller.nem",MMD_Is_SYZ
+Nem_Motobug:	includealigned	"artnem/Enemy Motobug.nem",MMD_Is_GHZ
+Nem_Newtron:	includealigned	"artnem/Enemy Newtron.nem",MMD_Is_GHZ
+Nem_Yadrin:		includealigned	"artnem/Enemy Yadrin.nem",MMD_Is_SYZ
+Nem_Basaran:	includealigned	"artnem/Enemy Basaran.nem",MMD_Is_MZ
+Nem_Bomb:	includealigned	"artnem/Enemy Bomb.nem",MMD_Is_SLZ
+Nem_Orbinaut:	includealigned	"artnem/Enemy Orbinaut.nem",MMD_Is_LZ||MMD_Is_SLZ
+Nem_Cater:	includealigned	"artnem/Enemy Caterkiller.nem",MMD_Is_MZ||MMD_Is_SYZ
 ; ---------------------------------------------------------------------------
 ; Compressed graphics - various
 ; ---------------------------------------------------------------------------
 Nem_TitleCard:	includealigned	"artnem/Title Cards.nem"
-Nem_Hud:	includealigned	"artnem/HUD.nem"	; HUD (rings, time, score)
-Nem_Lives:
-		if MMD_Is_Level
-		includealigned	"artnem/HUD - Life Counter Icon.nem"
-		endif
+Nem_Hud:	includealigned	"artnem/HUD.nem"
+Nem_Lives:	includealigned	"artnem/HUD - Life Counter Icon.nem",MMD_Is_Level
 Nem_Ring:	includealigned	"artnem/Rings.nem"
-Nem_Monitors:
-		if MMD_Is_Level
-		includealigned	"artnem/Monitors.nem"
-		endif
-Nem_Explode:
-		if MMD_Is_Level
-		includealigned	"artnem/Explosion.nem"
-		endif
-Nem_Points:
-		if MMD_Is_Level
-		includealigned	"artnem/Points.nem"	; points from destroyed enemy or object
-		endif
-Nem_GameOver:
-		if MMD_Is_Level
-		includealigned	"artnem/Game Over.nem"	; game over / time over
-		endif
-Nem_HSpring:
-		if MMD_Is_Level
-		includealigned	"artnem/Spring Horizontal.nem"
-		endif
-Nem_VSpring:
-		if MMD_Is_Level
-		includealigned	"artnem/Spring Vertical.nem"
-		endif
-Nem_SignPost:
-		if MMD_Is_Level
-		includealigned	"artnem/Signpost.nem"	; end of level signpost
-		endif
-Nem_Lamp:
-		if MMD_Is_Level
-		includealigned	"artnem/Lamppost.nem"
-		endif
-Nem_BigFlash:
-		if ~~MMD_Is_SBZ
-		includealigned	"artnem/Giant Ring Flash.nem"
-		endif
-Nem_Bonus:
-		if MMD_Is_Level
-		includealigned	"artnem/Hidden Bonuses.nem" ; hidden bonuses at end of a level
-		endif
+Nem_Monitors:	includealigned	"artnem/Monitors.nem",MMD_Is_Level
+Nem_Explode:	includealigned	"artnem/Explosion.nem",MMD_Is_Level
+Nem_Points:	includealigned	"artnem/Points.nem"	; points from destroyed enemy or object,MMD_Is_Level
+Nem_GameOver:	includealigned	"artnem/Game Over.nem"	; game over / time over,MMD_Is_Level
+Nem_HSpring:	includealigned	"artnem/Spring Horizontal.nem",MMD_Is_Level
+Nem_VSpring:	includealigned	"artnem/Spring Vertical.nem",MMD_Is_Level
+Nem_SignPost:	includealigned	"artnem/Signpost.nem"	; end of level signpost,MMD_Is_Level
+Nem_Lamp:	includealigned	"artnem/Lamppost.nem",MMD_Is_Level
+Nem_BigFlash:	includealigned	"artnem/Giant Ring Flash.nem",~~MMD_Is_SBZ
+Nem_Bonus:	includealigned	"artnem/Hidden Bonuses.nem" ; hidden bonuses at end of a level,MMD_Is_Level
 ; ---------------------------------------------------------------------------
 ; Compressed graphics - continue screen
 ; ---------------------------------------------------------------------------
-Nem_ContSonic:
-		if MMD_Is_Continue
-		includealigned	"artnem/Continue Screen Sonic.nem"
-		endif
-Nem_MiniSonic:	
-		if MMD_Is_Continue
-		includealigned	"artnem/Continue Screen Stuff.nem"
-		endif
+Nem_ContSonic:	includealigned	"artnem/Continue Screen Sonic.nem",MMD_Is_Continue
+Nem_MiniSonic:	includealigned	"artnem/Continue Screen Stuff.nem",MMD_Is_Continue
 ; ---------------------------------------------------------------------------
 ; Compressed graphics - animals
 ; ---------------------------------------------------------------------------
-Nem_Rabbit:
-		includealigned	"artnem/Animal Rabbit.nem"
-Nem_Chicken:
-		includealigned	"artnem/Animal Chicken.nem"
-Nem_Penguin:
-		includealigned	"artnem/Animal Penguin.nem"
-Nem_Seal:
-		includealigned	"artnem/Animal Seal.nem"
-Nem_Pig:
-		includealigned	"artnem/Animal Pig.nem"
-Nem_Flicky:
-		includealigned	"artnem/Animal Flicky.nem"
-Nem_Squirrel:
-		includealigned	"artnem/Animal Squirrel.nem"
+Nem_Rabbit:	includealigned	"artnem/Animal Rabbit.nem"
+Nem_Chicken:	includealigned	"artnem/Animal Chicken.nem"
+Nem_Penguin:	includealigned	"artnem/Animal Penguin.nem"
+Nem_Seal:	includealigned	"artnem/Animal Seal.nem"
+Nem_Pig:	includealigned	"artnem/Animal Pig.nem"
+Nem_Flicky:	includealigned	"artnem/Animal Flicky.nem"
+Nem_Squirrel:	includealigned	"artnem/Animal Squirrel.nem"
 ; ---------------------------------------------------------------------------
 ; Animated uncompressed graphics
 ; ---------------------------------------------------------------------------
-Art_GhzWater:
-		if MMD_Is_GHZ||MMD_Is_Title||MMD_Is_Ending
-		includealigned	"artunc/GHZ Waterfall.bin"
-		endif
-Art_GhzFlower1:
-		if MMD_Is_GHZ||MMD_Is_Ending
-		includealigned	"artunc/GHZ Flower Large.bin"
-		endif
-Art_GhzFlower2:
-		if MMD_Is_GHZ||MMD_Is_Ending
-		includealigned	"artunc/GHZ Flower Small.bin"
-		endif
-Art_MzLava1:
-		if MMD_Is_MZ
-		includealigned	"artunc/MZ Lava Surface.bin"
-		endif
-Art_MzLava2:
-		if MMD_Is_MZ
-		includealigned	"artunc/MZ Lava.bin"
-		endif
-Art_MzTorch:
-		if MMD_Is_MZ
-		includealigned	"artunc/MZ Background Torch.bin"
-		endif
-Art_SbzSmoke:
-		if MMD_Is_SBZ
-		includealigned	"artunc/SBZ Background Smoke.bin"
-		endif
-Art_BigRing:
-		if ~~MMD_Is_SBZ
-		includealigned	"artunc/Giant Ring.bin"
-		endif
-Eni_JapNames:
-		if MMD_Is_Title
-		includealigned	"tilemaps/Hidden Japanese Credits.eni" ; Japanese credits (mappings)
-		endif
-Nem_JapNames:
-		if MMD_Is_Title
-		includealigned	"artnem/Hidden Japanese Credits.nem"
-		endif
+Art_GhzWater:	includealigned	"artunc/GHZ Waterfall.bin",MMD_Is_GHZ||MMD_Is_Title||MMD_Is_Ending
+Art_GhzFlower1:	includealigned	"artunc/GHZ Flower Large.bin",MMD_Is_GHZ||MMD_Is_Ending
+Art_GhzFlower2:	includealigned	"artunc/GHZ Flower Small.bin",MMD_Is_GHZ||MMD_Is_Ending
+Art_MzLava1:	includealigned	"artunc/MZ Lava Surface.bin",MMD_Is_MZ
+Art_MzLava2:	includealigned	"artunc/MZ Lava.bin",MMD_Is_MZ
+Art_MzTorch:	includealigned	"artunc/MZ Background Torch.bin",MMD_Is_MZ
+Art_SbzSmoke:	includealigned	"artunc/SBZ Background Smoke.bin",MMD_Is_SBZ
+Art_BigRing:	includealigned	"artunc/Giant Ring.bin",~~MMD_Is_SBZ
+Eni_JapNames:	includealigned	"tilemaps/Hidden Japanese Credits.eni",MMD_Is_Title
+Nem_JapNames:	includealigned	"artnem/Hidden Japanese Credits.nem",MMD_Is_Title
 
-Map_SSWalls:
-		if MMD_Is_SS
-		include	"_maps/SS Walls.asm"
-		endif
+Map_SSWalls:	includealigned	"_maps/SS Walls.asm",MMD_Is_SS
 
 ; ---------------------------------------------------------------------------
 ; Compressed graphics - special stage
 ; ---------------------------------------------------------------------------
-Nem_SSWalls:
-		if MMD_Is_SS
-		includealigned	"artnem/Special Walls.nem" ; special stage walls
-		endif
-Eni_SSBg1:
-		if MMD_Is_SS
-		includealigned	"tilemaps/SS Background 1.eni" ; special stage background (mappings)
-		endif
-Nem_SSBgFish:
-		if MMD_Is_SS
-		includealigned	"artnem/Special Birds & Fish.nem" ; special stage birds and fish background
-		endif
-Eni_SSBg2:
-		if MMD_Is_SS
-		includealigned	"tilemaps/SS Background 2.eni" ; special stage background (mappings)
-		endif
-Nem_SSBgCloud:
-		if MMD_Is_SS
-		includealigned	"artnem/Special Clouds.nem" ; special stage clouds background
-		endif
-Nem_SSGOAL:
-		if MMD_Is_SS
-		includealigned	"artnem/Special GOAL.nem" ; special stage GOAL block
-		endif
-Nem_SSRBlock:
-		if MMD_Is_SS
-		includealigned	"artnem/Special R.nem"	; special stage R block
-		endif
-Nem_SS1UpBlock:
-		if MMD_Is_SS
-		includealigned	"artnem/Special 1UP.nem" ; special stage 1UP block
-		endif
-Nem_SSEmStars:
-		if MMD_Is_SS
-		includealigned	"artnem/Special Emerald Twinkle.nem" ; special stage stars from a collected emerald
-		endif
-Nem_SSRedWhite:
-		if MMD_Is_SS
-		includealigned	"artnem/Special Red-White.nem" ; special stage red/white block
-		endif
-Nem_SSZone1:
-		if MMD_Is_SS
-		includealigned	"artnem/Special ZONE1.nem" ; special stage ZONE1 block
-		endif
-Nem_SSZone2:
-		if MMD_Is_SS
-		includealigned	"artnem/Special ZONE2.nem" ; ZONE2 block
-		endif
-Nem_SSZone3:
-		if MMD_Is_SS
-		includealigned	"artnem/Special ZONE3.nem" ; ZONE3 block
-		endif
-Nem_SSZone4:
-		if MMD_Is_SS
-		includealigned	"artnem/Special ZONE4.nem" ; ZONE4 block
-		endif
-Nem_SSZone5:
-		if MMD_Is_SS
-		includealigned	"artnem/Special ZONE5.nem" ; ZONE5 block
-		endif
-Nem_SSZone6:
-		if MMD_Is_SS
-		includealigned	"artnem/Special ZONE6.nem" ; ZONE6 block
-		endif
-Nem_SSUpDown:
-		if MMD_Is_SS
-		includealigned	"artnem/Special UP-DOWN.nem" ; special stage UP/DOWN block
-		endif
-Nem_SSEmerald:
-		if MMD_Is_SS
-		includealigned	"artnem/Special Emeralds.nem" ; special stage chaos emeralds
-		endif
-Nem_SSGhost:
-		if MMD_Is_SS
-		includealigned	"artnem/Special Ghost.nem" ; special stage ghost block
-		endif
-Nem_SSWBlock:
-		if MMD_Is_SS
-		includealigned	"artnem/Special W.nem"	; special stage W block
-		endif
-Nem_SSGlass:
-		if MMD_Is_SS
-		includealigned	"artnem/Special Glass.nem" ; special stage destroyable glass block
-		endif
-Nem_ResultEm:
-		if MMD_Is_SS
-		includealigned	"artnem/Special Result Emeralds.nem" ; chaos emeralds on special stage results screen
-		endif
+Nem_SSWalls:	includealigned	"artnem/Special Walls.nem",MMD_Is_SS
+Eni_SSBg1:	includealigned	"tilemaps/SS Background 1.eni",MMD_Is_SS
+Nem_SSBgFish:	includealigned	"artnem/Special Birds & Fish.nem",MMD_Is_SS
+Eni_SSBg2:	includealigned	"tilemaps/SS Background 2.eni",MMD_Is_SS
+Nem_SSBgCloud:	includealigned	"artnem/Special Clouds.nem",MMD_Is_SS
+Nem_SSGOAL:	includealigned	"artnem/Special GOAL.nem",MMD_Is_SS
+Nem_SSRBlock:	includealigned	"artnem/Special R.nem",MMD_Is_SS
+Nem_SS1UpBlock:	includealigned	"artnem/Special 1UP.nem",MMD_Is_SS
+Nem_SSEmStars:	includealigned	"artnem/Special Emerald Twinkle.nem",MMD_Is_SS
+Nem_SSRedWhite:	includealigned	"artnem/Special Red-White.nem",MMD_Is_SS
+Nem_SSZone1:	includealigned	"artnem/Special ZONE1.nem",MMD_Is_SS
+Nem_SSZone2:	includealigned	"artnem/Special ZONE2.nem",MMD_Is_SS
+Nem_SSZone3:	includealigned	"artnem/Special ZONE3.nem",MMD_Is_SS
+Nem_SSZone4:	includealigned	"artnem/Special ZONE4.nem",MMD_Is_SS
+Nem_SSZone5:	includealigned	"artnem/Special ZONE5.nem",MMD_Is_SS
+Nem_SSZone6:	includealigned	"artnem/Special ZONE6.nem",MMD_Is_SS
+Nem_SSUpDown:	includealigned	"artnem/Special UP-DOWN.nem",MMD_Is_SS
+Nem_SSEmerald:	includealigned	"artnem/Special Emeralds.nem",MMD_Is_SS
+Nem_SSGhost:	includealigned	"artnem/Special Ghost.nem",MMD_Is_SS
+Nem_SSWBlock:	includealigned	"artnem/Special W.nem",MMD_Is_SS
+Nem_SSGlass:	includealigned	"artnem/Special Glass.nem",MMD_Is_SS
+Nem_ResultEm:	includealigned	"artnem/Special Result Emeralds.nem",MMD_Is_SS
 
 ; ---------------------------------------------------------------------------
 ; Compressed graphics - bosses and ending sequence
 ; ---------------------------------------------------------------------------
-Nem_Eggman:
-		if MMD_Is_Level
-		includealigned	"artnem/Boss - Main.nem"
-		endif
-Nem_Weapons:
-		if MMD_Is_Level
-		includealigned	"artnem/Boss - Weapons.nem"
-		endif
-Nem_Prison:
-		if ~~MMD_Is_SBZ
-		includealigned	"artnem/Prison Capsule.nem"
-		endif
-Nem_Sbz2Eggman:
-		if MMD_Is_SBZ
-		includealigned	"artnem/Boss - Eggman in SBZ2 & FZ.nem"
-		endif
-Nem_FzBoss:
-		if MMD_Is_SBZ
-		includealigned	"artnem/Boss - Final Zone.nem"
-		endif
-Nem_FzEggman:
-		if MMD_Is_SBZ
-		includealigned	"artnem/Boss - Eggman after FZ Fight.nem"
-		endif
-Nem_Exhaust:
-		if MMD_Is_Level
-		includealigned	"artnem/Boss - Exhaust Flame.nem"
-		endif
-Nem_EndEm:
-		if MMD_Is_Ending
-		includealigned	"artnem/Ending - Emeralds.nem"
-		endif
-Nem_EndSonic:
-		if MMD_Is_Ending
-		includealigned	"artnem/Ending - Sonic.nem"
-		endif
-Nem_TryAgain:
-		if MMD_Is_Ending
-		includealigned	"artnem/Ending - Try Again.nem"
-		endif
-Nem_EndEggman:
-		if Revision=0
-		includealigned	"artnem/Unused - Eggman Ending.nem"
-		endif
-Kos_EndFlowers:
-		if MMD_Is_Ending
-		includealigned	"artkos/Flowers at Ending.kos" ; ending sequence animated flowers
-		endif
-Nem_EndFlower:
-		if MMD_Is_Ending
-		includealigned	"artnem/Ending - Flowers.nem"
-		endif
-Nem_CreditText:
-		if MMD_Is_Title||MMD_Is_Credits
-		includealigned	"artnem/Ending - Credits.nem"
-		endif
-Nem_EndStH:
-		if MMD_Is_Ending
-		includealigned	"artnem/Ending - StH Logo.nem"
-		endif
+Nem_Eggman:	includealigned	"artnem/Boss - Main.nem",MMD_Is_Level
+Nem_Weapons:	includealigned	"artnem/Boss - Weapons.nem",MMD_Is_Level
+Nem_Prison:	includealigned	"artnem/Prison Capsule.nem",~~MMD_Is_SBZ
+Nem_Sbz2Eggman:	includealigned	"artnem/Boss - Eggman in SBZ2 & FZ.nem",MMD_Is_SBZ
+Nem_FzBoss:	includealigned	"artnem/Boss - Final Zone.nem",MMD_Is_SBZ
+Nem_FzEggman:	includealigned	"artnem/Boss - Eggman after FZ Fight.nem",MMD_Is_SBZ
+Nem_Exhaust:	includealigned	"artnem/Boss - Exhaust Flame.nem",MMD_Is_Level
+Nem_EndEm:	includealigned	"artnem/Ending - Emeralds.nem",MMD_Is_Ending
+Nem_EndSonic:	includealigned	"artnem/Ending - Sonic.nem",MMD_Is_Ending
+Nem_TryAgain:	includealigned	"artnem/Ending - Try Again.nem",MMD_Is_Ending
+Nem_EndEggman:	includealigned	"artnem/Unused - Eggman Ending.nem"
+Kos_EndFlowers:	includealigned	"artkos/Flowers at Ending.kos",MMD_Is_Ending
+Nem_EndFlower:	includealigned	"artnem/Ending - Flowers.nem",MMD_Is_Ending
+Nem_CreditText:	includealigned	"artnem/Ending - Credits.nem",MMD_Is_Title||MMD_Is_Credits
+Nem_EndStH:	includealigned	"artnem/Ending - StH Logo.nem",MMD_Is_Ending
 
 ; ---------------------------------------------------------------------------
 ; Uncompressed graphics	- Sonic
 ; ---------------------------------------------------------------------------
-Art_Sonic:
-		if MMD_Has_Sonic
-		includealigned	"artunc/Sonic.bin"	; Sonic
-		endif
+Art_Sonic:	includealigned	"artunc/Sonic.bin",MMD_Has_Sonic

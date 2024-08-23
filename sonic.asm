@@ -157,8 +157,9 @@ ErrorTrap:
 		bra.s	ErrorTrap
 
 		if MMD_Is_Title
-SHCSplash:
-		binclude "shcsplash.bin"
+SHCSplashScreen:
+		;binclude "shcsplash.bin"
+		include "shcsplash.asm"
 		; these are vdp regs set by the binary
 		; blob after it's done
 		dc.b    %00000100               ; $80
@@ -1870,6 +1871,9 @@ GM_Title:
 		bsr.w	PaletteFadeOut
 		disable_ints
 		bsr.w	DACDriverLoad
+		if MMD_Enabled
+		jsr		(SHCSplashScreen).l
+		endif
 		lea	(vdp_control_port).l,a6
 		move.w	#$8004,(a6)	; 8-colour mode
 		move.w	#$8200+(vram_fg>>10),(a6) ; set foreground nametable address
@@ -1880,10 +1884,6 @@ GM_Title:
 		move.w	#$8720,(a6)	; set background colour (palette line 2, entry 0)
 		clr.b	(f_wtr_state).l
 		bsr.w	ClearScreen
-		if MMD_Enabled
-		sendSubCpuCommand #$40,#$FF
-		jsr		(SHCSplash).l
-		endif
 
 		clearRAM v_objspace
 

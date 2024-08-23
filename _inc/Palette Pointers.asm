@@ -34,6 +34,9 @@ ptr_Pal_SBZ3SonWat:	palp	0,Pal_SBZ3SonWat	; $10 (16) - SBZ3 Sonic underwater
 ptr_Pal_SSResult:	palp	0,Pal_SSResult		; $11 (17) - special stage results
 ptr_Pal_Continue:	palp	0,Pal_Continue		; $12 (18) - special stage results continue
 ptr_Pal_Ending:		palp	0,Pal_Ending		; $13 (19) - ending sequence
+		if MMD_Is_Title
+ptr_Pal_SplashScreen:		palp	0,SHCSplashScreen.palette
+		endif
 			even
 
 
@@ -57,3 +60,6 @@ palid_SBZ3SonWat:	equ (ptr_Pal_SBZ3SonWat-PalPointers)/8
 palid_SSResult:		equ (ptr_Pal_SSResult-PalPointers)/8
 palid_Continue:		equ (ptr_Pal_Continue-PalPointers)/8
 palid_Ending:		equ (ptr_Pal_Ending-PalPointers)/8
+		if MMD_Is_Title
+palid_SplashScreen:		equ (ptr_Pal_SplashScreen-PalPointers)/8
+		endif

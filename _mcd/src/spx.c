@@ -66,6 +66,7 @@ static u8 cur_sample_id;
 static u16 starting_sample_pos;
 static u16 cur_sample_pos;
 static u8 cur_sample_frame_count;
+static u32 max_sample_frame_count;
 
 const u8 max_sample_frame_counts[] = {
 	// 13,
@@ -148,8 +149,17 @@ void vblank_sub()
 	}
 
 	cur_sample_pos = S_Chan_GetPosition(0);
+	max_sample_frame_count = 0;
+	if (cur_sample_id == 0xff)
+	{
+		max_sample_frame_count = 120;
+	}
+	else
+	{
+		max_sample_frame_count = max_sample_frame_counts[cur_sample_id];
+	}
 	// if ((cur_sample_pos - starting_sample_pos) >= pcm_sizes[cur_sample_id])
-	if (cur_sample_frame_count >= max_sample_frame_counts[cur_sample_id])
+	if (cur_sample_frame_count >= max_sample_frame_count)
 	{
 		*PCM_CDISABLE = 0xff;
 		*PCM_CTRL = 0;

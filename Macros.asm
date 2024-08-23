@@ -1,3 +1,9 @@
+hang: macro
+.hangloop:
+		jsr		WaitForVBla
+		bra.s	.hangloop
+		endm
+
 quitModule:	macro
 		if MMD_Enabled
 		disable_ints
