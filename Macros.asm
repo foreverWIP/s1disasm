@@ -26,6 +26,11 @@ undefObjTrap: macro addrreg
 		quitModule
 		endm
 
+undefGmTrap: macro
+		move.b	(v_gamemode).l,(v_undef_gm_id).l
+		quitModule
+		endm
+
 sendSubCpuCommand: macro cmd0,cmd1
 .checkcomcmd:
 		tst.w	(GA_COMCMD0).l

@@ -28,7 +28,9 @@ v_sgfx_buffer_end:
 v_initial_sp:	ds.l	1
 v_use_cd_audio:	ds.b	1
 v_undef_obj_id: ds.b	1
-			ds.b	$1A		; unused
+v_undef_gm_id:	ds.b	1
+v_should_quit_ss:	ds.b	1
+			ds.b	$18		; unused
 v_tracksonic:		ds.b	$100		; position tracking data for Sonic
 v_hscrolltablebuffer:	ds.b	$380		; scrolling table data
 v_hscrolltablebuffer_end:

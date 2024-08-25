@@ -120,8 +120,13 @@ tile_mask           =      $07FF
 ramaddr function x,-(-x)&$FFFFFFFF
 
 ; Remapped RAM locations
+		ifndef MMD_Enabled
 Chunk_Table = ramaddr($FFFF0000)
 System_Stack = ramaddr($FFFFFE00)
+		else
+Chunk_Table = ramaddr($00230000)
+System_Stack = ramaddr($FFFFFD00)
+		endif
 
 VDP_data_port =				$C00000 ; (8=r/w, 16=r/w)
 VDP_control_port =			$C00004 ; (8=r/w, 16=r/w)

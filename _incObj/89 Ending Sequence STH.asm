@@ -58,7 +58,6 @@ ESth_Wait:
 		if Revision=0
 		bra.w	DisplaySprite
 		else
-		quitModule
 		rts
 		endif
 		else

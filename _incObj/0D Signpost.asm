@@ -100,26 +100,13 @@ Sign_SparkPos:	dc.b -$18,-$10		; x-position, y-position
 Sign_SonicRun:	; Routine 6
 		tst.w	(v_debuguse).l	; is debug mode	on?
 		bne.w	locret_ECEE	; if yes, branch
-	if FixBugs
-		; This function's checks are a mess, creating an edgecase where it's
-		; possible for the player to avoid having their controls locked by
-		; jumping at the right side of the screen just as the score tally
-		; appears.
-		tst.b	(v_player+obID).l	; Check if Sonic's object has been deleted (because he entered the giant ring)
-		beq.s	loc_EC86
-		btst	#1,(v_player+obStatus).l
-		bne.w	locret_ECEE
-	else
 		btst	#1,(v_player+obStatus).l
 		bne.s	loc_EC70
-	endif
 		move.b	#1,(f_lockctrl).l ; lock controls
 		move.w	#btnR<<8,(v_jpadhold2).l ; make Sonic run to the right
-	if ~~FixBugs
 loc_EC70:
 		tst.b	(v_player+obID).l	; Check if Sonic's object has been deleted (because he entered the giant ring)
 		beq.s	loc_EC86
-	endif
 		move.w	(v_player+obX).l,d0
 		move.w	(v_limitright2).l,d1
 		addi.w	#$128,d1

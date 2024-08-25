@@ -43,6 +43,7 @@ static volatile u8* v_should_quit_module = (u8*)0x23CAE4;
 static volatile u16* v_lastlamp = (u16*)0x23FE30;
 static volatile u8* v_use_cd_audio = (u8*)0x23CAE4;
 static volatile u8* v_undef_obj_id = (u8*)0x23CAE5;
+static volatile u8* v_undef_gm_id = (u8*)0x23CAE6;
 
 void vint_ex()
 {
@@ -80,6 +81,20 @@ void undef_obj_error(u8 obj_id)
 	enable_debug_output();
 	print_msg("Undefined object!\xff", 0, 0);
 	printval_u8_c(obj_id, id_char_buf);
+	print_msg("ID: --\xff", 0, 1);
+	print_msg(id_char_buf, 4, 1);
+	do
+	{
+		asm("nop");
+	} while (1);
+}
+
+void undef_gm_error(u8 gm_id)
+{
+	char id_char_buf[4];
+	enable_debug_output();
+	print_msg("Undefined game mode!\xff", 0, 0);
+	printval_u8_c(gm_id, id_char_buf);
 	print_msg("ID: --\xff", 0, 1);
 	print_msg(id_char_buf, 4, 1);
 	do
@@ -240,6 +255,7 @@ void main()
 		// Run it!
 		*v_lastlamp = 0;
 		*v_undef_obj_id = 0xff;
+		*v_undef_gm_id = 0xff;
 		// *v_use_cd_audio = 1;
 		mmd_exec();
 		blib_disable_hint();
@@ -255,6 +271,10 @@ void main()
 		if (*v_undef_obj_id != 0xff)
 		{
 			undef_obj_error(*v_undef_obj_id);
+		}
+		if (*v_undef_gm_id != 0xff)
+		{
+			undef_gm_error(*v_undef_gm_id);
 		}
 		*v_should_quit_module = 0;
 		v_gamemode_backup = *v_gamemode;

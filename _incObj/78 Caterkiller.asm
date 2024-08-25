@@ -3,7 +3,7 @@
 ; ---------------------------------------------------------------------------
 
 Caterkiller:
-		if MMD_Is_MZ||MMD_Is_SYZ
+		if MMD_Is_MZ||MMD_Is_SYZ||MMD_Is_SBZ
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	Cat_Index(pc,d0.w),d1

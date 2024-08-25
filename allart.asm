@@ -22,7 +22,7 @@ __LABEL__ label *
 	endif
 	endm
 
-Art_Text:	bincludealigned	"artunc/menutext.bin" ; text used in level select and debug mode
+Art_Text:	bincludealigned	"artunc/menutext.bin",MMD_Is_Title ; text used in level select and debug mode
 Art_Text_End:	even
 Art_Hud:	bincludealigned	"artunc/HUD Numbers.bin" ; 8x16 pixel numbers on HUD
 Art_LivesNums:	bincludealigned	"artunc/Lives Counter Numbers.bin" ; 8x8 pixel numbers on lives counter
@@ -66,7 +66,7 @@ Nem_Stars:	bincludealigned	"artnem/Invincibility Stars.nem",MMD_Is_Level
 ; Compressed graphics - GHZ stuff
 ; ---------------------------------------------------------------------------
 Nem_Stalk:	bincludealigned	"artnem/GHZ Flower Stalk.nem",MMD_Is_GHZ||MMD_Is_Ending
-Nem_Swing:	bincludealigned	"artnem/GHZ Swinging Platform.nem",MMD_Is_GHZ
+Nem_Swing:	bincludealigned	"artnem/GHZ Swinging Platform.nem",MMD_Is_GHZ||MMD_Is_MZ
 Nem_Bridge:	bincludealigned	"artnem/GHZ Bridge.nem",MMD_Is_GHZ||MMD_Is_Ending
 Nem_GhzUnkBlock:	bincludealigned	"artnem/Unused - GHZ Block.nem",MMD_Is_GHZ||MMD_Is_Ending
 Nem_Ball:	bincludealigned	"artnem/GHZ Giant Ball.nem",MMD_Is_GHZ
@@ -99,7 +99,7 @@ Nem_LzBlock1:	bincludealigned	"artnem/LZ 32x32 Block.nem",MMD_Is_LZ
 ; Compressed graphics - MZ stuff
 ; ---------------------------------------------------------------------------
 Nem_MzMetal:	bincludealigned	"artnem/MZ Metal Blocks.nem",MMD_Is_MZ
-Nem_MzSwitch:	bincludealigned	"artnem/MZ Switch.nem",MMD_Is_MZ
+Nem_MzSwitch:	bincludealigned	"artnem/MZ Switch.nem",MMD_Is_MZ||MMD_Is_SBZ
 Nem_MzGlass:	bincludealigned	"artnem/MZ Green Glass Block.nem",MMD_Is_MZ
 Nem_UnkGrass:	bincludealigned	"artnem/Unused - Grass.nem",MMD_Is_MZ
 Nem_MzFire:	bincludealigned	"artnem/Fireballs.nem",MMD_Is_MZ
@@ -114,7 +114,7 @@ Nem_SlzSpike:	bincludealigned	"artnem/SLZ Little Spikeball.nem",MMD_Is_SLZ
 Nem_Fan:	bincludealigned	"artnem/SLZ Fan.nem",MMD_Is_SLZ
 Nem_SlzWall:	bincludealigned	"artnem/SLZ Breakable Wall.nem",MMD_Is_SLZ
 Nem_Pylon:	bincludealigned	"artnem/SLZ Pylon.nem",MMD_Is_SLZ
-Nem_SlzSwing:	bincludealigned	"artnem/SLZ Swinging Platform.nem",MMD_Is_SLZ
+Nem_SlzSwing:	bincludealigned	"artnem/SLZ Swinging Platform.nem",MMD_Is_SLZ||MMD_Is_SBZ
 Nem_SlzBlock:	bincludealigned	"artnem/SLZ 32x32 Block.nem",MMD_Is_SLZ
 Nem_SlzCannon:	bincludealigned	"artnem/SLZ Cannon.nem",MMD_Is_SLZ
 ; ---------------------------------------------------------------------------
@@ -155,9 +155,9 @@ Nem_Motobug:	bincludealigned	"artnem/Enemy Motobug.nem",MMD_Is_GHZ
 Nem_Newtron:	bincludealigned	"artnem/Enemy Newtron.nem",MMD_Is_GHZ
 Nem_Yadrin:		bincludealigned	"artnem/Enemy Yadrin.nem",MMD_Is_SYZ
 Nem_Basaran:	bincludealigned	"artnem/Enemy Basaran.nem",MMD_Is_MZ
-Nem_Bomb:	bincludealigned	"artnem/Enemy Bomb.nem",MMD_Is_SLZ
+Nem_Bomb:	bincludealigned	"artnem/Enemy Bomb.nem",MMD_Is_SLZ||MMD_Is_SBZ
 Nem_Orbinaut:	bincludealigned	"artnem/Enemy Orbinaut.nem",MMD_Is_LZ||MMD_Is_SLZ
-Nem_Cater:	bincludealigned	"artnem/Enemy Caterkiller.nem",MMD_Is_MZ||MMD_Is_SYZ
+Nem_Cater:	bincludealigned	"artnem/Enemy Caterkiller.nem",MMD_Is_MZ||MMD_Is_SYZ||MMD_Is_SBZ
 ; ---------------------------------------------------------------------------
 ; Compressed graphics - various
 ; ---------------------------------------------------------------------------
@@ -183,13 +183,13 @@ Nem_MiniSonic:	bincludealigned	"artnem/Continue Screen Stuff.nem",MMD_Is_Continu
 ; ---------------------------------------------------------------------------
 ; Compressed graphics - animals
 ; ---------------------------------------------------------------------------
-Nem_Rabbit:	bincludealigned	"artnem/Animal Rabbit.nem"
-Nem_Chicken:	bincludealigned	"artnem/Animal Chicken.nem"
-Nem_Penguin:	bincludealigned	"artnem/Animal Penguin.nem"
-Nem_Seal:	bincludealigned	"artnem/Animal Seal.nem"
-Nem_Pig:	bincludealigned	"artnem/Animal Pig.nem"
-Nem_Flicky:	bincludealigned	"artnem/Animal Flicky.nem"
-Nem_Squirrel:	bincludealigned	"artnem/Animal Squirrel.nem"
+Nem_Rabbit:	bincludealigned	"artnem/Animal Rabbit.nem",MMD_Is_Ending||MMD_Is_GHZ||MMD_Is_SBZ
+Nem_Chicken:	bincludealigned	"artnem/Animal Chicken.nem",MMD_Is_Ending||MMD_Is_SYZ||MMD_Is_SBZ
+Nem_Penguin:	bincludealigned	"artnem/Animal Penguin.nem",MMD_Is_Ending||MMD_Is_LZ
+Nem_Seal:	bincludealigned	"artnem/Animal Seal.nem",MMD_Is_Ending||MMD_Is_LZ||MMD_Is_MZ
+Nem_Pig:	bincludealigned	"artnem/Animal Pig.nem",MMD_Is_Ending||MMD_Is_SLZ||MMD_Is_SYZ
+Nem_Flicky:	bincludealigned	"artnem/Animal Flicky.nem",MMD_Is_Ending||MMD_Is_GHZ||MMD_Is_SLZ
+Nem_Squirrel:	bincludealigned	"artnem/Animal Squirrel.nem",MMD_Is_Ending||MMD_Is_MZ
 ; ---------------------------------------------------------------------------
 ; Animated uncompressed graphics
 ; ---------------------------------------------------------------------------

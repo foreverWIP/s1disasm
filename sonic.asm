@@ -418,10 +418,6 @@ GameInit:
 			move.w	#(id_SBZ<<8),(v_zone).l
 			endif
 			endif
-			;if MMD_Is_Demo
-			;move.w	#$8174,(vdp_control_port).l
-			;move.b	#id_Demo,(v_gamemode).l
-			;endif
 			if MMD_Is_SS
 			move.b	#id_Special,(v_gamemode).l
 			endif
@@ -1126,7 +1122,6 @@ RunPLC:
 
 loc_160E:
 		andi.w	#$7FFF,d2
-		move.w	d2,(v_plc_patternsleft).l
 		bsr.w	NemDec_BuildCodeTable
 		move.b	(a0)+,d5
 		asl.w	#8,d5
@@ -1140,6 +1135,7 @@ loc_160E:
 		move.l	d0,(v_plc_previousrow).l
 		move.l	d5,(v_plc_dataword).l
 		move.l	d6,(v_plc_shiftvalue).l
+		move.w	d2,(v_plc_patternsleft).l
 
 Rplc_Exit:
 		rts	
@@ -1848,6 +1844,9 @@ WaitForVBla:
 GM_Sega:
 		move.b	#id_Title,(v_gamemode).l
 GM_Title:
+		if ~~MMD_Is_Title
+		undefGmTrap
+		endif
 		if MMD_Is_Title
 		move.b	#bgm_Stop,d0
 		bsr.w	PlaySound_Special ; stop music
@@ -2501,6 +2500,9 @@ MusicList:
 ; ---------------------------------------------------------------------------
 
 GM_Level:
+		if ~~MMD_Is_Level
+		undefGmTrap
+		endif
 		if MMD_Is_Level
 		bset	#7,(v_gamemode).l ; add $80 to screen mode (for pre level sequence)
 		tst.w	(f_demo).l
@@ -2977,6 +2979,9 @@ Demo_SS:
 ; ---------------------------------------------------------------------------
 
 GM_Special:
+		if ~~MMD_Is_SS
+		undefGmTrap
+		endif
 		if MMD_Is_SS
 		move.w	#sfx_EnterSS,d0
 		bsr.w	PlaySound_Special ; play special stage entry sound
@@ -3509,6 +3514,9 @@ byte_4CCC:	dc.b 8,	2, 4, $FF, 2, 3, 8, $FF, 4, 2, 2, 3, 8,	$FD, 4,	2, 2, 3, 2, $
 ; ---------------------------------------------------------------------------
 
 GM_Continue:
+		if ~~MMD_Is_Continue
+		undefGmTrap
+		endif
 		if MMD_Is_Continue
 		bsr.w	PaletteFadeOut
 		disable_ints
@@ -3612,6 +3620,9 @@ Map_ContScr:
 ; ---------------------------------------------------------------------------
 
 GM_Ending:
+		if ~~MMD_Is_Ending
+		undefGmTrap
+		endif
 		if MMD_Is_Ending
 		move.b	#bgm_Stop,d0
 		bsr.w	PlaySound_Special ; stop music
@@ -3845,6 +3856,9 @@ Map_ESth:
 ; ---------------------------------------------------------------------------
 
 GM_Credits:
+		if ~~MMD_Is_Credits
+		undefGmTrap
+		endif
 		if MMD_Is_Credits
 		bsr.w	ClearPLC
 		bsr.w	PaletteFadeOut
@@ -5402,7 +5416,7 @@ Map_Swing_GHZ:
 		include	"_maps/Swinging Platforms (GHZ).asm"
 		endif
 Map_Swing_SLZ:
-		if MMD_Is_SLZ
+		if MMD_Is_SLZ||MMD_Is_MZ
 		include	"_maps/Swinging Platforms (SLZ).asm"
 		endif
 		include	"_incObj/17 Spiked Pole Helix.asm"
@@ -5412,7 +5426,7 @@ Map_Hel:
 		endif
 		include	"_incObj/18 Platforms.asm"
 Map_Plat_GHZ:
-		if MMD_Is_GHZ
+		if MMD_Is_GHZ||MMD_Is_MZ
 		include	"_maps/Platforms (GHZ).asm"
 		endif
 Map_Plat_SYZ:
@@ -5749,7 +5763,9 @@ Map_GRing:
 		include	"_maps/Giant Ring.asm"
 		endif
 Map_Flash:
+		if ~~MMD_Is_SBZ
 		include	"_maps/Ring Flash.asm"
+		endif
 		include	"_incObj/26 Monitor.asm"
 		include	"_incObj/2E Monitor Content Power-Up.asm"
 		include	"_incObj/26 Monitor (SolidSides subroutine).asm"
@@ -6930,7 +6946,9 @@ Map_Bas:
 
 		include	"_incObj/56 Floating Blocks and Doors.asm"
 Map_FBlock:
+		if MMD_Is_SYZ||MMD_Is_SLZ||MMD_Is_LZ
 		include	"_maps/Floating Blocks and Doors.asm"
+		endif
 
 		include	"_incObj/57 Spiked Ball and Chain.asm"
 Map_SBall:
@@ -6943,7 +6961,7 @@ Map_SBall2:
 		endif
 		include	"_incObj/58 Big Spiked Ball.asm"
 Map_BBall:
-		if MMD_Is_SLZ
+		if MMD_Is_SLZ||MMD_Is_SYZ
 		include	"_maps/Big Spiked Ball.asm"
 		endif
 		include	"_incObj/59 SLZ Elevators.asm"
@@ -6978,7 +6996,9 @@ Map_Pole:
 		include	"_maps/Pole that Breaks.asm"
 		endif
 		include	"_incObj/0C Flapping Door.asm"
+		if MMD_Is_LZ
 		include	"_anim/Flapping Door.asm"
+		endif
 Map_Flap:
 		if MMD_Is_LZ
 		include	"_maps/Flapping Door.asm"
@@ -7788,17 +7808,17 @@ word_16516:	dc.w $10, $1C80, $1C14,	$5E0, $1CEF, $572, $1CEF, $5B0,	$1C14, $61E
 
 		include	"_incObj/70 Girder Block.asm"
 Map_Gird:
-		if MMD_Is_SLZ
+		if MMD_Is_SLZ||MMD_Is_SBZ
 		include	"_maps/Girder Block.asm"
 		endif
 		include	"_incObj/72 Teleporter.asm"
 
 		include	"_incObj/78 Caterkiller.asm"
-		if MMD_Is_MZ||MMD_Is_SYZ
+		if MMD_Is_MZ||MMD_Is_SYZ||MMD_Is_SBZ
 		include	"_anim/Caterkiller.asm"
 		endif
 Map_Cat:
-		if MMD_Is_MZ||MMD_Is_SYZ
+		if MMD_Is_MZ||MMD_Is_SYZ||MMD_Is_SBZ
 		include	"_maps/Caterkiller.asm"
 		endif
 
