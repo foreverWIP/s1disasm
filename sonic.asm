@@ -1485,6 +1485,9 @@ FadeOut_DecColour:
 
 
 PaletteWhiteIn:
+		if MMD_Is_SBZ
+		illegal
+		else
 		move.w	#$003F,(v_pfade_start).l ; start position = 0; size = $40
 		moveq	#0,d0
 		lea	(v_palette).l,a0
@@ -1506,6 +1509,7 @@ PaletteWhiteIn:
 		bsr.w	RunPLC
 		dbf	d4,.mainloop
 		rts	
+		endif
 ; End of function PaletteWhiteIn
 
 
@@ -1513,6 +1517,9 @@ PaletteWhiteIn:
 
 
 WhiteIn_FromWhite:
+		if MMD_Is_SBZ
+		illegal
+		else
 		moveq	#0,d0
 		lea	(v_palette).l,a0
 		lea	(v_palette_fading).l,a1
@@ -1540,6 +1547,7 @@ WhiteIn_FromWhite:
 		dbf	d0,.decolour2
 
 .exit:
+		endif
 		rts	
 ; End of function WhiteIn_FromWhite
 
@@ -1548,6 +1556,9 @@ WhiteIn_FromWhite:
 
 
 WhiteIn_DecColour:
+		if MMD_Is_SBZ
+		illegal
+		else
 .deblue:
 		move.w	(a1)+,d2
 		move.w	(a0),d3
@@ -1580,6 +1591,7 @@ WhiteIn_DecColour:
 .next:
 		addq.w	#2,a0
 		rts	
+		endif
 ; End of function WhiteIn_DecColour
 
 ; ---------------------------------------------------------------------------
@@ -1590,6 +1602,9 @@ WhiteIn_DecColour:
 
 
 PaletteWhiteOut:
+		if MMD_Is_SBZ
+		illegal
+		else
 		move.w	#$003F,(v_pfade_start).l ; start position = 0; size = $40
 		move.w	#$15,d4
 
@@ -1600,6 +1615,7 @@ PaletteWhiteOut:
 		bsr.w	RunPLC
 		dbf	d4,.mainloop
 		rts	
+		endif
 ; End of function PaletteWhiteOut
 
 
@@ -1607,6 +1623,9 @@ PaletteWhiteOut:
 
 
 WhiteOut_ToWhite:
+		if MMD_Is_SBZ
+		illegal
+		else
 		moveq	#0,d0
 		lea	(v_palette).l,a0
 		move.b	(v_pfade_start).l,d0
@@ -1627,6 +1646,7 @@ WhiteOut_ToWhite:
 		bsr.s	WhiteOut_AddColour
 		dbf	d0,.addcolour2
 		rts	
+		endif
 ; End of function WhiteOut_ToWhite
 
 
@@ -1634,6 +1654,9 @@ WhiteOut_ToWhite:
 
 
 WhiteOut_AddColour:
+		if MMD_Is_SBZ
+		illegal
+		else
 .addred:
 		move.w	(a0),d2
 		cmpi.w	#cWhite,d2
@@ -1667,6 +1690,7 @@ WhiteOut_AddColour:
 .next:
 		addq.w	#2,a0
 		rts	
+		endif
 ; End of function WhiteOut_AddColour
 ; ---------------------------------------------------------------------------
 ; Subroutines to load palettes
@@ -3607,13 +3631,9 @@ Cont_GotoLevel:
 		endif
 		include	"_incObj/80 Continue Screen Elements.asm"
 		include	"_incObj/81 Continue Screen Sonic.asm"
-		if MMD_Is_Continue
 		include	"_anim/Continue Screen Sonic.asm"
-		endif
 Map_ContScr:
-		if MMD_Is_Continue
 		include	"_maps/Continue Screen.asm"
-		endif
 ; ===========================================================================
 ; ---------------------------------------------------------------------------
 ; Ending sequence in Green Hill	Zone

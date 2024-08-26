@@ -67,6 +67,7 @@ const PcmChannelSettings pcmSettings[] = {
 };
 
 const u32 pcm_sizes[] = {
+	4,
 	0x6a4,
 	0xee0,
 	0x202c,
@@ -93,7 +94,7 @@ static u8 cur_sample_frame_count;
 static u8 pcm_enabled;
 
 const u8 max_sample_frame_counts[] = {
-	0xff,
+	1,
 	5,
 	5,
 	5,

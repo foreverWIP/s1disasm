@@ -178,8 +178,8 @@ Nem_Bonus:	bincludealigned	"artnem/Hidden Bonuses.nem" ; hidden bonuses at end o
 ; ---------------------------------------------------------------------------
 ; Compressed graphics - continue screen
 ; ---------------------------------------------------------------------------
-Nem_ContSonic:	bincludealigned	"artnem/Continue Screen Sonic.nem",MMD_Is_Continue
-Nem_MiniSonic:	bincludealigned	"artnem/Continue Screen Stuff.nem",MMD_Is_Continue
+Nem_ContSonic:	bincludealigned	"artnem/Continue Screen Sonic.nem"
+Nem_MiniSonic:	bincludealigned	"artnem/Continue Screen Stuff.nem"
 ; ---------------------------------------------------------------------------
 ; Compressed graphics - animals
 ; ---------------------------------------------------------------------------
@@ -248,7 +248,7 @@ Nem_Exhaust:	bincludealigned	"artnem/Boss - Exhaust Flame.nem",MMD_Is_Level
 Nem_EndEm:	bincludealigned	"artnem/Ending - Emeralds.nem",MMD_Is_Ending
 Nem_EndSonic:	bincludealigned	"artnem/Ending - Sonic.nem",MMD_Is_Ending
 Nem_TryAgain:	bincludealigned	"artnem/Ending - Try Again.nem",MMD_Is_Ending
-Nem_EndEggman:	bincludealigned	"artnem/Unused - Eggman Ending.nem"
+Nem_EndEggman:	bincludealigned	"artnem/Unused - Eggman Ending.nem",MMD_Is_Ending
 Kos_EndFlowers:	bincludealigned	"artkos/Flowers at Ending.kos",MMD_Is_Ending
 Nem_EndFlower:	bincludealigned	"artnem/Ending - Flowers.nem",MMD_Is_Ending
 Nem_CreditText:	bincludealigned	"artnem/Ending - Credits.nem",MMD_Is_Title||MMD_Is_Credits
