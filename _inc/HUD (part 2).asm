@@ -1,3 +1,4 @@
+		if MMD_Is_Level||MMD_Is_SS||MMD_Is_Ending||MMD_Is_Continue
 ; ---------------------------------------------------------------------------
 ; HUD counter sizes
 ; ---------------------------------------------------------------------------
@@ -211,3 +212,4 @@ Hud_ClrLivesLoop:
 		dbf	d5,Hud_ClrLivesLoop
 		bra.s	loc_1CABC
 ; End of function Hud_Lives
+		endif

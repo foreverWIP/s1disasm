@@ -63,6 +63,7 @@ DLE_Index:	dc.w DLE_GHZ-DLE_Index, DLE_LZ-DLE_Index
 ; ---------------------------------------------------------------------------
 
 DLE_GHZ:
+		if MMD_Is_GHZ||MMD_Is_Title||MMD_Is_Ending
 		moveq	#0,d0
 		move.b	(v_act).l,d0
 		add.w	d0,d0
@@ -75,19 +76,16 @@ DLE_GHZx:	dc.w DLE_GHZ1-DLE_GHZx
 ; ===========================================================================
 
 DLE_GHZ1:
-		if MMD_Is_GHZ
 		move.w	#$300,(v_limitbtm1).l ; set lower y-boundary
 		cmpi.w	#$1780,(v_screenposx).l ; has the camera reached $1780 on x-axis?
 		blo.s	locret_6E08	; if not, branch
 		move.w	#$400,(v_limitbtm1).l ; set lower y-boundary
 
 locret_6E08:
-		endif
 		rts	
 ; ===========================================================================
 
 DLE_GHZ2:
-		if MMD_Is_GHZ
 		move.w	#$300,(v_limitbtm1).l
 		cmpi.w	#$ED0,(v_screenposx).l
 		blo.s	locret_6E3A
@@ -100,12 +98,10 @@ DLE_GHZ2:
 		move.w	#$300,(v_limitbtm1).l
 
 locret_6E3A:
-		endif
 		rts	
 ; ===========================================================================
 
 DLE_GHZ3:
-		if MMD_Is_GHZ
 		moveq	#0,d0
 		move.b	(v_dle_routine).l,d0
 		move.w	off_6E4A(pc,d0.w),d0
@@ -234,12 +230,10 @@ locret_6F62:
 ; ===========================================================================
 
 locret_6F64:
-		endif
 		rts	
 ; ===========================================================================
 
 DLE_SBZ3:
-		if MMD_Is_LZ
 		cmpi.w	#$D00,(v_screenposx).l
 		blo.s	locret_6F8C
 		cmpi.w	#$18,(v_player+obY).l ; has Sonic reached the top of the level?
@@ -259,6 +253,7 @@ locret_6F8C:
 ; ---------------------------------------------------------------------------
 
 DLE_MZ:
+		if MMD_Is_MZ
 		moveq	#0,d0
 		move.b	(v_act).l,d0
 		add.w	d0,d0
@@ -420,6 +415,7 @@ locret_70E8:
 
 DLE_MZ3end:
 		move.w	(v_screenposx).l,(v_limitleft2).l
+		endif
 		rts	
 ; ===========================================================================
 ; ---------------------------------------------------------------------------
@@ -427,6 +423,7 @@ DLE_MZ3end:
 ; ---------------------------------------------------------------------------
 
 DLE_SLZ:
+		if MMD_Is_SLZ
 		moveq	#0,d0
 		move.b	(v_act).l,d0
 		add.w	d0,d0
@@ -485,7 +482,7 @@ locret_715C:
 
 DLE_SLZ3end:
 		move.w	(v_screenposx).l,(v_limitleft2).l
-		rts
+		endif
 		rts
 ; ===========================================================================
 ; ---------------------------------------------------------------------------
@@ -493,6 +490,7 @@ DLE_SLZ3end:
 ; ---------------------------------------------------------------------------
 
 DLE_SYZ:
+		if MMD_Is_SYZ
 		moveq	#0,d0
 		move.b	(v_act).l,d0
 		add.w	d0,d0
@@ -567,6 +565,7 @@ locret_7200:
 
 DLE_SYZ3end:
 		move.w	(v_screenposx).l,(v_limitleft2).l
+		endif
 		rts	
 ; ===========================================================================
 ; ---------------------------------------------------------------------------
@@ -574,6 +573,7 @@ DLE_SYZ3end:
 ; ---------------------------------------------------------------------------
 
 DLE_SBZ:
+		if MMD_Is_SBZ
 		moveq	#0,d0
 		move.b	(v_act).l,d0
 		add.w	d0,d0
@@ -665,7 +665,6 @@ loc_72C2:
 ; ===========================================================================
 
 DLE_FZ:
-		if MMD_Is_SBZ
 		moveq	#0,d0
 		move.b	(v_dle_routine).l,d0
 		move.w	off_72D8(pc,d0.w),d0

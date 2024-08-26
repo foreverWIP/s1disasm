@@ -5,6 +5,7 @@
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
 
 HUD_Update:
+		if MMD_Is_Level||MMD_Is_SS||MMD_Is_Ending
 		tst.w	(f_debugmode).l	; is debug mode	on?
 		bne.w	HudDebug	; if yes, branch
 		tst.b	(f_scorecount).l ; does the score need updating?
@@ -314,5 +315,8 @@ loc_1C92C:
 		dbf	d6,Hud_ScoreLoop
 
 		rts	
+		else
+		undefGmTrap
+		endif
 
 ; End of function Hud_Score

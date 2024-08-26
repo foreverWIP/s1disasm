@@ -4,6 +4,7 @@
 ; ---------------------------------------------------------------------------
 
 SwingingPlatform:
+		if MMD_Is_Level
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	Swing_Index(pc,d0.w),d1
@@ -143,3 +144,6 @@ Swing_Action2:	; Routine 4
 		bra.w	Swing_ChkDel
 
 		rts
+		else
+		undefObjTrap
+		endif

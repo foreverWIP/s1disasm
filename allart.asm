@@ -8,6 +8,7 @@ bincludealigned: macro {INTLABEL},filename,cond
 .file_start := *
 	binclude filename
 .file_end := *
+.file_size := .file_end - .file_start
 	if ((*)&$1FFFF)<(.file_start&$1FFFF)
 	rorg -(.file_end-.file_start)
 	align $20000
@@ -22,10 +23,10 @@ __LABEL__ label *
 	endif
 	endm
 
-Art_Text:	bincludealigned	"artunc/menutext.bin",MMD_Is_Title ; text used in level select and debug mode
+Art_Text:	bincludealigned	"artunc/menutext.bin",~~MMD_Is_Title ; text used in level select and debug mode
 Art_Text_End:	even
-Art_Hud:	bincludealigned	"artunc/HUD Numbers.bin" ; 8x16 pixel numbers on HUD
-Art_LivesNums:	bincludealigned	"artunc/Lives Counter Numbers.bin" ; 8x8 pixel numbers on lives counter
+Art_Hud:	bincludealigned	"artunc/HUD Numbers.bin",~~MMD_Is_Title ; 8x16 pixel numbers on HUD
+Art_LivesNums:	bincludealigned	"artunc/Lives Counter Numbers.bin",~~MMD_Is_Title ; 8x8 pixel numbers on lives counter
 
 Eni_Title:	bincludealigned	"tilemaps/Title Screen.eni",MMD_Is_Title ; title screen foreground (mappings)
 Nem_TitleFg:	bincludealigned	"artnem/Title Screen Foreground.nem",MMD_Is_Title
@@ -35,26 +36,26 @@ Nem_TitleTM:	bincludealigned	"artnem/Title Screen TM.nem",MMD_Is_Title
 ; ---------------------------------------------------------------------------
 ; Compressed graphics - primary patterns and block mappings
 ; ---------------------------------------------------------------------------
-Blk16_GHZ:	bincludealigned	"map16/GHZ.eni",MMD_Is_GHZ||MMD_Is_Title||MMD_Is_Ending
-Blk16_LZ:	bincludealigned	"map16/LZ.eni",MMD_Is_LZ
-Blk16_MZ:	bincludealigned	"map16/MZ.eni",MMD_Is_MZ
-Blk16_SLZ:	bincludealigned	"map16/SLZ.eni",MMD_Is_SLZ
-Blk16_SYZ:	bincludealigned	"map16/SYZ.eni",MMD_Is_SYZ
-Blk16_SBZ:	bincludealigned	"map16/SBZ.eni",MMD_Is_SBZ
-Blk256_GHZ:	bincludealigned	"map256/GHZ.kos",MMD_Is_GHZ||MMD_Is_Title||MMD_Is_Ending
-Blk256_LZ:	bincludealigned	"map256/LZ.kos",MMD_Is_LZ
-Blk256_MZ:	bincludealigned	"map256/MZ (JP1).kos",MMD_Is_MZ
-Blk256_SLZ:	bincludealigned	"map256/SLZ.kos",MMD_Is_SLZ
-Blk256_SYZ:	bincludealigned	"map256/SYZ.kos",MMD_Is_SYZ
-Blk256_SBZ:	bincludealigned	"map256/SBZ (JP1).kos",MMD_Is_SBZ
+Blk16_GHZ:		bincludealigned		"map16/GHZ.eni",MMD_Is_GHZ||MMD_Is_Title||MMD_Is_Ending
+Blk16_LZ:		bincludealigned		"map16/LZ.eni",MMD_Is_LZ
+Blk16_MZ:		bincludealigned		"map16/MZ.eni",MMD_Is_MZ
+Blk16_SLZ:		bincludealigned		"map16/SLZ.eni",MMD_Is_SLZ
+Blk16_SYZ:		bincludealigned		"map16/SYZ.eni",MMD_Is_SYZ
+Blk16_SBZ:		bincludealigned		"map16/SBZ.eni",MMD_Is_SBZ
+Blk256_GHZ:		bincludealigned	"map256/GHZ.kos",MMD_Is_GHZ||MMD_Is_Title||MMD_Is_Ending
+Blk256_LZ:		bincludealigned	"map256/LZ.kos",MMD_Is_LZ
+Blk256_MZ:		bincludealigned	"map256/MZ (JP1).kos",MMD_Is_MZ
+Blk256_SLZ:		bincludealigned	"map256/SLZ.kos",MMD_Is_SLZ
+Blk256_SYZ:		bincludealigned	"map256/SYZ.kos",MMD_Is_SYZ
+Blk256_SBZ:		bincludealigned	"map256/SBZ (JP1).kos",MMD_Is_SBZ
 
-Nem_GHZ_1st:	bincludealigned	"artnem/8x8 - GHZ1.nem",MMD_Is_GHZ||MMD_Is_Title||MMD_Is_Ending
-Nem_GHZ_2nd:	bincludealigned	"artnem/8x8 - GHZ2.nem",MMD_Is_GHZ||MMD_Is_Title||MMD_Is_Ending
-Nem_LZ:	bincludealigned	"artnem/8x8 - LZ.nem",MMD_Is_LZ
-Nem_MZ:	bincludealigned	"artnem/8x8 - MZ.nem",MMD_Is_MZ
-Nem_SLZ:	bincludealigned	"artnem/8x8 - SLZ.nem",MMD_Is_SLZ
-Nem_SYZ:	bincludealigned	"artnem/8x8 - SYZ.nem",MMD_Is_SYZ
-Nem_SBZ:	bincludealigned	"artnem/8x8 - SBZ.nem",MMD_Is_SBZ
+;Nem_GHZ_1st:	;bincludealigned	"artnem/8x8 - GHZ1.nem",MMD_Is_GHZ||MMD_Is_Title||MMD_Is_Ending
+;Nem_GHZ_2nd:	;bincludealigned	"artnem/8x8 - GHZ2.nem",MMD_Is_GHZ||MMD_Is_Title||MMD_Is_Ending
+;Nem_LZ:			;bincludealigned	"artnem/8x8 - LZ.nem",MMD_Is_LZ
+;Nem_MZ:			;bincludealigned	"artnem/8x8 - MZ.nem",MMD_Is_MZ
+;Nem_SLZ:		;bincludealigned	"artnem/8x8 - SLZ.nem",MMD_Is_SLZ
+;Nem_SYZ:		;bincludealigned	"artnem/8x8 - SYZ.nem",MMD_Is_SYZ
+;Nem_SBZ:		;bincludealigned	"artnem/8x8 - SBZ.nem",MMD_Is_SBZ
 
 ; ---------------------------------------------------------------------------
 ; Compressed graphics - various
@@ -68,10 +69,10 @@ Nem_Stars:	bincludealigned	"artnem/Invincibility Stars.nem",MMD_Is_Level
 Nem_Stalk:	bincludealigned	"artnem/GHZ Flower Stalk.nem",MMD_Is_GHZ||MMD_Is_Ending
 Nem_Swing:	bincludealigned	"artnem/GHZ Swinging Platform.nem",MMD_Is_GHZ||MMD_Is_MZ
 Nem_Bridge:	bincludealigned	"artnem/GHZ Bridge.nem",MMD_Is_GHZ||MMD_Is_Ending
-Nem_GhzUnkBlock:	bincludealigned	"artnem/Unused - GHZ Block.nem",MMD_Is_GHZ||MMD_Is_Ending
+Nem_GhzUnkBlock:	;bincludealigned	"artnem/Unused - GHZ Block.nem",MMD_Is_GHZ||MMD_Is_Ending
 Nem_Ball:	bincludealigned	"artnem/GHZ Giant Ball.nem",MMD_Is_GHZ
 Nem_Spikes:	bincludealigned	"artnem/Spikes.nem"
-Nem_GhzLog:	bincludealigned	"artnem/Unused - GHZ Log.nem",MMD_Is_GHZ
+Nem_GhzLog:	;bincludealigned	"artnem/Unused - GHZ Log.nem",MMD_Is_GHZ
 Nem_SpikePole:	bincludealigned	"artnem/GHZ Spiked Log.nem",MMD_Is_GHZ
 Nem_PplRock:	bincludealigned	"artnem/GHZ Purple Rock.nem",MMD_Is_GHZ||MMD_Is_Ending
 Nem_GhzWall1:	bincludealigned	"artnem/GHZ Breakable Wall.nem",MMD_Is_GHZ
@@ -101,11 +102,11 @@ Nem_LzBlock1:	bincludealigned	"artnem/LZ 32x32 Block.nem",MMD_Is_LZ
 Nem_MzMetal:	bincludealigned	"artnem/MZ Metal Blocks.nem",MMD_Is_MZ
 Nem_MzSwitch:	bincludealigned	"artnem/MZ Switch.nem",MMD_Is_MZ||MMD_Is_SBZ
 Nem_MzGlass:	bincludealigned	"artnem/MZ Green Glass Block.nem",MMD_Is_MZ
-Nem_UnkGrass:	bincludealigned	"artnem/Unused - Grass.nem",MMD_Is_MZ
+Nem_UnkGrass:	;bincludealigned	"artnem/Unused - Grass.nem",MMD_Is_MZ
 Nem_MzFire:	bincludealigned	"artnem/Fireballs.nem",MMD_Is_MZ
 Nem_Lava:	bincludealigned	"artnem/MZ Lava.nem",MMD_Is_MZ
 Nem_MzBlock:	bincludealigned	"artnem/MZ Green Pushable Block.nem",MMD_Is_MZ
-Nem_MzUnkBlock:	bincludealigned	"artnem/Unused - MZ Background.nem",MMD_Is_MZ
+Nem_MzUnkBlock:	;bincludealigned	"artnem/Unused - MZ Background.nem",MMD_Is_MZ
 ; ---------------------------------------------------------------------------
 ; Compressed graphics - SLZ stuff
 ; ---------------------------------------------------------------------------
@@ -161,10 +162,10 @@ Nem_Cater:	bincludealigned	"artnem/Enemy Caterkiller.nem",MMD_Is_MZ||MMD_Is_SYZ|
 ; ---------------------------------------------------------------------------
 ; Compressed graphics - various
 ; ---------------------------------------------------------------------------
-Nem_TitleCard:	bincludealigned	"artnem/Title Cards.nem"
-Nem_Hud:	bincludealigned	"artnem/HUD.nem"
+Nem_TitleCard:	bincludealigned	"artnem/Title Cards.nem",~~MMD_Is_Title
+Nem_Hud:	bincludealigned	"artnem/HUD.nem",~~MMD_Is_Title
 Nem_Lives:	bincludealigned	"artnem/HUD - Life Counter Icon.nem",MMD_Is_Level
-Nem_Ring:	bincludealigned	"artnem/Rings.nem"
+Nem_Ring:	bincludealigned	"artnem/Rings.nem",~~MMD_Is_Title
 Nem_Monitors:	bincludealigned	"artnem/Monitors.nem",MMD_Is_Level
 Nem_Explode:	bincludealigned	"artnem/Explosion.nem",MMD_Is_Level
 Nem_Points:	bincludealigned	"artnem/Points.nem"	; points from destroyed enemy or object,MMD_Is_Level
@@ -173,13 +174,13 @@ Nem_HSpring:	bincludealigned	"artnem/Spring Horizontal.nem",MMD_Is_Level
 Nem_VSpring:	bincludealigned	"artnem/Spring Vertical.nem",MMD_Is_Level
 Nem_SignPost:	bincludealigned	"artnem/Signpost.nem"	; end of level signpost,MMD_Is_Level
 Nem_Lamp:	bincludealigned	"artnem/Lamppost.nem",MMD_Is_Level
-Nem_BigFlash:	bincludealigned	"artnem/Giant Ring Flash.nem",~~MMD_Is_SBZ
+Nem_BigFlash:	bincludealigned	"artnem/Giant Ring Flash.nem",MMD_Is_Level&&~~MMD_Is_SBZ
 Nem_Bonus:	bincludealigned	"artnem/Hidden Bonuses.nem" ; hidden bonuses at end of a level,MMD_Is_Level
 ; ---------------------------------------------------------------------------
 ; Compressed graphics - continue screen
 ; ---------------------------------------------------------------------------
-Nem_ContSonic:	bincludealigned	"artnem/Continue Screen Sonic.nem"
-Nem_MiniSonic:	bincludealigned	"artnem/Continue Screen Stuff.nem"
+Nem_ContSonic:	bincludealigned	"artnem/Continue Screen Sonic.nem",MMD_Is_Continue
+Nem_MiniSonic:	bincludealigned	"artnem/Continue Screen Stuff.nem",MMD_Is_Continue||MMD_Is_SS
 ; ---------------------------------------------------------------------------
 ; Compressed graphics - animals
 ; ---------------------------------------------------------------------------
@@ -200,7 +201,7 @@ Art_MzLava1:	bincludealigned	"artunc/MZ Lava Surface.bin",MMD_Is_MZ
 Art_MzLava2:	bincludealigned	"artunc/MZ Lava.bin",MMD_Is_MZ
 Art_MzTorch:	bincludealigned	"artunc/MZ Background Torch.bin",MMD_Is_MZ
 Art_SbzSmoke:	bincludealigned	"artunc/SBZ Background Smoke.bin",MMD_Is_SBZ
-Art_BigRing:	bincludealigned	"artunc/Giant Ring.bin",~~MMD_Is_SBZ
+Art_BigRing:	bincludealigned	"artunc/Giant Ring.bin",MMD_Is_Level&&~~MMD_Is_SBZ
 Eni_JapNames:	bincludealigned	"tilemaps/Hidden Japanese Credits.eni",MMD_Is_Title
 Nem_JapNames:	bincludealigned	"artnem/Hidden Japanese Credits.nem",MMD_Is_Title
 
@@ -240,7 +241,7 @@ Nem_ResultEm:	bincludealigned	"artnem/Special Result Emeralds.nem",MMD_Is_SS
 ; ---------------------------------------------------------------------------
 Nem_Eggman:	bincludealigned	"artnem/Boss - Main.nem",MMD_Is_Level
 Nem_Weapons:	bincludealigned	"artnem/Boss - Weapons.nem",MMD_Is_Level
-Nem_Prison:	bincludealigned	"artnem/Prison Capsule.nem",~~MMD_Is_SBZ
+Nem_Prison:	bincludealigned	"artnem/Prison Capsule.nem",MMD_Is_Level&&~~MMD_Is_SBZ
 Nem_Sbz2Eggman:	bincludealigned	"artnem/Boss - Eggman in SBZ2 & FZ.nem",MMD_Is_SBZ
 Nem_FzBoss:	bincludealigned	"artnem/Boss - Final Zone.nem",MMD_Is_SBZ
 Nem_FzEggman:	bincludealigned	"artnem/Boss - Eggman after FZ Fight.nem",MMD_Is_SBZ
@@ -248,7 +249,7 @@ Nem_Exhaust:	bincludealigned	"artnem/Boss - Exhaust Flame.nem",MMD_Is_Level
 Nem_EndEm:	bincludealigned	"artnem/Ending - Emeralds.nem",MMD_Is_Ending
 Nem_EndSonic:	bincludealigned	"artnem/Ending - Sonic.nem",MMD_Is_Ending
 Nem_TryAgain:	bincludealigned	"artnem/Ending - Try Again.nem",MMD_Is_Ending
-Nem_EndEggman:	bincludealigned	"artnem/Unused - Eggman Ending.nem",MMD_Is_Ending
+Nem_EndEggman:	;bincludealigned	"artnem/Unused - Eggman Ending.nem",MMD_Is_Ending
 Kos_EndFlowers:	bincludealigned	"artkos/Flowers at Ending.kos",MMD_Is_Ending
 Nem_EndFlower:	bincludealigned	"artnem/Ending - Flowers.nem",MMD_Is_Ending
 Nem_CreditText:	bincludealigned	"artnem/Ending - Credits.nem",MMD_Is_Title||MMD_Is_Credits
@@ -257,4 +258,4 @@ Nem_EndStH:	bincludealigned	"artnem/Ending - StH Logo.nem",MMD_Is_Ending
 ; ---------------------------------------------------------------------------
 ; Uncompressed graphics	- Sonic
 ; ---------------------------------------------------------------------------
-Art_Sonic:	bincludealigned	"artunc/Sonic.bin",MMD_Has_Sonic
+;Art_Sonic:	;bincludealigned	"artunc/Sonic.bin",MMD_Has_Sonic

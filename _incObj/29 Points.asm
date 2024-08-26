@@ -3,6 +3,7 @@
 ; ---------------------------------------------------------------------------
 
 Points:
+		if MMD_Is_Level
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	Poi_Index(pc,d0.w),d1
@@ -28,3 +29,6 @@ Poi_Slower:	; Routine 2
 		bsr.w	SpeedToPos
 		addi.w	#$18,obVelY(a0)	; reduce object	speed
 		rts	
+		else
+		undefObjTrap
+		endif

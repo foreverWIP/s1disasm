@@ -3,6 +3,7 @@
 ; ---------------------------------------------------------------------------
 
 Springs:
+		if MMD_Is_Level
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	Spring_Index(pc,d0.w),d1
@@ -191,3 +192,6 @@ Spring_ResetDwn:
 		move.b	#1,obPrevAni(a0) ; reset animation
 		subq.b	#4,obRoutine(a0) ; goto "Spring_Dwn" routine
 		rts	
+		else
+		undefObjTrap
+		endif

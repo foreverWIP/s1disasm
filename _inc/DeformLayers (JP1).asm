@@ -45,6 +45,7 @@ Deform_Index:	dc.w Deform_GHZ-Deform_Index, Deform_LZ-Deform_Index
 
 
 Deform_GHZ:
+	if MMD_Is_GHZ
 	; block 3 - distant mountains
 		move.w	(v_scrshiftx).l,d4
 		ext.l	d4
@@ -146,6 +147,7 @@ Deform_GHZ:
 		add.l	d2,d3
 		swap	d3
 		dbf	d1,.waterLoop
+	endif
 		rts
 ; End of function Deform_GHZ
 
@@ -157,6 +159,7 @@ Deform_GHZ:
 
 
 Deform_LZ:
+	if MMD_Is_LZ
 	; plain background scroll
 		move.w	(v_scrshiftx).l,d4
 		ext.l	d4
@@ -229,6 +232,7 @@ Lz_Scroll_Data:
 		dc.b $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
 		dc.b $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
 		dc.b $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+	endif
 ; End of function Deform_LZ
 
 ; ---------------------------------------------------------------------------
@@ -239,6 +243,7 @@ Lz_Scroll_Data:
 
 
 Deform_MZ:
+	if MMD_Is_MZ
 	; block 1 - dungeon interior
 		move.w	(v_scrshiftx).l,d4
 		ext.l	d4
@@ -338,6 +343,7 @@ Deform_MZ:
 		lsr.w	#3,d0
 		lea	(a2,d0.w),a2
 		bra.w	Bg_Scroll_X
+	endif
 ; End of function Deform_MZ
 
 ; ---------------------------------------------------------------------------
@@ -348,6 +354,7 @@ Deform_MZ:
 
 
 Deform_SLZ:
+	if MMD_Is_SLZ
 	; vertical scrolling
 		move.w	(v_scrshifty).l,d5
 		ext.l	d5
@@ -408,6 +415,7 @@ Deform_SLZ:
 		andi.w	#$3F0,d0
 		lsr.w	#3,d0
 		lea	(a2,d0.w),a2
+	endif
 ;-------------------------------------------------------------------------------
 ;-------------------------------------------------------------------------------
 Bg_Scroll_X:
@@ -450,6 +458,7 @@ Bg_Scroll_X:
 
 
 Deform_SYZ:
+	if MMD_Is_SYZ
 	; vertical scrolling
 		move.w	(v_scrshifty).l,d5
 		ext.l	d5
@@ -525,6 +534,7 @@ Deform_SYZ:
 		lsr.w	#3,d0
 		lea	(a2,d0.w),a2
 		bra.w	Bg_Scroll_X
+	endif
 ; End of function Deform_SYZ
 
 ; ---------------------------------------------------------------------------
@@ -535,6 +545,7 @@ Deform_SYZ:
 
 
 Deform_SBZ:
+	if MMD_Is_SBZ
 		tst.b	(v_act).l
 		bne.w	Deform_SBZ2
 	; block 1 - lower black buildings
@@ -648,6 +659,7 @@ Deform_SBZ2:;loc_68A2:
 		move.l	d0,(a1)+
 		dbf	d1,.loop
 		rts
+	endif
 ; End of function Deform_SBZ
 
 ; ---------------------------------------------------------------------------

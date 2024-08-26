@@ -3,6 +3,7 @@
 ; ---------------------------------------------------------------------------
 
 TitleCard:
+		if MMD_Is_Level||MMD_Is_SS
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	Card_Index(pc,d0.w),d1
@@ -157,3 +158,6 @@ Card_ConData:	dc.w 0,	$120, $FEFC, $13C, $414, $154, $214, $154 ; GHZ
 		dc.w 0,	$120, $FF04, $144, $41C, $15C, $21C, $15C ; SBZ
 		dc.w 0,	$120, $FEE4, $124, $3EC, $3EC, $1EC, $12C ; FZ
 ; ===========================================================================
+		else
+		undefObjTrap
+		endif

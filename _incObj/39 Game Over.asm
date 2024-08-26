@@ -3,6 +3,7 @@
 ; ---------------------------------------------------------------------------
 
 GameOverCard:
+		if MMD_Is_Level
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	Over_Index(pc,d0.w),d1
@@ -82,3 +83,6 @@ Over_ResetLvl:
 Over_Display:
 		quitModule
 		bra.w	DisplaySprite
+		else
+		undefObjTrap
+		endif

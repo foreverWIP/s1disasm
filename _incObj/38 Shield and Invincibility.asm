@@ -3,6 +3,7 @@
 ; ---------------------------------------------------------------------------
 
 ShieldItem:
+		if MMD_Is_Level
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	Shi_Index(pc,d0.w),d1
@@ -99,3 +100,6 @@ Shi_Stars:	; Routine 4
 
 Shi_Start_Delete:	
 		jmp	(DeleteObject).l
+		else
+		undefObjTrap
+		endif

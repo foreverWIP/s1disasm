@@ -3,6 +3,7 @@
 ; ---------------------------------------------------------------------------
 
 Invisibarrier:
+		if MMD_Is_Level
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	Invis_Index(pc,d0.w),d1
@@ -52,3 +53,6 @@ Invis_Solid:	; Routine 2
 
 .delete:
 		jmp	(DeleteObject).l
+		else
+		undefObjTrap
+		endif

@@ -85,6 +85,7 @@ EndingStLocArray:
 ; ===========================================================================
 
 LevSz_ChkLamp:
+		if MMD_Is_Level
 		tst.b	(v_lastlamp).l	; have any lampposts been hit?
 		beq.s	LevSz_StartLoc	; if not, branch
 
@@ -92,6 +93,7 @@ LevSz_ChkLamp:
 		move.w	(v_player+obX).l,d1
 		move.w	(v_player+obY).l,d0
 		bra.s	LevSz_SkipStartPos
+		endif
 ; ===========================================================================
 
 LevSz_StartLoc:

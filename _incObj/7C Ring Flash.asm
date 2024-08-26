@@ -3,6 +3,7 @@
 ; ---------------------------------------------------------------------------
 
 RingFlash:
+		if MMD_Is_Level&&~~MMD_Is_SBZ
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	Flash_Index(pc,d0.w),d1
@@ -61,3 +62,6 @@ Flash_End:
 
 Flash_Delete:	; Routine 4
 		bra.w	DeleteObject
+		else
+		undefObjTrap
+		endif

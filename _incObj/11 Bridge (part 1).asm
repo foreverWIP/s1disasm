@@ -3,6 +3,7 @@
 ; ---------------------------------------------------------------------------
 
 Bridge:
+		if MMD_Is_GHZ
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	Bri_Index(pc,d0.w),d1
@@ -102,3 +103,6 @@ Bri_Solid:
 		bhs.w	Plat_Exit
 		bra.s	Plat_NoXCheck
 ; End of function Bri_Solid
+		else
+		undefObjTrap
+		endif

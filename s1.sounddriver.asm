@@ -2650,9 +2650,15 @@ Music86:
 		include "sound/music/Mus86 - SBZ.asm"
 		endif
 		even
-Music87:	include "sound/music/Mus87 - Invincibility.asm"
+Music87:
+		if MMD_Is_Level
+		include "sound/music/Mus87 - Invincibility.asm"
+		endif
 		even
-Music88:	include "sound/music/Mus88 - Extra Life.asm"
+Music88:
+		if MMD_Is_Level||MMD_Is_SS
+		include "sound/music/Mus88 - Extra Life.asm"
+		endif
 		even
 Music89:
 		if MMD_Is_SS
@@ -2669,16 +2675,25 @@ Music8B:
 		include "sound/music/Mus8B - Ending.asm"
 		endif
 		even
-Music8C:	include "sound/music/Mus8C - Boss.asm"
+Music8C:
+		if ~~MMD_Is_SBZ
+		include "sound/music/Mus8C - Boss.asm"
+		endif
 		even
 Music8D:
 		if MMD_Is_SBZ
 		include "sound/music/Mus8D - FZ.asm"
 		endif
 		even
-Music8E:	include "sound/music/Mus8E - Sonic Got Through.asm"
+Music8E:
+		if MMD_Is_Level||MMD_Is_SS
+		include "sound/music/Mus8E - Sonic Got Through.asm"
+		endif
 		even
-Music8F:	include "sound/music/Mus8F - Game Over.asm"
+Music8F:
+		if MMD_Is_Level
+		include "sound/music/Mus8F - Game Over.asm"
+		endif
 		even
 Music90:
 		if MMD_Is_Continue
@@ -2765,7 +2780,10 @@ ptr_specend
 ; ---------------------------------------------------------------------------
 ; Sound effect data
 ; ---------------------------------------------------------------------------
-SoundA0:	include "sound/sfx/SndA0 - Jump.asm"
+SoundA0:
+		if ~~MMD_Is_Title
+		include "sound/sfx/SndA0 - Jump.asm"
+		endif
 		even
 SoundA1:	include "sound/sfx/SndA1 - Lamppost.asm"
 		even
@@ -2801,7 +2819,10 @@ SoundAA:
 		endif
 SoundAB:	;include "sound/sfx/SndAB.asm"
 		even
-SoundAC:	include "sound/sfx/SndAC - Hit Boss.asm"
+SoundAC:
+		if MMD_Is_Level
+		include "sound/sfx/SndAC - Hit Boss.asm"
+		endif
 		even
 SoundAD:
 		if MMD_Is_LZ
@@ -2830,7 +2851,10 @@ SoundB2:
 		include "sound/sfx/SndB2 - Drown Death.asm"
 		even
 		endif
-SoundB3:	include "sound/sfx/SndB3 - Flamethrower.asm"
+SoundB3:
+		if MMD_Is_SBZ
+		include "sound/sfx/SndB3 - Flamethrower.asm"
+		endif
 		even
 SoundB4:
 		if MMD_Is_SYZ||MMD_Is_SS
@@ -2839,38 +2863,62 @@ SoundB4:
 		endif
 SoundB5:	include "sound/sfx/SndB5 - Ring.asm"
 		even
-SoundB6:	include "sound/sfx/SndB6 - Spikes Move.asm"
+SoundB6:
+		if ~~MMD_Is_Title
+		include "sound/sfx/SndB6 - Spikes Move.asm"
+		endif
 		even
-SoundB7:	include "sound/sfx/SndB7 - Rumbling.asm"
+SoundB7:
+		if MMD_Is_LZ||MMD_Is_SBZ
+		include "sound/sfx/SndB7 - Rumbling.asm"
+		endif
 		even
 SoundB8:	;include "sound/sfx/SndB8.asm"
 		even
-SoundB9:	include "sound/sfx/SndB9 - Collapse.asm"
+SoundB9:
+		if ~~MMD_Is_Title
+		include "sound/sfx/SndB9 - Collapse.asm"
+		endif
 		even
 SoundBA:
 		if MMD_Is_SS
 		include "sound/sfx/SndBA - SS Glass.asm"
 		even
 		endif
-SoundBB:	include "sound/sfx/SndBB - Door.asm"
+SoundBB:
+		if ~~MMD_Is_Title
+		include "sound/sfx/SndBB - Door.asm"
+		endif
 		even
-SoundBC:	include "sound/sfx/SndBC - Teleport.asm"
+SoundBC:
+		if MMD_Is_SBZ
+		include "sound/sfx/SndBC - Teleport.asm"
+		endif
 		even
 SoundBD:
 		if MMD_Is_MZ
 		include "sound/sfx/SndBD - ChainStomp.asm"
 		even
 		endif
-SoundBE:	include "sound/sfx/SndBE - Roll.asm"
+SoundBE:
+		if ~~MMD_Is_Title
+		include "sound/sfx/SndBE - Roll.asm"
+		endif
 		even
-SoundBF:	include "sound/sfx/SndBF - Get Continue.asm"
+SoundBF:
+		if ~~MMD_Is_Title
+		include "sound/sfx/SndBF - Get Continue.asm"
+		endif
 		even
 SoundC0:
 		if MMD_Is_MZ
 		include "sound/sfx/SndC0 - Basaran Flap.asm"
 		even
 		endif
-SoundC1:	include "sound/sfx/SndC1 - Break Item.asm"
+SoundC1:
+		if MMD_Is_Level
+		include "sound/sfx/SndC1 - Break Item.asm"
+		endif
 		even
 SoundC2:
 		if MMD_Is_LZ
@@ -2882,11 +2930,20 @@ SoundC3:
 		include "sound/sfx/SndC3 - Giant Ring.asm"
 		even
 		endif
-SoundC4:	include "sound/sfx/SndC4 - Bomb.asm"
+SoundC4:
+		if MMD_Is_Level
+		include "sound/sfx/SndC4 - Bomb.asm"
+		endif
 		even
-SoundC5:	include "sound/sfx/SndC5 - Cash Register.asm"
+SoundC5:
+		if MMD_Is_Level||MMD_Is_SS
+		include "sound/sfx/SndC5 - Cash Register.asm"
+		endif
 		even
-SoundC6:	include "sound/sfx/SndC6 - Ring Loss.asm"
+SoundC6:
+		if MMD_Is_Level
+		include "sound/sfx/SndC6 - Ring Loss.asm"
+		endif
 		even
 SoundC7:
 		if MMD_Is_MZ
@@ -2898,22 +2955,37 @@ SoundC8:
 		include "sound/sfx/SndC8 - Burning.asm"
 		even
 		endif
-SoundC9:	include "sound/sfx/SndC9 - Hidden Bonus.asm"
+SoundC9:
+		if MMD_Is_Level
+		include "sound/sfx/SndC9 - Hidden Bonus.asm"
+		endif
 		even
 SoundCA:
 		if ~~MMD_Is_SBZ
 		include "sound/sfx/SndCA - Enter SS.asm"
 		even
 		endif
-SoundCB:	include "sound/sfx/SndCB - Wall Smash.asm"
+SoundCB:
+		if MMD_Is_Level
+		include "sound/sfx/SndCB - Wall Smash.asm"
+		endif
 		even
-SoundCC:	include "sound/sfx/SndCC - Spring.asm"
+SoundCC:
+		if MMD_Is_Level
+		include "sound/sfx/SndCC - Spring.asm"
+		endif
 		even
 SoundCD:	include "sound/sfx/SndCD - Switch.asm"
 		even
-SoundCE:	include "sound/sfx/SndCE - Ring Left Speaker.asm"
+SoundCE:
+		if MMD_Is_Level||MMD_Is_SS
+		include "sound/sfx/SndCE - Ring Left Speaker.asm"
+		endif
 		even
-SoundCF:	include "sound/sfx/SndCF - Signpost.asm"
+SoundCF:
+		if MMD_Is_Level
+		include "sound/sfx/SndCF - Signpost.asm"
+		endif
 		even
 
 ; ---------------------------------------------------------------------------

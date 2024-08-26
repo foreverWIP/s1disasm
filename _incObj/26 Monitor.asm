@@ -3,6 +3,7 @@
 ; ---------------------------------------------------------------------------
 
 Monitor:
+		if MMD_Is_Level
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	Mon_Index(pc,d0.w),d1
@@ -163,3 +164,6 @@ Mon_Explode:
 		bset	#0,2(a2,d0.w)
 		move.b	#9,obAnim(a0)	; set monitor type to broken
 		bra.w	DisplaySprite
+		else
+		undefObjTrap
+		endif

@@ -3,6 +3,7 @@
 ; ---------------------------------------------------------------------------
 
 Rings:
+		if ~~MMD_Is_Title
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	Ring_Index(pc,d0.w),d1
@@ -156,6 +157,9 @@ CollectRing:
 
 .playsnd:
 		jmp	(PlaySound_Special).l
+		else
+		undefObjTrap
+		endif
 ; End of function CollectRing
 
 ; ===========================================================================
@@ -164,6 +168,7 @@ CollectRing:
 ; ---------------------------------------------------------------------------
 
 RingLoss:
+		if ~~MMD_Is_Title
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	RLoss_Index(pc,d0.w),d1
@@ -281,3 +286,6 @@ RLoss_Sparkle:	; Routine 6
 
 RLoss_Delete:	; Routine 8
 		bra.w	DeleteObject
+		else
+		undefObjTrap
+		endif

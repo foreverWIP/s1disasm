@@ -3,6 +3,7 @@
 ; ---------------------------------------------------------------------------
 
 GiantRing:
+		if MMD_Is_Level&&~~MMD_Is_SBZ
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	GRing_Index(pc,d0.w),d1
@@ -62,3 +63,6 @@ GRing_PlaySnd:
 
 GRing_Delete:	; Routine 6
 		bra.w	DeleteObject
+		else
+		undefObjTrap
+		endif

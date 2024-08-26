@@ -3,6 +3,7 @@
 ; ---------------------------------------------------------------------------
 
 PowerUp:
+		if MMD_Is_Level
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	Pow_Index(pc,d0.w),d1
@@ -145,3 +146,6 @@ Pow_Delete:	; Routine 4
 		subq.w	#1,obTimeFrame(a0)
 		bmi.w	DeleteObject	; delete after half a second
 		rts	
+		else
+		undefObjTrap
+		endif

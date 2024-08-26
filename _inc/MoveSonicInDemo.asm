@@ -6,11 +6,13 @@
 
 
 MoveSonicInDemo:
+		if MMD_Is_Level||MMD_Is_Ending||MMD_Is_SS
 		tst.w	(f_demo).l	; is demo mode on?
 		bne.s	MDemo_On	; if yes, branch
 		rts	
 ; ===========================================================================
 
+		if 0
 ; This is an unused subroutine for recording a demo
 
 DemoRecorder:
@@ -33,6 +35,7 @@ DemoRecorder:
 		andi.w	#$3FF,(v_btnpushtime1).l
 		rts	
 ; ===========================================================================
+		endif
 
 MDemo_On:
 		tst.b	(v_jpadhold1).l	; is start button pressed?
@@ -111,3 +114,6 @@ DemoEndDataPtr:	dc.l Demo_EndGHZ1	; demos run during the credits
 		dc.b 0,	$21, 8,	3, $28,	$30, 8,	8, 0, $2E, 8, $15, 0, $F, 8, $46
 		dc.b 0,	$1A, 8,	$FF, 8,	$CA, 0,	0, 0, 0, 0, 0, 0, 0, 0,	0
 		even
+		else
+		undefGmTrap
+		endif

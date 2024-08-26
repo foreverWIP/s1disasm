@@ -3,6 +3,7 @@
 ; ---------------------------------------------------------------------------
 
 HUD:
+		if MMD_Is_Level
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	HUD_Index(pc,d0.w),d1
@@ -40,3 +41,6 @@ HUD_Flash:	; Routine 2
 .display:
 		move.b	d0,obFrame(a0)
 		jmp	(DisplaySprite).l
+		else
+		undefObjTrap
+		endif

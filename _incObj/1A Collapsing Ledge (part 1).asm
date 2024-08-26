@@ -3,6 +3,7 @@
 ; ---------------------------------------------------------------------------
 
 CollapseLedge:
+		if MMD_Is_Level
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	Ledge_Index(pc,d0.w),d1
@@ -103,3 +104,6 @@ Ledge_TimeZero:
 Ledge_Delete:	; Routine 8
 		bsr.w	DeleteObject
 		rts	
+		else
+		undefObjTrap
+		endif

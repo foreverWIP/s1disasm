@@ -49,6 +49,7 @@ Deform_Index:	dc.w Deform_GHZ-Deform_Index, Deform_LZ-Deform_Index
 
 
 Deform_GHZ:
+		if MMD_Is_GHZ||MMD_Is_Title||MMD_Is_Ending
 		move.w	(v_scrshiftx).l,d4
 		ext.l	d4
 		asl.l	#5,d4
@@ -114,6 +115,7 @@ loc_6384:
 		add.l	d2,d3
 		swap	d3
 		dbf	d1,loc_6384
+		endif
 		rts	
 ; End of function Deform_GHZ
 
@@ -125,6 +127,7 @@ loc_6384:
 
 
 Deform_LZ:
+		if MMD_Is_LZ
 		move.w	(v_scrshiftx).l,d4
 		ext.l	d4
 		asl.l	#7,d4
@@ -146,6 +149,7 @@ loc_63C6:
 		dbf	d1,loc_63C6
 		move.w	(v_waterpos1).l,d0
 		sub.w	(v_screenposy).l,d0
+		endif
 		rts	
 ; End of function Deform_LZ
 
@@ -157,6 +161,7 @@ loc_63C6:
 
 
 Deform_MZ:
+		if MMD_Is_MZ
 		move.w	(v_scrshiftx).l,d4
 		ext.l	d4
 		asl.l	#6,d4
@@ -190,6 +195,7 @@ loc_6402:
 loc_6426:
 		move.l	d0,(a1)+
 		dbf	d1,loc_6426
+		endif
 		rts	
 ; End of function Deform_MZ
 
@@ -201,6 +207,7 @@ loc_6426:
 
 
 Deform_SLZ:
+		if MMD_Is_SLZ
 		move.w	(v_scrshiftx).l,d4
 		ext.l	d4
 		asl.l	#7,d4
@@ -300,6 +307,7 @@ loc_64F0:
 loc_64FE:
 		move.w	d0,(a1)+
 		dbf	d1,loc_64FE
+		endif
 		rts	
 ; End of function Deform_SLZ_2
 
@@ -311,6 +319,7 @@ loc_64FE:
 
 
 Deform_SYZ:
+		if MMD_Is_SYZ
 		move.w	(v_scrshiftx).l,d4
 		ext.l	d4
 		asl.l	#6,d4
@@ -333,6 +342,7 @@ Deform_SYZ:
 loc_653C:
 		move.l	d0,(a1)+
 		dbf	d1,loc_653C
+		endif
 		rts	
 ; End of function Deform_SYZ
 
@@ -344,6 +354,7 @@ loc_653C:
 
 
 Deform_SBZ:
+		if MMD_Is_SBZ
 		move.w	(v_scrshiftx).l,d4
 		ext.l	d4
 		asl.l	#6,d4
@@ -364,6 +375,7 @@ Deform_SBZ:
 loc_6576:
 		move.l	d0,(a1)+
 		dbf	d1,loc_6576
+		endif
 		rts	
 ; End of function Deform_SBZ
 

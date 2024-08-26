@@ -3,6 +3,7 @@
 ; ---------------------------------------------------------------------------
 
 GotThroughCard:
+		if ~~MMD_Is_Title
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	Got_Index(pc,d0.w),d1
@@ -277,3 +278,6 @@ Got_Config:	dc.w 4,		$124,	$BC			; "SONIC HAS"
 
 		dc.w $20C,	$14C,	$CC			; oval
 		dc.b 				2,	5
+		else
+		undefObjTrap
+		endif

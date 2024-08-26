@@ -192,6 +192,16 @@ done:
 		");
 }
 
+void load_file_wrapper(u16 const access_operation, char const * load_filename, u8 * buffer)
+{
+	load_file(access_operation, load_filename, buffer);
+	if (access_op_result != RESULT_OK)
+	{
+		*GA_COMSTAT0 = 0xff;
+		sp_fatal();
+	}
+}
+
 // It's a good idea to put SPX's main in .init to ensure it's at the very start
 // of the code, since we jump to where we expect it to be in memory
 __attribute__((section(".init"))) void main()
@@ -204,11 +214,7 @@ __attribute__((section(".init"))) void main()
 
 	*(u32*)(_USERCALL2+2) = vblank_sub;
 
-	load_file (ACC_OP_LOAD_CDC, "AUDIO.PCM;1", (u8 *) _PRGRAM_1M_2);
-	if (access_op_result != RESULT_OK)
-	{
-		sp_fatal();
-	}
+	load_file_wrapper(ACC_OP_LOAD_CDC, "AUDIO.PCM;1", (u8 *) _PRGRAM_1M_2);
 	pcm_clear_ram_c();
 	load_pcm((u8 *)_PRGRAM_1M_2, 0x5000);
 	set_up_dummy_sample();
@@ -241,12 +247,45 @@ __attribute__((section(".init"))) void main()
 				*PCM_CDISABLE = 0xff;
 				// *PCM_CTRL = 0;
 				DISABLE_PCM();
-				load_file(ACC_OP_LOAD_CDC, filenames[cmd1], (u8 *) _WRDRAM_2M);
-				if (access_op_result != RESULT_OK)
+				load_file_wrapper(ACC_OP_LOAD_CDC, filenames[cmd1], (u8 *) _WRDRAM_2M);
+				switch (cmd1)
 				{
-					*GA_COMSTAT0 = 0xff;
-					sp_fatal();
+					case 0:
+						load_file_wrapper(ACC_OP_LOAD_CDC, "GHZ1.NEM;1", (u8 *) (_WRDRAM_2M + 0x20000));
+						load_file_wrapper(ACC_OP_LOAD_CDC, "GHZ2.NEM;1", (u8 *) (_WRDRAM_2M + 0x22000));
+						break;
+					case 1:
+					case 9:
+						load_file_wrapper(ACC_OP_LOAD_CDC, "GHZ1.NEM;1", (u8 *) (_WRDRAM_2M + 0x20000));
+						load_file_wrapper(ACC_OP_LOAD_CDC, "GHZ2.NEM;1", (u8 *) (_WRDRAM_2M + 0x22000));
+						load_file_wrapper(ACC_OP_LOAD_CDC, "SONIC.BIN;1", (u8 *) (_WRDRAM_2M + 0x24000));
+						break;
+					case 2:
+						load_file_wrapper(ACC_OP_LOAD_CDC, "MZ.NEM;1", (u8 *) (_WRDRAM_2M + 0x20000));
+						load_file_wrapper(ACC_OP_LOAD_CDC, "SONIC.BIN;1", (u8 *) (_WRDRAM_2M + 0x24000));
+						break;
+					case 3:
+						load_file_wrapper(ACC_OP_LOAD_CDC, "SYZ.NEM;1", (u8 *) (_WRDRAM_2M + 0x20000));
+						load_file_wrapper(ACC_OP_LOAD_CDC, "SONIC.BIN;1", (u8 *) (_WRDRAM_2M + 0x24000));
+						break;
+					case 4:
+						load_file_wrapper(ACC_OP_LOAD_CDC, "LZ.NEM;1", (u8 *) (_WRDRAM_2M + 0x20000));
+						load_file_wrapper(ACC_OP_LOAD_CDC, "SONIC.BIN;1", (u8 *) (_WRDRAM_2M + 0x24000));
+						break;
+					case 5:
+						load_file_wrapper(ACC_OP_LOAD_CDC, "SLZ.NEM;1", (u8 *) (_WRDRAM_2M + 0x20000));
+						load_file_wrapper(ACC_OP_LOAD_CDC, "SONIC.BIN;1", (u8 *) (_WRDRAM_2M + 0x24000));
+						break;
+					case 6:
+						load_file_wrapper(ACC_OP_LOAD_CDC, "SBZ.NEM;1", (u8 *) (_WRDRAM_2M + 0x20000));
+						load_file_wrapper(ACC_OP_LOAD_CDC, "SONIC.BIN;1", (u8 *) (_WRDRAM_2M + 0x24000));
+						break;
+					case 7:
+					case 8:
+						load_file_wrapper(ACC_OP_LOAD_CDC, "SONIC.BIN;1", (u8 *) (_WRDRAM_2M + 0x24000));
+						break;
 				}
+
 				grant_2m();
 				break;
 			
@@ -265,11 +304,7 @@ __attribute__((section(".init"))) void main()
 
 			// load IPX
 			case 0xfe:
-				load_file(ACC_OP_LOAD_CDC, "IPX.MMD;1", (u8 *) _WRDRAM_2M);
-				if (access_op_result != RESULT_OK)
-				{
-					sp_fatal();
-				}
+				load_file_wrapper(ACC_OP_LOAD_CDC, "IPX.MMD;1", (u8 *) _WRDRAM_2M);
 				grant_2m();
 				break;
 		}

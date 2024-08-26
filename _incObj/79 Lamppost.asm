@@ -3,6 +3,7 @@
 ; ---------------------------------------------------------------------------
 
 Lamppost:
+		if MMD_Is_Level
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	Lamp_Index(pc,d0.w),d1
@@ -205,3 +206,6 @@ Lamp_LoadInfo:
 
 locret_170F6:
 		rts	
+		else
+		undefObjTrap
+		endif

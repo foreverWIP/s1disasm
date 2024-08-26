@@ -3,6 +3,7 @@
 ; ---------------------------------------------------------------------------
 
 MissileDissolve:
+		if MMD_Is_Level
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	MDis_Index(pc,d0.w),d1
@@ -35,6 +36,9 @@ MDis_Animate:	; Routine 2
 
 .display:
 		bra.w	DisplaySprite
+		else
+		undefObjTrap
+		endif
 ; ===========================================================================
 
 ; ---------------------------------------------------------------------------
@@ -42,6 +46,7 @@ MDis_Animate:	; Routine 2
 ; ---------------------------------------------------------------------------
 
 ExplosionItem:
+		if MMD_Is_Level
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	ExItem_Index(pc,d0.w),d1
@@ -84,12 +89,16 @@ ExItem_Animate:	; Routine 4 (2 for ExplosionBomb)
 
 .display:
 		bra.w	DisplaySprite
+		else
+		undefObjTrap
+		endif
 ; ===========================================================================
 ; ---------------------------------------------------------------------------
 ; Object 3F - explosion	from a destroyed boss, bomb or cannonball
 ; ---------------------------------------------------------------------------
 
 ExplosionBomb:
+		if MMD_Is_Level
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	ExBom_Index(pc,d0.w),d1
@@ -111,3 +120,6 @@ ExBom_Main:	; Routine 0
 		move.b	#0,obFrame(a0)
 		move.w	#sfx_Bomb,d0
 		jmp	(PlaySound_Special).l	; play exploding bomb sound
+		else
+		undefObjTrap
+		endif

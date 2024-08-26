@@ -3,6 +3,7 @@
 ; ---------------------------------------------------------------------------
 
 Animals:
+		if ~~MMD_Is_Title
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	Anml_Index(pc,d0.w),d1
@@ -405,3 +406,6 @@ sub_9404:
 		subi.w	#$B8,d0
 		rts	
 ; End of function sub_9404
+		else
+		undefObjTrap
+		endif

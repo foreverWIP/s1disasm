@@ -4,6 +4,7 @@
 ; ---------------------------------------------------------------------------
 
 Button:
+		if MMD_Is_Level
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	But_Index(pc,d0.w),d1
@@ -169,4 +170,7 @@ loc_BE9E:
 		move.w	(sp)+,d3
 		moveq	#1,d0
 		rts	
+		else
+		undefObjTrap
+		endif
 ; End of function But_MZBlock

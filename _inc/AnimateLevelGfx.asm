@@ -565,7 +565,7 @@ loc_1C4FA:
 
 
 AniArt_GiantRing:
-
+		if ~~MMD_Is_SBZ
 .size		= 14
 
 		tst.w	(v_gfxbigring).l	; Is there any of the art left to load?
@@ -590,5 +590,6 @@ AniArt_GiantRing:
 
 		move.w	#.size-1,d1
 		bra.w	LoadTiles
+		endif
 
 ; End of function AniArt_GiantRing

@@ -3,6 +3,7 @@
 ; ---------------------------------------------------------------------------
 
 HiddenBonus:
+		if MMD_Is_Level
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	Bonus_Index(pc,d0.w),d1
@@ -75,3 +76,6 @@ Bonus_Display:	; Routine 2
 
 Bonus_Display_Delete:	
 		jmp	(DeleteObject).l
+		else
+		undefObjTrap
+		endif

@@ -65,7 +65,7 @@
  * @details The name of the software, in plain ASCII encoding
  * @note 48 bytes
  */
-#define HEADER_NAME_INTL "SONIC THE               HEDGEHOG CD...?         "
+#define HEADER_NAME_INTL "SONIC THE               HEDGEHOG FOR MEGA CD    "
 //                       "################################################"
 
 /**
@@ -84,7 +84,7 @@
  * space. The spacing bar will not work for Japanese characters.
  *
  */
-#define HEADER_NAME_JP "SONIC THE               HEDGEHOG CD...?         "
+#define HEADER_NAME_JP "SONIC THE               HEDGEHOG FOR MEGA CD    "
 //                     "################################################"
 
 /**

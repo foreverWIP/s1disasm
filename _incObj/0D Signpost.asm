@@ -3,6 +3,7 @@
 ; ---------------------------------------------------------------------------
 
 Signpost:
+		if MMD_Is_Level
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	Sign_Index(pc,d0.w),d1
@@ -166,3 +167,6 @@ TimeBonuses:	dc.w 5000, 5000, 1000, 500, 400, 400, 300, 300,	200, 200
 
 Sign_Exit:	; Routine 8
 		rts	
+		else
+		undefObjTrap
+		endif
