@@ -202,6 +202,88 @@ void load_file_wrapper(u16 const access_operation, char const * load_filename, u
 	}
 }
 
+typedef struct {
+	const char* filename;
+	u32 location_wram_relative;
+} FileKVP;
+
+const FileKVP SonicArt = {
+	"ARTSONIC.BIN;1", 0x25000
+};
+
+const FileKVP TitleFiles[] = {
+	{ "M16GHZ.ENI;1", 0x1e000 },
+	{ "M256GHZ.KOS;1", 0x1f000 },
+	{ "ARTGHZ1.NEM;1", 0x22000 },
+	{ "ARTGHZ2.NEM;1", 0x23800 },
+	{ 0, 0 },
+};
+
+const FileKVP GHZFiles[] = {
+	{ "M16GHZ.ENI;1", 0x1e000 },
+	{ "M256GHZ.KOS;1", 0x1f000 },
+	{ "ARTGHZ1.NEM;1", 0x22000 },
+	{ "ARTGHZ2.NEM;1", 0x23800 },
+	SonicArt,
+	{ 0, 0 },
+};
+
+const FileKVP MZFiles[] = {
+	{ "M16MZ.ENI;1", 0x1e000 },
+	{ "M256MZ.KOS;1", 0x1f000 },
+	{ "ARTMZ.NEM;1", 0x22000 },
+	SonicArt,
+	{ 0, 0 },
+};
+
+const FileKVP SYZFiles[] = {
+	{ "M16SYZ.ENI;1", 0x1e000 },
+	{ "M256SYZ.KOS;1", 0x1f000 },
+	{ "ARTSYZ.NEM;1", 0x22000 },
+	SonicArt,
+	{ 0, 0 },
+};
+
+const FileKVP LZFiles[] = {
+	{ "M16LZ.ENI;1", 0x20400 },
+	{ "M256LZ.KOS;1", 0x20800 },
+	{ "ARTLZ.NEM;1", 0x23000 },
+	SonicArt,
+	{ 0, 0 },
+};
+
+const FileKVP SLZFiles[] = {
+	{ "M16SLZ.ENI;1", 0x1e000 },
+	{ "M256SLZ.KOS;1", 0x1f000 },
+	{ "ARTSLZ.NEM;1", 0x22000 },
+	SonicArt,
+	{ 0, 0 },
+};
+
+const FileKVP SBZFiles[] = {
+	{ "M16SBZ.ENI;1", 0x1ec00 },
+	{ "M256SBZ.KOS;1", 0x1fc00 },
+	{ "ARTSBZ.NEM;1", 0x22800 },
+	SonicArt,
+	{ 0, 0 },
+};
+
+const FileKVP ContinueFiles[] = {
+	SonicArt,
+	{ 0, 0 },
+};
+
+void load_file_list(const FileKVP* file_list)
+{
+	FileKVP* file_entry = &file_list[0];
+
+	while (file_entry->filename)
+	{
+		load_file_wrapper(ACC_OP_LOAD_CDC, file_entry->filename, (u8 *) (_WRDRAM_2M + file_entry->location_wram_relative));
+		file_entry++;
+	}
+}
+
 // It's a good idea to put SPX's main in .init to ensure it's at the very start
 // of the code, since we jump to where we expect it to be in memory
 __attribute__((section(".init"))) void main()
@@ -251,38 +333,30 @@ __attribute__((section(".init"))) void main()
 				switch (cmd1)
 				{
 					case 0:
-						load_file_wrapper(ACC_OP_LOAD_CDC, "GHZ1.NEM;1", (u8 *) (_WRDRAM_2M + 0x20000));
-						load_file_wrapper(ACC_OP_LOAD_CDC, "GHZ2.NEM;1", (u8 *) (_WRDRAM_2M + 0x22000));
+						load_file_list(TitleFiles);
 						break;
 					case 1:
 					case 9:
-						load_file_wrapper(ACC_OP_LOAD_CDC, "GHZ1.NEM;1", (u8 *) (_WRDRAM_2M + 0x20000));
-						load_file_wrapper(ACC_OP_LOAD_CDC, "GHZ2.NEM;1", (u8 *) (_WRDRAM_2M + 0x22000));
-						load_file_wrapper(ACC_OP_LOAD_CDC, "SONIC.BIN;1", (u8 *) (_WRDRAM_2M + 0x24000));
+						load_file_list(GHZFiles);
 						break;
 					case 2:
-						load_file_wrapper(ACC_OP_LOAD_CDC, "MZ.NEM;1", (u8 *) (_WRDRAM_2M + 0x20000));
-						load_file_wrapper(ACC_OP_LOAD_CDC, "SONIC.BIN;1", (u8 *) (_WRDRAM_2M + 0x24000));
+						load_file_list(MZFiles);
 						break;
 					case 3:
-						load_file_wrapper(ACC_OP_LOAD_CDC, "SYZ.NEM;1", (u8 *) (_WRDRAM_2M + 0x20000));
-						load_file_wrapper(ACC_OP_LOAD_CDC, "SONIC.BIN;1", (u8 *) (_WRDRAM_2M + 0x24000));
+						load_file_list(SYZFiles);
 						break;
 					case 4:
-						load_file_wrapper(ACC_OP_LOAD_CDC, "LZ.NEM;1", (u8 *) (_WRDRAM_2M + 0x20000));
-						load_file_wrapper(ACC_OP_LOAD_CDC, "SONIC.BIN;1", (u8 *) (_WRDRAM_2M + 0x24000));
+						load_file_list(LZFiles);
 						break;
 					case 5:
-						load_file_wrapper(ACC_OP_LOAD_CDC, "SLZ.NEM;1", (u8 *) (_WRDRAM_2M + 0x20000));
-						load_file_wrapper(ACC_OP_LOAD_CDC, "SONIC.BIN;1", (u8 *) (_WRDRAM_2M + 0x24000));
+						load_file_list(SLZFiles);
 						break;
 					case 6:
-						load_file_wrapper(ACC_OP_LOAD_CDC, "SBZ.NEM;1", (u8 *) (_WRDRAM_2M + 0x20000));
-						load_file_wrapper(ACC_OP_LOAD_CDC, "SONIC.BIN;1", (u8 *) (_WRDRAM_2M + 0x24000));
+						load_file_list(SBZFiles);
 						break;
 					case 7:
 					case 8:
-						load_file_wrapper(ACC_OP_LOAD_CDC, "SONIC.BIN;1", (u8 *) (_WRDRAM_2M + 0x24000));
+						load_file_list(ContinueFiles);
 						break;
 				}
 

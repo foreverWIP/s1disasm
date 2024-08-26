@@ -9352,7 +9352,7 @@ SoundDriver:	include "s1.sounddriver.asm"
 	if MOMPASS=2
 		message "ROM size is $\{EndOfRom-StartOfRom} bytes"
 	endif
-		include "memmappedart.asm"
+		include "memmappeddata.asm"
 EndOfRom:
 	if MMD_Enabled
 		dephase

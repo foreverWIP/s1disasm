@@ -23,7 +23,7 @@ __LABEL__ label *
 	endif
 	endm
 
-Art_Text:	bincludealigned	"artunc/menutext.bin",~~MMD_Is_Title ; text used in level select and debug mode
+Art_Text:	bincludealigned	"artunc/menutext.bin" ; text used in level select and debug mode
 Art_Text_End:	even
 Art_Hud:	bincludealigned	"artunc/HUD Numbers.bin",~~MMD_Is_Title ; 8x16 pixel numbers on HUD
 Art_LivesNums:	bincludealigned	"artunc/Lives Counter Numbers.bin",~~MMD_Is_Title ; 8x8 pixel numbers on lives counter
@@ -36,18 +36,18 @@ Nem_TitleTM:	bincludealigned	"artnem/Title Screen TM.nem",MMD_Is_Title
 ; ---------------------------------------------------------------------------
 ; Compressed graphics - primary patterns and block mappings
 ; ---------------------------------------------------------------------------
-Blk16_GHZ:		bincludealigned		"map16/GHZ.eni",MMD_Is_GHZ||MMD_Is_Title||MMD_Is_Ending
-Blk16_LZ:		bincludealigned		"map16/LZ.eni",MMD_Is_LZ
-Blk16_MZ:		bincludealigned		"map16/MZ.eni",MMD_Is_MZ
-Blk16_SLZ:		bincludealigned		"map16/SLZ.eni",MMD_Is_SLZ
-Blk16_SYZ:		bincludealigned		"map16/SYZ.eni",MMD_Is_SYZ
-Blk16_SBZ:		bincludealigned		"map16/SBZ.eni",MMD_Is_SBZ
-Blk256_GHZ:		bincludealigned	"map256/GHZ.kos",MMD_Is_GHZ||MMD_Is_Title||MMD_Is_Ending
-Blk256_LZ:		bincludealigned	"map256/LZ.kos",MMD_Is_LZ
-Blk256_MZ:		bincludealigned	"map256/MZ (JP1).kos",MMD_Is_MZ
-Blk256_SLZ:		bincludealigned	"map256/SLZ.kos",MMD_Is_SLZ
-Blk256_SYZ:		bincludealigned	"map256/SYZ.kos",MMD_Is_SYZ
-Blk256_SBZ:		bincludealigned	"map256/SBZ (JP1).kos",MMD_Is_SBZ
+;Blk16_GHZ:		bincludealigned		"map16/GHZ.eni",MMD_Is_GHZ||MMD_Is_Title||MMD_Is_Ending
+;Blk16_LZ:		bincludealigned		"map16/LZ.eni",MMD_Is_LZ
+;Blk16_MZ:		bincludealigned		"map16/MZ.eni",MMD_Is_MZ
+;Blk16_SLZ:		bincludealigned		"map16/SLZ.eni",MMD_Is_SLZ
+;Blk16_SYZ:		bincludealigned		"map16/SYZ.eni",MMD_Is_SYZ
+;Blk16_SBZ:		bincludealigned		"map16/SBZ.eni",MMD_Is_SBZ
+;Blk256_GHZ:		bincludealigned	"map256/GHZ.kos",MMD_Is_GHZ||MMD_Is_Title||MMD_Is_Ending
+;Blk256_LZ:		bincludealigned	"map256/LZ.kos",MMD_Is_LZ
+;Blk256_MZ:		bincludealigned	"map256/MZ (JP1).kos",MMD_Is_MZ
+;Blk256_SLZ:		bincludealigned	"map256/SLZ.kos",MMD_Is_SLZ
+;Blk256_SYZ:		bincludealigned	"map256/SYZ.kos",MMD_Is_SYZ
+;Blk256_SBZ:		bincludealigned	"map256/SBZ (JP1).kos",MMD_Is_SBZ
 
 ;Nem_GHZ_1st:	;bincludealigned	"artnem/8x8 - GHZ1.nem",MMD_Is_GHZ||MMD_Is_Title||MMD_Is_Ending
 ;Nem_GHZ_2nd:	;bincludealigned	"artnem/8x8 - GHZ2.nem",MMD_Is_GHZ||MMD_Is_Title||MMD_Is_Ending
@@ -63,6 +63,7 @@ Blk256_SBZ:		bincludealigned	"map256/SBZ (JP1).kos",MMD_Is_SBZ
 Nem_Shield:	bincludealigned	"artnem/Shield.nem",MMD_Is_Level
 Nem_Stars:	bincludealigned	"artnem/Invincibility Stars.nem",MMD_Is_Level
 
+; $7C2 total
 ; ---------------------------------------------------------------------------
 ; Compressed graphics - GHZ stuff
 ; ---------------------------------------------------------------------------
@@ -77,6 +78,7 @@ Nem_SpikePole:	bincludealigned	"artnem/GHZ Spiked Log.nem",MMD_Is_GHZ
 Nem_PplRock:	bincludealigned	"artnem/GHZ Purple Rock.nem",MMD_Is_GHZ||MMD_Is_Ending
 Nem_GhzWall1:	bincludealigned	"artnem/GHZ Breakable Wall.nem",MMD_Is_GHZ
 Nem_GhzWall2:	bincludealigned	"artnem/GHZ Edge Wall.nem",MMD_Is_GHZ||MMD_Is_Ending
+; $233E total
 ; ---------------------------------------------------------------------------
 ; Compressed graphics - LZ stuff
 ; ---------------------------------------------------------------------------
@@ -96,6 +98,7 @@ Nem_LzBlock2:	bincludealigned	"artnem/LZ Blocks.nem",MMD_Is_LZ
 Nem_LzPlatfm:	bincludealigned	"artnem/LZ Rising Platform.nem",MMD_Is_LZ
 Nem_Cork:	bincludealigned	"artnem/LZ Cork.nem",MMD_Is_LZ
 Nem_LzBlock1:	bincludealigned	"artnem/LZ 32x32 Block.nem",MMD_Is_LZ
+; $115C total
 ; ---------------------------------------------------------------------------
 ; Compressed graphics - MZ stuff
 ; ---------------------------------------------------------------------------
@@ -107,6 +110,7 @@ Nem_MzFire:	bincludealigned	"artnem/Fireballs.nem",MMD_Is_MZ
 Nem_Lava:	bincludealigned	"artnem/MZ Lava.nem",MMD_Is_MZ
 Nem_MzBlock:	bincludealigned	"artnem/MZ Green Pushable Block.nem",MMD_Is_MZ
 Nem_MzUnkBlock:	;bincludealigned	"artnem/Unused - MZ Background.nem",MMD_Is_MZ
+; $A9C total
 ; ---------------------------------------------------------------------------
 ; Compressed graphics - SLZ stuff
 ; ---------------------------------------------------------------------------
@@ -118,6 +122,7 @@ Nem_Pylon:	bincludealigned	"artnem/SLZ Pylon.nem",MMD_Is_SLZ
 Nem_SlzSwing:	bincludealigned	"artnem/SLZ Swinging Platform.nem",MMD_Is_SLZ||MMD_Is_SBZ
 Nem_SlzBlock:	bincludealigned	"artnem/SLZ 32x32 Block.nem",MMD_Is_SLZ
 Nem_SlzCannon:	bincludealigned	"artnem/SLZ Cannon.nem",MMD_Is_SLZ
+; $53C total
 ; ---------------------------------------------------------------------------
 ; Compressed graphics - SYZ stuff
 ; ---------------------------------------------------------------------------
@@ -125,6 +130,7 @@ Nem_Bumper:	bincludealigned	"artnem/SYZ Bumper.nem",MMD_Is_SYZ||MMD_Is_SS
 Nem_SyzSpike2:	bincludealigned	"artnem/SYZ Small Spikeball.nem",MMD_Is_SYZ
 Nem_LzSwitch:	bincludealigned	"artnem/Switch.nem",MMD_Is_SYZ||MMD_Is_LZ
 Nem_SyzSpike1:	bincludealigned	"artnem/SYZ Large Spikeball.nem",MMD_Is_SYZ
+; $12BC total
 ; ---------------------------------------------------------------------------
 ; Compressed graphics - SBZ stuff
 ; ---------------------------------------------------------------------------

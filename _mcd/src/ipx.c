@@ -45,6 +45,15 @@ static volatile u8* v_use_cd_audio = (u8*)0x23CAE4;
 static volatile u8* v_undef_obj_id = (u8*)0x23CAE5;
 static volatile u8* v_undef_gm_id = (u8*)0x23CAE6;
 
+inline void sync_with_sub()
+{
+	while (*GA_COMSTAT0 == 0)
+			;
+	*GA_COMCMD0 = 0;
+	while (*GA_COMSTAT0 != 0)
+		;
+}
+
 void vint_ex()
 {
 	
@@ -263,11 +272,8 @@ void main()
 		while (*GA_COMFLAGS_SUB & 0x80)
 			;
 
-		while (*GA_COMSTAT0 == 0)
-			;
-		*GA_COMCMD0 = 0;
-		while (*GA_COMSTAT0 != 0)
-			;
+		sync_with_sub();
+		
 		if (*v_undef_obj_id != 0xff)
 		{
 			undef_obj_error(*v_undef_obj_id);
