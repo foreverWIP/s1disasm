@@ -644,6 +644,14 @@ VBla_0A:
 		move.b	#0,(f_sonframechg).l
 
 .nochg:
+		cmpi.b	#96,(v_hbla_line).l
+		bcc.s	.update
+		bra.w	.end
+
+.update:
+		if MMD_Is_SS
+		jsr		(SS_LoadWalls).l
+		endif
 		tst.w	(v_demolength).l	; is there time left on the demo?
 		beq.w	.end	; if not, return
 		subq.w	#1,(v_demolength).l	; subtract 1 from time left in demo
@@ -714,6 +722,14 @@ VBla_16:
 		move.b	#0,(f_sonframechg).l
 
 .nochg:
+		cmpi.b	#96,(v_hbla_line).l
+		bcc.s	.update
+		bra.w	.end
+
+.update:
+		if MMD_Is_SS
+		jsr		(SS_LoadWalls).l
+		endif
 		tst.w	(v_demolength).l
 		beq.w	.end
 		subq.w	#1,(v_demolength).l
@@ -3039,6 +3055,7 @@ GM_Special:
 		move.l	#0,(v_screenposx).l
 		move.l	#0,(v_screenposy).l
 		move.b	#id_SonicSpecial,(v_player).l ; load special stage Sonic object
+		move.b	#$FF,(v_ssangleprev).l	; fill previous angle with obviously false value to force an update
 		bsr.w	PalCycle_SS
 		clr.w	(v_ssangle).l	; set stage angle to "upright"
 		move.w	#$40,(v_ssrotate).l ; set stage rotation speed
@@ -8207,17 +8224,17 @@ loc_1B288:
 
 
 SS_AniWallsRings:
-		lea	((v_ssblocktypes+$C)&$FFFFFF).l,a1
-		moveq	#0,d0
-		move.b	(v_ssangle).l,d0
-		lsr.b	#2,d0
-		andi.w	#$F,d0
-		moveq	#$24-1,d1
-
-loc_1B2A4:
-		move.w	d0,(a1)
-		addq.w	#8,a1
-		dbf	d1,loc_1B2A4
+;		lea	((v_ssblocktypes+$C)&$FFFFFF).l,a1
+;		moveq	#0,d0
+;		move.b	(v_ssangle).l,d0
+;		lsr.b	#2,d0
+;		andi.w	#$F,d0
+;		moveq	#$24-1,d1
+;
+;loc_1B2A4:
+;		move.w	d0,(a1)
+;		addq.w	#8,a1
+;		dbf	d1,loc_1B2A4
 
 		lea	((v_ssblocktypes+5)&$FFFFFF).l,a1
 		subq.b	#1,(v_ani1_time).l
@@ -8313,6 +8330,30 @@ loc_1B350:
 		adda.w	#$48,a1
 		rts	
 ; End of function SS_AniWallsRings
+
+SS_LoadWalls:
+		moveq	#0,d0
+		move.b	(v_ssangle).l,d0	; get the Special Stage angle
+		lsr.b	#2,d0			; modify so it can be used as a frame ID
+		andi.w	#$F,d0
+		cmp.b	(v_ssangleprev).l,d0	; does the modified angle match the recorded value?
+		beq.s	.return			; if so, branch
+
+		lea	(vdp_data_port).l,a6
+		lea	(Art_SSWalls).l,a1	; load wall art
+		move.w	d0,d1
+		lsl.w	#8,d1
+		add.w	d1,d1
+		add.w	d1,a1
+
+		locVRAM	$2840			; VRAM address
+
+		move.w	#$F,d1			; number of 8x8 tiles
+		jsr	LoadTiles
+		move.b	d0,(v_ssangleprev).l	; record the modified angle for comparison
+
+.return:
+		rts
 
 ; ===========================================================================
 SS_WaRiVramSet:	dc.w $142, $6142, $142,	$142, $142, $142, $142,	$6142

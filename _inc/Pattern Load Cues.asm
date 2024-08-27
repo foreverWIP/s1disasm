@@ -304,7 +304,7 @@ PLC_SpecialStage:	dc.w ((PLC_SpeStageend-PLC_SpecialStage-2)/6)-1
 		if MMD_Is_SS
 		plcm	Nem_SSBgCloud,  ArtTile_SS_Background_Clouds ; bubble and cloud background
 		plcm	Nem_SSBgFish,   ArtTile_SS_Background_Fish   ; bird and fish background
-		plcm	Nem_SSWalls,    ArtTile_SS_Wall              ; walls
+		;plcm	Nem_SSWalls,    ArtTile_SS_Wall              ; walls
 		plcm	Nem_Bumper,     ArtTile_SS_Bumper            ; bumper
 		plcm	Nem_SSGOAL,     ArtTile_SS_Goal              ; GOAL block
 		plcm	Nem_SSUpDown,   ArtTile_SS_Up_Down           ; UP and DOWN blocks

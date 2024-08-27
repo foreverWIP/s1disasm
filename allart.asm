@@ -211,7 +211,6 @@ Art_BigRing:	bincludealigned	"artunc/Giant Ring.bin",MMD_Is_Level&&~~MMD_Is_SBZ
 Eni_JapNames:	bincludealigned	"tilemaps/Hidden Japanese Credits.eni",MMD_Is_Title
 Nem_JapNames:	bincludealigned	"artnem/Hidden Japanese Credits.nem",MMD_Is_Title
 
-Map_SSWalls:
 				if MMD_Is_SS
 				include			"_maps/SS Walls.asm"
 				endif
@@ -219,7 +218,7 @@ Map_SSWalls:
 ; ---------------------------------------------------------------------------
 ; Compressed graphics - special stage
 ; ---------------------------------------------------------------------------
-Nem_SSWalls:	bincludealigned	"artnem/Special Walls.nem",MMD_Is_SS
+Art_SSWalls:	bincludealigned	"artunc/Special Walls.unc",MMD_Is_SS
 Eni_SSBg1:	bincludealigned	"tilemaps/SS Background 1.eni",MMD_Is_SS
 Nem_SSBgFish:	bincludealigned	"artnem/Special Birds & Fish.nem",MMD_Is_SS
 Eni_SSBg2:	bincludealigned	"tilemaps/SS Background 2.eni",MMD_Is_SS
