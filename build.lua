@@ -47,10 +47,6 @@ local build_file = function(k, v, mmd_format)
 	local message, abort = common.build_rom("sonic", out_name, "-D MMD_ID=" .. (k - 1) .. ",MMD_Enabled=" .. mmd_enabled, "-p=0 -z=0," .. compression .. ",Size_of_DAC_driver_guess,after", false, "https://github.com/sonicretro/s1disasm")
 	os.remove(out_name .. ".lst")
 	os.rename("sonic.lst", out_name .. ".lst")
-	if out_name == "build/mmd/" .. v then
-		os.remove("_mcd/disc/" .. v .. ".BIN")
-		os.rename(out_name .. ".bin", "_mcd/disc/" .. v .. ".BIN")
-	end
 
 	if message then
 		exit_code = false
