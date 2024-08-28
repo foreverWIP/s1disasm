@@ -16,6 +16,9 @@ Blk256_SYZ:
 				phase $21FC00
 Blk256_SBZ:
 				dephase
+				phase $220000
+Art_SSWalls:
+				dephase
 				phase $220400
 Blk16_LZ:
 				dephase
@@ -37,6 +40,12 @@ Nem_LZ:
 				phase $223800
 Nem_GHZ_2nd:
 				dephase
+				if ~~MMD_Is_SS
 				phase $225000
 Art_Sonic:
 				dephase
+				else
+				phase $230000
+Art_Sonic:
+				dephase
+				endif

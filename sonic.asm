@@ -8334,16 +8334,19 @@ loc_1B350:
 SS_LoadWalls:
 		moveq	#0,d0
 		move.b	(v_ssangle).l,d0	; get the Special Stage angle
-		lsr.b	#2,d0			; modify so it can be used as a frame ID
-		andi.w	#$F,d0
+		;lsr.b	#2,d0			; modify so it can be used as a frame ID
+		;andi.w	#$F,d0
 		cmp.b	(v_ssangleprev).l,d0	; does the modified angle match the recorded value?
 		beq.s	.return			; if so, branch
 
 		lea	(vdp_data_port).l,a6
 		lea	(Art_SSWalls).l,a1	; load wall art
 		move.w	d0,d1
+		;lsl.w	#8,d1
+		;add.w	d1,d1
+		lsr.w	#1,d1
 		lsl.w	#8,d1
-		add.w	d1,d1
+		lsl.w	#1,d1
 		add.w	d1,a1
 
 		locVRAM	$2840			; VRAM address

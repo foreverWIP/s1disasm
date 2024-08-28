@@ -218,7 +218,7 @@ Nem_JapNames:	bincludealigned	"artnem/Hidden Japanese Credits.nem",MMD_Is_Title
 ; ---------------------------------------------------------------------------
 ; Compressed graphics - special stage
 ; ---------------------------------------------------------------------------
-Art_SSWalls:	bincludealigned	"artunc/Special Walls.unc",MMD_Is_SS
+;Art_SSWalls:	bincludealigned	"artunc/Special Walls.unc",MMD_Is_SS
 Eni_SSBg1:	bincludealigned	"tilemaps/SS Background 1.eni",MMD_Is_SS
 Nem_SSBgFish:	bincludealigned	"artnem/Special Birds & Fish.nem",MMD_Is_SS
 Eni_SSBg2:	bincludealigned	"tilemaps/SS Background 2.eni",MMD_Is_SS

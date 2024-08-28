@@ -112,6 +112,27 @@ void undef_gm_error(u8 gm_id)
 	} while (1);
 }
 
+void wait_on_cd_command(u8 cmd0, u8 cmd1)
+{
+	grant_2m();
+	*GA_COMCMD1 = cmd1;
+	*GA_COMCMD0 = cmd0;
+
+	do
+	{
+		asm ("nop");
+	} while (*GA_COMSTAT0 == 0);
+
+	*GA_COMCMD0 = 0;
+
+	do
+	{
+		asm ("nop");
+	} while (*GA_COMSTAT0 != 0);
+
+	wait_2m();
+}
+
 // At this point, the full IPX binary has been copies to Work RAM and all
 // traces of the security code and tiny IP are gone. We can now get on with
 // actually useful game code
@@ -144,10 +165,6 @@ void main()
 		blib_vint_wait(0);
 
 		enable_debug_output();
-
-		// make sure that the Sub CPU controls 2M Word RAM before we request the
-		// file
-		grant_2m();
 
 		// In this example, we have the command for the Sub CPU stored in COMCMD0
 		// and the command argument in COMCMD1. Command 1 will be "load a file"
@@ -216,49 +233,7 @@ void main()
 				com_cmd = MMD_TITLE;
 				break;
 		}
-		*GA_COMCMD1 = com_cmd;
-
-		// then set the command
-		*GA_COMCMD0 = 1;
-
-		// wait for acknowledgment from the Sub CPU that the command was
-		// received and will be acted on
-		print_msg("Waiting for acknowledge\xff", 0, 1);
-		do
-		{
-			// the NOP is so GCC doesn't optimize the loop away
-			// though since comstat is marked volatile it should be fine...
-			asm ("nop");
-			if (*GA_COMSTAT0 == 0xff)
-			{
-				enable_debug_output();
-				print_msg("Acknowledge error      \xff", 0, 1);
-				while (1)
-				{
-					asm ("nop");
-				}
-			}
-		} while (*GA_COMSTAT0 == 0);
-
-		// reset the command to none (0) once we have the acknowledgment
-		*GA_COMCMD0 = 0;
-		print_msg("Acknowledged           \xff", 0, 1);
-
-		// the Sub CPU side work will be complete when COMSTAT0 returns to 0
-		print_msg("Loading module   \xff", 0, 2);
-		do
-		{
-			asm ("nop");
-			if (*GA_COMSTAT0 == 0xff)
-			{
-				enable_debug_output();
-				print_msg("Module load error\xff", 0, 2);
-				while (1)
-				{
-					asm ("nop");
-				}
-			}
-		} while (*GA_COMSTAT0 != 0);
+		wait_on_cd_command(1, com_cmd);
 
 		// Sub CPU side work is complete and the MMD should now be in 2M Word RAM
 		// Run it!

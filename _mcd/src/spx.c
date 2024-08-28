@@ -273,6 +273,12 @@ const FileKVP ContinueFiles[] = {
 	{ 0, 0 },
 };
 
+const FileKVP SpecialStageFiles[] = {
+	{ "SSWALL.BIN;1", 0x20000 },
+	{ "ARTSONIC.BIN;1", 0x30000 },
+	{ 0, 0 },
+};
+
 void load_file_list(const FileKVP* file_list)
 {
 	FileKVP* file_entry = &file_list[0];
@@ -355,6 +361,8 @@ __attribute__((section(".init"))) void main()
 						load_file_list(SBZFiles);
 						break;
 					case 7:
+						load_file_list(SpecialStageFiles);
+						break;
 					case 8:
 						load_file_list(ContinueFiles);
 						break;
