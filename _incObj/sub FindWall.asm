@@ -3,7 +3,11 @@
 
 FindWall:
 		bsr.w	FindNearestTile
+		moveq	#0,d0
+		cmpi.l	#-1,a1
+		beq.s	.noread
 		move.w	(a1),d0
+.noread:
 		move.w	d0,d4
 		andi.w	#$7FF,d0
 		beq.s	loc_14B1E
@@ -84,7 +88,11 @@ loc_14BA6:
 
 FindWall2:
 		bsr.w	FindNearestTile
+		moveq	#0,d0
+		cmpi.l	#-1,a1
+		beq.s	.noread
 		move.w	(a1),d0
+.noread:
 		move.w	d0,d4
 		andi.w	#$7FF,d0
 		beq.s	loc_14BC6

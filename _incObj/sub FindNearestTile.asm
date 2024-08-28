@@ -28,7 +28,7 @@ FindNearestTile:
 		endif
 		lea	(v_lvllayout).l,a1
 		move.b	(a1,d0.w),d1	; get 256x256 tile number
-		beq.s	.blanktile	; branch if 0 (this causes $FFFFFF00 (v_chunk0collision) to be returned in a1!)
+		beq.s	.blanktile	; branch if 0
 		bmi.s	.specialtile	; branch if >$7F
 		subq.b	#1,d1
 		ext.w	d1
@@ -41,9 +41,11 @@ FindNearestTile:
 		lsr.w	#3,d0
 		andi.w	#$1E,d0
 		add.w	d0,d1
+		movea.l	d1,a1
+		rts	
 
 .blanktile:
-		movea.l	d1,a1
+		movea.l	#-1,a1
 		rts	
 ; ===========================================================================
 
