@@ -460,6 +460,9 @@ ptr_GM_Credits:	bra.w	GM_Credits	; Credits ($1C)
 ; ---------------------------------------------------------------------------
 
 VBlank:
+		if MMD_Enabled
+		bset.b #0, ($A12000).l
+		endif
 		movem.l	d0-a6,-(sp)
 		stopZ80
 		tst.b	(v_vbla_routine).l

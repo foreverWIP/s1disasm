@@ -22,7 +22,7 @@ enum {
 	MMD_CREDITS,
 };
 
-extern u32 Debugger_BusError;
+/*extern u32 Debugger_BusError;
 extern u32 Debugger_AddressError;
 extern u32 Debugger_TraceError;
 extern u32 Debugger_SpuriousException;
@@ -33,17 +33,71 @@ extern u32 Debugger_IllegalInstrError;
 extern u32 Debugger_PrivilegeViolation;
 extern u32 Debugger_LineAEmulation;
 extern u32 Debugger_LineFEmulation;
-extern u32 Debugger_TrapVector;
+extern u32 Debugger_TrapVector;*/
 
-static volatile u8* v_gamemode = (u8*)0x23F600;
+#define v_spritetablebuffer ((Sprite*) 0xFFF800)
+#define v_palette ((u16*) 0xFFFB00)
+
+static u32 frame_counter = 0;
+static u8 cur_sonic_anim_index = 0;
+static u8 is_loading = 0;
+
+#define v_gamemode (*((u8*)0x23F600))
 static u8 v_gamemode_backup;
-static volatile u8* v_zone = (u8*)0x23FE10;
+#define v_zone (*((u8*)0x23FE10))
 static u8 v_zone_backup;
-static volatile u8* v_should_quit_module = (u8*)0x23CAE4;
-static volatile u16* v_lastlamp = (u16*)0x23FE30;
-static volatile u8* v_use_cd_audio = (u8*)0x23CAE4;
-static volatile u8* v_undef_obj_id = (u8*)0x23CAE5;
-static volatile u8* v_undef_gm_id = (u8*)0x23CAE6;
+#define v_should_quit_module (*((u8*)0x23CAE4))
+#define v_lastlamp (*((u16*)0x23FE30))
+#define v_use_cd_audio (*((u8*)0x23CAE4))
+#define v_undef_obj_id (*((u8*)0x23CAE5))
+#define v_undef_gm_id (*((u8*)0x23CAE6))
+#define v_vbla_routine (*((u8*)0xFFF62A))
+
+extern u8* Loading_Sonic_Art, Loading_Sonic_Art_end;
+extern u16* Loading_Sonic_Map;
+extern u16* Loading_Sonic_Pal, Loading_Sonic_Pal_end;
+
+const u16 Loading_Sonic_Art_VRAM_Pos = 0x4000;
+
+static inline void wait_for_vbla()
+{
+	disable_interrupts();
+	v_vbla_routine = 1;
+	enable_interrupts();
+	while (v_vbla_routine)
+	{
+		asm("nop");
+	}
+}
+
+static void set_sonic_frame(u8 frame)
+{
+	u16 sprite_offset = *((u16*)&Loading_Sonic_Map + frame);
+	u8* raw_sprite_ptr = (u8*)&Loading_Sonic_Map + sprite_offset;
+	u8 num_sprite_pieces = *raw_sprite_ptr++;
+	u8 next_sprite = 0;
+	for (u8 i = 0; i < num_sprite_pieces; i++)
+	{
+		s16 ypos = (s16)((s8)*raw_sprite_ptr++);
+		v_spritetablebuffer[next_sprite].pos_y = (u16)(ypos + 128 + 196);
+		u8 size = *raw_sprite_ptr++;
+		v_spritetablebuffer[next_sprite].width = size >> 2;
+		v_spritetablebuffer[next_sprite].height = size & 0b11;
+		v_spritetablebuffer[next_sprite].next = (i == (num_sprite_pieces - 1)) ? 0 : next_sprite + 1;
+		s16 tileinfo_highbyte = *raw_sprite_ptr++;
+		s16 tileinfo_lowbyte = *raw_sprite_ptr++;
+		s16 tileinfo = (tileinfo_highbyte << 8) | tileinfo_lowbyte;
+		v_spritetablebuffer[next_sprite].priority = 1 | (tileinfo >> 15);
+		v_spritetablebuffer[next_sprite].palette = ((tileinfo >> 13) + 1) & 0b11;
+		v_spritetablebuffer[next_sprite].v_flip = (tileinfo >> 12) & 1;
+		v_spritetablebuffer[next_sprite].h_flip = (tileinfo >> 11) & 1;
+		s16 xpos = (s16)((s8)*raw_sprite_ptr++);
+		v_spritetablebuffer[next_sprite].tile = (Loading_Sonic_Art_VRAM_Pos >> 5) + (tileinfo & 0x7ff);
+		v_spritetablebuffer[next_sprite].pos_x = (u16)(xpos + 128 + 296);
+
+		next_sprite++;
+	}
+}
 
 inline void sync_with_sub()
 {
@@ -54,12 +108,22 @@ inline void sync_with_sub()
 		;
 }
 
-void vint_ex()
+__attribute__((interrupt)) void vint_ex()
 {
-	
+	asm("bset.b #0, (0xA12000).l");
+	if (is_loading)
+	{
+		cur_sonic_anim_index = (frame_counter >> 4) & 1;
+		set_sonic_frame(cur_sonic_anim_index + 3);
+
+		blib_dma_xfer(VDPPTR(0) | CRAM_W, v_palette, 128 >> 1);
+		blib_dma_xfer(VDPPTR(0xF800), v_spritetablebuffer, 0x280 >> 1);
+	}
+	frame_counter++;
+	v_vbla_routine = 0;
 }
 
-void hint_ex()
+__attribute__((interrupt)) void hint_ex()
 {
 
 }
@@ -67,7 +131,7 @@ void hint_ex()
 static void print_msg(const char* msg, u8 x, u8 y)
 {
 	blib_print(msg, (VDPPTR(NMT_POS_PLANE(x, y, _BLIB_PLANEA_ADDR)) | VRAM_W));
-	blib_vint_wait(0);
+	wait_for_vbla();
 }
 
 void enable_debug_output()
@@ -76,12 +140,14 @@ void enable_debug_output()
 	blib_load_font_defaults();
 	for (u8 i = 0; i < 64; i++)
 	{
-		BLIB_PALETTE[i] = 0x0000;
+		v_palette[i] = 0x0000;
 	}
-	BLIB_PALETTE[1] = 0xeee;
-	MLEVEL6_VECTOR = (void *(*) ) _BLIB_VINT_HANDLER;
-	*BLIB_VINT_EX_PTR = vint_ex;
-	BLIB_VDP_UPDATE_FLAGS |= PAL_UPDATE_MSK;
+	v_palette[1] = 0xeee;
+	for (u8 i = 1; i < 16; i++)
+	{
+		v_palette[i] = 0xeee;
+	}
+	MLEVEL6_VECTOR = vint_ex;
 }
 
 void undef_obj_error(u8 obj_id)
@@ -133,38 +199,45 @@ void wait_on_cd_command(u8 cmd0, u8 cmd1)
 	wait_2m();
 }
 
+void set_up_loading_screen()
+{
+	enable_debug_output();
+	blib_dma_fill_clear(VDPPTR(0xB800), (0x10000 - 0xB800) >> 1);
+
+	blib_dma_xfer(VDPPTR(Loading_Sonic_Art_VRAM_Pos), &Loading_Sonic_Art, 0x6b60 >> 1);
+	memcpy8(&Loading_Sonic_Pal, &v_palette[16], 32);
+	VDP_CTRL_16 = 0x8500+(0xf800>>9);
+
+	is_loading = 1;
+}
+
 // At this point, the full IPX binary has been copies to Work RAM and all
 // traces of the security code and tiny IP are gone. We can now get on with
 // actually useful game code
 void main()
 {
-	*(volatile u32*)(_MADRERR+2) = Debugger_AddressError;
+	/**(volatile u32*)(_MADRERR+2) = Debugger_AddressError;
 	*(volatile u32*)(_MDIVERR+2) = Debugger_ZeroDivideError;
 	*(volatile u32*)(_MONKERR+2) = Debugger_CHKExceptionError;
 	*(volatile u32*)(_MTRPERR+2) = Debugger_TRAPVError;
   	*(volatile u32*)(_MSPVERR+2) = Debugger_PrivilegeViolation;
 	*(volatile u32*)(_MTRACE+2) = Debugger_TraceError;
 	*(volatile u32*)(_MNOCOD0+2) = Debugger_LineAEmulation;
-	*(volatile u32*)(_MNOCOD1+2) = Debugger_LineFEmulation;
+	*(volatile u32*)(_MNOCOD1+2) = Debugger_LineFEmulation;*/
+	install_handlers();
 
 	v_gamemode_backup = 0;
 	v_zone_backup = 0;
 
 	memset8(0, (u8*)0x200000, 0x40000);
 
-	for (u8 i = 0; i < 64; i++)
-	{
-		BLIB_PALETTE[i] = 0x0000;
-	}
-
 	do
 	{
-		MLEVEL6_VECTOR = (void *(*) ) _BLIB_VINT_HANDLER;
-		*BLIB_VINT_EX_PTR = vint_ex;
+		MLEVEL6_VECTOR = vint_ex;
 
-		blib_vint_wait(0);
+		set_up_loading_screen();
 
-		enable_debug_output();
+		enable_interrupts();
 
 		// In this example, we have the command for the Sub CPU stored in COMCMD0
 		// and the command argument in COMCMD1. Command 1 will be "load a file"
@@ -237,28 +310,30 @@ void main()
 
 		// Sub CPU side work is complete and the MMD should now be in 2M Word RAM
 		// Run it!
-		*v_lastlamp = 0;
-		*v_undef_obj_id = 0xff;
-		*v_undef_gm_id = 0xff;
-		// *v_use_cd_audio = 1;
+		disable_interrupts();
+		is_loading = 0;
+		v_lastlamp = 0;
+		v_undef_obj_id = 0xff;
+		v_undef_gm_id = 0xff;
+		// v_use_cd_audio = 1;
 		mmd_exec();
-		blib_disable_hint();
+		disable_interrupts();
 		// wait for the playing flag to clear
 		while (*GA_COMFLAGS_SUB & 0x80)
 			;
 
 		sync_with_sub();
 		
-		if (*v_undef_obj_id != 0xff)
+		if (v_undef_obj_id != 0xff)
 		{
-			undef_obj_error(*v_undef_obj_id);
+			undef_obj_error(v_undef_obj_id);
 		}
-		if (*v_undef_gm_id != 0xff)
+		if (v_undef_gm_id != 0xff)
 		{
-			undef_gm_error(*v_undef_gm_id);
+			undef_gm_error(v_undef_gm_id);
 		}
-		*v_should_quit_module = 0;
-		v_gamemode_backup = *v_gamemode;
-		v_zone_backup = *v_zone;
+		v_should_quit_module = 0;
+		v_gamemode_backup = v_gamemode;
+		v_zone_backup = v_zone;
 	} while (1);
 }

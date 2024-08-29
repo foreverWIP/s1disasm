@@ -21,3 +21,4 @@ ori #0x700,sr
 // we'll also go ahead and throw in the include of printval into .text
 // here
 #include "main/printval.s"
+#include "main/exception.s"
