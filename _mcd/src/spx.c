@@ -302,11 +302,6 @@ __attribute__((section(".init"))) void main()
 
 	*(u32*)(_USERCALL2+2) = vblank_sub;
 
-	load_file_wrapper(ACC_OP_LOAD_CDC, "AUDIO.PCM;1", (u8 *) _PRGRAM_1M_2);
-	pcm_clear_ram_c();
-	load_pcm((u8 *)_PRGRAM_1M_2, 0x5000);
-	set_up_dummy_sample();
-
 	do
 	{
 
@@ -382,6 +377,15 @@ __attribute__((section(".init"))) void main()
 				bios_fdrset(0x250);
 				bios_fdrset(0x8400);
 				bios_mscplayr(&cdda_track_offsets[cmd1 - 0x81]);
+				break;
+			
+			// load initial resources
+			case 0xfd:
+				pcm_clear_ram_c();
+				load_file_wrapper(ACC_OP_LOAD_CDC, "AUDIO.PCM;1", (u8 *) _PRGRAM_1M_2);
+				load_pcm((u8 *)_PRGRAM_1M_2, 0x5000);
+				set_up_dummy_sample();
+				grant_2m();
 				break;
 
 			// load IPX

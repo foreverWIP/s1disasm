@@ -41,6 +41,7 @@ extern u32 Debugger_TrapVector;*/
 static u32 frame_counter = 0;
 static u8 cur_sonic_anim_index = 0;
 static u8 is_loading = 0;
+static u8 first_run = 0;
 
 #define v_gamemode (*((u8*)0x23F600))
 static u8 v_gamemode_backup;
@@ -216,6 +217,7 @@ void set_up_loading_screen()
 // actually useful game code
 void main()
 {
+	first_run = 0;
 	/**(volatile u32*)(_MADRERR+2) = Debugger_AddressError;
 	*(volatile u32*)(_MDIVERR+2) = Debugger_ZeroDivideError;
 	*(volatile u32*)(_MONKERR+2) = Debugger_CHKExceptionError;
@@ -238,6 +240,12 @@ void main()
 		set_up_loading_screen();
 
 		enable_interrupts();
+		if (first_run == 0)
+		{
+			wait_on_cd_command(0xfd, 0);
+
+			first_run = 1;
+		}
 
 		// In this example, we have the command for the Sub CPU stored in COMCMD0
 		// and the command argument in COMCMD1. Command 1 will be "load a file"
