@@ -47,7 +47,6 @@ static u8 first_run = 0;
 static u8 v_gamemode_backup;
 #define v_zone (*((u8*)0x23FE10))
 static u8 v_zone_backup;
-#define v_should_quit_module (*((u8*)0x23CAE4))
 #define v_lastlamp (*((u16*)0x23FE30))
 #define v_use_cd_audio (*((u8*)0x23CAE4))
 #define v_undef_obj_id (*((u8*)0x23CAE5))
@@ -326,9 +325,6 @@ void main()
 		// v_use_cd_audio = 1;
 		mmd_exec();
 		disable_interrupts();
-		// wait for the playing flag to clear
-		while (*GA_COMFLAGS_SUB & 0x80)
-			;
 
 		sync_with_sub();
 		
@@ -340,7 +336,6 @@ void main()
 		{
 			undef_gm_error(v_undef_gm_id);
 		}
-		v_should_quit_module = 0;
 		v_gamemode_backup = v_gamemode;
 		v_zone_backup = v_zone;
 	} while (1);
