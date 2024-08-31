@@ -1,7 +1,7 @@
 Mus8C_Boss_Header:
 	smpsHeaderStartSong 1
 	smpsHeaderVoice     Mus8C_Boss_Voices
-	smpsHeaderChan      $06, $03
+	smpsHeaderChan      $07, $03
 	smpsHeaderTempo     $02, $04
 
 	smpsHeaderDAC       Mus8C_Boss_DAC
@@ -10,12 +10,17 @@ Mus8C_Boss_Header:
 	smpsHeaderFM        Mus8C_Boss_FM3,	$F4, $0F
 	smpsHeaderFM        Mus8C_Boss_FM4,	$F4, $12
 	smpsHeaderFM        Mus8C_Boss_FM5,	$E8, $0F
+	smpsHeaderFM        Mus8C_Boss_FM6,	$E8, $0F
 	smpsHeaderPSG       Mus8C_Boss_PSG1,	$D0, $03, $00, fTone_05
 	smpsHeaderPSG       Mus8C_Boss_PSG2,	$D0, $03, $00, fTone_05
 	smpsHeaderPSG       Mus8C_Boss_PSG3,	$DC, $01, $00, fTone_08
 
 ; FM5 Data
 Mus8C_Boss_FM5:
+	smpsNop             $01
+	smpsStop
+
+Mus8C_Boss_FM6:
 	smpsSetvoice        $05
 
 Mus8C_Boss_Jump03:

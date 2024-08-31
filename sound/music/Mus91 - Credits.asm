@@ -1,7 +1,7 @@
 Mus91_Credits_Header:
 	smpsHeaderStartSong 1
 	smpsHeaderVoice     Mus91_Credits_Voices
-	smpsHeaderChan      $06, $03
+	smpsHeaderChan      $07, $03
 	smpsHeaderTempo     $01, $33
 
 	smpsHeaderDAC       Mus91_Credits_DAC
@@ -10,6 +10,7 @@ Mus91_Credits_Header:
 	smpsHeaderFM        Mus91_Credits_FM3,	$F4, $14
 	smpsHeaderFM        Mus91_Credits_FM4,	$F4, $08
 	smpsHeaderFM        Mus91_Credits_FM5,	$F4, $20
+	smpsHeaderFM        Mus91_Credits_FM6,	$F4, $20
 	smpsHeaderPSG       Mus91_Credits_PSG1,	$D0, $01, $00, $00
 	smpsHeaderPSG       Mus91_Credits_PSG2,	$D0, $03, $00, $00
 	smpsHeaderPSG       Mus91_Credits_PSG3,	$00, $03, $00, fTone_04
@@ -527,6 +528,10 @@ Mus91_Credits_Call0B:
 
 ; FM5 Data
 Mus91_Credits_FM5:
+	smpsNop             $01
+	smpsStop
+
+Mus91_Credits_FM6:
 	smpsSetvoice        $20
 	dc.b	nRst, $60
 	smpsAlterVol        $F0

@@ -2830,7 +2830,7 @@ SoundAD:
 		even
 		endif
 SoundAE:
-		if MMD_Is_MZ
+		if MMD_Is_MZ||MMD_Is_SLZ
 		include "sound/sfx/SndAE - Fireball.asm"
 		even
 		endif
@@ -2978,9 +2978,7 @@ SoundCC:
 SoundCD:	include "sound/sfx/SndCD - Switch.asm"
 		even
 SoundCE:
-		if MMD_Is_Level||MMD_Is_SS
 		include "sound/sfx/SndCE - Ring Left Speaker.asm"
-		endif
 		even
 SoundCF:
 		if MMD_Is_Level

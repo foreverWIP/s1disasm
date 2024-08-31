@@ -5925,7 +5925,7 @@ Map_But:
 
 		include	"_incObj/33 Pushable Blocks.asm"
 Map_Push:
-		if MMD_Is_MZ
+		if MMD_Is_MZ||MMD_Is_LZ
 		include	"_maps/Pushable Blocks.asm"
 		endif
 

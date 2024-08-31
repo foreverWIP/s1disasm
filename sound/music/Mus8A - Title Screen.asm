@@ -1,7 +1,7 @@
 Mus8A_Title_Screen_Header:
 	smpsHeaderStartSong 1
 	smpsHeaderVoice     Mus8A_Title_Screen_Voices
-	smpsHeaderChan      $06, $03
+	smpsHeaderChan      $07, $03
 	smpsHeaderTempo     $01, $05
 
 	smpsHeaderDAC       Mus8A_Title_Screen_DAC
@@ -10,12 +10,17 @@ Mus8A_Title_Screen_Header:
 	smpsHeaderFM        Mus8A_Title_Screen_FM3,	$F4, $0D
 	smpsHeaderFM        Mus8A_Title_Screen_FM4,	$F4, $0C
 	smpsHeaderFM        Mus8A_Title_Screen_FM5,	$F4, $0E
+	smpsHeaderFM        Mus8A_Title_Screen_FM6,	$F4, $0E
 	smpsHeaderPSG       Mus8A_Title_Screen_PSG1,	$D0, $03, $00, fTone_05
 	smpsHeaderPSG       Mus8A_Title_Screen_PSG2,	$DC, $06, $00, fTone_05
 	smpsHeaderPSG       Mus8A_Title_Screen_PSG3,	$00, $04, $00, fTone_04
 
 ; FM5 Data
 Mus8A_Title_Screen_FM5:
+	smpsNop             $01
+	smpsStop
+
+Mus8A_Title_Screen_FM6:
 	smpsAlterNote       $03
 
 ; FM1 Data

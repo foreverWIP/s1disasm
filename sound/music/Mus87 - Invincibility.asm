@@ -1,7 +1,7 @@
 Mus87_Invincibility_Header:
 	smpsHeaderStartSong 1
 	smpsHeaderVoice     Mus87_Invincibility_Voices
-	smpsHeaderChan      $06, $03
+	smpsHeaderChan      $07, $03
 	smpsHeaderTempo     $01, $08
 
 	smpsHeaderDAC       Mus87_Invincibility_DAC
@@ -10,12 +10,17 @@ Mus87_Invincibility_Header:
 	smpsHeaderFM        Mus87_Invincibility_FM3,	$E8, $0F
 	smpsHeaderFM        Mus87_Invincibility_FM4,	$E8, $0F
 	smpsHeaderFM        Mus87_Invincibility_FM5,	$F4, $11
+	smpsHeaderFM        Mus87_Invincibility_FM6,	$F4, $11
 	smpsHeaderPSG       Mus87_Invincibility_PSG1,	$D0, $05, $00, fTone_05
 	smpsHeaderPSG       Mus87_Invincibility_PSG2,	$DC, $05, $00, fTone_05
 	smpsHeaderPSG       Mus87_Invincibility_PSG3,	$00, $03, $00, fTone_04
 
 ; FM5 Data
 Mus87_Invincibility_FM5:
+	smpsNop             $01
+	smpsStop
+
+Mus87_Invincibility_FM6:
 	smpsAlterNote       $03
 
 ; FM1 Data

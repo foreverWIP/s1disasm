@@ -1,7 +1,7 @@
 Mus83_MZ_Header:
 	smpsHeaderStartSong 1
 	smpsHeaderVoice     Mus83_MZ_Voices
-	smpsHeaderChan      $06, $03
+	smpsHeaderChan      $07, $03
 	smpsHeaderTempo     $02, $09
 
 	smpsHeaderDAC       Mus83_MZ_DAC
@@ -10,6 +10,7 @@ Mus83_MZ_Header:
 	smpsHeaderFM        Mus83_MZ_FM3,	$E8, $15
 	smpsHeaderFM        Mus83_MZ_FM4,	$E8, $17
 	smpsHeaderFM        Mus83_MZ_FM5,	$E8, $17
+	smpsHeaderFM        Mus83_MZ_FM6,	$E8, $17
 	smpsHeaderPSG       Mus83_MZ_PSG1,	$D0, $03, $00, fTone_08
 	smpsHeaderPSG       Mus83_MZ_PSG2,	$D0, $05, $00, fTone_08
 	smpsHeaderPSG       Mus83_MZ_PSG3,	$0B, $03, $00, fTone_09
@@ -71,6 +72,10 @@ Mus83_MZ_Call03:
 
 ; FM5 Data
 Mus83_MZ_FM5:
+	smpsNop             $01
+	smpsStop
+
+Mus83_MZ_FM6:
 	smpsSetvoice        $04
 	smpsAlterVol        $FC
 	smpsAlterPitch      $24

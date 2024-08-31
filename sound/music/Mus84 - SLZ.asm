@@ -1,7 +1,7 @@
 Mus84_SLZ_Header:
 	smpsHeaderStartSong 1
 	smpsHeaderVoice     Mus84_SLZ_Voices
-	smpsHeaderChan      $06, $03
+	smpsHeaderChan      $07, $03
 	smpsHeaderTempo     $02, $06
 
 	smpsHeaderDAC       Mus84_SLZ_DAC
@@ -10,6 +10,7 @@ Mus84_SLZ_Header:
 	smpsHeaderFM        Mus84_SLZ_FM3,	$DC, $1A
 	smpsHeaderFM        Mus84_SLZ_FM4,	$DC, $1A
 	smpsHeaderFM        Mus84_SLZ_FM5,	$F4, $20
+	smpsHeaderFM        Mus84_SLZ_FM6,	$F4, $20
 	smpsHeaderPSG       Mus84_SLZ_PSG1,	$C4, $06, $00, fTone_05
 	smpsHeaderPSG       Mus84_SLZ_PSG2,	$C4, $06, $00, fTone_05
 	smpsHeaderPSG       Mus84_SLZ_PSG3,	$00, $04, $00, fTone_04
@@ -187,6 +188,10 @@ Mus84_SLZ_Call04:
 
 ; FM5 Data
 Mus84_SLZ_FM5:
+	smpsNop             $01
+	smpsStop
+
+Mus84_SLZ_FM6:
 	smpsSetvoice        $04
 	dc.b	nRst, $0C, nG5, nA5, nG6
 

@@ -1,7 +1,7 @@
 Mus8B_Ending_Header:
 	smpsHeaderStartSong 1
 	smpsHeaderVoice     Mus8B_Ending_Voices
-	smpsHeaderChan      $06, $03
+	smpsHeaderChan      $07, $03
 	smpsHeaderTempo     $01, $05
 
 	smpsHeaderDAC       Mus8B_Ending_DAC
@@ -10,6 +10,7 @@ Mus8B_Ending_Header:
 	smpsHeaderFM        Mus8B_Ending_FM3,	$F4, $0D
 	smpsHeaderFM        Mus8B_Ending_FM4,	$F4, $0D
 	smpsHeaderFM        Mus8B_Ending_FM5,	$F4, $17
+	smpsHeaderFM        Mus8B_Ending_FM6,	$F4, $17
 	smpsHeaderPSG       Mus8B_Ending_PSG1,	$D0, $05, $00, fTone_05
 	smpsHeaderPSG       Mus8B_Ending_PSG2,	$DC, $05, $00, fTone_05
 	smpsHeaderPSG       Mus8B_Ending_PSG3,	$00, $03, $00, fTone_04
@@ -104,6 +105,10 @@ Mus8B_Ending_Call01:
 
 ; FM5 Data
 Mus8B_Ending_FM5:
+	smpsNop             $01
+	smpsStop
+
+Mus8B_Ending_FM6:
 	smpsSetvoice        $03
 	smpsAlterNote       $03
 	smpsAlterVol        $F7

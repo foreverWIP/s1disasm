@@ -1,7 +1,7 @@
 Mus82_LZ_Header:
 	smpsHeaderStartSong 1
 	smpsHeaderVoice     Mus82_LZ_Voices
-	smpsHeaderChan      $06, $03
+	smpsHeaderChan      $07, $03
 	smpsHeaderTempo     $02, $06
 
 	smpsHeaderDAC       Mus82_LZ_DAC
@@ -10,6 +10,7 @@ Mus82_LZ_Header:
 	smpsHeaderFM        Mus82_LZ_FM3,	$F4, $18
 	smpsHeaderFM        Mus82_LZ_FM4,	$F4, $18
 	smpsHeaderFM        Mus82_LZ_FM5,	$00, $12
+	smpsHeaderFM        Mus82_LZ_FM6,	$00, $12
 	smpsHeaderPSG       Mus82_LZ_PSG1,	$D0, $02, $00, fTone_09
 	smpsHeaderPSG       Mus82_LZ_PSG2,	$D0, $02, $00, fTone_09
 	smpsHeaderPSG       Mus82_LZ_PSG3,	$00, $02, $00, fTone_04
@@ -104,6 +105,10 @@ Mus82_LZ_FM4:
 
 ; FM5 Data
 Mus82_LZ_FM5:
+	smpsNop             $01
+	smpsStop
+
+Mus82_LZ_FM6:
 	smpsSetvoice        $02
 	smpsNoteFill        $08
 	dc.b	nC5, $06, nA4, nF4

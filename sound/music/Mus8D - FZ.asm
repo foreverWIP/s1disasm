@@ -1,7 +1,7 @@
 Mus8D_FZ_Header:
 	smpsHeaderStartSong 1
 	smpsHeaderVoice     Mus8D_FZ_Voices
-	smpsHeaderChan      $06, $03
+	smpsHeaderChan      $07, $03
 	smpsHeaderTempo     $02, $06
 
 	smpsHeaderDAC       Mus8D_FZ_DAC
@@ -10,12 +10,17 @@ Mus8D_FZ_Header:
 	smpsHeaderFM        Mus8D_FZ_FM3,	$F4, $0A
 	smpsHeaderFM        Mus8D_FZ_FM4,	$F4, $0F
 	smpsHeaderFM        Mus8D_FZ_FM5,	$00, $12
+	smpsHeaderFM        Mus8D_FZ_FM6,	$00, $12
 	smpsHeaderPSG       Mus8D_FZ_PSG1,	$D0, $03, $00, fTone_05
 	smpsHeaderPSG       Mus8D_FZ_PSG2,	$DC, $06, $00, fTone_05
 	smpsHeaderPSG       Mus8D_FZ_PSG3,	$DC, $00, $00, fTone_04
 
 ; FM5 Data
 Mus8D_FZ_FM5:
+	smpsNop             $01
+	smpsStop
+
+Mus8D_FZ_FM6:
 	smpsAlterNote       $03
 	smpsJump            Mus8D_FZ_Jump03
 

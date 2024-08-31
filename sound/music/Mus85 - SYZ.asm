@@ -1,7 +1,7 @@
 Mus85_SYZ_Header:
 	smpsHeaderStartSong 1
 	smpsHeaderVoice     Mus85_SYZ_Voices
-	smpsHeaderChan      $06, $03
+	smpsHeaderChan      $07, $03
 	smpsHeaderTempo     $02, $03
 
 	smpsHeaderDAC       Mus85_SYZ_DAC
@@ -10,6 +10,7 @@ Mus85_SYZ_Header:
 	smpsHeaderFM        Mus85_SYZ_FM3,	$F4, $14
 	smpsHeaderFM        Mus85_SYZ_FM4,	$F4, $18
 	smpsHeaderFM        Mus85_SYZ_FM5,	$F4, $18
+	smpsHeaderFM        Mus85_SYZ_FM6,	$F4, $18
 	smpsHeaderPSG       Mus85_SYZ_PSG1,	$D0, $06, $00, fTone_06
 	smpsHeaderPSG       Mus85_SYZ_PSG2,	$E8, $07, $00, $00
 	smpsHeaderPSG       Mus85_SYZ_PSG3,	$00, $05, $00, fTone_04
@@ -194,6 +195,10 @@ Mus85_SYZ_Call0B:
 
 ; FM5 Data
 Mus85_SYZ_FM5:
+	smpsNop             $01
+	smpsStop
+
+Mus85_SYZ_FM6:
 	smpsPan             panRight, $00
 	smpsCall            Mus85_SYZ_Call01
 	smpsModSet          $02, $01, $02, $04

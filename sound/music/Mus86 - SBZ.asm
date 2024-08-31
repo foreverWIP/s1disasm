@@ -1,7 +1,7 @@
 Mus86_SBZ_Header:
 	smpsHeaderStartSong 1
 	smpsHeaderVoice     Mus86_SBZ_Voices
-	smpsHeaderChan      $06, $03
+	smpsHeaderChan      $07, $03
 	smpsHeaderTempo     $02, $05
 
 	smpsHeaderDAC       Mus86_SBZ_DAC
@@ -10,6 +10,7 @@ Mus86_SBZ_Header:
 	smpsHeaderFM        Mus86_SBZ_FM3,	$F4, $13
 	smpsHeaderFM        Mus86_SBZ_FM4,	$F4, $17
 	smpsHeaderFM        Mus86_SBZ_FM5,	$F4, $17
+	smpsHeaderFM        Mus86_SBZ_FM6,	$F4, $17
 	smpsHeaderPSG       Mus86_SBZ_PSG1,	$D0, $03, $00, $00
 	smpsHeaderPSG       Mus86_SBZ_PSG2,	$D0, $03, $00, $00
 	smpsHeaderPSG       Mus86_SBZ_PSG3,	$00, $03, $00, fTone_04
@@ -204,6 +205,10 @@ Mus86_SBZ_Call05:
 
 ; FM5 Data
 Mus86_SBZ_FM5:
+	smpsNop             $01
+	smpsStop
+
+Mus86_SBZ_FM6:
 	smpsSetvoice        $04
 	smpsPan             panRight, $00
 	smpsModSet          $5C, $01, $05, $04
