@@ -308,9 +308,6 @@ DACUpdateTrack:
 		if ~~MMD_Enabled
 		move.b	d0,(z80_ram+zDAC_Sample).l
 		else
-		; $81 = kick
-		; $82 = snare
-		; $83+ = timpani?
 		sendSubCpuCommand #$40,d0
 		endif
 ; locret_71CAA:
@@ -319,13 +316,15 @@ DACUpdateTrack:
 ; ===========================================================================
 ; loc_71CAC:
 .timpani:
+		if ~~MMD_Enabled
 		subi.b	#$88,d0				; Convert into an index
 		move.b	DAC_sample_rate(pc,d0.w),d0
 		; Warning: this affects the raw pitch of sample $83, meaning it will
 		; use this value from then on.
-		if ~~MMD_Enabled
 		move.b	d0,(z80_ram+zTimpani_Pitch).l
 		move.b	#$83,(z80_ram+zDAC_Sample).l	; Use timpani
+		else
+		sendSubCpuCommand #$40,d0
 		endif
 		rts	
 ; End of function DACUpdateTrack
