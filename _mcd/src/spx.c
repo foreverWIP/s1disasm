@@ -70,24 +70,26 @@ static u8 cur_sample_frame_count;
 static u8 in_the_middle_of_loading;
 static u8 should_load_splash_sound;
 
+#define HZ_TO_FRAMES(hz, samplen) ((samplen) / ((hz) / 60))
+
 const u8 max_sample_frame_counts[] = {
 	1,
-	0x6a4 / (8250 / 60),
-	0xee0 / (24000 / 60),
-	0x202c / (7000 / 60),
-	0x202c / (7000 / 60),
-	0x202c / (7000 / 60),
-	0x202c / (7000 / 60),
-	0x202c / (7000 / 60),
-	0x202c / (9750 / 60),
-	0x202c / (8750 / 60),
-	0x202c / (7150 / 60),
-	0x202c / (7000 / 60),
-	0x202c / (7000 / 60),
-	0x202c / (7000 / 60),
-	0x202c / (7000 / 60),
-	0x202c / (7000 / 60),
-	0xf55a / (16000 / 60),
+	HZ_TO_FRAMES(8250, 0x6a4),
+	HZ_TO_FRAMES(24000, 0xee0),
+	HZ_TO_FRAMES(7000, 0x202c),
+	HZ_TO_FRAMES(7000, 0x202c),
+	HZ_TO_FRAMES(7000, 0x202c),
+	HZ_TO_FRAMES(7000, 0x202c),
+	HZ_TO_FRAMES(7000, 0x202c),
+	HZ_TO_FRAMES(9750, 0x202c),
+	HZ_TO_FRAMES(8750, 0x202c),
+	HZ_TO_FRAMES(7150, 0x202c),
+	HZ_TO_FRAMES(7000, 0x202c),
+	HZ_TO_FRAMES(7000, 0x202c),
+	HZ_TO_FRAMES(7000, 0x202c),
+	HZ_TO_FRAMES(7000, 0x202c),
+	HZ_TO_FRAMES(7000, 0x202c),
+	HZ_TO_FRAMES(16000, 0xf55a),
 };
 
 void set_up_dummy_sample()
