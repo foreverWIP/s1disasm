@@ -62,13 +62,13 @@ const PcmChannelSettings pcmSettings[] = {
 	{0xff, 0xff, (HZ_TO_SCD(7000) & 0xff), HZ_TO_SCD(7000) >> 8, 0, 0, 0x30},
 	{0xff, 0xff, (HZ_TO_SCD(7000) & 0xff), HZ_TO_SCD(7000) >> 8, 0, 0, 0x30},
 	{0xff, 0xff, (HZ_TO_SCD(7000) & 0xff), HZ_TO_SCD(7000) >> 8, 0, 0, 0x30},
-	{0xff, 0xff, (HZ_TO_SCD(7000) & 0xff), HZ_TO_SCD(7000) >> 8, 0, 0, 0x30},
-	{0xff, 0xff, (HZ_TO_SCD(16000) & 0xff), HZ_TO_SCD(16000) >> 8, 0, 0, 0x60},
+	{0xff, 0xff, (HZ_TO_SCD(16000) & 0xff), HZ_TO_SCD(16000) >> 8, 0, 0, 0x00},
 };
 
 static u8 cur_sample_id;
 static u8 cur_sample_frame_count;
 static u8 in_the_middle_of_loading;
+static u8 should_load_splash_sound;
 
 const u8 max_sample_frame_counts[] = {
 	1,
@@ -87,8 +87,7 @@ const u8 max_sample_frame_counts[] = {
 	0x202c / (7000 / 60),
 	0x202c / (7000 / 60),
 	0x202c / (7000 / 60),
-	0x202c / (7000 / 60),
-	0x202c / (7000 / 60),
+	0xf55a / (16000 / 60),
 };
 
 void set_up_dummy_sample()
@@ -141,7 +140,7 @@ void vblank_sub()
 	{
 		goto done;
 	}
-	if ((cur_sample_id != 0) && (cur_sample_frame_count >= (max_sample_frame_counts[cur_sample_id] << 1)))
+	if ((cur_sample_id != 0) && (cur_sample_frame_count >= (max_sample_frame_counts[cur_sample_id])))
 	{
 		cur_sample_id = 0;
 		*PCM_CDISABLE = 0xff;
@@ -265,6 +264,7 @@ __attribute__((section(".init"))) void main()
 	cur_sample_id = 0;
 	cur_sample_frame_count = 0;
 	in_the_middle_of_loading = 0;
+	should_load_splash_sound = 0;
 
 	*(u32*)(_USERCALL2+2) = vblank_sub;
 
@@ -295,6 +295,7 @@ __attribute__((section(".init"))) void main()
 				{
 					case 0:
 						load_file_list(TitleFiles);
+						should_load_splash_sound = 1;
 						break;
 					case 1:
 					case 9:
@@ -321,6 +322,16 @@ __attribute__((section(".init"))) void main()
 					case 8:
 						load_file_list(ContinueFiles);
 						break;
+				}
+				pcm_clear_ram_c();
+				if (should_load_splash_sound)
+				{
+					load_pcm((u8 *)_PRGRAM_1M_2 + 0x6000, 0x10000);
+					should_load_splash_sound = 0;
+				}
+				else
+				{
+					load_pcm((u8 *)_PRGRAM_1M_2, 0x5000);
 				}
 
 				grant_2m();
