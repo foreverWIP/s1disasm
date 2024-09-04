@@ -1,14 +1,14 @@
 
 // Boot security block - This must be at the top of your IP!
-#include "sec_check.s"
+#include "security.s"
 
 .section .text
 
-#include "main/gatearr_macros.s"
-#include "main/memmap_def.h"
-#include "main/bootlib_def.h"
-#include "main/macros.s"
-#include "main/vdp_def.h"
+#include "main/gatearray.macro.s"
+#include "main/memmap.def.h"
+#include "main/bootlib.def.h"
+#include "main/main.macro.s"
+#include "main/vdp.def.h"
 #include "macros.s"
 #include "ipx_layout.s"
 
@@ -28,7 +28,7 @@ ip_entry:
   move.w #0x0000, (_VDP_DATA)
 
   // disable VDP display and maintain MD mode (mode 5)
-  move.w #(_VDP_MODE2 | 0x44), (_VDP_CTRL)
+  move.w #(_VDPREG01_MODE2 | 0x44), (_VDP_CTRL)
 
 	jbsr _BLIB_LOAD_VDPREGS_DEFAULT
 

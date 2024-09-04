@@ -30,7 +30,10 @@ v_use_cd_audio:	ds.b	1
 v_undef_obj_id: ds.b	1
 v_undef_gm_id:	ds.b	1
 v_should_quit_ss:	ds.b	1
-			ds.b	$18		; unused
+v_haven_ptr:	ds.l	1
+v_com_0:		ds.w	1
+v_com_1:		ds.w	1
+			ds.b	$10		; unused
 v_tracksonic:		ds.b	$100		; position tracking data for Sonic
 v_hscrolltablebuffer:	ds.b	$380		; scrolling table data
 v_hscrolltablebuffer_end:
@@ -234,8 +237,8 @@ v_opl_screen:		ds.w	1		; ObjPosLoad - screen variable
 v_opl_data:		ds.b	$10		; ObjPosLoad - data buffer
 v_ssangle:		ds.w	1		; Special Stage angle
 v_ssrotate:		ds.w	1		; Special Stage rotation speed
-v_ssangleprev:	ds.b	1
-			ds.b	$B		; unused
+v_ssangleprev:	ds.w	1
+			ds.b	$A		; unused
 v_btnpushtime1:		ds.w	1		; button push duration - in level
 v_btnpushtime2:		ds.w	1		; button push duration - in demo
 v_palchgspeed:		ds.w	1		; palette fade/transition speed (0 is fastest)

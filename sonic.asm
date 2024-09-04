@@ -204,7 +204,7 @@ SkipSecurity:
 		movea.l	d0,a6	; clear a6
 		move.l	a6,usp	; set usp to $0
 		else
-		movea.l	#$240000,a6
+		movea.l	d0,a6
 		move.l	sp,usp	; set usp to $0
 		endif
 
@@ -1504,9 +1504,6 @@ FadeOut_DecColour:
 
 
 PaletteWhiteIn:
-		if MMD_Is_SBZ
-		illegal
-		else
 		move.w	#$003F,(v_pfade_start).l ; start position = 0; size = $40
 		moveq	#0,d0
 		lea	(v_palette).l,a0
@@ -1528,7 +1525,6 @@ PaletteWhiteIn:
 		bsr.w	RunPLC
 		dbf	d4,.mainloop
 		rts	
-		endif
 ; End of function PaletteWhiteIn
 
 
@@ -1536,9 +1532,6 @@ PaletteWhiteIn:
 
 
 WhiteIn_FromWhite:
-		if MMD_Is_SBZ
-		illegal
-		else
 		moveq	#0,d0
 		lea	(v_palette).l,a0
 		lea	(v_palette_fading).l,a1
@@ -1566,7 +1559,6 @@ WhiteIn_FromWhite:
 		dbf	d0,.decolour2
 
 .exit:
-		endif
 		rts	
 ; End of function WhiteIn_FromWhite
 
@@ -1575,9 +1567,6 @@ WhiteIn_FromWhite:
 
 
 WhiteIn_DecColour:
-		if MMD_Is_SBZ
-		illegal
-		else
 .deblue:
 		move.w	(a1)+,d2
 		move.w	(a0),d3
@@ -1610,7 +1599,6 @@ WhiteIn_DecColour:
 .next:
 		addq.w	#2,a0
 		rts	
-		endif
 ; End of function WhiteIn_DecColour
 
 ; ---------------------------------------------------------------------------
@@ -1621,9 +1609,6 @@ WhiteIn_DecColour:
 
 
 PaletteWhiteOut:
-		if MMD_Is_SBZ
-		illegal
-		else
 		move.w	#$003F,(v_pfade_start).l ; start position = 0; size = $40
 		move.w	#$15,d4
 
@@ -1634,7 +1619,6 @@ PaletteWhiteOut:
 		bsr.w	RunPLC
 		dbf	d4,.mainloop
 		rts	
-		endif
 ; End of function PaletteWhiteOut
 
 
@@ -1642,9 +1626,6 @@ PaletteWhiteOut:
 
 
 WhiteOut_ToWhite:
-		if MMD_Is_SBZ
-		illegal
-		else
 		moveq	#0,d0
 		lea	(v_palette).l,a0
 		move.b	(v_pfade_start).l,d0
@@ -1665,7 +1646,6 @@ WhiteOut_ToWhite:
 		bsr.s	WhiteOut_AddColour
 		dbf	d0,.addcolour2
 		rts	
-		endif
 ; End of function WhiteOut_ToWhite
 
 
@@ -1673,9 +1653,6 @@ WhiteOut_ToWhite:
 
 
 WhiteOut_AddColour:
-		if MMD_Is_SBZ
-		illegal
-		else
 .addred:
 		move.w	(a0),d2
 		cmpi.w	#cWhite,d2
@@ -1709,7 +1686,6 @@ WhiteOut_AddColour:
 .next:
 		addq.w	#2,a0
 		rts	
-		endif
 ; End of function WhiteOut_AddColour
 ; ---------------------------------------------------------------------------
 ; Subroutines to load palettes
@@ -1898,7 +1874,9 @@ GM_Title:
 		disable_ints
 		bsr.w	DACDriverLoad
 		if MMD_Enabled
+		sendSubCpuCommand #$FD,#1
 		jsr		(SHCSplashScreen).l
+		sendSubCpuCommand #$FD,#0
 		endif
 		lea	(vdp_control_port).l,a6
 		move.w	#$8004,(a6)	; 8-colour mode
@@ -6060,8 +6038,10 @@ M_Card_Act2:	spriteHeader		; ACT 2
 M_Card_Act2_End
 
 M_Card_Act3:	spriteHeader		; ACT 3
+	if ~~MMD_Is_SBZ
 	spritePiece	-$14, 4, 4, 1, $53, 0, 0, 0, 0
 	spritePiece	8, -$C, 2, 3, $60, 0, 0, 0, 0
+	endif
 M_Card_Act3_End
 
 M_Card_Oval:	spriteHeader		; Oval
@@ -6933,7 +6913,9 @@ Map_Edge:
 
 		include	"_incObj/13 Lava Ball Maker.asm"
 		include	"_incObj/14 Lava Ball.asm"
+		if MMD_Is_MZ||MMD_Is_SLZ
 		include	"_anim/Fireballs.asm"
+		endif
 
 		include	"_incObj/6D Flamethrower.asm"
 		if MMD_Is_SBZ
@@ -8336,10 +8318,10 @@ loc_1B350:
 
 SS_LoadWalls:
 		moveq	#0,d0
-		move.b	(v_ssangle).l,d0	; get the Special Stage angle
+		move.w	(v_ssangle).l,d0	; get the Special Stage angle
 		;lsr.b	#2,d0			; modify so it can be used as a frame ID
 		;andi.w	#$F,d0
-		cmp.b	(v_ssangleprev).l,d0	; does the modified angle match the recorded value?
+		cmp.w	(v_ssangleprev).l,d0	; does the modified angle match the recorded value?
 		beq.s	.return			; if so, branch
 
 		lea	(vdp_data_port).l,a6
@@ -8347,16 +8329,20 @@ SS_LoadWalls:
 		move.w	d0,d1
 		;lsl.w	#8,d1
 		;add.w	d1,d1
+		lsr.w	#8,d1
 		lsr.w	#1,d1
 		lsl.w	#8,d1
 		lsl.w	#1,d1
-		add.w	d1,a1
+		swap	d1
+		move.w	#$22,d1
+		swap	d1
+		movea.l	d1,a1
 
 		locVRAM	$2840			; VRAM address
 
 		move.w	#$F,d1			; number of 8x8 tiles
 		jsr	LoadTiles
-		move.b	d0,(v_ssangleprev).l	; record the modified angle for comparison
+		move.w	d0,(v_ssangleprev).l	; record the modified angle for comparison
 
 .return:
 		rts

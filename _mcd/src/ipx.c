@@ -1,6 +1,6 @@
 #include "ipx.h"
 #include "main/bootlib.h"
-#include "main/gatearr.h"
+#include "main/gatearray.h"
 #include "main/memmap.h"
 #include "main/mmd_exec.h"
 #include "main/vdp.h"
@@ -41,7 +41,6 @@ extern u32 Debugger_TrapVector;*/
 static u32 frame_counter = 0;
 static u8 cur_sonic_anim_index = 0;
 static u8 is_loading = 0;
-static u8 first_run = 0;
 
 #define v_gamemode (*((u8*)0x23F600))
 static u8 v_gamemode_backup;
@@ -79,7 +78,7 @@ static void set_sonic_frame(u8 frame)
 	for (u8 i = 0; i < num_sprite_pieces; i++)
 	{
 		s16 ypos = (s16)((s8)*raw_sprite_ptr++);
-		v_spritetablebuffer[next_sprite].pos_y = (u16)(ypos + 128 + 196);
+		v_spritetablebuffer[next_sprite].pos_y = (u16)(ypos + 128 + 180);
 		u8 size = *raw_sprite_ptr++;
 		v_spritetablebuffer[next_sprite].width = size >> 2;
 		v_spritetablebuffer[next_sprite].height = size & 0b11;
@@ -93,7 +92,7 @@ static void set_sonic_frame(u8 frame)
 		v_spritetablebuffer[next_sprite].h_flip = (tileinfo >> 11) & 1;
 		s16 xpos = (s16)((s8)*raw_sprite_ptr++);
 		v_spritetablebuffer[next_sprite].tile = (Loading_Sonic_Art_VRAM_Pos >> 5) + (tileinfo & 0x7ff);
-		v_spritetablebuffer[next_sprite].pos_x = (u16)(xpos + 128 + 296);
+		v_spritetablebuffer[next_sprite].pos_x = (u16)(xpos + 128 + 280);
 
 		next_sprite++;
 	}
@@ -211,12 +210,21 @@ void set_up_loading_screen()
 	is_loading = 1;
 }
 
+void mmd_exec_wrapper()
+{
+	// this is needed since mmd_exec() is inline
+	// as it turns out a jsr straight into s1's code
+	// and back out makes the c runtime cranky...
+	asm("movem.l d0-a6,-(sp)");
+	mmd_exec();
+	asm("movem.l (sp)+,d0-a6");
+}
+
 // At this point, the full IPX binary has been copies to Work RAM and all
 // traces of the security code and tiny IP are gone. We can now get on with
 // actually useful game code
 void main()
 {
-	first_run = 0;
 	/**(volatile u32*)(_MADRERR+2) = Debugger_AddressError;
 	*(volatile u32*)(_MDIVERR+2) = Debugger_ZeroDivideError;
 	*(volatile u32*)(_MONKERR+2) = Debugger_CHKExceptionError;
@@ -239,12 +247,6 @@ void main()
 		set_up_loading_screen();
 
 		enable_interrupts();
-		if (first_run == 0)
-		{
-			wait_on_cd_command(0xfd, 0);
-
-			first_run = 1;
-		}
 
 		// In this example, we have the command for the Sub CPU stored in COMCMD0
 		// and the command argument in COMCMD1. Command 1 will be "load a file"
@@ -319,11 +321,12 @@ void main()
 		// Run it!
 		disable_interrupts();
 		is_loading = 0;
+		frame_counter = 0;
 		v_lastlamp = 0;
 		v_undef_obj_id = 0xff;
 		v_undef_gm_id = 0xff;
 		// v_use_cd_audio = 1;
-		mmd_exec();
+		mmd_exec_wrapper();
 		disable_interrupts();
 
 		sync_with_sub();

@@ -131,6 +131,8 @@ PLC_LZ:		dc.w ((PLC_LZ2-PLC_LZ-2)/6)-1
 		plcm	Nem_LzDoor1,     ArtTile_LZ_Door            ; vertical door
 		plcm	Nem_Harpoon,     ArtTile_LZ_Harpoon         ; harpoon
 		plcm	Nem_Burrobot,    ArtTile_Burrobot           ; burrobot enemy
+		plcm	Nem_Hud,    	 ArtTile_HUD           ; HUD
+		plcm	Nem_Lives,  	 ArtTile_Lives_Counter ; lives counter
 		endif
 
 PLC_LZ2:	dc.w ((PLC_LZ2end-PLC_LZ2-2)/6)-1
@@ -150,6 +152,12 @@ PLC_LZ2:	dc.w ((PLC_LZ2end-PLC_LZ2-2)/6)-1
 		plcm	Nem_Spikes,      ArtTile_Spikes             ; spikes
 		plcm	Nem_HSpring,     ArtTile_Spring_Horizontal  ; horizontal spring
 		plcm	Nem_VSpring,     ArtTile_Spring_Vertical    ; vertical spring
+		plcm	Nem_Points, 	 ArtTile_Points        ; points from enemy
+		plcm	Nem_Ring,   	 ArtTile_Ring          ; rings
+		plcm	Nem_Lamp,   	 ArtTile_Lamppost      ; lamppost
+		plcm	Nem_Monitors, ArtTile_Monitor       ; monitors
+		plcm	Nem_Shield,   ArtTile_Shield        ; shield
+		plcm	Nem_Stars,    ArtTile_Invincibility ; invincibility stars
 		endif
 PLC_LZ2end:
 ; ---------------------------------------------------------------------------
@@ -319,6 +327,7 @@ PLC_SpecialStage:	dc.w ((PLC_SpeStageend-PLC_SpecialStage-2)/6)-1
 		plcm	Nem_SSZone1,    ArtTile_SS_Zone_1            ; ZONE 1 block
 		plcm	Nem_SSZone2,    ArtTile_SS_Zone_2            ; ZONE 2 block
 		plcm	Nem_SSZone3,    ArtTile_SS_Zone_3            ; ZONE 3 block
+		plcm	Nem_Ring,   	ArtTile_Ring          ; rings
 		endif
 PLC_SpeStageend:
 		; Unused

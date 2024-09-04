@@ -6,6 +6,9 @@
 
 
 Sonic_Water:
+		if ~~MMD_Is_LZ
+		rts
+		else
 		cmpi.b	#id_LZ,(v_zone).l	; is level LZ?
 		beq.s	.islabyrinth	; if yes, branch
 
@@ -51,4 +54,5 @@ Sonic_Water:
 .belowmaxspeed:
 		move.w	#sfx_Splash,d0
 		jmp	(PlaySound_Special).l	 ; play splash sound
+		endif
 ; End of function Sonic_Water

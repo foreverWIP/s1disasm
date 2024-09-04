@@ -32,6 +32,7 @@ undefGmTrap: macro
 		endm
 
 sendSubCpuCommand: macro cmd0,cmd1
+	
 .checkcomcmd:
 		tst.w	(GA_COMCMD0).l
 		bne.s	.waitforcomstatnot0

@@ -3,47 +3,81 @@
 # https://github.com/drojaazu/megadev
 ################################################################################
 
-# Path to the Megadev directory
-MEGADEV_PATH:=$(shell pwd)/../../megadev
-
 # This will be used for filename output
-PROJECT_NAME=sonic
+PROJECT_NAME=disc
 
-# Default hardware configuration
-# (This can be changed on the command line to easily build for different hardware
-# targets)
-# See README.md for more info on this
-HW_CFG=REGION=US VIDEO=NTSC VRAM_SIZE=VRAM_64K
+## Directory paths are relative to the location of the makefile
+## (which should be the root of your project directory)
 
-# the path to your source code
-# (relative to the location of the makefile)
+# Source code path
 SRC_PATH:=src
 
+# Disc staging path
+# This is the staging directory for fiels that will appear on the final iso for
+# each Mega CD disc. Inside this path will be a subdirectory matching the stem of
+# each .iso.def in your project. Any files in these subdirectories will be included
+# in the iso image.
+# (This option is ignored for cartridge ROM projects.)
+DISCS_PATH:=discs
+
 # Resources path
-# This is where graphics, audio and any other non-code content should be
+# This is where graphics, audio and any other non-executable content should be
 # stored.
 RES_PATH:=res
 
-# Output path
-# This will be the location of the final output ISO, as well as the build
-# work directory
-OUT_PATH:=build
+# Build path
+# This is where compile time build artifacts will be stored, including
+# symbol maps
+BUILD_PATH:=build
 
-# Disc path 
-# This will contain all the files to be included in the final ISO
-# You can include any extra files you'd like here
-DISC_PATH:=disc
+# Disc paths
+# A space-delimited list of subdiorectories representing the content for each
+# disc in your project
+# This is used by the `init` rule to create directories before building
+DISC_PATHS:=disc
 
 # Optional compiler flags
 # Here you can add any additional compiler flags
-OPT_FLAGS:=-g -Og -fstack-usage -fconserve-stack
+OPT_FLAGS:=-O1 -fconserve-stack
 
-# Z80 CPU code path
-# Z80 building is not currently supported... someday!
-#Z80_SRC_PATH:=z80_src
+# Path to the Megadev directory
+MEGADEV_PATH:=$(shell pwd)/../../megadev
 
 M68K_PREFIX:=~/marsdev/mars/m68k-elf/bin/m68k-elf-
 
 AS_FLAGS:=-Wa,--bitwise-or -Wa,-I../_debugger/blob
 
-include $(MEGADEV_PATH)/makefile_global
+include $(MEGADEV_PATH)/megadev.make
+
+.PHONY: disc clean
+
+disc: \
+	init \
+	disc/ip.bin \
+	disc/ipx.mmd \
+	disc/sp.bin \
+	disc/spx.smd \
+	disc/* \
+	disc.iso
+
+clean:
+	@rm -rf disc.iso disc/*.mmd disc/*.smd build/*
+
+disc/ipx.mmd: \
+	ipx_layout.s \
+	ipx_init.s \
+	ipx.c \
+	$(BUILD_PATH)/ip.bin \
+	loadingassets.s
+
+disc/ip.bin: $(BUILD_PATH)/ip.bin
+	cp $< $@
+
+disc/spx.smd: \
+	spx_layout.s \
+	spx.c \
+	$(BUILD_PATH)/sp.bin \
+	spx_pcm.s
+
+disc/sp.bin: $(BUILD_PATH)/sp.bin
+	cp $< $@

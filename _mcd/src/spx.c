@@ -1,9 +1,10 @@
 
 #include "sub/cdrom.h"
-#include "sub/gatearr.h"
+#include "sub/gatearray.h"
 #include "sub/memmap.h"
 #include "sub/pcm.h"
 #include "sub/bios.h"
+#include "memory.h"
 
 extern void sp_fatal();
 
@@ -204,8 +205,8 @@ const FileKVP MZFiles[] = {
 
 const FileKVP SYZFiles[] = {
 	{ "M16SYZ.ENI;1", 0x1e000 },
-	{ "M256SYZ.KOS;1", 0x1f000 },
-	{ "ARTSYZ.NEM;1", 0x22000 },
+	{ "M256SYZ.KOS;1", 0x1ec00 },
+	{ "ARTSYZ.NEM;1", 0x21000 },
 	SonicArt,
 	{ 0, 0 },
 };
@@ -220,8 +221,8 @@ const FileKVP LZFiles[] = {
 
 const FileKVP SLZFiles[] = {
 	{ "M16SLZ.ENI;1", 0x1e000 },
-	{ "M256SLZ.KOS;1", 0x1f000 },
-	{ "ARTSLZ.NEM;1", 0x22000 },
+	{ "M256SLZ.KOS;1", 0x1e800 },
+	{ "ARTSLZ.NEM;1", 0x21000 },
 	SonicArt,
 	{ 0, 0 },
 };
@@ -325,16 +326,6 @@ __attribute__((section(".init"))) void main()
 						load_file_list(ContinueFiles);
 						break;
 				}
-				pcm_clear_ram_c();
-				if (should_load_splash_sound)
-				{
-					load_pcm((u8 *)_PRGRAM_1M_2 + 0x6000, 0x10000);
-					should_load_splash_sound = 0;
-				}
-				else
-				{
-					load_pcm((u8 *)_PRGRAM_1M_2, 0x5000);
-				}
 
 				grant_2m();
 				in_the_middle_of_loading = 0;
@@ -356,9 +347,18 @@ __attribute__((section(".init"))) void main()
 			// load initial resources
 			case 0xfd:
 				pcm_clear_ram_c();
-				load_file_wrapper(ACC_OP_LOAD_CDC, "AUDIO.PCM;1", (u8 *) _PRGRAM_1M_2);
-				load_pcm((u8 *)_PRGRAM_1M_2, 0x5000);
-				set_up_dummy_sample();
+				if (cmd1 == 1)
+				{
+
+					load_file_wrapper(ACC_OP_LOAD_CDC, "SPLSHSND.PCM;1", (u8 *) _PRGRAM_1M_2);
+					load_pcm((u8 *)_PRGRAM_1M_2, 0x10000);
+					should_load_splash_sound = 0;
+				}
+				else
+				{
+					load_file_wrapper(ACC_OP_LOAD_CDC, "DRUMS.PCM;1", (u8 *) _PRGRAM_1M_2);
+					load_pcm((u8 *)_PRGRAM_1M_2, 0x6000);
+				}
 				grant_2m();
 				break;
 

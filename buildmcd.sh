@@ -22,10 +22,12 @@ cp ./map256/LZ.kos ./_mcd/disc/M256LZ.KOS
 cp ./map256/SLZ.kos ./_mcd/disc/M256SLZ.KOS
 cp "./map256/SBZ (JP1).kos" ./_mcd/disc/M256SBZ.KOS
 cp "./artunc/Sonic.bin" ./_mcd/disc/ARTSONIC.BIN
-cp "../audio.pcm" ./_mcd/disc/AUDIO.PCM
+cp "../drums.pcm" ./_mcd/disc/DRUMS.PCM
+cp "../splshsnd.pcm" ./_mcd/disc/SPLSHSND.PCM
 cp ../sswall.bin ./_mcd/disc/SSWALL.BIN
 cd _mcd
-make clean && make
+make clean && make disc
+mv ./disc.iso ./build/sonic.iso
 rm -f ./build/sonic.cue
 #rm -f ./build/*.wav
 cp sonic.cue ./build/sonic.cue

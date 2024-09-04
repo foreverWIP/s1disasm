@@ -106,7 +106,7 @@ Nem_MzMetal:	bincludealigned	"artnem/MZ Metal Blocks.nem",MMD_Is_MZ
 Nem_MzSwitch:	bincludealigned	"artnem/MZ Switch.nem",MMD_Is_MZ||MMD_Is_SBZ
 Nem_MzGlass:	bincludealigned	"artnem/MZ Green Glass Block.nem",MMD_Is_MZ
 Nem_UnkGrass:	;bincludealigned	"artnem/Unused - Grass.nem",MMD_Is_MZ
-Nem_MzFire:	bincludealigned	"artnem/Fireballs.nem",MMD_Is_MZ
+Nem_MzFire:	bincludealigned	"artnem/Fireballs.nem",MMD_Is_MZ||MMD_Is_SLZ
 Nem_Lava:	bincludealigned	"artnem/MZ Lava.nem",MMD_Is_MZ
 Nem_MzBlock:	bincludealigned	"artnem/MZ Green Pushable Block.nem",MMD_Is_MZ
 Nem_MzUnkBlock:	;bincludealigned	"artnem/Unused - MZ Background.nem",MMD_Is_MZ
@@ -119,7 +119,7 @@ Nem_SlzSpike:	bincludealigned	"artnem/SLZ Little Spikeball.nem",MMD_Is_SLZ
 Nem_Fan:	bincludealigned	"artnem/SLZ Fan.nem",MMD_Is_SLZ
 Nem_SlzWall:	bincludealigned	"artnem/SLZ Breakable Wall.nem",MMD_Is_SLZ
 Nem_Pylon:	bincludealigned	"artnem/SLZ Pylon.nem",MMD_Is_SLZ
-Nem_SlzSwing:	bincludealigned	"artnem/SLZ Swinging Platform.nem",MMD_Is_SLZ||MMD_Is_SBZ
+Nem_SlzSwing:	bincludealigned	"artnem/SLZ Swinging Platform.nem",MMD_Is_SLZ
 Nem_SlzBlock:	bincludealigned	"artnem/SLZ 32x32 Block.nem",MMD_Is_SLZ
 Nem_SlzCannon:	bincludealigned	"artnem/SLZ Cannon.nem",MMD_Is_SLZ
 ; $53C total
@@ -128,8 +128,8 @@ Nem_SlzCannon:	bincludealigned	"artnem/SLZ Cannon.nem",MMD_Is_SLZ
 ; ---------------------------------------------------------------------------
 Nem_Bumper:	bincludealigned	"artnem/SYZ Bumper.nem",MMD_Is_SYZ||MMD_Is_SS
 Nem_SyzSpike2:	bincludealigned	"artnem/SYZ Small Spikeball.nem",MMD_Is_SYZ
-Nem_LzSwitch:	bincludealigned	"artnem/Switch.nem",MMD_Is_SYZ||MMD_Is_LZ
-Nem_SyzSpike1:	bincludealigned	"artnem/SYZ Large Spikeball.nem",MMD_Is_SYZ
+Nem_LzSwitch:	bincludealigned	"artnem/Switch.nem",MMD_Is_SYZ||MMD_Is_LZ||MMD_Is_SBZ
+Nem_SyzSpike1:	bincludealigned	"artnem/SYZ Large Spikeball.nem",MMD_Is_SYZ||MMD_Is_SBZ
 ; $12BC total
 ; ---------------------------------------------------------------------------
 ; Compressed graphics - SBZ stuff
@@ -163,7 +163,7 @@ Nem_Newtron:	bincludealigned	"artnem/Enemy Newtron.nem",MMD_Is_GHZ
 Nem_Yadrin:		bincludealigned	"artnem/Enemy Yadrin.nem",MMD_Is_SYZ
 Nem_Basaran:	bincludealigned	"artnem/Enemy Basaran.nem",MMD_Is_MZ
 Nem_Bomb:	bincludealigned	"artnem/Enemy Bomb.nem",MMD_Is_SLZ||MMD_Is_SBZ
-Nem_Orbinaut:	bincludealigned	"artnem/Enemy Orbinaut.nem",MMD_Is_LZ||MMD_Is_SLZ
+Nem_Orbinaut:	bincludealigned	"artnem/Enemy Orbinaut.nem",MMD_Is_LZ||MMD_Is_SLZ||MMD_Is_SBZ
 Nem_Cater:	bincludealigned	"artnem/Enemy Caterkiller.nem",MMD_Is_MZ||MMD_Is_SYZ||MMD_Is_SBZ
 ; ---------------------------------------------------------------------------
 ; Compressed graphics - various
@@ -245,7 +245,7 @@ Nem_ResultEm:	bincludealigned	"artnem/Special Result Emeralds.nem",MMD_Is_SS
 ; Compressed graphics - bosses and ending sequence
 ; ---------------------------------------------------------------------------
 Nem_Eggman:	bincludealigned	"artnem/Boss - Main.nem",MMD_Is_Level
-Nem_Weapons:	bincludealigned	"artnem/Boss - Weapons.nem",MMD_Is_Level
+Nem_Weapons:	bincludealigned	"artnem/Boss - Weapons.nem",MMD_Is_Level&&~~MMD_Is_SBZ
 Nem_Prison:	bincludealigned	"artnem/Prison Capsule.nem",MMD_Is_Level&&~~MMD_Is_SBZ
 Nem_Sbz2Eggman:	bincludealigned	"artnem/Boss - Eggman in SBZ2 & FZ.nem",MMD_Is_SBZ
 Nem_FzBoss:	bincludealigned	"artnem/Boss - Final Zone.nem",MMD_Is_SBZ

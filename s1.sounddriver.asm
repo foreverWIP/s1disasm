@@ -2851,7 +2851,7 @@ SoundB2:
 		even
 		endif
 SoundB3:
-		if MMD_Is_SBZ
+		if MMD_Is_SBZ||MMD_Is_LZ
 		include "sound/sfx/SndB3 - Flamethrower.asm"
 		endif
 		even

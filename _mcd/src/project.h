@@ -6,7 +6,35 @@
 #ifndef MEGADEV__PROJECT_H
 #define MEGADEV__PROJECT_H
 
-#include "build_def.h"
+#include "build.def.h"
+
+/*
+ * Hardware target
+ * Valid values: MEGACD, MEGADRIVE, MEGACD_MODE1
+ */
+#define HW_TARGET MEGACD
+
+/*
+ * Default hardware configuration
+ * These values can be changed when running make with the HW_CFG variable to easily
+ * build for different hardware, e.g.:
+ * make HW_CFG="REGION=JP VIDEO=NTSC"
+ * See README.md for more info on these settings
+ */
+// Valid values: US, EU, JP
+#ifndef REGION
+#define REGION US
+#endif
+
+// Valid values: NTSC, PAL
+#ifndef VIDEO
+#define VIDEO NTSC
+#endif
+
+// Valid values: VRAM_64K, VRAM_128K
+#ifndef VRAM_SIZE
+#define VRAM_SIZE VRAM_64K
+#endif
 
 /*
  * Header settings
@@ -28,21 +56,6 @@
  */
 #define HEADER_VOL_ID "SONIC1CD   "
 //                    "###########"
-
-/**
- * @def HEADER_HARDWARE
- * @brief Target hardware
- * @details
- * This line indicates the hardware on which the game is meant to run. Despite
- * obviously targeting the Mega CD, the actual identifier should be Mega Drive
- * or Genesis, e.g.:
- *  SEGA MEGA DRIVE
- *  SEGA GENESIS
- * @note 16 bytes
- * @todo autogenerate this based on hardware settings in the project makefile
- */
-#define HEADER_HARDWARE "SEGA MEGA DRIVE "
-//                      "################"
 
 /**
  * @def HEADER_COPYRIGHT
@@ -104,27 +117,5 @@
  */
 #define HEADER_SOFT_ID "GM 00004049-CD  "
 //                     "################"
-
-/**
- * @def HEADER_REGION
- * @brief Valid usage regions
- *
- * @details Defines the region(s) in which the software is valid
- *
- * @note 16 bytes
- *
- */
-// #if REGION == JP
-// #define HEADER_REGION "J               "
-// #endif
-// #if REGION == US
-// #define HEADER_REGION "U               "
-// #endif
-// #if REGION == EU
-// #define HEADER_REGION "E               "
-// #endif
-// All regions, regardless of BIOS security code
-#define HEADER_REGION "JUE             "
-//                    "################"
 
 #endif
