@@ -2829,7 +2829,7 @@ SoundAD:
 		even
 		endif
 SoundAE:
-		if MMD_Is_MZ||MMD_Is_SLZ
+		if MMD_Is_MZ||MMD_Is_SLZ||MD_Is_LZ
 		include "sound/sfx/SndAE - Fireball.asm"
 		even
 		endif
