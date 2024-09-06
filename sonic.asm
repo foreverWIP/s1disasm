@@ -1876,7 +1876,9 @@ GM_Title:
 		if MMD_Enabled
 		sendSubCpuCommand #$FD,#1
 		jsr		(SHCSplashScreen).l
+		waitForSubCpu
 		sendSubCpuCommand #$FD,#0
+		waitForSubCpu
 		endif
 		lea	(vdp_control_port).l,a6
 		move.w	#$8004,(a6)	; 8-colour mode

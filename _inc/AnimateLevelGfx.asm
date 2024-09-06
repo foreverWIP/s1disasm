@@ -590,6 +590,8 @@ AniArt_GiantRing:
 
 		move.w	#.size-1,d1
 		bra.w	LoadTiles
+		else
+		rts
 		endif
 
 ; End of function AniArt_GiantRing

@@ -28,6 +28,7 @@
 	beq.w	.state_fadeout
 	btst	#7,d1
 	beq.s	.state_shc_noplaysound
+	waitForSubCpu
 	sendSubCpuCommand #$40,#$90
 .state_shc_noplaysound:
 	andi.w	#$7F,d1

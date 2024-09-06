@@ -308,6 +308,7 @@ DACUpdateTrack:
 		if ~~MMD_Enabled
 		move.b	d0,(z80_ram+zDAC_Sample).l
 		else
+		waitForSubCpu
 		sendSubCpuCommand #$40,d0
 		endif
 ; locret_71CAA:
@@ -324,6 +325,7 @@ DACUpdateTrack:
 		move.b	d0,(z80_ram+zTimpani_Pitch).l
 		move.b	#$83,(z80_ram+zDAC_Sample).l	; Use timpani
 		else
+		waitForSubCpu
 		sendSubCpuCommand #$40,d0
 		endif
 		rts	
@@ -2829,7 +2831,7 @@ SoundAD:
 		even
 		endif
 SoundAE:
-		if MMD_Is_MZ||MMD_Is_SLZ||MD_Is_LZ
+		if MMD_Is_MZ||MMD_Is_SLZ||MMD_Is_LZ
 		include "sound/sfx/SndAE - Fireball.asm"
 		even
 		endif

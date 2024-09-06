@@ -14,6 +14,7 @@ PlaySound:
 		cmpi.b	#sfx__First,d0
 		bhs.s	.ret
 
+		waitForSubCpu
 		sendSubCpuCommand #$41,d0
 		rts
 .playfm:
@@ -35,6 +36,7 @@ PlaySound_Special:
 		cmpi.b	#sfx__First,d0
 		bhs.s	.ret
 
+		waitForSubCpu
 		sendSubCpuCommand #$41,d0
 		rts
 .playfm:
@@ -54,6 +56,7 @@ PlaySound_Unused:
 		cmpi.b	#sfx__First,d0
 		bhs.s	.ret
 
+		waitForSubCpu
 		sendSubCpuCommand #$41,d0
 		rts
 .playfm:

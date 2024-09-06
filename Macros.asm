@@ -31,8 +31,7 @@ undefGmTrap: macro
 		quitModule
 		endm
 
-sendSubCpuCommand: macro cmd0,cmd1
-	
+waitForSubCpu: macro
 .checkcomcmd:
 		tst.w	(GA_COMCMD0).l
 		bne.s	.waitforcomstatnot0
@@ -45,7 +44,9 @@ sendSubCpuCommand: macro cmd0,cmd1
 .waitforcomstat0:
 		tst.w	(GA_COMSTAT0).l
 		bne.s	.waitforcomstat0
-.submitsample:
+		endm
+
+sendSubCpuCommand: macro cmd0,cmd1
 		move.w	cmd1,(GA_COMCMD1).l
 		move.w	cmd0,(GA_COMCMD0).l
 		endm
