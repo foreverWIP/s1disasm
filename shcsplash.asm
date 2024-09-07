@@ -1,4 +1,5 @@
 .state_setup:
+	jsr		(ClearScreen).l
 	move.w	#$8200|($A000>>10),(vdp_control_port).l ; plane a
 	move.w	#$8400|($A000>>13),(vdp_control_port).l ; plane b
 	move.w	#$8500+(vram_sprites>>9),(vdp_control_port).l 
@@ -8,7 +9,7 @@
 	move.w	#$8F02,(vdp_control_port).l ; auto increment 2
 	move.l	#$40000010+($0<<16),(vdp_control_port).l
 	move.l	#$0,(vdp_data_port).l
-	fillVRAM 0,vram_sprites,vram_sprites+$400
+	fillVRAM 0,vram_sprites,vram_sprites+$800
 	writeVRAM .art,0
 	writeVRAM .mappings,$A000
 	moveq	#palid_SplashScreen,d0	; load Sonic's palette

@@ -440,6 +440,29 @@ MainGameLoop:
 		bne.s	HandleTransition
 		bra.s	MainGameLoop	; loop indefinitely
 ; ===========================================================================
+; ---------------------------------------------------------------------------
+; Main game mode array
+; ---------------------------------------------------------------------------
+
+GameModeArray:
+
+ptr_GM_Sega:	bra.w	GM_Sega		; Sega Screen ($00)
+
+ptr_GM_Title:	bra.w	GM_Title	; Title	Screen ($04)
+
+ptr_GM_Demo:	bra.w	GM_Level	; Demo Mode ($08)
+
+ptr_GM_Level:	bra.w	GM_Level	; Normal Level ($0C)
+
+ptr_GM_Special:	bra.w	GM_Special	; Special Stage	($10)
+
+ptr_GM_Cont:	bra.w	GM_Continue	; Continue Screen ($14)
+
+ptr_GM_Ending:	bra.w	GM_Ending	; End of game sequence ($18)
+
+ptr_GM_Credits:	bra.w	GM_Credits	; Credits ($1C)
+
+		rts	
 
 HandleTransition:
 		move.b	#1,(v_fast_fade_out).l
@@ -468,31 +491,11 @@ HandleTransition:
 		bne.s	.updateloop			; If so, wait
 		lea		(v_snddriver_ram).l,a6
 		jsr		(StopAllSound).l
+		move.l	#$40000010+($0<<16),(vdp_control_port).l
+		move.l	#$0,(vdp_data_port).l
+		jsr		(WaitForVBla).l
 		jmp		(ReturnToIPX).l
 
-; ---------------------------------------------------------------------------
-; Main game mode array
-; ---------------------------------------------------------------------------
-
-GameModeArray:
-
-ptr_GM_Sega:	bra.w	GM_Sega		; Sega Screen ($00)
-
-ptr_GM_Title:	bra.w	GM_Title	; Title	Screen ($04)
-
-ptr_GM_Demo:	bra.w	GM_Level	; Demo Mode ($08)
-
-ptr_GM_Level:	bra.w	GM_Level	; Normal Level ($0C)
-
-ptr_GM_Special:	bra.w	GM_Special	; Special Stage	($10)
-
-ptr_GM_Cont:	bra.w	GM_Continue	; Continue Screen ($14)
-
-ptr_GM_Ending:	bra.w	GM_Ending	; End of game sequence ($18)
-
-ptr_GM_Credits:	bra.w	GM_Credits	; Credits ($1C)
-
-		rts	
 ; ===========================================================================
 ; ---------------------------------------------------------------------------
 ; Vertical interrupt
