@@ -244,16 +244,16 @@ Nem_ResultEm:	bincludealigned	"artnem/Special Result Emeralds.nem",MMD_Is_SS
 ; ---------------------------------------------------------------------------
 ; Compressed graphics - bosses and ending sequence
 ; ---------------------------------------------------------------------------
-Nem_Eggman:	bincludealigned	"artnem/Boss - Main.nem",MMD_Is_Level
+Nem_Eggman:	bincludealigned	"artnem/Boss - Main.nem",MMD_Is_Level||MMD_Is_Credits
 Nem_Weapons:	bincludealigned	"artnem/Boss - Weapons.nem",MMD_Is_Level&&~~MMD_Is_SBZ
 Nem_Prison:	bincludealigned	"artnem/Prison Capsule.nem",MMD_Is_Level&&~~MMD_Is_SBZ
 Nem_Sbz2Eggman:	bincludealigned	"artnem/Boss - Eggman in SBZ2 & FZ.nem",MMD_Is_SBZ
 Nem_FzBoss:	bincludealigned	"artnem/Boss - Final Zone.nem",MMD_Is_SBZ
 Nem_FzEggman:	bincludealigned	"artnem/Boss - Eggman after FZ Fight.nem",MMD_Is_SBZ
 Nem_Exhaust:	bincludealigned	"artnem/Boss - Exhaust Flame.nem",MMD_Is_Level
-Nem_EndEm:	bincludealigned	"artnem/Ending - Emeralds.nem",MMD_Is_Ending
+Nem_EndEm:	bincludealigned	"artnem/Ending - Emeralds.nem",MMD_Is_Ending||MMD_Is_Credits
 Nem_EndSonic:	bincludealigned	"artnem/Ending - Sonic.nem",MMD_Is_Ending
-Nem_TryAgain:	bincludealigned	"artnem/Ending - Try Again.nem",MMD_Is_Ending
+Nem_TryAgain:	bincludealigned	"artnem/Ending - Try Again.nem",MMD_Is_Credits
 Nem_EndEggman:	;bincludealigned	"artnem/Unused - Eggman Ending.nem",MMD_Is_Ending
 Kos_EndFlowers:	bincludealigned	"artkos/Flowers at Ending.kos",MMD_Is_Ending
 Nem_EndFlower:	bincludealigned	"artnem/Ending - Flowers.nem",MMD_Is_Ending

@@ -51,6 +51,7 @@ static u8 v_zone_backup;
 #define v_undef_obj_id (*((u8*)0x23CAE5))
 #define v_undef_gm_id (*((u8*)0x23CAE6))
 #define v_vbla_routine (*((u8*)0xFFF62A))
+#define v_should_quit_module (*((u8*)0x23CAF0))
 
 extern u8* Loading_Sonic_Art, Loading_Sonic_Art_end;
 extern u16* Loading_Sonic_Map;
@@ -96,15 +97,6 @@ static void set_sonic_frame(u8 frame)
 
 		next_sprite++;
 	}
-}
-
-inline void sync_with_sub()
-{
-	while (*GA_COMSTAT0 == 0)
-			;
-	*GA_COMCMD0 = 0;
-	while (*GA_COMSTAT0 != 0)
-		;
 }
 
 __attribute__((interrupt)) void vint_ex()
@@ -177,12 +169,9 @@ void undef_gm_error(u8 gm_id)
 	} while (1);
 }
 
-void wait_on_cd_command(u8 cmd0, u8 cmd1)
+void sync_with_sub()
 {
-	grant_2m();
-	*GA_COMCMD1 = cmd1;
-	*GA_COMCMD0 = cmd0;
-
+	/*
 	do
 	{
 		asm ("nop");
@@ -194,6 +183,28 @@ void wait_on_cd_command(u8 cmd0, u8 cmd1)
 	{
 		asm ("nop");
 	} while (*GA_COMSTAT0 != 0);
+	*/
+	checkcomcmd: // .checkcomcmd:
+	if (*GA_COMCMD0 != 0) {// 		tst.w	(GA_COMCMD0).l
+	goto waitforcomstatnot0; // 		bne.s	.waitforcomstatnot0
+	}else{goto waitforcomstat0;} // 		beq.s	.waitforcomstat0
+	waitforcomstatnot0: // .waitforcomstatnot0:
+	if (*GA_COMSTAT0 == 0) // 		tst.w	(GA_COMSTAT0).l
+	goto waitforcomstatnot0; // 		beq.s	.waitforcomstatnot0
+	*GA_COMCMD0 = 0; // 		move.w	#$0,(GA_COMCMD0).l
+	goto checkcomcmd; // 		bra.s	.checkcomcmd
+	waitforcomstat0: // .waitforcomstat0:
+	if (*GA_COMSTAT0 != 0) // 		tst.w	(GA_COMSTAT0).l
+	goto waitforcomstat0; // 		bne.s	.waitforcomstat0
+}
+
+void wait_on_cd_command(u8 cmd0, u8 cmd1)
+{
+	grant_2m();
+	*GA_COMCMD1 = cmd1;
+	*GA_COMCMD0 = cmd0;
+
+	sync_with_sub();
 
 	wait_2m();
 }
@@ -315,6 +326,7 @@ void main()
 				com_cmd = MMD_TITLE;
 				break;
 		}
+		sync_with_sub();
 		wait_on_cd_command(1, com_cmd);
 
 		// Sub CPU side work is complete and the MMD should now be in 2M Word RAM
@@ -325,6 +337,7 @@ void main()
 		v_lastlamp = 0;
 		v_undef_obj_id = 0xff;
 		v_undef_gm_id = 0xff;
+		v_should_quit_module = 0;
 		// v_use_cd_audio = 1;
 		mmd_exec_wrapper();
 		disable_interrupts();

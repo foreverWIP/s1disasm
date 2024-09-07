@@ -29,11 +29,12 @@ v_initial_sp:	ds.l	1
 v_use_cd_audio:	ds.b	1
 v_undef_obj_id: ds.b	1
 v_undef_gm_id:	ds.b	1
-v_should_quit_ss:	ds.b	1
+v_fast_fade_out:	ds.b	1
 v_haven_ptr:	ds.l	1
 v_com_0:		ds.w	1
 v_com_1:		ds.w	1
-			ds.b	$10		; unused
+v_should_quit_module: ds.b	1
+			ds.b	$F		; unused
 v_tracksonic:		ds.b	$100		; position tracking data for Sonic
 v_hscrolltablebuffer:	ds.b	$380		; scrolling table data
 v_hscrolltablebuffer_end:
@@ -115,7 +116,7 @@ v_snddriver_ram:	SMPS_RAM		; sound driver state
 			ds.b	$40		; unused
 
 v_gamemode:		ds.b	1		; game mode (00=Sega; 04=Title; 08=Demo; 0C=Level; 10=SS; 14=Cont; 18=End; 1C=Credit; +8C=PreLevel)
-			ds.b	1		; unused
+v_prev_gamemode:		ds.b	1		; unused
 v_jpadhold2:		ds.b	1		; joypad input - held, duplicate
 v_jpadpress2:		ds.b	1		; joypad input - pressed, duplicate
 v_jpadhold1:		ds.b	1		; joypad input - held

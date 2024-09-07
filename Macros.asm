@@ -5,11 +5,7 @@ hang: macro
 		endm
 
 quitModule:	macro
-		if MMD_Enabled
-		jsr ReturnToIPX
-		else
-		nop
-		endif
+		move.b	#1,(v_should_quit_module).l
 		endm
 
 loadLevelModule: macro
@@ -17,11 +13,11 @@ loadLevelModule: macro
 		quitModule
 		endm
 
-undefObjTrap: macro addrreg
-		if ("addrreg"=="")
+undefObjTrap: macro objnum
+		if ("objnum"=="")
 		move.b	(a0),(v_undef_obj_id).l
 		else
-		move.b	(addrreg),(v_undef_obj_id).l
+		move.b	#objnum,(v_undef_obj_id).l
 		endif
 		quitModule
 		endm

@@ -1356,7 +1356,10 @@ StopSpecialSFX:
 FadeOutMusic:
 		jsr	StopSFX(pc)
 		jsr	StopSpecialSFX(pc)
+		tst.b	(v_fast_fade_out).l
+		bne.s	.skipdelayset
 		move.b	#3,SMPS_RAM.v_fadeout_delay(a6)			; Set fadeout delay to 3
+.skipdelayset:
 		move.b	#$28,SMPS_RAM.v_fadeout_counter(a6)		; Set fadeout counter
 		clr.b	SMPS_RAM.v_music_dac_track.PlaybackControl(a6)	; Stop DAC track
 		clr.b	SMPS_RAM.f_speedup(a6)				; Disable speed shoes tempo
@@ -1375,7 +1378,10 @@ DoFadeOut:
 .continuefade:
 		subq.b	#1,SMPS_RAM.v_fadeout_counter(a6)	; Update fade counter
 		beq.w	StopAllSound				; Branch if fade is done
+		tst.b	(v_fast_fade_out).l
+		bne.s	.skipdelayset
 		move.b	#3,SMPS_RAM.v_fadeout_delay(a6)		; Reset fade delay
+.skipdelayset:
 		lea	SMPS_RAM.v_music_fm_tracks(a6),a5
 		moveq	#SMPS_MUSIC_FM_TRACK_COUNT-1,d7		; 6 FM tracks
 ; loc_72524:

@@ -3,7 +3,11 @@
 ; ---------------------------------------------------------------------------
 
 HUD:
-		if MMD_Is_Level
+		if MMD_Is_Level||MMD_Is_Ending
+		cmpi.b	#id_Ending,(v_gamemode).l
+		bne.s	.notending
+		rts
+.notending:
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	HUD_Index(pc,d0.w),d1

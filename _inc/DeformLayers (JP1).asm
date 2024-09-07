@@ -45,7 +45,7 @@ Deform_Index:	dc.w Deform_GHZ-Deform_Index, Deform_LZ-Deform_Index
 
 
 Deform_GHZ:
-	if MMD_Is_GHZ
+	if MMD_Is_GHZ||MMD_Is_Ending
 	; block 3 - distant mountains
 		move.w	(v_scrshiftx).l,d4
 		ext.l	d4

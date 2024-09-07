@@ -31,7 +31,7 @@ AniArt_Index:	dc.w AniArt_GHZ-AniArt_Index, AniArt_none-AniArt_Index
 ; ---------------------------------------------------------------------------
 
 AniArt_GHZ:
-		if MMD_Is_GHZ
+		if MMD_Is_GHZ||MMD_Is_Ending
 AniArt_GHZ_Waterfall:
 .size		= 8	; number of tiles per frame
 

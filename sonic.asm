@@ -176,6 +176,7 @@ SHCSplashScreen:
 
 EntryPoint:
 		if MMD_Enabled
+		move.b	#0,(v_fast_fade_out).l
 		move.l	sp,(v_initial_sp).l
 		endif
 		if ~~MMD_Enabled
@@ -423,14 +424,52 @@ GameInit:
 			endif
 		else
 		move.w	#$8174,(vdp_control_port).l
+		if MMD_Is_Credits
+		move.b	#bgm_Credits,d0
+		bsr.w	PlaySound_Special
+		endif
 		endif
 
 MainGameLoop:
+		move.b	(v_gamemode).l,(v_prev_gamemode).l
 		move.b	(v_gamemode).l,d0 ; load Game Mode
 		andi.w	#$1C,d0	; limit Game Mode value to $1C max (change to a maximum of 7C to add more game modes)
 		jsr	GameModeArray(pc,d0.w) ; jump to apt location in ROM
+		move.b	(v_gamemode).l,d0
+		cmp.b	(v_prev_gamemode).l,d0
+		bne.s	HandleTransition
 		bra.s	MainGameLoop	; loop indefinitely
 ; ===========================================================================
+
+HandleTransition:
+		move.b	#1,(v_fast_fade_out).l
+		move.b	#bgm_Fade,d0
+		bsr.w	PlaySound_Special
+		cmpi.b	#id_SS,(v_gamemode).l
+		beq.s	.tospecial
+		cmpi.b	#id_SS,(v_prev_gamemode).l
+		beq.s	.fromspecial
+		bra.s	.normalfade
+.tospecial:
+		jsr		(PaletteWhiteIn).l
+		bra.s	.nospecial
+.fromspecial:
+		jsr		(PaletteWhiteOut).l
+		bra.s	.nospecial
+.normalfade:
+		jsr		(PaletteFadeOut).l
+.nospecial:
+		stopZ80
+		nop	
+		nop	
+		nop	
+.updateloop:
+		btst	#0,(z80_bus_request).l		; Is the z80 busy?
+		bne.s	.updateloop			; If so, wait
+		lea		(v_snddriver_ram).l,a6
+		jsr		(StopAllSound).l
+		jmp		(ReturnToIPX).l
+
 ; ---------------------------------------------------------------------------
 ; Main game mode array
 ; ---------------------------------------------------------------------------
@@ -1870,7 +1909,9 @@ GM_Title:
 		move.b	#bgm_Stop,d0
 		bsr.w	PlaySound_Special ; stop music
 		bsr.w	ClearPLC
+		if ~~MMD_Enabled
 		bsr.w	PaletteFadeOut
+		endif
 		disable_ints
 		bsr.w	DACDriverLoad
 		if MMD_Enabled
@@ -2535,7 +2576,9 @@ GM_Level:
 
 Level_NoMusicFade:
 		bsr.w	ClearPLC
+		if ~~MMD_Enabled
 		bsr.w	PaletteFadeOut
+		endif
 		tst.w	(f_demo).l	; is an ending sequence demo running?
 		bmi.s	Level_ClrRam	; if yes, branch
 		disable_ints
@@ -3008,7 +3051,9 @@ GM_Special:
 		if MMD_Is_SS
 		move.w	#sfx_EnterSS,d0
 		bsr.w	PlaySound_Special ; play special stage entry sound
+		if ~~MMD_Enabled
 		bsr.w	PaletteWhiteOut
+		endif
 		disable_ints
 		lea	(vdp_control_port).l,a6
 		move.w	#$8B03,(a6)	; line scroll mode
@@ -3542,7 +3587,9 @@ GM_Continue:
 		undefGmTrap
 		endif
 		if MMD_Is_Continue
+		if ~~MMD_Enabled
 		bsr.w	PaletteFadeOut
+		endif
 		disable_ints
 		move.w	(v_vdp_buffer1).l,d0
 		andi.b	#$BF,d0
@@ -3650,7 +3697,9 @@ GM_Ending:
 		if MMD_Is_Ending
 		move.b	#bgm_Stop,d0
 		bsr.w	PlaySound_Special ; stop music
+		if ~~MMD_Enabled
 		bsr.w	PaletteFadeOut
+		endif
 
 		clearRAM v_objspace
 		clearRAM v_misc_variables
@@ -3866,7 +3915,7 @@ Map_ESon:
 		include	"_maps/Ending Sequence Sonic.asm"
 		endif
 Map_ECha:
-		if MMD_Is_Ending
+		if MMD_Is_Ending||MMD_Is_Credits
 		include	"_maps/Ending Sequence Emeralds.asm"
 		endif
 Map_ESth:
@@ -3929,7 +3978,7 @@ Cred_SkipObjGfx:
 		if ~~MMD_Enabled
 		move.w	#120,(v_demolength).l ; display a credit for 2 seconds
 		else
-		move.w	#(120+540+60),(v_demolength).l
+		move.w	#(120+540+54),(v_demolength).l
 		endif
 		bsr.w	PaletteFadeIn
 
@@ -3939,6 +3988,9 @@ Cred_WaitLoop:
 		bsr.w	RunPLC
 		tst.w	(v_demolength).l ; have 2 seconds elapsed?
 		bne.s	Cred_WaitLoop	; if not, branch
+		if MMD_Enabled
+		addq.w	#1,(v_creditsnum).l
+		endif
 		tst.l	(v_plc_buffer).l ; have level gfx finished decompressing?
 		bne.s	Cred_WaitLoop	; if not, branch
 		cmpi.w	#9,(v_creditsnum).l ; have the credits finished?
