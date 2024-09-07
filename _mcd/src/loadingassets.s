@@ -10,3 +10,7 @@ Loading_Sonic_Map: .incbin "loading/sonicmap.bin"
 Loading_Sonic_Pal: .incbin "loading/sonicpal.bin"
 .global Loading_Sonic_Pal_end
 Loading_Sonic_Pal_end:
+.global Loading_Text
+Loading_Text:	.incbin "../../../creditsfont.bin"
+.global Loading_Text_end
+Loading_Text_end:

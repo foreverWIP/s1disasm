@@ -465,23 +465,33 @@ ptr_GM_Credits:	bra.w	GM_Credits	; Credits ($1C)
 		rts	
 
 HandleTransition:
+		if MMD_Is_SS
+		tst.b	(f_demo).l
+		beq.s	.noplaysound
+		move.w	#sfx_EnterSS,d0
+		bsr.w	PlaySound_Special
+		jsr		(PaletteWhiteIn).l
+		bra.s	.fademusic
+.noplaysound:
+		jsr		(WaitForVBla).l
+		jsr		(PaletteWhiteOut).l
+.fademusic:
+		else
+		if MMD_Is_Title
+		cmpi.b	#id_SS,(v_gamemode).l
+		beq.s	.specialfade
+		jsr		(PaletteFadeOut).l
+		bra.s	.fademusic
+.specialfade:
+		jsr		(PaletteWhiteIn).l
+.fademusic:
+		else
+		jsr		(PaletteFadeOut).l
+		endif
+		endif
 		move.b	#1,(v_fast_fade_out).l
 		move.b	#bgm_Fade,d0
 		bsr.w	PlaySound_Special
-		cmpi.b	#id_SS,(v_gamemode).l
-		beq.s	.tospecial
-		cmpi.b	#id_SS,(v_prev_gamemode).l
-		beq.s	.fromspecial
-		bra.s	.normalfade
-.tospecial:
-		jsr		(PaletteWhiteIn).l
-		bra.s	.nospecial
-.fromspecial:
-		jsr		(PaletteWhiteOut).l
-		bra.s	.nospecial
-.normalfade:
-		jsr		(PaletteFadeOut).l
-.nospecial:
 		stopZ80
 		nop	
 		nop	
@@ -2581,6 +2591,12 @@ Level_NoMusicFade:
 		bsr.w	ClearPLC
 		if ~~MMD_Enabled
 		bsr.w	PaletteFadeOut
+		else
+		tst.b	(v_should_fade_out).l
+		beq.s	.nofade
+		move.b	#0,(v_should_fade_out).l
+		jsr		(PaletteFadeOut).l
+.nofade:
 		endif
 		tst.w	(f_demo).l	; is an ending sequence demo running?
 		bmi.s	Level_ClrRam	; if yes, branch
@@ -3052,9 +3068,9 @@ GM_Special:
 		undefGmTrap
 		endif
 		if MMD_Is_SS
+		if ~~MMD_Enabled
 		move.w	#sfx_EnterSS,d0
 		bsr.w	PlaySound_Special ; play special stage entry sound
-		if ~~MMD_Enabled
 		bsr.w	PaletteWhiteOut
 		endif
 		disable_ints

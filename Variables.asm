@@ -30,7 +30,8 @@ v_use_cd_audio:	ds.b	1
 v_undef_obj_id: ds.b	1
 v_undef_gm_id:	ds.b	1
 v_fast_fade_out:	ds.b	1
-v_haven_ptr:	ds.l	1
+v_should_fade_out:	ds.b	1
+				ds.b	3
 v_com_0:		ds.w	1
 v_com_1:		ds.w	1
 v_should_quit_module: ds.b	1

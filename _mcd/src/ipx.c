@@ -35,8 +35,8 @@ extern u32 Debugger_LineAEmulation;
 extern u32 Debugger_LineFEmulation;
 extern u32 Debugger_TrapVector;*/
 
-#define v_spritetablebuffer ((Sprite*) 0xFFF800)
-#define v_palette ((u16*) 0xFFFB00)
+static Sprite v_spritetablebuffer[80];
+static u16 v_palette[64];
 
 static u32 frame_counter = 0;
 static u8 cur_sonic_anim_index = 0;
@@ -50,14 +50,17 @@ static u8 v_zone_backup;
 #define v_use_cd_audio (*((u8*)0x23CAE4))
 #define v_undef_obj_id (*((u8*)0x23CAE5))
 #define v_undef_gm_id (*((u8*)0x23CAE6))
-#define v_vbla_routine (*((u8*)0xFFF62A))
+static u8 v_vbla_routine;
 #define v_should_quit_module (*((u8*)0x23CAF0))
 
 extern u8* Loading_Sonic_Art, Loading_Sonic_Art_end;
 extern u16* Loading_Sonic_Map;
 extern u16* Loading_Sonic_Pal, Loading_Sonic_Pal_end;
+extern u8* Loading_Text, Loading_Text_end;
+extern u16* Loading_Text_Pal, Loading_Text_Pal_end;
 
 const u16 Loading_Sonic_Art_VRAM_Pos = 0x4000;
+const u16 Loading_Text_VRAM_Pos = 0x5000;
 
 static inline void wait_for_vbla()
 {
@@ -209,13 +212,94 @@ void wait_on_cd_command(u8 cmd0, u8 cmd1)
 	wait_2m();
 }
 
+struct loading_char_info {
+	u8 loc;
+	u8 width;
+};
+
+const struct loading_char_info loading_char_infos[] = {
+	{0,2}, // A
+	{2,2}, // B
+	{4,2}, // C
+	{6,2}, // D
+	{8,2}, // E
+	{10,2}, // F
+	{12,2}, // G
+	{14,2}, // H
+	{16,1}, // I
+	{17,2}, // J
+	{19,2}, // K
+	{21,2}, // L
+	{23,3}, // M
+	{26,2}, // N
+	{28,2}, // O
+	{30,2}, // P
+	{32,2}, // Q
+	{34,2}, // R
+	{36,2}, // S
+	{38,2}, // T
+	{40,2}, // U
+	{42,2}, // V
+	{44,3}, // W
+	{47,2}, // X
+	{49,2}, // Y
+	{51,2}, // Z
+	{53,2}, // 2
+};
+const u8 loading_text_art_width_tiles = 55;
+
+inline void print_loading_char_inner(char c, u8 char_width, u16 tiledata)
+{
+	if (c == 0 || c == ' ')
+	{
+		VDP_DATA_32 = 0;
+		return;
+	}
+	for (u8 i = 0; i < char_width; i++)
+	{
+		VDP_DATA_16 = tiledata + i;
+	}
+}
+
+u8 print_loading_char(char c, u8 x)
+{
+	if (c == 0 || c == ' ')
+	{
+		return 1;	
+	}
+	u8 char_width = loading_char_infos[c - 'A'].width;
+	u8 char_loc = loading_char_infos[c - 'A'].loc;
+	// top half
+	VDP_CTRL_32 = (VDPPTR(NMT_POS_PLANE(x, 24, _BLIB_PLANEA_ADDR)) | VRAM_W);
+	u16 tiledata = 0x2000 | ((Loading_Text_VRAM_Pos >> 5) + char_loc);
+	print_loading_char_inner(c, char_width, tiledata);
+	// bottom half
+	VDP_CTRL_32 = (VDPPTR(NMT_POS_PLANE(x, 25, _BLIB_PLANEA_ADDR)) | VRAM_W);
+	tiledata = 0x2000 | ((Loading_Text_VRAM_Pos >> 5) + (char_loc + loading_text_art_width_tiles));
+	print_loading_char_inner(c, char_width, tiledata);
+	return char_width;
+}
+
+void print_loading_text(const char* text)
+{
+	u8 x = 2;
+	while (*text != 0)
+	{
+		u8 width = print_loading_char(*text, x);
+		x += width;
+		text++;
+	}
+}
+
 void set_up_loading_screen()
 {
 	enable_debug_output();
 	blib_dma_fill_clear(VDPPTR(0xB800), (0x10000 - 0xB800) >> 1);
 
 	blib_dma_xfer(VDPPTR(Loading_Sonic_Art_VRAM_Pos), &Loading_Sonic_Art, 0x6b60 >> 1);
-	memcpy8(&Loading_Sonic_Pal, &v_palette[16], 32);
+	blib_dma_xfer(VDPPTR(Loading_Text_VRAM_Pos), &Loading_Text, 0xcc0 >> 1);
+	print_loading_text("NOW LOADING");
+	memcpy16(&Loading_Sonic_Pal, &v_palette[16], 16);
 	VDP_CTRL_16 = 0x8500+(0xf800>>9);
 
 	is_loading = 1;

@@ -97,7 +97,7 @@ loc_138C2:
 loc_138D4:
 		move.w	#60,objoff_3A(a0)	; set time delay to 1 second
 		tst.b	(f_timeover).l	; is TIME OVER tag set?
-		beq.s	locret_13900	; if not, branch
+		beq.s	locret_13900_2	; if not, branch
 		move.w	#0,objoff_3A(a0)
 		move.b	#id_GameOverCard,(v_gameovertext1).l ; load TIME object
 		move.b	#id_GameOverCard,(v_gameovertext2).l ; load OVER object
@@ -105,6 +105,9 @@ loc_138D4:
 		move.b	#3,(v_gameovertext2+obFrame).l
 		bra.s	loc_138C2
 ; ===========================================================================
+
+locret_13900_2:
+		move.b	#1,(v_should_fade_out).l
 
 locret_13900:
 		rts	
