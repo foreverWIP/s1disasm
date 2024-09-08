@@ -4,27 +4,18 @@ hang: macro
 		bra.s	.hangloop
 		endm
 
-quitModule:	macro
-		move.b	#1,(v_should_quit_module).l
-		endm
-
-loadLevelModule: macro
-		jsr		(PaletteFadeOut).l
-		quitModule
-		endm
-
 undefObjTrap: macro objnum
 		if ("objnum"=="")
 		move.b	(a0),(v_undef_obj_id).l
 		else
 		move.b	#objnum,(v_undef_obj_id).l
 		endif
-		quitModule
+		jsr		(ReturnToIPX).l
 		endm
 
 undefGmTrap: macro
 		move.b	(v_gamemode).l,(v_undef_gm_id).l
-		quitModule
+		jsr		(ReturnToIPX).l
 		endm
 
 waitForSubCpu: macro

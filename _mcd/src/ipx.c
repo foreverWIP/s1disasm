@@ -37,6 +37,7 @@ extern u32 Debugger_TrapVector;*/
 
 static Sprite v_spritetablebuffer[80];
 static u16 v_palette[64];
+#define v_palette_wram ((u16 *)0x23FB00)
 
 static u32 frame_counter = 0;
 static u8 cur_sonic_anim_index = 0;
@@ -51,7 +52,6 @@ static u8 v_zone_backup;
 #define v_undef_obj_id (*((u8*)0x23CAE5))
 #define v_undef_gm_id (*((u8*)0x23CAE6))
 static u8 v_vbla_routine;
-#define v_should_quit_module (*((u8*)0x23CAF0))
 
 extern u8* Loading_Sonic_Art, Loading_Sonic_Art_end;
 extern u16* Loading_Sonic_Map;
@@ -82,7 +82,7 @@ static void set_sonic_frame(u8 frame)
 	for (u8 i = 0; i < num_sprite_pieces; i++)
 	{
 		s16 ypos = (s16)((s8)*raw_sprite_ptr++);
-		v_spritetablebuffer[next_sprite].pos_y = (u16)(ypos + 128 + 180);
+		v_spritetablebuffer[next_sprite].pos_y = (u16)(ypos + 128 + (240 - 40 - 8));
 		u8 size = *raw_sprite_ptr++;
 		v_spritetablebuffer[next_sprite].width = size >> 2;
 		v_spritetablebuffer[next_sprite].height = size & 0b11;
@@ -102,8 +102,19 @@ static void set_sonic_frame(u8 frame)
 	}
 }
 
-__attribute__((interrupt)) void vint_ex()
-{
+const signed char loading_col_offsets[] = {
+    2, 2, 2, 3, 3, 3, 3, 3,
+	3, 4, 4, 4, 4, 4, 4, 4,
+	4, 4, 4, 4, 4, 4, 3, 3,
+	3, 3, 3, 3, 2, 2, 2, 2,
+	2, 1, 1, 1, 1, 1, 1, 0,
+	0, 0, 0, 0, 0, 0, 0, 0,
+	0, 0, 0, 0, 1, 1, 1, 1,
+	1, 1, 2, 2
+};
+const u8 loading_col_offsets_len = (sizeof(loading_col_offsets) / sizeof(s8));
+
+__attribute__((interrupt)) void vint_ex() {
 	asm("bset.b #0, (0xA12000).l");
 	if (is_loading)
 	{
@@ -112,6 +123,19 @@ __attribute__((interrupt)) void vint_ex()
 
 		blib_dma_xfer(VDPPTR(0) | CRAM_W, v_palette, 128 >> 1);
 		blib_dma_xfer(VDPPTR(0xF800), v_spritetablebuffer, 0x280 >> 1);
+
+		VDP_CTRL_32 = VDPPTR(0) | VSRAM_W;
+		for (u8 i = 0; i < 20; i++)
+		{
+			u8 off_index = frame_counter + i;
+			while (off_index >= loading_col_offsets_len)
+			{
+				off_index -= loading_col_offsets_len;
+			}
+			s16 off = loading_col_offsets[off_index] - 2;
+			VDP_DATA_16 = off;
+			VDP_DATA_16 = off;
+		}
 	}
 	frame_counter++;
 	v_vbla_routine = 0;
@@ -259,6 +283,10 @@ inline void print_loading_char_inner(char c, u8 char_width, u16 tiledata)
 	{
 		VDP_DATA_16 = tiledata + i;
 	}
+	if ((char_width & 1) == 1)
+	{
+		VDP_DATA_16 = 0;
+	}
 }
 
 u8 print_loading_char(char c, u8 x)
@@ -293,14 +321,15 @@ void print_loading_text(const char* text)
 
 void set_up_loading_screen()
 {
-	enable_debug_output();
-	blib_dma_fill_clear(VDPPTR(0xB800), (0x10000 - 0xB800) >> 1);
+	blib_clear_vram();
+	VDP_CTRL_16 = 0x8700;
 
 	blib_dma_xfer(VDPPTR(Loading_Sonic_Art_VRAM_Pos), &Loading_Sonic_Art, 0x6b60 >> 1);
-	blib_dma_xfer(VDPPTR(Loading_Text_VRAM_Pos), &Loading_Text, 0xcc0 >> 1);
+	blib_dma_xfer(VDPPTR(Loading_Text_VRAM_Pos), &Loading_Text, 0xdc0 >> 1);
 	print_loading_text("NOW LOADING");
 	memcpy16(&Loading_Sonic_Pal, &v_palette[16], 16);
-	VDP_CTRL_16 = 0x8500+(0xf800>>9);
+	VDP_CTRL_16 = 0x8500 + (0xf800 >> 9);
+	VDP_CTRL_16 = 0x8B00 + 0b100;
 
 	is_loading = 1;
 }
@@ -320,34 +349,22 @@ void mmd_exec_wrapper()
 // actually useful game code
 void main()
 {
-	/**(volatile u32*)(_MADRERR+2) = Debugger_AddressError;
-	*(volatile u32*)(_MDIVERR+2) = Debugger_ZeroDivideError;
-	*(volatile u32*)(_MONKERR+2) = Debugger_CHKExceptionError;
-	*(volatile u32*)(_MTRPERR+2) = Debugger_TRAPVError;
-  	*(volatile u32*)(_MSPVERR+2) = Debugger_PrivilegeViolation;
-	*(volatile u32*)(_MTRACE+2) = Debugger_TraceError;
-	*(volatile u32*)(_MNOCOD0+2) = Debugger_LineAEmulation;
-	*(volatile u32*)(_MNOCOD1+2) = Debugger_LineFEmulation;*/
+  
 	install_handlers();
 
 	v_gamemode_backup = 0;
 	v_zone_backup = 0;
+	memset16(0, v_palette, 64);
 
-	memset8(0, (u8*)0x200000, 0x40000);
+	memset8(0, (u8 *)0x200000, 0x40000);
 
-	do
-	{
+	do {
 		MLEVEL6_VECTOR = vint_ex;
 
 		set_up_loading_screen();
 
 		enable_interrupts();
 
-		// In this example, we have the command for the Sub CPU stored in COMCMD0
-		// and the command argument in COMCMD1. Command 1 will be "load a file"
-		// and the argument will be the ID for that file, which is defined in
-		// the SPX
-		// Set the argument first
 		u8 com_cmd = 0;
 		switch (v_gamemode_backup)
 		{
@@ -356,57 +373,44 @@ void main()
 				switch (v_zone_backup)
 				{
 					case 1:
-						print_msg("Requesting LZ\xff", 0, 0);
 						com_cmd = MMD_LZ;
 						break;
 					case 2:
-						print_msg("Requesting MZ\xff", 0, 0);
 						com_cmd = MMD_MZ;
 						break;
 					case 3:
-						print_msg("Requesting SLZ\xff", 0, 0);
 						com_cmd = MMD_SLZ;
 						break;
 					case 4:
-						print_msg("Requesting SYZ\xff", 0, 0);
 						com_cmd = MMD_SYZ;
 						break;
 					case 5:
-						print_msg("Requesting SBZ\xff", 0, 0);
 						com_cmd = MMD_SBZ;
 						break;
 					case 6:
-						print_msg("Requesting LZ\xff", 0, 0);
 						com_cmd = MMD_ENDING;
 						break;
 					case 7:
-						print_msg("Requesting Special Stage\xff", 0, 0);
 						com_cmd = MMD_SS;
 						break;
 					default:
-						print_msg("Requesting GHZ\xff", 0, 0);
 						com_cmd = MMD_GHZ;
 						break;
 				}
 				break;
 			case 0x10:
-				print_msg("Requesting Special Stage\xff", 0, 0);
 				com_cmd = MMD_SS;
 				break;
 			case 0x14:
-				print_msg("Requesting continue\xff", 0, 0);
 				com_cmd = MMD_CONTINUE;
 				break;
 			case 0x18:
-				print_msg("Requesting ending\xff", 0, 0);
 				com_cmd = MMD_ENDING;
 				break;
 			case 0x1c:
-				print_msg("Requesting credits\xff", 0, 0);
 				com_cmd = MMD_CREDITS;
 				break;
 			default:
-				print_msg("Requesting title\xff", 0, 0);
 				com_cmd = MMD_TITLE;
 				break;
 		}
@@ -421,13 +425,12 @@ void main()
 		v_lastlamp = 0;
 		v_undef_obj_id = 0xff;
 		v_undef_gm_id = 0xff;
-		v_should_quit_module = 0;
 		// v_use_cd_audio = 1;
 		mmd_exec_wrapper();
 		disable_interrupts();
 
 		sync_with_sub();
-		
+
 		if (v_undef_obj_id != 0xff)
 		{
 			undef_obj_error(v_undef_obj_id);
@@ -436,6 +439,7 @@ void main()
 		{
 			undef_gm_error(v_undef_gm_id);
 		}
+		memcpy16(v_palette_wram, v_palette, 64);
 		v_gamemode_backup = v_gamemode;
 		v_zone_backup = v_zone;
 	} while (1);

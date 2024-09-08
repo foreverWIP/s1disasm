@@ -176,10 +176,10 @@ SHCSplashScreen:
 
 EntryPoint:
 		if MMD_Enabled
+		move.b	#1,(v_already_inited).l
 		move.b	#0,(v_fast_fade_out).l
 		move.l	sp,(v_initial_sp).l
 		endif
-		if ~~MMD_Enabled
 		if ~~MMD_Enabled
 		tst.l	(z80_port_1_control).l ; test port A & B control registers
 		bne.s	PortA_Ok
@@ -187,27 +187,19 @@ EntryPoint:
 
 PortA_Ok:
 		bne.s	SkipSetup ; Skip the VDP and Z80 setup code if port A, B or C is ok...?
-		endif
 		lea	SetupValues(pc),a5	; Load setup values array address.
 		movem.w	(a5)+,d5-d7
 		movem.l	(a5)+,a0-a4
-		if ~~MMD_Enabled
 		move.b	-$10FF(a1),d0	; get hardware version (from $A10001)
 		andi.b	#$F,d0
 		beq.s	SkipSecurity	; If the console has no TMSS, skip the security stuff.
 		move.l	#'SEGA',$2F00(a1) ; move "SEGA" to TMSS register ($A14000)
 
 SkipSecurity:
-		endif
 		move.w	(a4),d0	; clear write-pending flag in VDP to prevent issues if the 68k has been reset in the middle of writing a command long word to the VDP.
 		moveq	#0,d0	; clear d0
-		if ~~MMD_Enabled
 		movea.l	d0,a6	; clear a6
 		move.l	a6,usp	; set usp to $0
-		else
-		movea.l	d0,a6
-		move.l	sp,usp	; set usp to $0
-		endif
 
 		moveq	#$17,d1
 VDPInitLoop:
@@ -218,39 +210,27 @@ VDPInitLoop:
 		
 		move.l	(a5)+,(a4)
 		move.w	d0,(a3)		; clear	the VRAM
-		if ~~MMD_Enabled
+
 		move.w	d7,(a1)		; stop the Z80
 		move.w	d7,(a2)		; reset	the Z80
 
 WaitForZ80:
 		btst	d0,(a1)		; has the Z80 stopped?
 		bne.s	WaitForZ80	; if not, branch
-		else
-		stopZ80
-		waitZ80
-		resetZ80
-		endif
 
 		moveq	#$25,d2
 Z80InitLoop:
 		move.b	(a5)+,(a0)+
 		dbf	d2,Z80InitLoop
 		
-		if ~~MMD_Enabled
 		move.w	d0,(a2)
 		move.w	d0,(a1)		; start	the Z80
 		move.w	d7,(a2)		; reset	the Z80
-		else
-		resetZ80a
-		startZ80
-		resetZ80
-		endif
 
-		if ~~MMD_Enabled
 ClrRAMLoop:
 		move.l	d0,-(a6)	; clear 4 bytes of RAM
 		dbf	d6,ClrRAMLoop	; repeat until the entire RAM is clear
-		endif
+
 		move.l	(a5)+,(a4)	; set VDP display mode and increment mode
 		move.l	(a5)+,(a4)	; set VDP to CRAM write
 
@@ -466,32 +446,21 @@ ptr_GM_Credits:	bra.w	GM_Credits	; Credits ($1C)
 
 HandleTransition:
 		if MMD_Is_SS
-		tst.b	(f_demo).l
-		beq.s	.noplaysound
-		move.w	#sfx_EnterSS,d0
-		bsr.w	PlaySound_Special
-		jsr		(PaletteWhiteIn).l
-		bra.s	.fademusic
-.noplaysound:
-		jsr		(WaitForVBla).l
-		jsr		(PaletteWhiteOut).l
-.fademusic:
+		lea		(PaletteFadeOut).l,a0
 		else
-		if MMD_Is_Title
-		cmpi.b	#id_SS,(v_gamemode).l
-		beq.s	.specialfade
-		jsr		(PaletteFadeOut).l
+		tst.b	(v_special_trans).l
+		bne.s	.specialfade
+		lea		(PaletteFadeOut).l,a0
 		bra.s	.fademusic
 .specialfade:
-		jsr		(PaletteWhiteIn).l
+		lea		(PaletteWhiteOut).l,a0
+		move.b	#0,(v_special_trans).l
 .fademusic:
-		else
-		jsr		(PaletteFadeOut).l
-		endif
 		endif
 		move.b	#1,(v_fast_fade_out).l
 		move.b	#bgm_Fade,d0
 		bsr.w	PlaySound_Special
+		jsr		(a0)
 		stopZ80
 		nop	
 		nop	
@@ -501,6 +470,12 @@ HandleTransition:
 		bne.s	.updateloop			; If so, wait
 		lea		(v_snddriver_ram).l,a6
 		jsr		(StopAllSound).l
+		startZ80
+		nop	
+		nop	
+		nop	
+		nop	
+		nop	
 		move.l	#$40000010+($0<<16),(vdp_control_port).l
 		move.l	#$0,(vdp_data_port).l
 		jsr		(WaitForVBla).l
@@ -949,6 +924,8 @@ VDPSetupGame:
 		move.w	(VDPSetupArray+2).l,d0
 		move.w	d0,(v_vdp_buffer1).l
 		move.w	#$8A00+223,(v_hbla_hreg).l	; H-INT every 224th scanline
+		tst.b	(v_already_inited).l
+		bne.s	.skipclrCRAM
 		moveq	#0,d0
 		move.l	#$C0000000,(vdp_control_port).l ; set VDP to CRAM write
 		move.w	#$3F,d7
@@ -957,6 +934,7 @@ VDPSetupGame:
 		move.w	d0,(a1)
 		dbf	d7,.clrCRAM	; clear	the CRAM
 
+.skipclrCRAM:
 		clr.l	(v_scrposy_vdp).l
 		clr.l	(v_scrposx_vdp).l
 		move.l	d1,-(sp)
@@ -2195,7 +2173,6 @@ LevSel_PlaySnd:
 LevSel_Ending:
 		move.b	#id_Ending,(v_gamemode).l ; set screen mode to $18 (Ending)
 		move.w	#(id_EndZ<<8),(v_zone).l ; set level to 0600 (Ending)
-		quitModule
 		rts	
 ; ===========================================================================
 
@@ -2204,7 +2181,6 @@ LevSel_Credits:
 		move.b	#bgm_Credits,d0
 		bsr.w	PlaySound_Special ; play credits music
 		move.w	#0,(v_creditsnum).l
-		quitModule
 		rts	
 ; ===========================================================================
 ; ---------------------------------------------------------------------------
@@ -2273,7 +2249,6 @@ LevSel_Level_SS:
 		if Revision<>0
 			move.l	#5000,(v_scorelife).l ; extra life is awarded at 50000 points
 		endif
-		quitModule
 		rts	
 ; ===========================================================================
 
@@ -2298,7 +2273,6 @@ PlayLevel:
 		endif
 		move.b	#bgm_Fade,d0
 		bsr.w	PlaySound_Special ; fade out music
-		loadLevelModule
 		rts	
 ; ===========================================================================
 ; ---------------------------------------------------------------------------
@@ -2367,6 +2341,7 @@ loc_3422:
 		move.b	#id_Special,(v_gamemode).l ; set screen mode to $10 (Special Stage)
 		clr.w	(v_zone).l	; clear	level number
 		clr.b	(v_lastspecial).l ; clear special stage number
+		move.b	#1,(v_special_trans).l
 
 Demo_Level:
 		move.b	#3,(v_lives).l	; set lives to 3
@@ -2377,7 +2352,6 @@ Demo_Level:
 		if Revision<>0
 			move.l	#5000,(v_scorelife).l ; extra life is awarded at 50000 points
 		endif
-		quitModule
 		rts	
 ; ===========================================================================
 ; ---------------------------------------------------------------------------
@@ -2592,11 +2566,12 @@ Level_NoMusicFade:
 		if ~~MMD_Enabled
 		bsr.w	PaletteFadeOut
 		else
-		tst.b	(v_should_fade_out).l
+		if MMD_Is_Level
+		tst.b	(f_restart).l
 		beq.s	.nofade
-		move.b	#0,(v_should_fade_out).l
 		jsr		(PaletteFadeOut).l
 .nofade:
+		endif
 		endif
 		tst.w	(f_demo).l	; is an ending sequence demo running?
 		bmi.s	Level_ClrRam	; if yes, branch
@@ -2888,7 +2863,6 @@ Level_ChkDemo:
 		cmpi.b	#id_Demo,(v_gamemode).l
 		beq.w	Level_MainLoop	; if mode is 8 (demo), branch
 		move.b	#id_Sega,(v_gamemode).l ; go to Sega screen
-		quitModule
 		rts	
 ; ===========================================================================
 
@@ -2921,7 +2895,6 @@ loc_3BC8:
 		tst.w	(v_demolength).l
 		bne.s	Level_FDLoop
 		endif
-		quitModule
 		rts	
 ; ===========================================================================
 
@@ -3158,7 +3131,8 @@ SS_ChkEnd:
 		if Revision=0
 		bne.w	SS_ToSegaScreen	; if yes, branch
 		else
-		bne.w	SS_ToLevel
+		;bne.w	SS_ToLevel
+		bne.w	SS_Finish
 		endif
 		move.b	#id_Level,(v_gamemode).l ; set screen mode to $0C (level)
 		cmpi.w	#(id_SBZ<<8)+3,(v_zone).l ; is level number higher than FZ?
@@ -3166,6 +3140,12 @@ SS_ChkEnd:
 		clr.w	(v_zone).l	; set to GHZ1
 
 SS_Finish:
+		tst.b	(f_demo).l
+		beq.s	.noplaysound
+		move.w	#sfx_EnterSS,d0
+		bsr.w	PlaySound_Special
+		jsr		(WaitForVBla).l
+.noplaysound:
 		move.w	#60,(v_demolength).l ; set delay time to 1 second
 		move.w	#$3F,(v_pfade_start).l
 		clr.w	(v_palchgspeed).l
@@ -3187,6 +3167,9 @@ SS_FinLoop:
 loc_47D4:
 		tst.w	(v_demolength).l
 		bne.s	SS_FinLoop
+
+		tst.w	(f_demo).l
+		bne.w	SS_ToSegaScreen
 
 		disable_ints
 		lea	(vdp_control_port).l,a6
@@ -3231,19 +3214,18 @@ SS_NormalExit:
 		move.w	#sfx_EnterSS,d0
 		bsr.w	PlaySound_Special ; play special stage exit sound
 		bsr.w	PaletteWhiteOut
-		quitModule
 		rts	
 ; ===========================================================================
 
 SS_ToSegaScreen:
 		move.b	#id_Sega,(v_gamemode).l ; goto Sega screen
-		quitModule
+		jsr		(PaletteFadeOut).l
 		rts
 
 		if Revision<>0
-SS_ToLevel:	cmpi.b	#id_Level,(v_gamemode).l
+SS_ToLevel:
+		cmpi.b	#id_Level,(v_gamemode).l
 		beq.s	SS_ToSegaScreen
-		quitModule
 		rts
 		endif
 
@@ -3678,7 +3660,6 @@ loc_4DF2:
 		tst.w	(v_demolength).l
 		bne.w	Cont_MainLoop
 		move.b	#id_Sega,(v_gamemode).l ; go to Sega screen
-		quitModule
 		rts	
 ; ===========================================================================
 
@@ -3691,7 +3672,6 @@ Cont_GotoLevel:
 		move.l	d0,(v_score).l	; clear score
 		move.b	d0,(v_lastlamp).l ; clear lamppost count
 		subq.b	#1,(v_continues).l ; subtract 1 from continues
-		quitModule
 		rts	
 ; ===========================================================================
 		endif
@@ -3826,7 +3806,6 @@ End_MainLoop:
 		move.b	#bgm_Credits,d0
 		bsr.w	PlaySound_Special ; play credits music
 		move.w	#0,(v_creditsnum).l ; set credits index number to 0
-		quitModule
 		rts	
 ; ===========================================================================
 
@@ -3997,7 +3976,7 @@ Cred_SkipObjGfx:
 		if ~~MMD_Enabled
 		move.w	#120,(v_demolength).l ; display a credit for 2 seconds
 		else
-		move.w	#(120+540+54),(v_demolength).l
+		move.w	#(120+540+57),(v_demolength).l
 		endif
 		bsr.w	PaletteFadeIn
 
@@ -4052,7 +4031,6 @@ EndDemo_LampLoad:
 		dbf	d0,EndDemo_LampLoad
 
 EndDemo_Exit:
-		quitModule
 		endif
 		rts	
 ; End of function EndingDemoLoad
@@ -4132,7 +4110,6 @@ TryAg_MainLoop:
 TryAg_Exit:
 		move.b	#id_Sega,(v_gamemode).l ; goto Sega screen
 		endif
-		quitModule
 		rts	
 		endif
 

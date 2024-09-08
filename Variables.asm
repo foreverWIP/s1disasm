@@ -30,12 +30,12 @@ v_use_cd_audio:	ds.b	1
 v_undef_obj_id: ds.b	1
 v_undef_gm_id:	ds.b	1
 v_fast_fade_out:	ds.b	1
-v_should_fade_out:	ds.b	1
-				ds.b	3
+v_already_inited:			ds.b	1
+v_special_trans:	ds.b	1 ; that's me :>
+				ds.b	2
 v_com_0:		ds.w	1
 v_com_1:		ds.w	1
-v_should_quit_module: ds.b	1
-			ds.b	$F		; unused
+			ds.b	$10		; unused
 v_tracksonic:		ds.b	$100		; position tracking data for Sonic
 v_hscrolltablebuffer:	ds.b	$380		; scrolling table data
 v_hscrolltablebuffer_end:

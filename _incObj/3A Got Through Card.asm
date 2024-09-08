@@ -151,13 +151,9 @@ Got_NextLevel:	; Routine $A
 		move.w	LevelOrder(pc,d0.w),d0 ; load level from level order array
 		move.w	d0,(v_zone).l	; set level number
 		tst.b	(v_act).l
-		bne.s	.notnewzone
-		quitModule
-.notnewzone:
 		tst.w	d0
 		bne.s	Got_ChkSS
 		move.b	#id_Sega,(v_gamemode).l
-		quitModule
 		bra.s	Got_Display2
 ; ===========================================================================
 
@@ -166,7 +162,6 @@ Got_ChkSS:
 		tst.b	(f_bigring).l	; has Sonic jumped into	a giant	ring?
 		beq.s	loc_C6EA	; if not, branch
 		move.b	#id_Special,(v_gamemode).l ; set game mode to Special Stage (10)
-		quitModule
 		bra.s	Got_Display2
 ; ===========================================================================
 

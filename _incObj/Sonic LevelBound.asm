@@ -53,7 +53,6 @@ Sonic_LevelBound:
 		clr.b	(v_lastlamp).l	; clear	lamppost counter
 		move.w	#1,(f_restart).l ; restart the level
 		move.w	#(id_LZ<<8)+3,(v_zone).l ; set level to SBZ3 (LZ4)
-		quitModule
 		rts	
 ; ===========================================================================
 

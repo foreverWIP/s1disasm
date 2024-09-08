@@ -26,8 +26,6 @@ Pause_Loop:
 		btst	#bitA,(v_jpadpress1).l ; is button A pressed?
 		beq.s	Pause_ChkBC	; if not, branch
 		move.b	#id_Title,(v_gamemode).l ; set game mode to 4 (title screen)
-		quitModule
-		nop	
 		bra.s	Pause_EndMusic
 ; ===========================================================================
 

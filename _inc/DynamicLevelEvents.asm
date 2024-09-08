@@ -242,7 +242,6 @@ DLE_SBZ3:
 		move.w	#1,(f_restart).l ; restart level
 		move.w	#(id_SBZ<<8)+2,(v_zone).l ; set level number to 0502 (FZ)
 		move.b	#1,(f_playerctrl).l ; lock controls
-		quitModule
 
 locret_6F8C:
 		endif
