@@ -2567,7 +2567,7 @@ Level_NoMusicFade:
 		bsr.w	PaletteFadeOut
 		else
 		if MMD_Is_Level
-		tst.b	(f_restart).l
+		tst.w	(f_restart).l
 		beq.s	.nofade
 		jsr		(PaletteFadeOut).l
 .nofade:

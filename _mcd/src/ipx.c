@@ -59,8 +59,8 @@ extern u16* Loading_Sonic_Pal, Loading_Sonic_Pal_end;
 extern u8* Loading_Text, Loading_Text_end;
 extern u16* Loading_Text_Pal, Loading_Text_Pal_end;
 
-const u16 Loading_Sonic_Art_VRAM_Pos = 0x4000;
-const u16 Loading_Text_VRAM_Pos = 0x5000;
+const u16 Loading_Sonic_Art_VRAM_Pos = 0x1000;
+const u16 Loading_Text_VRAM_Pos = 0x2000;
 
 static inline void wait_for_vbla()
 {
