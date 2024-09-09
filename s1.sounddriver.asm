@@ -2717,7 +2717,7 @@ Music91:
 		even
 Music92:
 		if MMD_Is_LZ
-		include "sound/music/Mus92 - Drowning.asm"
+		;include "sound/music/Mus92 - Drowning.asm"
 		even
 		endif
 Music93:
@@ -2797,13 +2797,13 @@ SoundA0:
 		even
 SoundA1:	include "sound/sfx/SndA1 - Lamppost.asm"
 		even
-SoundA2:	;include "sound/sfx/SndA2.asm"
+SoundA2:	include "sound/sfx/SndA2.asm"
 		even
 SoundA3:	include "sound/sfx/SndA3 - Death.asm"
 		even
 SoundA4:	include "sound/sfx/SndA4 - Skid.asm"
 		even
-SoundA5:	;include "sound/sfx/SndA5.asm"
+SoundA5:	include "sound/sfx/SndA5.asm"
 		even
 SoundA6:	include "sound/sfx/SndA6 - Hit Spikes.asm"
 		even

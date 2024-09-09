@@ -1,33 +1,33 @@
-SndA5_Header:
-	smpsHeaderStartSong 1
-	smpsHeaderVoice     SndA5_Voices
+SndA5_Drown_Warning_Header:
+	smpsHeaderStartSong 1, 1
+	smpsHeaderVoice     SndA5_Drown_Warning_Voices
 	smpsHeaderTempoSFX  $01
 	smpsHeaderChanSFX   $01
 
-	smpsHeaderSFXChannel cFM5, SndA5_FM5,	$00, $00
+	smpsHeaderSFXChannel cFM5, SndA5_Drown_Warning_FM5,	$0C, $08
 
 ; FM5 Data
-SndA5_FM5:
+SndA5_Drown_Warning_FM5:
 	smpsSetvoice        $00
-	dc.b	nRst, $01, nBb0, $0A, nRst, $02
+	dc.b	nC5, $08, nC5, $25
 	smpsStop
 
-SndA5_Voices:
+SndA5_Drown_Warning_Voices:
 ;	Voice $00
-;	$FA
-;	$21, $30, $10, $32, 	$2F, $1F, $2F, $2F, 	$05, $08, $09, $02
-;	$06, $0F, $06, $02, 	$1F, $2F, $4F, $2F, 	$0F, $1A, $0E, $80
-	smpsVcAlgorithm     $02
-	smpsVcFeedback      $07
-	smpsVcUnusedBits    $03
-	smpsVcDetune        $03, $01, $03, $02
-	smpsVcCoarseFreq    $02, $00, $00, $01
+;	$14
+;	$25, $33, $36, $11, 	$1F, $1F, $1F, $1F, 	$15, $18, $1C, $13
+;	$0B, $08, $0D, $09, 	$0F, $9F, $8F, $0F, 	$24, $05, $0A, $80
+	smpsVcAlgorithm     $04
+	smpsVcFeedback      $02
+	smpsVcUnusedBits    $00
+	smpsVcDetune        $01, $03, $03, $02
+	smpsVcCoarseFreq    $01, $06, $03, $05
 	smpsVcRateScale     $00, $00, $00, $00
-	smpsVcAttackRate    $2F, $2F, $1F, $2F
+	smpsVcAttackRate    $1F, $1F, $1F, $1F
 	smpsVcAmpMod        $00, $00, $00, $00
-	smpsVcDecayRate1    $02, $09, $08, $05
-	smpsVcDecayRate2    $02, $06, $0F, $06
-	smpsVcDecayLevel    $02, $04, $02, $01
+	smpsVcDecayRate1    $13, $1C, $18, $15
+	smpsVcDecayRate2    $09, $0D, $08, $0B
+	smpsVcDecayLevel    $00, $08, $09, $00
 	smpsVcReleaseRate   $0F, $0F, $0F, $0F
-	smpsVcTotalLevel    $00, $0E, $1A, $0F
+	smpsVcTotalLevel    $80, $0A, $05, $24
 

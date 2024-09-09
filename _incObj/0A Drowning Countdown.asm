@@ -86,7 +86,7 @@ Drown_ChkWater:	; Routine 4
 		ext.w	d0
 		add.w	drown_origX(a0),d0
 		move.w	d0,obX(a0)
-		bsr.s	Drown_ShowNumber
+		bsr.w	Drown_ShowNumber
 		jsr	(SpeedToPos).l
 		tst.b	obRender(a0)
 		bpl.s	.delete
@@ -97,7 +97,7 @@ Drown_ChkWater:	; Routine 4
 ; ===========================================================================
 
 Drown_Display:	; Routine 6, Routine $E
-		bsr.s	Drown_ShowNumber
+		bsr.w	Drown_ShowNumber
 		lea	(Ani_Drown).l,a1
 		jsr	(AnimateSprite).l
 		jmp	(DisplaySprite).l
@@ -136,6 +136,8 @@ Drown_ShowNumber:
 		cmpi.b	#7,obAnim(a0)
 		bhs.s	.nonumber
 
+		move.w	#$A5,d0
+		jsr	(PlaySound_Special).l
 		move.w	#15,drown_time(a0)
 		clr.w	obVelY(a0)
 		move.b	#$80,obRender(a0)
@@ -211,8 +213,8 @@ Drown_Countdown:; Routine $A
 		bhi.s	.reduceair	; if air is above 12, branch
 
 		bne.s	.skipmusic	; if air is less than 12, branch
-		move.w	#bgm_Drowning,d0
-		jsr	(PlaySound).l	; play countdown music
+		;move.w	#bgm_Drowning,d0
+		;jsr	(PlaySound).l	; play countdown Music
 
 .skipmusic:
 		subq.b	#1,objoff_32(a0)
