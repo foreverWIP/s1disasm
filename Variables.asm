@@ -330,7 +330,7 @@ v_vbla_byte = v_vbla_word+1			; low byte for vertical interrupt counter
 v_zone:			ds.b	1		; current zone number
 v_act:			ds.b	1		; current act number
 v_lives:		ds.b	1		; number of lives
-			ds.b	1		; unused
+v_prev_zone:	ds.b	1
 v_air:			ds.w	1		; air remaining while underwater
 v_airbyte = v_air+1				; low byte for air
 v_lastspecial:		ds.b	1		; last special stage number

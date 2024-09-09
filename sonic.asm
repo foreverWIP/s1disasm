@@ -412,11 +412,15 @@ GameInit:
 
 MainGameLoop:
 		move.b	(v_gamemode).l,(v_prev_gamemode).l
+		move.b	(v_zone).l,(v_prev_zone).l
 		move.b	(v_gamemode).l,d0 ; load Game Mode
 		andi.w	#$1C,d0	; limit Game Mode value to $1C max (change to a maximum of 7C to add more game modes)
 		jsr	GameModeArray(pc,d0.w) ; jump to apt location in ROM
 		move.b	(v_gamemode).l,d0
 		cmp.b	(v_prev_gamemode).l,d0
+		bne.s	HandleTransition
+		move.b	(v_zone).l,d0
+		cmp.b	(v_prev_zone).l,d0
 		bne.s	HandleTransition
 		bra.s	MainGameLoop	; loop indefinitely
 ; ===========================================================================
@@ -451,16 +455,24 @@ HandleTransition:
 		tst.b	(v_special_trans).l
 		bne.s	.specialfade
 		lea		(PaletteFadeOut).l,a0
+		move.b	#1,(v_fast_fade_out).l
 		bra.s	.fademusic
 .specialfade:
+		move.w	#sfx_EnterSS,d0
+		bsr.w	PlaySound
 		lea		(PaletteWhiteOut).l,a0
-		move.b	#0,(v_special_trans).l
 .fademusic:
 		endif
-		move.b	#1,(v_fast_fade_out).l
 		move.b	#bgm_Fade,d0
 		bsr.w	PlaySound_Special
 		jsr		(a0)
+		tst.b	(v_special_trans).l
+		beq.s	.noextrawait
+		move.w	#40-1,d0
+.sswaitloop:
+		jsr		(WaitForVBla).l
+		dbf		d0,.sswaitloop
+.noextrawait:
 		stopZ80
 		nop	
 		nop	
@@ -478,6 +490,7 @@ HandleTransition:
 		nop	
 		move.l	#$40000010+($0<<16),(vdp_control_port).l
 		move.l	#$0,(vdp_data_port).l
+		move.b	#0,(v_special_trans).l
 		jsr		(WaitForVBla).l
 		jmp		(ReturnToIPX).l
 
@@ -1910,7 +1923,6 @@ GM_Title:
 		jsr		(SHCSplashScreen).l
 		waitForSubCpu
 		sendSubCpuCommand #$FD,#0
-		waitForSubCpu
 		endif
 		lea	(vdp_control_port).l,a6
 		move.w	#$8004,(a6)	; 8-colour mode
@@ -1946,6 +1958,7 @@ GM_Title:
 		jsr	(ExecuteObjects).l
 		jsr	(BuildSprites).l
 		bsr.w	PaletteFadeIn
+		waitForSubCpu
 		disable_ints
 		locVRAM	ArtTile_Title_Foreground*tile_size
 		lea	(Nem_TitleFg).l,a0 ; load title	screen patterns
@@ -2341,6 +2354,8 @@ loc_3422:
 		move.b	#id_Special,(v_gamemode).l ; set screen mode to $10 (Special Stage)
 		clr.w	(v_zone).l	; clear	level number
 		clr.b	(v_lastspecial).l ; clear special stage number
+		move.w	#sfx_EnterSS,d0
+		bsr.w	PlaySound_Special
 		move.b	#1,(v_special_trans).l
 
 Demo_Level:
@@ -3140,12 +3155,6 @@ SS_ChkEnd:
 		clr.w	(v_zone).l	; set to GHZ1
 
 SS_Finish:
-		tst.b	(f_demo).l
-		beq.s	.noplaysound
-		move.w	#sfx_EnterSS,d0
-		bsr.w	PlaySound_Special
-		jsr		(WaitForVBla).l
-.noplaysound:
 		move.w	#60,(v_demolength).l ; set delay time to 1 second
 		move.w	#$3F,(v_pfade_start).l
 		clr.w	(v_palchgspeed).l
@@ -3211,6 +3220,7 @@ SS_NormalExit:
 		beq.s	SS_NormalExit
 		tst.l	(v_plc_buffer).l
 		bne.s	SS_NormalExit
+		move.b	#1,(v_special_trans).l
 		move.w	#sfx_EnterSS,d0
 		bsr.w	PlaySound_Special ; play special stage exit sound
 		bsr.w	PaletteWhiteOut

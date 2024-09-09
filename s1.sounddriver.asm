@@ -1354,7 +1354,10 @@ StopSpecialSFX:
 ; ---------------------------------------------------------------------------
 ; Sound_E0:
 FadeOutMusic:
+		tst.b	(v_special_trans).l
+		bne.s	.nostopsfx
 		jsr	StopSFX(pc)
+.nostopsfx:
 		jsr	StopSpecialSFX(pc)
 		tst.b	(v_fast_fade_out).l
 		bne.s	.skipdelayset

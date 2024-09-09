@@ -162,6 +162,7 @@ Got_ChkSS:
 		tst.b	(f_bigring).l	; has Sonic jumped into	a giant	ring?
 		beq.s	loc_C6EA	; if not, branch
 		move.b	#id_Special,(v_gamemode).l ; set game mode to Special Stage (10)
+		move.b	#1,(v_special_trans).l
 		bra.s	Got_Display2
 ; ===========================================================================
 
