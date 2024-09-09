@@ -26,8 +26,7 @@ cp "../drums.pcm" ./_mcd/disc/DRUMS.PCM
 cp "../splshsnd.pcm" ./_mcd/disc/SPLSHSND.PCM
 cp ../sswall.bin ./_mcd/disc/SSWALL.BIN
 cd _mcd
-#make clean && make disc
-make disc
+make clean && make disc
 mv ./disc.iso ./build/sonic.iso
 rm -f ./build/sonic.cue
 #rm -f ./build/*.wav

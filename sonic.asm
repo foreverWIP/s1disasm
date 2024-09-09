@@ -8788,6 +8788,9 @@ AddPoints:
 			addq.b  #1,(f_lifecount).l
 			move.w	#bgm_ExtraLife,d0
 			jmp	(PlaySound).l
+			;waitForSubCpu
+			;sendSubCpuCommand #$41,#$8F
+			;rts
 		endif
 
 .locret_1C6B6:

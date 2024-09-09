@@ -15,7 +15,7 @@ PlaySound:
 		bhs.s	.ret
 
 		waitForSubCpu
-		sendSubCpuCommand #$41,d0
+		sendSubCpuCommand #$42,d0
 		rts
 .playfm:
 		move.b	d0,(v_snddriver_ram.v_soundqueue0).l
@@ -37,7 +37,7 @@ PlaySound_Special:
 		bhs.s	.ret
 
 		waitForSubCpu
-		sendSubCpuCommand #$41,d0
+		sendSubCpuCommand #$42,d0
 		rts
 .playfm:
 		move.b	d0,(v_snddriver_ram.v_soundqueue1).l
@@ -57,7 +57,7 @@ PlaySound_Unused:
 		bhs.s	.ret
 
 		waitForSubCpu
-		sendSubCpuCommand #$41,d0
+		sendSubCpuCommand #$42,d0
 		rts
 .playfm:
 		move.b	d0,(v_snddriver_ram.v_soundqueue2).l

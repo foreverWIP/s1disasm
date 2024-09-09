@@ -154,6 +154,9 @@ CollectRing:
 		addq.b	#1,(v_lives).l	; add 1 to the number of lives you have
 		addq.b	#1,(f_lifecount).l ; update the lives counter
 		move.w	#bgm_ExtraLife,d0 ; play extra life music
+		;waitForSubCpu
+		;sendSubCpuCommand #$41,#$8F
+		;rts
 
 .playsnd:
 		jmp	(PlaySound_Special).l

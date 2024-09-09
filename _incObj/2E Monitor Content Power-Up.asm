@@ -60,6 +60,9 @@ ExtraLife:
 		addq.b	#1,(f_lifecount).l ; update the lives counter
 		move.w	#bgm_ExtraLife,d0
 		jmp	(PlaySound).l	; play extra life music
+		;waitForSubCpu
+		;sendSubCpuCommand #$41,#$8F
+		;rts
 ; ===========================================================================
 
 Pow_ChkShoes:

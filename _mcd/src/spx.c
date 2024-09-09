@@ -50,26 +50,27 @@ const PcmChannelSettings pcmSettings[] = {
 	{0xff, 0xff, (HZ_TO_SCD(8250) & 0xff), HZ_TO_SCD(8250) >> 8, 0, 0, 0x80},
 	{0xff, 0xff, (HZ_TO_SCD(8250) & 0xff), HZ_TO_SCD(8250) >> 8, 0, 0, 0x00},
 	{0xff, 0xff, (HZ_TO_SCD(24000) & 0xff), HZ_TO_SCD(24000) >> 8, 0, 0, 0x10},
-	{0xff, 0xff, (HZ_TO_SCD(7000) & 0xff), HZ_TO_SCD(7000) >> 8, 0, 0, 0x30},
-	{0xff, 0xff, (HZ_TO_SCD(7000) & 0xff), HZ_TO_SCD(7000) >> 8, 0, 0, 0x30},
-	{0xff, 0xff, (HZ_TO_SCD(7000) & 0xff), HZ_TO_SCD(7000) >> 8, 0, 0, 0x30},
-	{0xff, 0xff, (HZ_TO_SCD(7000) & 0xff), HZ_TO_SCD(7000) >> 8, 0, 0, 0x30},
-	{0xff, 0xff, (HZ_TO_SCD(7000) & 0xff), HZ_TO_SCD(7000) >> 8, 0, 0, 0x30},
-	{0xff, 0xff, (HZ_TO_SCD(9750) & 0xff), HZ_TO_SCD(9750) >> 8, 0, 0, 0x30},
-	{0xff, 0xff, (HZ_TO_SCD(8750) & 0xff), HZ_TO_SCD(8750) >> 8, 0, 0, 0x30},
-	{0xff, 0xff, (HZ_TO_SCD(7150) & 0xff), HZ_TO_SCD(7150) >> 8, 0, 0, 0x30},
-	{0xff, 0xff, (HZ_TO_SCD(7000) & 0xff), HZ_TO_SCD(7000) >> 8, 0, 0, 0x30},
-	{0xff, 0xff, (HZ_TO_SCD(7000) & 0xff), HZ_TO_SCD(7000) >> 8, 0, 0, 0x30},
-	{0xff, 0xff, (HZ_TO_SCD(7000) & 0xff), HZ_TO_SCD(7000) >> 8, 0, 0, 0x30},
-	{0xff, 0xff, (HZ_TO_SCD(7000) & 0xff), HZ_TO_SCD(7000) >> 8, 0, 0, 0x30},
-	{0xff, 0xff, (HZ_TO_SCD(7000) & 0xff), HZ_TO_SCD(7000) >> 8, 0, 0, 0x30},
+	{0xff, 0xff, (HZ_TO_SCD(7000) & 0xff), HZ_TO_SCD(7000) >> 8, 0, 0, 0x20},
+	{0xff, 0xff, (HZ_TO_SCD(7000) & 0xff), HZ_TO_SCD(7000) >> 8, 0, 0, 0x20},
+	{0xff, 0xff, (HZ_TO_SCD(7000) & 0xff), HZ_TO_SCD(7000) >> 8, 0, 0, 0x20},
+	{0xff, 0xff, (HZ_TO_SCD(7000) & 0xff), HZ_TO_SCD(7000) >> 8, 0, 0, 0x20},
+	{0xff, 0xff, (HZ_TO_SCD(7000) & 0xff), HZ_TO_SCD(7000) >> 8, 0, 0, 0x20},
+	{0xff, 0xff, (HZ_TO_SCD(9750) & 0xff), HZ_TO_SCD(9750) >> 8, 0, 0, 0x20},
+	{0xff, 0xff, (HZ_TO_SCD(8750) & 0xff), HZ_TO_SCD(8750) >> 8, 0, 0, 0x20},
+	{0xff, 0xff, (HZ_TO_SCD(7150) & 0xff), HZ_TO_SCD(7150) >> 8, 0, 0, 0x20},
+	{0xff, 0xff, (HZ_TO_SCD(7000) & 0xff), HZ_TO_SCD(7000) >> 8, 0, 0, 0x20},
+	{0xff, 0xff, (HZ_TO_SCD(7000) & 0xff), HZ_TO_SCD(7000) >> 8, 0, 0, 0x20},
+	{0xff, 0xff, (HZ_TO_SCD(7000) & 0xff), HZ_TO_SCD(7000) >> 8, 0, 0, 0x20},
+	{0xff, 0xff, (HZ_TO_SCD(7000) & 0xff), HZ_TO_SCD(7000) >> 8, 0, 0, 0x20},
+	{0xff, 0xff, (HZ_TO_SCD(16000) & 0xff), HZ_TO_SCD(16000) >> 8, 0, 0, 0x50},
 	{0xff, 0xff, (HZ_TO_SCD(16000) & 0xff), HZ_TO_SCD(16000) >> 8, 0, 0, 0x00},
 };
 
-static u8 cur_sample_id;
-static u8 cur_sample_frame_count;
+static u8 cur_sample_ids[4];
+static u8 cur_sample_frame_counts[4];
 static u8 in_the_middle_of_loading;
 static u8 should_load_splash_sound;
+static u8 sample_queue[4];
 
 #define HZ_TO_FRAMES(hz, samplen) ((samplen) / ((hz) / 60))
 
@@ -89,23 +90,9 @@ const u8 max_sample_frame_counts[] = {
 	HZ_TO_FRAMES(7000, 0x202c),
 	HZ_TO_FRAMES(7000, 0x202c),
 	HZ_TO_FRAMES(7000, 0x202c),
-	HZ_TO_FRAMES(7000, 0x202c),
+	HZ_TO_FRAMES(16000, 0x20b5),
 	HZ_TO_FRAMES(16000, 0xf55a),
 };
-
-void set_up_dummy_sample()
-{
-	*PCM_CTRL = 0x88;
-	u8 * pcm_ram = (u8 *) (_PCM_RAM + 1);
-	*pcm_ram = 0x00;
-	pcm_ram += 2;
-	*pcm_ram = 0x00;
-	pcm_ram += 2;
-	*pcm_ram = 0xff;
-	pcm_ram += 2;
-	*pcm_ram = 0xff;
-	pcm_ram += 2;
-}
 
 void load_pcm (u8 * pcm_data, u32 pcm_data_size)
 {
@@ -126,15 +113,36 @@ void load_pcm (u8 * pcm_data, u32 pcm_data_size)
 	}
 }
 
-void pcm_playback (u8 sample_id)
+void pcm_playback (u8 channel, u8 sample_id)
 {
-	*PCM_CDISABLE = 0xff;
+	*PCM_CDISABLE |= (1 << channel);
 	sample_id -= 0x80;
-	pcm_config_channel_c (CHANNEL (1), &pcmSettings[sample_id]);
-	cur_sample_id = sample_id;
-	cur_sample_frame_count = 0;
+	pcm_config_channel_c (CHANNEL(channel + 1), &pcmSettings[sample_id]);
+	cur_sample_ids[channel] = sample_id;
+	cur_sample_frame_counts[channel] = 0;
+	sample_queue[channel] = 0;
 
-	*PCM_CDISABLE = 0xfe;
+	*PCM_CDISABLE &= ~(1 << channel);
+}
+
+inline void update_channel(u8 i)
+{
+	if (sample_queue[i] != 0)
+	{
+		pcm_playback(i, sample_queue[i]);
+		return;
+	}
+
+	u8 cur_sample_id = cur_sample_ids[i];
+	if ((cur_sample_id != 0) && (cur_sample_frame_counts[i] >= (max_sample_frame_counts[cur_sample_id])))
+	{
+		cur_sample_ids[i] = 0;
+		*PCM_CDISABLE |= (1 << i);
+	}
+	else
+	{
+		cur_sample_frame_counts[i]++;
+	}
 }
 
 void vblank_sub()
@@ -143,14 +151,8 @@ void vblank_sub()
 	{
 		goto done;
 	}
-	if ((cur_sample_id != 0) && (cur_sample_frame_count >= (max_sample_frame_counts[cur_sample_id])))
-	{
-		cur_sample_id = 0;
-		*PCM_CDISABLE = 0xff;
-		*PCM_CTRL = 0;
-	}
-
-	cur_sample_frame_count++;
+	update_channel(0);
+	update_channel(1);
 
 done:
 	asm("\
@@ -264,8 +266,10 @@ __attribute__((section(".init"))) void main()
 
 	register u16 cmd0, cmd1;
 
-	cur_sample_id = 0;
-	cur_sample_frame_count = 0;
+	// memset8(0, (u8 *)0x200000, 0x40000);
+	memset8(0, cur_sample_ids, 4);
+	memset8(0, cur_sample_frame_counts, 4);
+	memset8(0, sample_queue, 4);
 	in_the_middle_of_loading = 0;
 	should_load_splash_sound = 0;
 
@@ -333,11 +337,17 @@ __attribute__((section(".init"))) void main()
 			
 			// play a dac sample
 			case 0x40:
-				pcm_playback(cmd1);
+				// pcm_playback(0, cmd1);
+				sample_queue[0] = cmd1;
+				break;
+			
+			case 0x41:
+				// pcm_playback(1, cmd1);
+				sample_queue[1] = cmd1;
 				break;
 			
 			// play a cd track
-			case 0x41:
+			case 0x42:
 				bios_mscstop();
 				bios_fdrset(0x250);
 				bios_fdrset(0x8400);
@@ -357,7 +367,7 @@ __attribute__((section(".init"))) void main()
 				else
 				{
 					load_file_wrapper(ACC_OP_LOAD_CDC, "DRUMS.PCM;1", (u8 *) _PRGRAM_1M_2);
-					load_pcm((u8 *)_PRGRAM_1M_2, 0x6000);
+					load_pcm((u8 *)_PRGRAM_1M_2, 0x8000);
 				}
 				grant_2m();
 				break;
