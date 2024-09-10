@@ -367,7 +367,7 @@ __attribute__((section(".init"))) void main()
 				else
 				{
 					load_file_wrapper(ACC_OP_LOAD_CDC, "DRUMS.PCM;1", (u8 *) _PRGRAM_1M_2);
-					load_pcm((u8 *)_PRGRAM_1M_2, 0x8000);
+					load_pcm((u8 *)_PRGRAM_1M_2, 0x5000);
 				}
 				grant_2m();
 				break;

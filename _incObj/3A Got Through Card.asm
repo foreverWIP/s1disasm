@@ -149,8 +149,15 @@ Got_NextLevel:	; Routine $A
 		add.w	d1,d1
 		add.w	d1,d0
 		move.w	LevelOrder(pc,d0.w),d0 ; load level from level order array
+		move.w	d0,d2
+		lsr.w	#8,d2
+		move.b	(v_zone).l,d1
+		cmp.b	d2,d1
+		beq.s	.noimmediatequit
 		move.w	d0,(v_zone).l	; set level number
-		tst.b	(v_act).l
+		jmp		(HandleTransition).l
+.noimmediatequit:
+		move.w	d0,(v_zone).l	; set level number
 		tst.w	d0
 		bne.s	Got_ChkSS
 		move.b	#id_Sega,(v_gamemode).l
