@@ -56,17 +56,22 @@ locVRAM:	macro loc,controlport
 ; input: source, length, destination
 ; ---------------------------------------------------------------------------
 
-writeVRAM:	macro source,destination
+writeVRAM:	macro source,destination,length
+		if ("length"=="")
+.len	:= source_end-source
+		else
+.len	:= length
+		endif
 		lea	(vdp_control_port).l,a5
 		if ~~MMD_Enabled
-		move.l	#$94000000+((((source_end-source)>>1)&$FF00)<<8)+$9300+(((source_end-source)>>1)&$FF),(a5)
+		move.l	#$94000000+(((.len>>1)&$FF00)<<8)+$9300+((.len>>1)&$FF),(a5)
 		move.l	#$96000000+(((source>>1)&$FF00)<<8)+$9500+((source>>1)&$FF),(a5)
 		move.w	#$9700+((((source>>1)&$FF0000)>>16)&$7F),(a5)
 		move.w	#$4000+((destination)&$3FFF),(a5)
 		move.w	#$80+(((destination)&$C000)>>14),(v_vdp_buffer2).l
 		move.w	(v_vdp_buffer2).l,(a5)
 		else
-		move.l	#$94000000+((((source_end-(source+2))>>1)&$FF00)<<8)+$9300+(((source_end-(source+2))>>1)&$FF),(a5)
+		move.l	#$94000000+((((.len-2)>>1)&$FF00)<<8)+$9300+(((.len-2)>>1)&$FF),(a5)
 		move.l	#$96000000+((((source+2)>>1)&$FF00)<<8)+$9500+(((source+2)>>1)&$FF),(a5)
 		move.w	#$9700+(((((source+2)>>1)&$FF0000)>>16)&$7F),(a5)
 		move.w	#$4000+((destination)&$3FFF),(a5)

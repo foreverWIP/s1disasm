@@ -10,8 +10,19 @@
 	move.l	#$40000010+($0<<16),(vdp_control_port).l
 	move.l	#$0,(vdp_data_port).l
 	fillVRAM 0,vram_sprites,vram_sprites+$800
-	writeVRAM .art,0
-	writeVRAM .mappings,$A000
+	lea	(.art).l,a0
+	lea	(v_256x256&$FFFFFF).l,a1
+	jsr		(KosDec).l
+	writeVRAM v_256x256,0,$9820
+.dmawait:
+	move.w	(vdp_control_port).l,d0
+	btst	#1,d0
+	bne.s	.dmawait
+	lea		(.mappings).l,a0
+	lea	(v_256x256&$FFFFFF).l,a1
+	move.w	#0,d0
+	bsr.w	EniDec
+	writeVRAM v_256x256,$A000,$2000
 	moveq	#palid_SplashScreen,d0	; load Sonic's palette
 	jsr		PalLoad_Fade
 
@@ -60,10 +71,10 @@
 	dc.w	64, 1, 1, 1, 1, 1, 2, 1, 2, 1, 3, 1, 4, 3, 1, 2, 3, 2, 4, 3, 3, 4, 64, 4, 2, 3, 2, 3, 2, 2, 3, 2, 3, 2, 2, 3, 2, 64, 2, 3, 2, 2, 3, 2, 2, 3, 2, 2, 2, 2, 2, 3, 2, 3, 2, 360, $FFFF
 .frameTimings_end:
 
-.art:		binclude "../splashscreenconvert/splash_tiles.bin"
+.art:		binclude "../splashscreenconvert/splash_tiles.kos"
 	even
 .art_end:
-.mappings:	binclude "../splashscreenconvert/splash_tileinfo.bin"
+.mappings:	binclude "../splashscreenconvert/splash_tileinfo.eni"
 	even
 .mappings_end:
 .palette:	binclude "../splashscreenconvert/splash_palette.bin"
