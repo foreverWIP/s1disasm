@@ -22,8 +22,8 @@ cp ./map256/LZ.kos ./_mcd/disc/M256LZ.KOS
 cp ./map256/SLZ.kos ./_mcd/disc/M256SLZ.KOS
 cp "./map256/SBZ (JP1).kos" ./_mcd/disc/M256SBZ.KOS
 cp "./artunc/Sonic.bin" ./_mcd/disc/ARTSONIC.BIN
-cp "../drums.pcm" ./_mcd/disc/DRUMS.PCM
-cp "../splshsnd.pcm" ./_mcd/disc/SPLSHSND.PCM
+cat ./sound/mcd/kick.pcm ./sound/mcd/snare.pcm ./sound/mcd/timpani.pcm > ./_mcd/disc/DRUMS.PCM
+cp ./sound/mcd/splshsnd.pcm ./_mcd/disc/SPLSHSND.PCM
 cp ../sswall.bin ./_mcd/disc/SSWALL.BIN
 cd _mcd
 make clean && make disc
