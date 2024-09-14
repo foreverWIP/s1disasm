@@ -272,7 +272,7 @@ const struct loading_char_info loading_char_infos[] = {
 };
 const u8 loading_text_art_width_tiles = 55;
 
-inline void print_loading_char_inner(char c, u8 char_width, u16 tiledata)
+static inline void print_loading_char_inner(char c, u8 char_width, u16 tiledata)
 {
 	if (c == 0 || c == ' ')
 	{
@@ -324,7 +324,7 @@ void set_up_loading_screen()
 	blib_clear_vram();
 	VDP_CTRL_16 = 0x8700;
 
-	blib_dma_xfer(VDPPTR(Loading_Sonic_Art_VRAM_Pos), &Loading_Sonic_Art, 0x6b60 >> 1);
+	blib_dma_xfer(VDPPTR(Loading_Sonic_Art_VRAM_Pos), &Loading_Sonic_Art, (((u32)&Loading_Sonic_Art_end) - ((u32)&Loading_Sonic_Art)) >> 1);
 	blib_dma_xfer(VDPPTR(Loading_Text_VRAM_Pos), &Loading_Text, 0xdc0 >> 1);
 	print_loading_text("NOW LOADING");
 	memcpy16(&Loading_Sonic_Pal, &v_palette[16], 16);
