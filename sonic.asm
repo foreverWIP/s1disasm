@@ -1981,7 +1981,6 @@ Tit_LoadText:
 		move.b	#0,(v_lastlamp).l ; clear lamppost counter
 		move.w	#0,(v_debuguse).l ; disable debug item placement mode
 		move.w	#0,(f_demo).l	; disable debug mode
-		move.w	#0,(v_unused2).l ; unused variable
 		move.w	#(id_GHZ<<8),(v_zone).l	; set level to GHZ (00)
 		move.w	#0,(v_pcyc_time).l ; disable palette cycling
 		bsr.w	LevelSizeLoad
@@ -2752,7 +2751,6 @@ Level_SkipClr:
 		move.b	d0,(v_shield).l	; clear shield
 		move.b	d0,(v_invinc).l	; clear invincibility
 		move.b	d0,(v_shoes).l	; clear speed shoes
-		move.b	d0,(v_unused1).l
 		move.w	d0,(v_debuguse).l
 		move.w	d0,(f_restart).l
 		move.w	d0,(v_framecount).l
@@ -3775,7 +3773,6 @@ End_LoadSonic:
 		move.b	d0,(v_shield).l
 		move.b	d0,(v_invinc).l
 		move.b	d0,(v_shoes).l
-		move.b	d0,(v_unused1).l
 		move.w	d0,(v_debuguse).l
 		move.w	d0,(f_restart).l
 		move.w	d0,(v_framecount).l

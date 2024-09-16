@@ -37,20 +37,20 @@ extern u32 Debugger_TrapVector;*/
 
 static Sprite v_spritetablebuffer[80];
 static u16 v_palette[64];
-#define v_palette_wram ((u16 *)0x23FB00)
+#define v_palette_wram ((u16 *)0x23FB80)
 
 static u32 frame_counter = 0;
 static u8 cur_sonic_anim_index = 0;
 static u8 is_loading = 0;
 
-#define v_gamemode (*((u8*)0x23F600))
+#define v_gamemode (*((u8*)0x23EFB0))
 static u8 v_gamemode_backup;
-#define v_zone (*((u8*)0x23FE10))
+#define v_zone (*((u8*)0x23F32E))
 static u8 v_zone_backup;
-#define v_lastlamp (*((u16*)0x23FE30))
-#define v_use_cd_audio (*((u8*)0x23CAE4))
-#define v_undef_obj_id (*((u8*)0x23CAE5))
-#define v_undef_gm_id (*((u8*)0x23CAE6))
+#define v_lastlamp (*((u16*)0x23F34A))
+#define v_use_cd_audio (*((u8*)0x23C4E4))
+#define v_undef_obj_id (*((u8*)0x23C4E5))
+#define v_undef_gm_id (*((u8*)0x23C4E6))
 static u8 v_vbla_routine;
 
 extern u8* Loading_Sonic_Art, Loading_Sonic_Art_end;

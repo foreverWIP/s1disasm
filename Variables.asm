@@ -18,10 +18,8 @@ v_256x256_end:
 v_lvllayout:		ds.b	$400		; level and background layouts
 v_lvllayout_end:
 v_bgscroll_buffer:	ds.b	$200		; background scroll buffer
-v_ngfx_buffer:		ds.b	$200		; Nemesis graphics decompression buffer
-v_ngfx_buffer_end:
 v_spritequeue:		ds.b	$400		; sprite display queue, in order of priority
-v_16x16:		ds.b	$1800		; 16x16 tile mappings
+v_16x16:		ds.b	$1400		; 16x16 tile mappings
 
 v_sgfx_buffer:		ds.b	tile_size*23	; buffered Sonic graphics ($17 cells)
 v_sgfx_buffer_end:
@@ -35,7 +33,6 @@ v_special_trans:	ds.b	1 ; that's me :>
 				ds.b	2
 v_com_0:		ds.w	1
 v_com_1:		ds.w	1
-			ds.b	$10		; unused
 v_tracksonic:		ds.b	$100		; position tracking data for Sonic
 v_hscrolltablebuffer:	ds.b	$380		; scrolling table data
 v_hscrolltablebuffer_end:
@@ -114,7 +111,6 @@ v_tryagain	= v_objspace+object_size*3	; object variable space for the "TRY AGAIN
 v_eggmanchaos	= v_objspace+object_size*32	; object variable space for the emeralds juggled by Eggman ($180 bytes)
 
 v_snddriver_ram:	SMPS_RAM		; sound driver state
-			ds.b	$40		; unused
 
 v_gamemode:		ds.b	1		; game mode (00=Sega; 04=Title; 08=Demo; 0C=Level; 10=SS; 14=Cont; 18=End; 1C=Credit; +8C=PreLevel)
 v_prev_gamemode:		ds.b	1		; unused
@@ -122,9 +118,7 @@ v_jpadhold2:		ds.b	1		; joypad input - held, duplicate
 v_jpadpress2:		ds.b	1		; joypad input - pressed, duplicate
 v_jpadhold1:		ds.b	1		; joypad input - held
 v_jpadpress1:		ds.b	1		; joypad input - pressed
-			ds.b	6		; unused
 v_vdp_buffer1:		ds.w	1		; VDP instruction buffer
-			ds.b	6		; unused
 v_demolength:		ds.w	1		; the length of a demo in frames
 v_scrposy_vdp:		ds.w	1		; screen position y (VDP)
 v_bgscrposy_vdp:	ds.w	1		; background screen position y (VDP)
@@ -132,26 +126,19 @@ v_scrposx_vdp:		ds.w	1		; screen position x (VDP)
 v_bgscrposx_vdp:	ds.w	1		; background screen position x (VDP)
 v_bg3scrposy_vdp:	ds.w	1
 v_bg3scrposx_vdp:	ds.w	1
-			ds.b	2		; unused
 v_hbla_hreg:		ds.w	1		; VDP H.interrupt register buffer (8Axx)
 v_hbla_line = v_hbla_hreg+1			; screen line where water starts and palette is changed by HBlank
 v_pfade_start:		ds.b	1		; palette fading - start position in bytes
 v_pfade_size:		ds.b	1		; palette fading - number of colours
 
 v_misc_variables:
-v_vbla_0e_counter:	ds.b	1		; tracks how many times vertical interrupts routine 0E occured (pretty much unused because routine 0E is unused)
-			ds.b	1		; unused
 v_vbla_routine:		ds.b	1		; VBlank - routine counter
-			ds.b	1		; unused
 v_spritecount:		ds.b	1		; number of sprites on-screen
-			ds.b	5		; unused
 v_pcyc_num:		ds.w	1		; palette cycling - current reference number
 v_pcyc_time:		ds.w	1		; palette cycling - time until the next change
 v_random:		ds.l	1		; pseudo random number buffer
 f_pause:		ds.w	1		; flag set to pause the game
-			ds.b	4		; unused
 v_vdp_buffer2:		ds.w	1		; VDP instruction buffer
-			ds.b	2		; unused
 f_hbla_pal:		ds.w	1		; flag set to change palette during HBlank (0000 = no; 0001 = change)
 v_waterpos1:		ds.w	1		; water height, actual
 v_waterpos2:		ds.w	1		; water height, ignoring sway
@@ -173,7 +160,6 @@ v_plc_dataword:		ds.l	1
 v_plc_shiftvalue:	ds.l	1
 v_plc_patternsleft:	ds.w	1
 v_plc_framepatternsleft:ds.w	1
-			ds.b	4		; unused
 v_plc_buffer_end:
 
 v_levelvariables:				; variables that are reset between levels
@@ -193,22 +179,12 @@ v_limitleft2:		ds.w	1		; left level boundary
 v_limitright2:		ds.w	1		; right level boundary
 v_limittop2:		ds.w	1		; top level boundary
 v_limitbtm2:		ds.w	1		; bottom level boundary
-v_unused11:		ds.w	1		; unused
 v_limitleft3:		ds.w	1		; left level boundary, at the end of an act
-			ds.b	6		; unused
 v_scrshiftx:		ds.w	1		; x-screen shift (new - last) * $100
 v_scrshifty:		ds.w	1		; y-screen shift (new - last) * $100
 v_lookshift:		ds.w	1		; screen shift when Sonic looks up/down
-v_unused7:		ds.b	1		; unused
-v_unused8:		ds.b	1		; unused
 v_dle_routine:		ds.b	1		; dynamic level event - routine counter
-			ds.b	1		; unused
 f_nobgscroll:		ds.b	1		; flag set to cancel background scrolling
-			ds.b	1		; unused
-v_unused9:		ds.b	1		; unused
-			ds.b	1		; unused
-v_unused10:		ds.b	1		; unused
-			ds.b	1		; unused
 v_fg_xblock:		ds.b	1		; foreground x-block parity (for redraw)
 v_fg_yblock:		ds.b	1		; foreground y-block parity (for redraw)
 v_bg1_xblock:		ds.b	1		; background x-block parity (for redraw)
@@ -217,30 +193,26 @@ v_bg2_xblock:		ds.b	1		; secondary background x-block parity (for redraw)
 v_bg2_yblock:		ds.b	1		; secondary background y-block parity (unused)
 v_bg3_xblock:		ds.b	1		; teritary background x-block parity (for redraw)
 v_bg3_yblock:		ds.b	1		; teritary background y-block parity (unused)
-			ds.b	2		; unused
 v_fg_scroll_flags:	ds.w	1		; screen redraw flags for foreground
 v_bg1_scroll_flags:	ds.w	1		; screen redraw flags for background 1
 v_bg2_scroll_flags:	ds.w	1		; screen redraw flags for background 2
 v_bg3_scroll_flags:	ds.w	1		; screen redraw flags for background 3
-f_bgscrollvert:		ds.b	1		; flag for vertical background scrolling
-			ds.b	3		; unused
 v_sonspeedmax:		ds.w	1		; Sonic's maximum speed
 v_sonspeedacc:		ds.w	1		; Sonic's acceleration
 v_sonspeeddec:		ds.w	1		; Sonic's deceleration
+f_bgscrollvert:		ds.b	1		; flag for vertical background scrolling
 v_sonframenum:		ds.b	1		; frame to display for Sonic
 f_sonframechg:		ds.b	1		; flag set to update Sonic's sprite frame
 v_anglebuffer:		ds.b	1		; angle of collision block that Sonic or object is standing on
 			ds.b	1		; unused
+			ds.b	3		; unused
 v_anglebuffer2:		ds.b	1		; other angle of collision block that Sonic or object is standing on
-			ds.b	1		; unused
 v_opl_routine:		ds.b	1		; ObjPosLoad - routine counter
-			ds.b	1		; unused
 v_opl_screen:		ds.w	1		; ObjPosLoad - screen variable
 v_opl_data:		ds.b	$10		; ObjPosLoad - data buffer
 v_ssangle:		ds.w	1		; Special Stage angle
 v_ssrotate:		ds.w	1		; Special Stage rotation speed
 v_ssangleprev:	ds.w	1
-			ds.b	$A		; unused
 v_btnpushtime1:		ds.w	1		; button push duration - in level
 v_btnpushtime2:		ds.w	1		; button push duration - in demo
 v_palchgspeed:		ds.w	1		; palette fade/transition speed (0 is fastest)
@@ -249,7 +221,6 @@ v_palss_num:		ds.w	1		; palette cycling in Special Stage - reference number
 v_palss_time:		ds.w	1		; palette cycling in Special Stage - time until next change
 v_palss_index:		ds.w	1		; palette cycling in Special Stage - index into palette cycle 2 (unused?)
 v_ssbganim:		ds.w	1		; Special Stage background animation
-			ds.b	2		; unused
 v_obj31ypos:		ds.w	1		; y-position of object 31 (MZ stomper)
 			ds.b	1		; unused
 v_bossstatus:		ds.b	1		; status of boss and prison capsule (01 = boss defeated; 02 = prison opened)
@@ -273,7 +244,6 @@ v_lani4_frame:		ds.b	1		; level graphics animation 4 - current frame
 v_lani4_time:		ds.b	1		; level graphics animation 4 - time until next frame
 v_lani5_frame:		ds.b	1		; level graphics animation 5 - current frame
 v_lani5_time:		ds.b	1		; level graphics animation 5 - time until next frame
-			ds.b	2		; unused
 v_gfxbigring:		ds.w	1		; settings for giant ring graphics loading
 f_conveyrev:		ds.b	1		; flag set to reverse conveyor belts in LZ/SBZ
 v_obj63:		ds.b	6		; object 63 (LZ/SBZ platforms) variables
@@ -292,30 +262,21 @@ v_ringbonus:		ds.w	1		; ring bonus at the end of an act
 f_endactbonus:		ds.b	1		; time/ring bonus update flag at the end of an act
 v_sonicend:		ds.b	1		; routine counter for Sonic in the ending sequence
 v_lz_deform:		ds.w	1		; LZ deformation offset, in units of $80
-			ds.b	6		; unused
 f_switch:		ds.b	$10		; flags set when Sonic stands on a switch
 v_scroll_block_1_size:	ds.w	1
 v_scroll_block_2_size:	ds.w	1		; unused
 v_scroll_block_3_size:	ds.w	1		; unused
 v_scroll_block_4_size:	ds.w	1		; unused
-			ds.b	8		; unused
 v_levelvariables_end:
 
-v_spritetablebuffer:	ds.b	$280		; sprite table (last $80 bytes are overwritten by v_palette_water_fading)
-v_spritetablebuffer_end:
 v_palette_water_fading = v_spritetablebuffer_end-$80	; duplicate underwater palette, used for transitions ($80 bytes)
 v_palette_water:	ds.b	$80		; main underwater palette
 v_palette_water_end:
-v_palette:		ds.b	$80		; main palette
-v_palette_end:
 v_palette_fading:	ds.b	$80		; duplicate palette, used for transitions
 v_palette_fading_end:
 v_objstate:		ds.b	$C0		; object state list
 v_objstate_end:
-			ds.b	$140		; stack
-v_systemstack:
 v_crossresetram:				; RAM beyond this point is only cleared on a cold-boot
-			ds.b	2		; unused
 f_restart:		ds.w	1		; restart level flag
 v_framecount:		ds.w	1		; frame counter (adds 1 every frame)
 v_framebyte = v_framecount+1			; low byte for frame counter
@@ -334,9 +295,7 @@ v_prev_zone:	ds.b	1
 v_air:			ds.w	1		; air remaining while underwater
 v_airbyte = v_air+1				; low byte for air
 v_lastspecial:		ds.b	1		; last special stage number
-			ds.b	1		; unused
 v_continues:		ds.b	1		; number of continues
-			ds.b	1		; unused
 f_timeover:		ds.b	1		; time over flag
 v_lifecount:		ds.b	1		; lives counter value (for actual number, see "v_lives")
 f_lifecount:		ds.b	1		; lives counter update flag
@@ -350,11 +309,10 @@ v_timemin = v_time+1				; time - minutes
 v_timesec = v_time+2				; time - seconds
 v_timecent = v_time+3				; time - centiseconds
 v_score:		ds.l	1		; score
-			ds.b	2		; unused
 v_shield:		ds.b	1		; shield status (00 = no; 01 = yes)
 v_invinc:		ds.b	1		; invinciblity status (00 = no; 01 = yes)
 v_shoes:		ds.b	1		; speed shoes status (00 = no; 01 = yes)
-v_unused1:		ds.b	1		; an unused fourth player status (Goggles?)
+				ds.b	1		; an unused fourth player status (Goggles?)
 
 v_lastlamp:		ds.b	2		; number of the last lamppost you hit
 v_lamp_xpos:		ds.w	1		; x-axis for Sonic to respawn at lamppost
@@ -376,14 +334,12 @@ v_lamp_wtrpos:		ds.w	1		; water position at lamppost
 v_lamp_wtrrout:		ds.b	1		; water routine at lamppost
 v_lamp_wtrstat:		ds.b	1		; water state at lamppost
 v_lamp_lives:		ds.b	1		; lives counter at lamppost
-			ds.b	2		; unused
 v_emeralds:		ds.b	1		; number of chaos emeralds
 v_emldlist:		ds.b	6		; which individual emeralds you have (00 = no; 01 = yes)
 v_oscillate:		ds.w	1		; oscillation bitfield
 v_timingandscreenvariables:
 v_timingvariables:
 			ds.b	$40		; values which oscillate - for swinging platforms, et al
-			ds.b	$20		; unused
 v_ani0_time:		ds.b	1		; synchronised sprite animation 0 - time until next frame (used for synchronised animations)
 v_ani0_frame:		ds.b	1		; synchronised sprite animation 0 - current frame
 v_ani1_time:		ds.b	1		; synchronised sprite animation 1 - time until next frame
@@ -393,14 +349,10 @@ v_ani2_frame:		ds.b	1		; synchronised sprite animation 2 - current frame
 v_ani3_time:		ds.b	1		; synchronised sprite animation 3 - time until next frame
 v_ani3_frame:		ds.b	1		; synchronised sprite animation 3 - current frame
 v_ani3_buf:		ds.w	1		; synchronised sprite animation 3 - info buffer
-			ds.b	$26		; unused
 v_limittopdb:		ds.w	1		; level upper boundary, buffered for debug mode
 v_limitbtmdb:		ds.w	1		; level bottom boundary, buffered for debug mode
-			ds.b	$C		; unused
 v_timingvariables_end:
 
-			ds.w	1
-			ds.b	$E		; unused
 v_screenposx_dup:	ds.l	1		; screen position x (duplicate)
 v_screenposy_dup:	ds.l	1		; screen position y (duplicate)
 v_bgscreenposx_dup:	ds.l	1		; background screen position x (duplicate)
@@ -413,39 +365,85 @@ v_fg_scroll_flags_dup:	ds.w	1
 v_bg1_scroll_flags_dup:	ds.w	1
 v_bg2_scroll_flags_dup:	ds.w	1
 v_bg3_scroll_flags_dup:	ds.w	1
-			ds.b	$48		; unused
 v_timingandscreenvariables_end:
 
 v_levseldelay:		ds.w	1		; level select - time until change when up/down is held
 v_levselitem:		ds.w	1		; level select - item selected
 v_levselsound:		ds.w	1		; level select - sound selected
-			ds.b	$3A		; unused
-	if Revision=0
-v_scorecopy:		ds.l	1		; score, duplicate
-	else
 v_scorelife:		ds.l	1		; points required for an extra life (JP1 only)
-	endif
-			ds.b	$1C		; unused
 f_levselcheat:		ds.b	1		; level select cheat flag
 f_slomocheat:		ds.b	1		; slow motion & frame advance cheat flag
 f_debugcheat:		ds.b	1		; debug mode cheat flag
 f_creditscheat:		ds.b	1		; hidden credits & press start cheat flag
 v_title_dcount:		ds.w	1		; number of times the d-pad is pressed on title screen
 v_title_ccount:		ds.w	1		; number of times C is pressed on title screen
-			ds.b	2		; unused
-v_unused2:		ds.w	1		; unused
-v_unused3:		ds.b	1		; unused
-v_unused4:		ds.b	1		; unused
-v_unused5:		ds.b	1		; unused
-v_unused6:		ds.b	1		; unused
 f_demo:			ds.w	1		; demo mode flag (0 = no; 1 = yes; $8001 = ending)
 v_demonum:		ds.w	1		; demo level number (not the same as the level number)
 v_creditsnum:		ds.w	1		; credits index number
-			ds.b	2		; unused
 v_megadrive:		ds.b	1		; Megadrive machine type
 			ds.b	1		; unused
 f_debugmode:		ds.w	1		; debug mode flag
 v_init:			ds.l	1		; 'init' text string
+v_vbla_0e_counter:	ds.b	1		; tracks how many times vertical interrupts routine 0E occured (pretty much unused because routine 0E is unused)
+			ds.b	5		; unused
+			ds.b	$200
+			ds.b	$32		; unused
+			ds.b	$3A		; unused
+			ds.b	$40		; unused
+			ds.b	$40		; unused
+v_ngfx_buffer:		ds.b	$200		; Nemesis graphics decompression buffer
+v_ngfx_buffer_end:
+v_spritetablebuffer:	ds.b	$280		; sprite table (last $80 bytes are overwritten by v_palette_water_fading)
+v_spritetablebuffer_end:
+v_palette:		ds.b	$80		; main palette
+v_palette_end:
+			ds.b	$100		; stack
+v_systemstack:
+			ds.b	$200
+			ds.b	$16
+			ds.b	1		; unused
+			ds.b	1		; unused
+			ds.b	2		; unused
+			ds.b	6		; unused
+			ds.b	6		; unused
+			ds.b	2		; unused
+			ds.b	4		; unused
+			ds.w	1		; unused
+			ds.b	6		; unused
+			ds.b	1		; unused
+			ds.b	1		; unused
+			ds.b	1		; unused
+			ds.b	1		; unused
+			ds.b	1		; unused
+			ds.b	1		; unused
+			ds.b	1		; unused
+			ds.b	1		; unused
+			ds.b	2		; unused
+			ds.b	1		; unused
+			ds.b	1		; unused
+			ds.b	$A		; unused
+			ds.b	2		; unused
+			ds.b	2		; unused
+			ds.b	6		; unused
+			ds.b	8		; unused
+			ds.b	2		; unused
+			ds.b	1		; unused
+			ds.b	1		; unused
+			ds.b	2		; unused
+			ds.b	2		; unused
+			ds.b	$20		; unused
+			ds.b	$26		; unused
+			ds.b	$C		; unused
+			ds.w	1
+			ds.b	$E		; unused
+			ds.b	$1C		; unused
+			ds.w	1		; unused
+			ds.b	1		; unused
+			ds.b	1		; unused
+			ds.b	1		; unused
+			ds.b	1		; unused
+			ds.b	2		; unused
+			ds.b	2		; unused
 v_ram_end:
 	if ~~MMD_Enabled
     if * > 0	; Don't declare more space than the RAM can contain!
