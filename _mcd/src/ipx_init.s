@@ -22,3 +22,4 @@ ori #0x700,sr
 // here
 #include "main/printval.s"
 #include "main/exception.s"
+#include "kos_cmp_fast.s"

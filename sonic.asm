@@ -24,15 +24,15 @@ FixBugs		  = 1	; change to 1 to enable bugfixes
 
 zeroOffsetOptimization = 0	; if 1, makes a handful of zero-offset instructions smaller
 
-	include "MacroSetup.asm"
-	include	"Constants.asm"
-	include	"Variables.asm"
-	include	"Macros.asm"
 	if MMD_Enabled
 	include "subcpu.asm"
 	include "mmd.asm"
 	endif
 	include "mmddefs.asm"
+	include "MacroSetup.asm"
+	include	"Constants.asm"
+	include	"Variables.asm"
+	include	"Macros.asm"
 
 ; ===========================================================================
 
@@ -1321,7 +1321,11 @@ Qplc_Loop:
 ; End of function QuickPLC
 
 		include	"_inc/Enigma Decompression.asm"
+		if MMD_Enabled
+KosDec: equ $FF0316
+		else
 		include	"_inc/Kosinski Decompression.asm"
+		endif
 
 		include	"_inc/PaletteCycle.asm"
 
@@ -1991,7 +1995,7 @@ Tit_LoadText:
 		bsr.w	EniDec
 		lea	(Blk256_GHZ).l,a0 ; load GHZ 256x256 mappings
 		lea	(v_256x256&$FFFFFF).l,a1
-		bsr.w	KosDec
+		jsr		(KosDec).l
 		bsr.w	LevelLayoutLoad
 		bsr.w	PaletteFadeOut
 		disable_ints
@@ -3747,7 +3751,7 @@ End_LoadData:
 		enable_ints
 		lea	(Kos_EndFlowers).l,a0 ;	load extra flower patterns
 		lea	(v_256x256_end-$1000).l,a1 ; RAM address to buffer the patterns
-		bsr.w	KosDec
+		jsr		(KosDec).l
 		moveq	#palid_Sonic,d0
 		bsr.w	PalLoad_Fade	; load Sonic's palette
 		move.w	#bgm_Ending,d0
@@ -5177,7 +5181,7 @@ LevelDataLoad:
 		bsr.w	EniDec
 		movea.l	(a2)+,a0
 		lea	(v_256x256&$FFFFFF).l,a1 ; RAM address for 256x256 mappings
-		bsr.w	KosDec
+		jsr		(KosDec).l
 		bsr.w	LevelLayoutLoad
 		move.w	(a2)+,d0
 		move.w	(a2),d0
