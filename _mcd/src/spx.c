@@ -181,7 +181,7 @@ const FileKVP SonicArt = {
 };
 
 const FileKVP TitleFiles[] = {
-	{ "M16GHZ.ENI;1", 0x1e000 },
+	{ "M16GHZ.BIN;1", 0x3ae00 },
 	{ "M256GHZ.KOS;1", 0x1f000 },
 	{ "ARTGHZ1.NEM;1", 0x22000 },
 	{ "ARTGHZ2.NEM;1", 0x23800 },
@@ -189,7 +189,7 @@ const FileKVP TitleFiles[] = {
 };
 
 const FileKVP GHZFiles[] = {
-	{ "M16GHZ.ENI;1", 0x1e000 },
+	{ "M16GHZ.BIN;1", 0x3ae00 },
 	{ "M256GHZ.KOS;1", 0x1f000 },
 	{ "ARTGHZ1.NEM;1", 0x22000 },
 	{ "ARTGHZ2.NEM;1", 0x23800 },
@@ -198,7 +198,7 @@ const FileKVP GHZFiles[] = {
 };
 
 const FileKVP MZFiles[] = {
-	{ "M16MZ.ENI;1", 0x1e000 },
+	{ "M16MZ.BIN;1", 0x3ae00 },
 	{ "M256MZ.KOS;1", 0x1f000 },
 	{ "ARTMZ.NEM;1", 0x22000 },
 	SonicArt,
@@ -206,7 +206,7 @@ const FileKVP MZFiles[] = {
 };
 
 const FileKVP SYZFiles[] = {
-	{ "M16SYZ.ENI;1", 0x1e000 },
+	{ "M16SYZ.BIN;1", 0x3ae00 },
 	{ "M256SYZ.KOS;1", 0x1ec00 },
 	{ "ARTSYZ.NEM;1", 0x21000 },
 	SonicArt,
@@ -214,7 +214,7 @@ const FileKVP SYZFiles[] = {
 };
 
 const FileKVP LZFiles[] = {
-	{ "M16LZ.ENI;1", 0x20400 },
+	{ "M16LZ.BIN;1", 0x3ae00 },
 	{ "M256LZ.KOS;1", 0x20800 },
 	{ "ARTLZ.NEM;1", 0x23000 },
 	SonicArt,
@@ -222,7 +222,7 @@ const FileKVP LZFiles[] = {
 };
 
 const FileKVP SLZFiles[] = {
-	{ "M16SLZ.ENI;1", 0x1e000 },
+	{ "M16SLZ.BIN;1", 0x3ae00 },
 	{ "M256SLZ.KOS;1", 0x1e800 },
 	{ "ARTSLZ.NEM;1", 0x21000 },
 	SonicArt,
@@ -230,7 +230,7 @@ const FileKVP SLZFiles[] = {
 };
 
 const FileKVP SBZFiles[] = {
-	{ "M16SBZ.ENI;1", 0x1ec00 },
+	{ "M16SBZ.BIN;1", 0x3ae00 },
 	{ "M256SBZ.KOS;1", 0x1fc00 },
 	{ "ARTSBZ.NEM;1", 0x22800 },
 	SonicArt,

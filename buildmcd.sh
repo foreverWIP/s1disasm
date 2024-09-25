@@ -9,12 +9,12 @@ cp "./artnem/8x8 - SYZ.nem" ./_mcd/disc/ARTSYZ.NEM
 cp "./artnem/8x8 - LZ.nem" ./_mcd/disc/ARTLZ.NEM
 cp "./artnem/8x8 - SLZ.nem" ./_mcd/disc/ARTSLZ.NEM
 cp "./artnem/8x8 - SBZ.nem" ./_mcd/disc/ARTSBZ.NEM
-cp ./map16/GHZ.eni ./_mcd/disc/M16GHZ.ENI
-cp ./map16/MZ.eni ./_mcd/disc/M16MZ.ENI
-cp ./map16/SYZ.eni ./_mcd/disc/M16SYZ.ENI
-cp ./map16/LZ.eni ./_mcd/disc/M16LZ.ENI
-cp ./map16/SLZ.eni ./_mcd/disc/M16SLZ.ENI
-cp ./map16/SBZ.eni ./_mcd/disc/M16SBZ.ENI
+cp ./map16/GHZ.unc ./_mcd/disc/M16GHZ.BIN
+cp ./map16/MZ.unc ./_mcd/disc/M16MZ.BIN
+cp ./map16/SYZ.unc ./_mcd/disc/M16SYZ.BIN
+cp ./map16/LZ.unc ./_mcd/disc/M16LZ.BIN
+cp ./map16/SLZ.unc ./_mcd/disc/M16SLZ.BIN
+cp ./map16/SBZ.unc ./_mcd/disc/M16SBZ.BIN
 cp ./map256/GHZ.kos ./_mcd/disc/M256GHZ.KOS
 cp "./map256/MZ (JP1).kos" ./_mcd/disc/M256MZ.KOS
 cp ./map256/SYZ.kos ./_mcd/disc/M256SYZ.KOS
