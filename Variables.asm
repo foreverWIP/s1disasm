@@ -399,55 +399,109 @@ v_palette:		ds.b	$80		; main palette
 v_palette_end:
 			ds.b	$100		; stack
 v_systemstack:
-			ds.b	$200
-			ds.b	$16
-			ds.b	1		; unused
-			ds.b	1		; unused
-			ds.b	2		; unused
-			ds.b	6		; unused
-			ds.b	6		; unused
-			ds.b	2		; unused
-			ds.b	4		; unused
-			ds.w	1		; unused
-			ds.b	6		; unused
-			ds.b	1		; unused
-			ds.b	1		; unused
-			ds.b	1		; unused
-			ds.b	1		; unused
-			ds.b	1		; unused
-			ds.b	1		; unused
-			ds.b	1		; unused
-			ds.b	1		; unused
-			ds.b	2		; unused
-			ds.b	1		; unused
-			ds.b	1		; unused
-			ds.b	$A		; unused
-			ds.b	2		; unused
-			ds.b	2		; unused
-			ds.b	6		; unused
-			ds.b	8		; unused
-			ds.b	2		; unused
-			ds.b	1		; unused
-			ds.b	1		; unused
-			ds.b	2		; unused
-			ds.b	2		; unused
-			ds.b	$20		; unused
-			ds.b	$26		; unused
-			ds.b	$C		; unused
-			ds.w	1
-			ds.b	$E		; unused
-			ds.b	$1C		; unused
-			ds.w	1		; unused
-			ds.b	1		; unused
-			ds.b	1		; unused
-			ds.b	1		; unused
-			ds.b	1		; unused
-			ds.b	2		; unused
-			ds.b	2		; unused
+_EXCPT:		ds.b	6
+_LEVEL6:	ds.b	6
+_LEVEL4:	ds.b	6
+_LEVEL2:	ds.b	6
+_TRAP00:	ds.b	6
+_TRAP01:	ds.b	6
+_TRAP02:	ds.b	6
+_TRAP03:	ds.b	6
+_TRAP04:	ds.b	6
+_TRAP05:	ds.b	6
+_TRAP06:	ds.b	6
+_TRAP07:	ds.b	6
+_TRAP08:	ds.b	6
+_TRAP09:	ds.b	6
+_TRAP10:	ds.b	6
+_TRAP11:	ds.b	6
+_TRAP12:	ds.b	6
+_TRAP13:	ds.b	6
+_TRAP14:	ds.b	6
+_TRAP15:	ds.b	6
+_CHKERR:	ds.b	6
+_CODERR:	ds.b	6
+_DEVERR:	ds.b	6
+_TRPERR:	ds.b	6
+_NOCOD0:	ds.b	6
+_NOCOD1:	ds.b	6
+_SPVERR:	ds.b	6
+_TRACE:		ds.b	6
+vblankUserRoutine:	ds.b	6
+byte_FFFFFDAE:		ds.b	6
+vdpRegCache:		ds.w	19
+nextState:	ds.l	1
+mainCommFlagBuffer:	ds.b	1
+subCommFlagCache:	ds.b	1
+mainCommDataBuffer:	ds.b	$10
+subCommDataCache:	ds.b	$10
+joy1MouseData:		ds.b	6
+mouse1DeltaX:		ds.w	1
+mouse1DeltaY:		ds.w	1
+byte_FFFFFE0A:		ds.b	1
+byte_FFFFFE0B:		ds.b	1
+joy2MouseData:		ds.b	6
+mouse2DeltaX:		ds.w	1
+mouse2DeltaY:		ds.w	1
+byte_FFFFFE16:		ds.b	1
+byte_FFFFFE17:		ds.b	1
+			ds.b	2
+multitapControllerTypes:	ds.b	6
+joy1Down:			ds.b	2
+joy1Triggered:	equ joy1Down+1
+joy2Down:			ds.b	2
+joy2Triggered:	equ joy2Down+1
+joy1RepeatDelay:	ds.b	1
+joy2RepeatDelay:	ds.b	1
+vblankCode:			ds.b	1
+byte_FFFFFE27:		ds.b	1
+byte_FFFFFE28:		ds.b	1
+vdpUpdateFlags:		ds.b	1
+prngState:			ds.w	1
+fontTileOffset:		ds.w	1
+vdpLineIncrement:	ds.w	1
+spriteTableAddress:	ds.l	1
+dword_FFFFFE34:		ds.l	1
+nextSpriteIndex:	ds.w	1
+cdBiosStatus:		ds.w	1
+absDiscTime:		ds.w	1
+relTrackTime:		ds.w	1
+discEndTime:		ds.w	1
+			ds.b	1
+currentTrackIndex:	ds.b	1
+discFirstTrack:		ds.b	1
+discLastTrack:		ds.b	1
+paletteFadeInOffset:	ds.b	1
+paletteFadeInCount:		ds.b	1
+paletteFadeInIncrement:	ds.b	2
+paletteFadeInTarget:	ds.l	1
+unk_FFFFFE4E:		ds.w	1
+unk_FFFFFE50:		ds.b	2
+			ds.b	1
+unk_FFFFFE53:		ds.b	4
+unk_FFFFFE57:
+			ds.b	$A9
+word_FFFFFF00:		ds.w	1
+word_FFFFFF02:		ds.w	1
+word_FFFFFF04:		ds.l	1
+word_FFFFFF08:		ds.w	1
+word_FFFFFF0A:		ds.w	1
+word_FFFFFF0C:		ds.w	1
+unk_FFFFFF0E:		ds.w	1
+			ds.b	$80
+Z80CMD_FF90:		ds.b	1
+Z80CMD_FF91:		ds.b	1
+Z80CMD_FF92:		ds.b	1
+Z80CMD_FF93:		ds.b	1
+			ds.b	$6C
 v_ram_end:
 	if ~~MMD_Enabled
     if * > 0	; Don't declare more space than the RAM can contain!
 	fatal "The RAM variable declarations are too large by $\{*} bytes."
+    endif
+	else
+	if * > $240000	; Don't declare more space than the RAM can contain!
+	fatal "The RAM variable declarations are too large by $\{*-$240000} bytes."
     endif
 	endif
 	dephase
