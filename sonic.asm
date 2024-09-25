@@ -375,8 +375,8 @@ GameInit:
 
 		bsr.w	VDPSetupGame
 		bsr.w	DACDriverLoad
-		bsr.w	JoypadInit
 		if ~~MMD_Enabled
+			bsr.w	JoypadInit
 			if MMD_Is_Level
 			move.w	#$8174,(vdp_control_port).l
 			move.b	#id_Level,(v_gamemode).l
@@ -616,7 +616,7 @@ VBla_10:
 VBla_08:
 		stopZ80
 		waitZ80
-		bsr.w	ReadJoypads
+		jsr		(ReadJoypads).l
 		tst.b	(f_wtr_state).l
 		bne.s	.waterabove
 
@@ -674,7 +674,7 @@ Demo_Time:
 VBla_0A:
 		stopZ80
 		waitZ80
-		bsr.w	ReadJoypads
+		jsr			(ReadJoypads).l
 		writeCRAM	v_palette,0
 		writeVRAM	v_spritetablebuffer,vram_sprites
 		writeVRAM	v_hscrolltablebuffer,vram_hscroll
@@ -706,7 +706,7 @@ VBla_0A:
 VBla_0C:
 		stopZ80
 		waitZ80
-		bsr.w	ReadJoypads
+		jsr			(ReadJoypads).l
 		tst.b	(f_wtr_state).l
 		bne.s	.waterabove
 
@@ -754,7 +754,7 @@ VBla_12:
 VBla_16:
 		stopZ80
 		waitZ80
-		bsr.w	ReadJoypads
+		jsr			(ReadJoypads).l
 		writeCRAM	v_palette,0
 		writeVRAM	v_spritetablebuffer,vram_sprites
 		writeVRAM	v_hscrolltablebuffer,vram_hscroll
@@ -786,7 +786,7 @@ VBla_16:
 sub_106E:
 		stopZ80
 		waitZ80
-		bsr.w	ReadJoypads
+		jsr			(ReadJoypads).l
 		tst.b	(f_wtr_state).l ; is water above top of screen?
 		bne.s	.waterabove	; if yes, branch
 		writeCRAM	v_palette,0
@@ -868,6 +868,7 @@ loc_119E:
 		rte	
 ; End of function HBlank
 
+		if ~~MMD_Enabled
 ; ---------------------------------------------------------------------------
 ; Subroutine to	initialise joypads
 ; ---------------------------------------------------------------------------
@@ -885,13 +886,16 @@ JoypadInit:
 		startZ80
 		rts	
 ; End of function JoypadInit
+		endif
 
 ; ---------------------------------------------------------------------------
 ; Subroutine to	read joypad input, and send it to the RAM
 ; ---------------------------------------------------------------------------
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
 
-
+		if MMD_Enabled
+ReadJoypads:	equ $298
+		else
 ReadJoypads:
 		lea	(v_jpadhold1).l,a0 ; address where joypad states are written
 		lea	(z80_port_1_data+1).l,a1	; first	joypad port
@@ -918,6 +922,7 @@ ReadJoypads:
 		and.b	d0,d1
 		move.b	d1,(a0)+
 		rts	
+		endif
 ; End of function ReadJoypads
 
 

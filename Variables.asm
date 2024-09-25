@@ -116,8 +116,10 @@ v_gamemode:		ds.b	1		; game mode (00=Sega; 04=Title; 08=Demo; 0C=Level; 10=SS; 1
 v_prev_gamemode:		ds.b	1		; unused
 v_jpadhold2:		ds.b	1		; joypad input - held, duplicate
 v_jpadpress2:		ds.b	1		; joypad input - pressed, duplicate
-v_jpadhold1:		ds.b	1		; joypad input - held
-v_jpadpress1:		ds.b	1		; joypad input - pressed
+;v_jpadhold1:		ds.b	1		; joypad input - held
+					ds.b	1		; joypad input - held
+;v_jpadpress1:		ds.b	1		; joypad input - pressed
+					ds.b	1		; joypad input - pressed
 v_vdp_buffer1:		ds.w	1		; VDP instruction buffer
 v_demolength:		ds.w	1		; the length of a demo in frames
 v_scrposy_vdp:		ds.w	1		; screen position y (VDP)
@@ -447,10 +449,14 @@ byte_FFFFFE16:		ds.b	1
 byte_FFFFFE17:		ds.b	1
 			ds.b	2
 multitapControllerTypes:	ds.b	6
+			phase ramaddr($FFFFFE20)
+v_jpadhold1:
 joy1Down:			ds.b	2
 joy1Triggered:	equ joy1Down+1
+v_jpadpress1:	equ	joy1Triggered
 joy2Down:			ds.b	2
 joy2Triggered:	equ joy2Down+1
+			dephase
 joy1RepeatDelay:	ds.b	1
 joy2RepeatDelay:	ds.b	1
 vblankCode:			ds.b	1
