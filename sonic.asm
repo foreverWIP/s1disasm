@@ -1757,7 +1757,7 @@ PalLoad_Fade:
 		movea.w	(a1)+,a3	; get target RAM address
 		if MMD_Enabled
 		move.l	d0,-(sp)
-		move.l	#$230000,d0
+		move.l	#v_ram_start,d0
 		move.w	a3,d0
 		movea.l	d0,a3
 		move.l	(sp)+,d0
@@ -1783,7 +1783,7 @@ PalLoad:
 		movea.w	(a1)+,a3	; get target RAM address
 		if MMD_Enabled
 		move.l	d0,-(sp)
-		move.l	#$230000,d0
+		move.l	#v_ram_start,d0
 		move.w	a3,d0
 		movea.l	d0,a3
 		move.l	(sp)+,d0
@@ -1811,7 +1811,7 @@ PalLoad_Fade_Water:
 		movea.w	(a1)+,a3	; get target RAM address
 		if MMD_Enabled
 		move.l	d0,-(sp)
-		move.l	#$230000,d0
+		move.l	#v_ram_start,d0
 		move.w	a3,d0
 		movea.l	d0,a3
 		move.l	(sp)+,d0
@@ -1837,7 +1837,7 @@ PalLoad_Water:
 		movea.w	(a1)+,a3	; get target RAM address
 		if MMD_Enabled
 		move.l	d0,-(sp)
-		move.l	#$230000,d0
+		move.l	#v_ram_start,d0
 		move.w	a3,d0
 		movea.l	d0,a3
 		move.l	(sp)+,d0
@@ -1998,6 +1998,12 @@ Tit_LoadText:
 		;lea	(Blk16_GHZ).l,a0 ; load	GHZ 16x16 mappings
 		;move.w	#make_art_tile(ArtTile_Level,0,FALSE),d0
 		;bsr.w	EniDec
+		lea		($23AE00).l,a0
+		lea		(v_16x16).l,a1
+		move.w	#($1400/4)-1,d7
+.cpy:
+		move.l (a0)+, (a1)+
+		dbf d7,.cpy
 		lea	(Blk256_GHZ).l,a0 ; load GHZ 256x256 mappings
 		lea	(v_256x256&$FFFFFF).l,a1
 		jsr		(KosDec).l
@@ -4583,7 +4589,7 @@ locj_6E28:
 			movea.w	(a3,d0.w),a3
 			if MMD_Enabled
 			move.l	d0,-(sp)
-			move.l	#$230000,d0
+			move.l	#v_256x256,d0
 			move.w	a3,d0
 			movea.l	d0,a3
 			move.l	(sp)+,d0
@@ -4686,7 +4692,7 @@ locj_6F66:
 			movea.w	locj_6FE4(pc,d0.w),a3
 			if MMD_Enabled
 			move.l	d0,-(sp)
-			move.l	#$230000,d0
+			move.l	#v_256x256,d0
 			move.w	a3,d0
 			movea.l	d0,a3
 			move.l	(sp)+,d0
@@ -4744,7 +4750,7 @@ locj_6FF4:
 			movea.w	locj_6FE4(pc,d0.w),a3
 			if MMD_Enabled
 			move.l	d0,-(sp)
-			move.l	#$230000,d0
+			move.l	#v_256x256,d0
 			move.w	a3,d0
 			movea.l	d0,a3
 			move.l	(sp)+,d0
@@ -4942,7 +4948,7 @@ GetBlockData_2:
 		; Get chunk from level layout
 		add.w	d3,d0
 		if MMD_Enabled
-		move.l	#$23FF00,d3
+		move.l	#(v_256x256+$FF00),d3
 		else
 		moveq	#-1,d3
 		endif
@@ -5141,7 +5147,7 @@ locj_72Ba:
 			movea.w	locj_72B2(pc,d0.w),a3
 			if MMD_Enabled
 			move.l	d0,-(sp)
-			move.l	#$230000,d0
+			move.l	#v_256x256,d0
 			move.w	a3,d0
 			movea.l	d0,a3
 			move.l	(sp)+,d0
@@ -5184,6 +5190,12 @@ LevelDataLoad:
 		;lea	(v_16x16).l,a1	; RAM address for 16x16 mappings
 		;move.w	#make_art_tile(ArtTile_Level,0,FALSE),d0
 		;bsr.w	EniDec
+		lea		($23AE00).l,a0
+		lea		(v_16x16).l,a1
+		move.w	#($1400/4)-1,d7
+.cpy:
+		move.l (a0)+, (a1)+
+		dbf d7,.cpy
 		movea.l	(a2)+,a0
 		lea	(v_256x256&$FFFFFF).l,a1 ; RAM address for 256x256 mappings
 		jsr		(KosDec).l
@@ -6443,7 +6455,7 @@ BuildSprites:
 		movea.w	(a4,d6.w),a0	; load object ID
 		if MMD_Enabled
 		move.l	d0,-(sp)
-		move.l	#$230000,d0
+		move.l	#v_ram_start,d0
 		move.w	a0,d0
 		movea.l	d0,a0
 		move.l	(sp)+,d0

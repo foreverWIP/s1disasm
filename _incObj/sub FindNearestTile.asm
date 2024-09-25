@@ -22,7 +22,7 @@ FindNearestTile:
 		andi.w	#$7F,d1
 		add.w	d1,d0		; combine
 		if MMD_Enabled
-		move.l	#$23FF00,d1
+		move.l	#(v_256x256+$FF00),d1
 		else
 		moveq	#-1,d1
 		endif

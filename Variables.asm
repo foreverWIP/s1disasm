@@ -5,16 +5,17 @@
 ramaddr function x,(-(x&$80000000)<<1)|x
 
 ; Variables (v) and Flags (f)
-		if ~~MMD_Enabled
+	;	if ~~MMD_Enabled
 	phase ramaddr ( $FFFF0000 )
-		else
-	phase ramaddr ( $230000 )
-		endif
+	;	else
+	;phase ramaddr ( $230000 )
+	;	endif
 v_ram_start:
 
+		phase ramaddr ( $230000 )
 v_256x256:		ds.b	$52*$200	; 256x256 tile mappings ($52 chunks)
 v_256x256_end:
-
+		dephase
 v_lvllayout:		ds.b	$400		; level and background layouts
 v_lvllayout_end:
 v_bgscroll_buffer:	ds.b	$200		; background scroll buffer
@@ -138,7 +139,7 @@ v_vbla_routine:		ds.b	1		; VBlank - routine counter
 v_spritecount:		ds.b	1		; number of sprites on-screen
 v_pcyc_num:		ds.w	1		; palette cycling - current reference number
 v_pcyc_time:		ds.w	1		; palette cycling - time until the next change
-v_random:		ds.l	1		; pseudo random number buffer
+				ds.l	1		; pseudo random number buffer
 f_pause:		ds.w	1		; flag set to pause the game
 v_vdp_buffer2:		ds.w	1		; VDP instruction buffer
 f_hbla_pal:		ds.w	1		; flag set to change palette during HBlank (0000 = no; 0001 = change)
@@ -401,6 +402,7 @@ v_palette:		ds.b	$80		; main palette
 v_palette_end:
 			ds.b	$100		; stack
 v_systemstack:
+			phase ramaddr($FFFFFD00)
 _EXCPT:		ds.b	6
 _LEVEL6:	ds.b	6
 _LEVEL4:	ds.b	6
@@ -449,20 +451,19 @@ byte_FFFFFE16:		ds.b	1
 byte_FFFFFE17:		ds.b	1
 			ds.b	2
 multitapControllerTypes:	ds.b	6
-			phase ramaddr($FFFFFE20)
 v_jpadhold1:
 joy1Down:			ds.b	2
 joy1Triggered:	equ joy1Down+1
 v_jpadpress1:	equ	joy1Triggered
 joy2Down:			ds.b	2
 joy2Triggered:	equ joy2Down+1
-			dephase
 joy1RepeatDelay:	ds.b	1
 joy2RepeatDelay:	ds.b	1
 vblankCode:			ds.b	1
 byte_FFFFFE27:		ds.b	1
 byte_FFFFFE28:		ds.b	1
 vdpUpdateFlags:		ds.b	1
+v_random:
 prngState:			ds.w	1
 fontTileOffset:		ds.w	1
 vdpLineIncrement:	ds.w	1
@@ -500,6 +501,7 @@ Z80CMD_FF91:		ds.b	1
 Z80CMD_FF92:		ds.b	1
 Z80CMD_FF93:		ds.b	1
 			ds.b	$6C
+			dephase
 v_ram_end:
 	if ~~MMD_Enabled
     if * > 0	; Don't declare more space than the RAM can contain!

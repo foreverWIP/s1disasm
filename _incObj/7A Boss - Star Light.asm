@@ -185,7 +185,7 @@ loc_18A82:
 loc_18A88:
 		move.w	obX(a0),d0
 		if MMD_Enabled
-		move.l	#$23FF00,d1
+		move.l	#(v_ram_start+$FF00),d1
 		else
 		moveq	#-1,d1
 		endif
@@ -224,7 +224,7 @@ BossStarLight_MakeBall:
 		cmpi.b	#$28,objoff_3C(a0)
 		bne.s	loc_18B36
 		if MMD_Enabled
-		move.l	#$23FF00,d0
+		move.l	#(v_ram_start+$FF00),d0
 		else
 		moveq	#-1,d0
 		endif

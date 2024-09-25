@@ -146,7 +146,7 @@ loc_19EC6:
 		move.w	(a1,d1.w),d1
 		move.w	d0,objoff_30(a0)
 		if MMD_Enabled
-		move.l	#$23FF00,d2
+		move.l	#(v_ram_start+$FF00),d2
 		else
 		moveq	#-1,d2
 		endif
@@ -245,7 +245,7 @@ word_19FD6:	dc.w 0,	2, 2, 4, 4, 6, 6, 0
 
 loc_19FE6:
 		if MMD_Enabled
-		move.l	#$23FF00,d0
+		move.l	#(v_ram_start+$FF00),d0
 		else
 		moveq	#-1,d0
 		endif

@@ -79,7 +79,7 @@ loc_19C36:	; Routine 4
 		subi.b	#$E,obTimeFrame(a0)
 		bcc.s	FFloor_Solid2
 		if MMD_Enabled
-		move.l	#$23FF00,d0
+		move.l	#(v_ram_start+$FF00),d0
 		else
 		moveq	#-1,d0
 		endif

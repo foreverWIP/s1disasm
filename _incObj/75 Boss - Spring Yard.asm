@@ -209,7 +209,7 @@ loc_19302:
 		move.w	#boss_syz_y+$8A,objoff_38(a0)
 		clr.w	objoff_3C(a0)
 		if MMD_Enabled
-		move.l	#$23FF00,d0
+		move.l	#(v_ram_start+$FF00),d0
 		else
 		moveq	#-1,d0
 		endif
@@ -293,7 +293,7 @@ loc_193D0:
 		bgt.s	loc_19406
 		bmi.s	loc_193EE
 		if MMD_Enabled
-		move.l	#$23FF00,d0
+		move.l	#(v_ram_start+$FF00),d0
 		else
 		moveq	#-1,d0
 		endif
