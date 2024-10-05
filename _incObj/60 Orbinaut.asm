@@ -21,12 +21,12 @@ orb_parent = objoff_3C		; address of parent object
 Orb_Main:	; Routine 0
 		move.l	#Map_Orb,obMap(a0)
 		move.w	#make_art_tile(ArtTile_SBZ_Orbinaut,0,0),obGfx(a0)	; SBZ specific code
-		cmpi.b	#id_SBZ,(v_zone).l ; check if level is SBZ
+		cmpi.b	#id_SBZ,(v_zone).w ; check if level is SBZ
 		beq.s	.isscrap
 		move.w	#make_art_tile(ArtTile_SLZ_Orbinaut,1,0),obGfx(a0) ; SLZ specific code
 
 .isscrap:
-		cmpi.b	#id_LZ,(v_zone).l ; check if level is LZ
+		cmpi.b	#id_LZ,(v_zone).w ; check if level is LZ
 		bne.s	.notlabyrinth
 		move.w	#make_art_tile(ArtTile_LZ_Orbinaut,0,0),obGfx(a0)	; LZ specific code
 
@@ -100,7 +100,7 @@ Orb_ChkSonic:	; Routine 2
 .isabove:
 		cmpi.w	#$50,d0		; is Sonic within $50 pixels of	orbinaut?
 		bhs.s	.animate	; if not, branch
-		tst.w	(v_debuguse).l	; is debug mode	on?
+		tst.w	(v_debuguse).w	; is debug mode	on?
 		bne.s	.animate	; if yes, branch
 		move.b	#1,obAnim(a0)	; use "angry" animation
 
@@ -118,7 +118,7 @@ Orb_ChkDel:
 		bra.w	DisplaySprite
 
 .chkgone:
-		lea	(v_objstate).l,a2
+		lea	(v_objstate).w,a2
 		moveq	#0,d0
 		move.b	obRespawnNo(a0),d0
 		beq.s	loc_11E34

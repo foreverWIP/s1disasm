@@ -23,7 +23,7 @@ loc_14B1E:
 ; ===========================================================================
 
 loc_14B2C:
-		movea.l	(v_collindex).l,a2
+		movea.l	(v_collindex).w,a2
 		move.b	(a2,d0.w),d0
 		andi.w	#$FF,d0
 		beq.s	loc_14B1E
@@ -108,7 +108,7 @@ loc_14BC6:
 ; ===========================================================================
 
 loc_14BD4:
-		movea.l	(v_collindex).l,a2
+		movea.l	(v_collindex).w,a2
 		move.b	(a2,d0.w),d0
 		andi.w	#$FF,d0
 		beq.s	loc_14BC6

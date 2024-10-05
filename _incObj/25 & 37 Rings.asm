@@ -43,7 +43,7 @@ Ring_PosData:	dc.b $10, 0		; horizontal tight
 ; ===========================================================================
 
 Ring_Main:	; Routine 0
-		lea	(v_objstate).l,a2
+		lea	(v_objstate).w,a2
 		moveq	#0,d0
 		move.b	obRespawnNo(a0),d0
 		lea	2(a2,d0.w),a2
@@ -108,7 +108,7 @@ loc_9C0E:
 		bne.w	DeleteObject
 
 Ring_Animate:	; Routine 2
-		move.b	(v_ani1_frame).l,obFrame(a0) ; set frame
+		move.b	(v_ani1_frame).w,obFrame(a0) ; set frame
 		bsr.w	DisplaySprite
 		out_of_range.s	Ring_Delete,objoff_32(a0)
 		rts	
@@ -119,7 +119,7 @@ Ring_Collect:	; Routine 4
 		move.b	#0,obColType(a0)
 		move.b	#1,obPriority(a0)
 		bsr.w	CollectRing
-		lea	(v_objstate).l,a2
+		lea	(v_objstate).w,a2
 		moveq	#0,d0
 		move.b	obRespawnNo(a0),d0
 		move.b	objoff_34(a0),d1
@@ -138,21 +138,21 @@ Ring_Delete:	; Routine 8
 
 
 CollectRing:
-		addq.w	#1,(v_rings).l	; add 1 to rings
-		ori.b	#1,(f_ringcount).l ; update the rings counter
+		addq.w	#1,(v_rings).w	; add 1 to rings
+		ori.b	#1,(f_ringcount).w ; update the rings counter
 		move.w	#sfx_Ring,d0	; play ring sound
-		cmpi.w	#100,(v_rings).l ; do you have < 100 rings?
+		cmpi.w	#100,(v_rings).w ; do you have < 100 rings?
 		blo.s	.playsnd	; if yes, branch
-		bset	#1,(v_lifecount).l ; update lives counter
+		bset	#1,(v_lifecount).w ; update lives counter
 		beq.s	.got100
-		cmpi.w	#200,(v_rings).l ; do you have < 200 rings?
+		cmpi.w	#200,(v_rings).w ; do you have < 200 rings?
 		blo.s	.playsnd	; if yes, branch
-		bset	#2,(v_lifecount).l ; update lives counter
+		bset	#2,(v_lifecount).w ; update lives counter
 		bne.s	.playsnd
 
 .got100:
-		addq.b	#1,(v_lives).l	; add 1 to the number of lives you have
-		addq.b	#1,(f_lifecount).l ; update the lives counter
+		addq.b	#1,(v_lives).w	; add 1 to the number of lives you have
+		addq.b	#1,(f_lifecount).w ; update the lives counter
 		move.w	#bgm_ExtraLife,d0 ; play extra life music
 		;waitForSubCpu
 		;sendSubCpuCommand #$41,#$8F
@@ -171,7 +171,7 @@ CollectRing:
 ; ---------------------------------------------------------------------------
 
 RingLoss:
-		if ~~MMD_Is_Title
+		if ~~MMD_Is_Title&&~~MMD_Is_SS
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	RLoss_Index(pc,d0.w),d1
@@ -187,7 +187,7 @@ RLoss_Index:	dc.w RLoss_Count-RLoss_Index
 RLoss_Count:	; Routine 0
 		movea.l	a0,a1
 		moveq	#0,d5
-		move.w	(v_rings).l,d5	; check number of rings you have
+		move.w	(v_rings).w,d5	; check number of rings you have
 		moveq	#32,d0
 		cmp.w	d0,d5		; do you have 32 or more?
 		blo.s	.belowmax	; if not, branch
@@ -216,7 +216,7 @@ RLoss_Count:	; Routine 0
 		move.b	#3,obPriority(a1)
 		move.b	#$47,obColType(a1)
 		move.b	#8,obActWid(a1)
-		move.b	#-1,(v_ani3_time).l
+		move.b	#-1,(v_ani3_time).w
 		tst.w	d4
 		bmi.s	.loc_9D62
 		move.w	d4,d0
@@ -241,18 +241,18 @@ RLoss_Count:	; Routine 0
 		dbf	d5,.loop	; repeat for number of rings (max 31)
 
 .resetcounter:
-		move.w	#0,(v_rings).l	; reset number of rings to zero
-		move.b	#$80,(f_ringcount).l ; update ring counter
-		move.b	#0,(v_lifecount).l
+		move.w	#0,(v_rings).w	; reset number of rings to zero
+		move.b	#$80,(f_ringcount).w ; update ring counter
+		move.b	#0,(v_lifecount).w
 		move.w	#sfx_RingLoss,d0
 		jsr	(PlaySound_Special).l	; play ring loss sound
 
 RLoss_Bounce:	; Routine 2
-		move.b	(v_ani3_frame).l,obFrame(a0)
+		move.b	(v_ani3_frame).w,obFrame(a0)
 		bsr.w	SpeedToPos
 		addi.w	#$18,obVelY(a0)
 		bmi.s	.chkdel
-		move.b	(v_vbla_byte).l,d0
+		move.b	(v_vbla_byte).w,d0
 		add.b	d7,d0
 		andi.b	#3,d0
 		bne.s	.chkdel
@@ -266,9 +266,9 @@ RLoss_Bounce:	; Routine 2
 		neg.w	obVelY(a0)
 
 .chkdel:
-		tst.b	(v_ani3_time).l
+		tst.b	(v_ani3_time).w
 		beq.s	RLoss_Delete
-		move.w	(v_limitbtm2).l,d0
+		move.w	(v_limitbtm2).w,d0
 		addi.w	#$E0,d0
 		cmp.w	obY(a0),d0	; has object moved below level boundary?
 		blo.s	RLoss_Delete	; if yes, branch

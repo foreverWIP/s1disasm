@@ -42,7 +42,7 @@ Roll_Action:	; Routine 2
 		bsr.w	AnimateSprite
 		move.w	obX(a0),d0
 		andi.w	#$FF80,d0
-		move.w	(v_screenposx).l,d1
+		move.w	(v_screenposx).w,d1
 		subi.w	#$80,d1
 		andi.w	#$FF80,d1
 		sub.w	d1,d0
@@ -52,7 +52,7 @@ Roll_Action:	; Routine 2
 ; ===========================================================================
 
 Roll_ChkGone:
-		lea	(v_objstate).l,a2
+		lea	(v_objstate).w,a2
 		moveq	#0,d0
 		move.b	obRespawnNo(a0),d0
 		beq.s	Roll_Delete

@@ -1,4 +1,4 @@
-
+		if MMD_Is_GHZ
 Bri_Platform:	; Routine 4
 		bsr.s	Bri_WalkOff
 		bsr.w	DisplaySprite
@@ -33,3 +33,4 @@ loc_75B6:
 locret_75BE:
 		rts	
 ; End of function Bri_WalkOff
+		endif

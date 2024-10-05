@@ -48,10 +48,10 @@ Bas_Action:	; Routine 2
 		bcs.s	.nodrop
 		cmpi.w	#$80,d0		; is Sonic < $80 pixels from basaran?
 		bhs.s	.nodrop		; if not, branch
-		tst.w	(v_debuguse).l	; is debug mode	on?
+		tst.w	(v_debuguse).w	; is debug mode	on?
 		bne.s	.nodrop		; if yes, branch
 
-		move.b	(v_vbla_byte).l,d0
+		move.b	(v_vbla_byte).w,d0
 		add.b	d7,d0
 		andi.b	#7,d0
 		bne.s	.nodrop
@@ -96,7 +96,7 @@ Bas_Action:	; Routine 2
 ; ===========================================================================
 
 .flapsound:
-		move.b	(v_vbla_byte).l,d0
+		move.b	(v_vbla_byte).w,d0
 		andi.b	#$F,d0
 		bne.s	.nosound
 		move.w	#sfx_Basaran,d0
@@ -112,7 +112,7 @@ Bas_Action:	; Routine 2
 .isright:
 		cmpi.w	#$80,d0		; is Sonic within $80 pixels of basaran?
 		blo.s	.dontflyup	; if yes, branch
-		move.b	(v_vbla_byte).l,d0
+		move.b	(v_vbla_byte).w,d0
 		add.b	d7,d0
 		andi.b	#7,d0
 		bne.s	.dontflyup

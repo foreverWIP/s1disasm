@@ -57,7 +57,7 @@ BossStarLight_LoadBoss:
 
 loc_1895C:
 	if FixBugs
-		lea	(v_lvlobjspace).l,a1
+		lea	(v_lvlobjspace).w,a1
 	else
 		lea	(v_objspace+object_size*1).l,a1 ; Nonsensical starting point, since dynamic object allocations begin at v_lvlobjspace.
 	endif
@@ -238,7 +238,7 @@ BossStarLight_MakeBall:
 		move.w	(a1,d0.w),d0
 		movea.l	d0,a2
 	if FixBugs
-		lea	(v_lvlobjspace).l,a1
+		lea	(v_lvlobjspace).w,a1
 		moveq	#(v_lvlobjend-v_lvlobjspace)/object_size-1,d1
 	else
 		lea	(v_objspace+object_size*1).l,a1 ; Nonsensical starting point, since dynamic object allocations begin at v_lvlobjspace.
@@ -287,9 +287,9 @@ loc_18B52:
 		bclr	#7,obStatus(a0)
 		clr.w	obVelX(a0)
 		move.b	#-$18,objoff_3C(a0)
-		tst.b	(v_bossstatus).l
+		tst.b	(v_bossstatus).w
 		bne.s	loc_18B7C
-		move.b	#1,(v_bossstatus).l
+		move.b	#1,(v_bossstatus).w
 
 loc_18B7C:
 		bra.w	loc_189FE
@@ -335,9 +335,9 @@ loc_18BC2:
 loc_18BC6:
 		move.w	#$400,obVelX(a0)
 		move.w	#-$40,obVelY(a0)
-		cmpi.w	#boss_slz_end,(v_limitright2).l
+		cmpi.w	#boss_slz_end,(v_limitright2).w
 		bhs.s	loc_18BE0
-		addq.w	#2,(v_limitright2).l
+		addq.w	#2,(v_limitright2).w
 		bra.s	loc_18BE8
 ; ===========================================================================
 

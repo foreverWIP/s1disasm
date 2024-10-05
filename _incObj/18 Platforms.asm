@@ -21,14 +21,14 @@ Plat_Main:	; Routine 0
 		move.w	#make_art_tile(ArtTile_Level,2,0),obGfx(a0)
 		move.l	#Map_Plat_GHZ,obMap(a0)
 		move.b	#$20,obActWid(a0)
-		cmpi.b	#id_SYZ,(v_zone).l ; check if level is SYZ
+		cmpi.b	#id_SYZ,(v_zone).w ; check if level is SYZ
 		bne.s	.notSYZ
 
 		move.l	#Map_Plat_SYZ,obMap(a0) ; SYZ specific code
 		move.b	#$20,obActWid(a0)
 
 .notSYZ:
-		cmpi.b	#id_SLZ,(v_zone).l ; check if level is SLZ
+		cmpi.b	#id_SLZ,(v_zone).w ; check if level is SLZ
 		bne.s	.notSLZ
 		move.l	#Map_Plat_SLZ,obMap(a0) ; SLZ specific code
 		move.b	#$20,obActWid(a0)
@@ -234,7 +234,7 @@ Plat_Move:
 		add.l	d0,d3
 		move.l	d3,objoff_2C(a0)
 		addi.w	#$38,obVelY(a0)
-		move.w	(v_limitbtm2).l,d0
+		move.w	(v_limitbtm2).w,d0
 		addi.w	#$E0,d0
 		cmp.w	objoff_2C(a0),d0
 		bhs.s	.locret_8074
@@ -247,7 +247,7 @@ Plat_Move:
 .type07:
 		tst.w	objoff_3A(a0)		; is time delay	set?
 		bne.s	.type07_wait	; if yes, branch
-		lea	(f_switch).l,a2	; load switch statuses
+		lea	(f_switch).w,a2	; load switch statuses
 		moveq	#0,d0
 		move.b	obSubtype(a0),d0 ; move object type ($x7) to d0
 		lsr.w	#4,d0		; divide d0 by 8, round	down

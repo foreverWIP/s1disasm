@@ -52,7 +52,7 @@ ESth_GotoCredits:
 		; Routine 4
 		subq.w	#1,esth_time(a0) ; subtract 1 from duration
 		bpl.s	ESth_Wait
-		move.b	#id_Credits,(v_gamemode).l ; exit to credits
+		move.b	#id_Credits,(v_gamemode).w ; exit to credits
 
 ESth_Wait:
 		if Revision=0

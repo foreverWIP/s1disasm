@@ -76,7 +76,7 @@ Ledge_Display:	; Routine 6
 loc_82D0:
 		subq.b	#1,ledge_timedelay(a0)
 		bsr.w	Ledge_WalkOff
-		lea	(v_player).l,a1
+		lea	(v_player).w,a1
 		btst	#3,obStatus(a1)
 		beq.s	loc_82FC
 		tst.b	ledge_timedelay(a0)

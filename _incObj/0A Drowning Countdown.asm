@@ -61,7 +61,7 @@ Drown_Animate:	; Routine 2
 		jsr	(AnimateSprite).l
 
 Drown_ChkWater:	; Routine 4
-		move.w	(v_waterpos1).l,d0
+		move.w	(v_waterpos1).w,d0
 		cmp.w	obY(a0),d0	; has bubble reached the water surface?
 		blo.s	.wobble		; if not, branch
 
@@ -73,7 +73,7 @@ Drown_ChkWater:	; Routine 4
 ; ===========================================================================
 
 .wobble:
-		tst.b	(f_wtunnelmode).l ; is Sonic in a water tunnel?
+		tst.b	(f_wtunnelmode).w ; is Sonic in a water tunnel?
 		beq.s	.notunnel	; if not, branch
 		addq.w	#4,drown_origX(a0)
 
@@ -108,7 +108,7 @@ Drown_Delete:	; Routine 8, Routine $10
 ; ===========================================================================
 
 Drown_AirLeft:	; Routine $C
-		cmpi.w	#$C,(v_air).l	; check air remaining
+		cmpi.w	#$C,(v_air).w	; check air remaining
 		bhi.s	Drown_AirLeft_Delete		; if higher than $C, branch
 		subq.w	#1,drown_time(a0)
 		bne.s	.display
@@ -142,11 +142,11 @@ Drown_ShowNumber:
 		clr.w	obVelY(a0)
 		move.b	#$80,obRender(a0)
 		move.w	obX(a0),d0
-		sub.w	(v_screenposx).l,d0
+		sub.w	(v_screenposx).w,d0
 		addi.w	#$80,d0
 		move.w	d0,obX(a0)
 		move.w	obY(a0),d0
-		sub.w	(v_screenposy).l,d0
+		sub.w	(v_screenposy).w,d0
 		addi.w	#$80,d0
 		move.w	d0,obScreenY(a0)
 		move.b	#id_Drown_AirLeft,obRoutine(a0) ; goto Drown_AirLeft next
@@ -202,7 +202,7 @@ Drown_Countdown:; Routine $A
 		jsr	(RandomNumber).l
 		andi.w	#1,d0
 		move.b	d0,objoff_34(a0)
-		move.w	(v_air).l,d0	; check air remaining
+		move.w	(v_air).w,d0	; check air remaining
 		cmpi.w	#25,d0
 		beq.s	.warnsound	; play sound if	air is 25
 		cmpi.w	#20,d0
@@ -229,19 +229,19 @@ Drown_Countdown:; Routine $A
 		jsr	(PlaySound_Special).l	; play "ding-ding" warning sound
 
 .reduceair:
-		subq.w	#1,(v_air).l	; subtract 1 from air remaining
+		subq.w	#1,(v_air).w	; subtract 1 from air remaining
 		bcc.w	.gotomakenum	; if air is above 0, branch
 
 		; Sonic drowns here
 		bsr.w	ResumeMusic
-		move.b	#$81,(f_playerctrl).l ; lock controls and disable object interaction
+		move.b	#$81,(f_playerctrl).w ; lock controls and disable object interaction
 		move.w	#sfx_Drown,d0
 		jsr	(PlaySound_Special).l	; play drowning sound
 		move.b	#$A,objoff_34(a0)
 		move.w	#1,objoff_36(a0)
 		move.w	#$78,objoff_2C(a0)
 		move.l	a0,-(sp)
-		lea	(v_player).l,a0
+		lea	(v_player).w,a0
 		bsr.w	Sonic_ResetOnFloor
 		move.b	#id_Drown,obAnim(a0)	; use Sonic's drowning animation
 		bset	#1,obStatus(a0)
@@ -249,7 +249,7 @@ Drown_Countdown:; Routine $A
 		move.w	#0,obVelY(a0)
 		move.w	#0,obVelX(a0)
 		move.w	#0,obInertia(a0)
-		move.b	#1,(f_nobgscroll).l
+		move.b	#1,(f_nobgscroll).w
 		movea.l	(sp)+,a0
 		rts	
 ; ===========================================================================
@@ -263,7 +263,7 @@ Drown_Countdown:; Routine $A
 
 .loc_13F94:
 		move.l	a0,-(sp)
-		lea	(v_player).l,a0
+		lea	(v_player).w,a0
 		jsr	(SpeedToPos).l
 		addi.w	#$10,obVelY(a0)
 		movea.l	(sp)+,a0
@@ -307,7 +307,7 @@ Drown_Countdown:; Routine $A
 		move.w	d0,obY(a1)
 		jsr	(RandomNumber).l
 		move.b	d0,obAngle(a1)
-		move.w	(v_framecount).l,d0
+		move.w	(v_framecount).w,d0
 		andi.b	#3,d0
 		bne.s	.loc_14082
 		move.b	#$E,obSubtype(a1)
@@ -317,7 +317,7 @@ Drown_Countdown:; Routine $A
 .loc_1403E:
 		btst	#7,objoff_36(a0)
 		beq.s	.loc_14082
-		move.w	(v_air).l,d2
+		move.w	(v_air).w,d2
 		lsr.w	#1,d2
 		jsr	(RandomNumber).l
 		andi.w	#3,d0

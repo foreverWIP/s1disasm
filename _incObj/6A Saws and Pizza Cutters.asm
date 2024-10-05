@@ -73,7 +73,7 @@ Saw_Action:	; Routine 2
 .sameframe01:
 		tst.b	obRender(a0)
 		bpl.s	.nosound01
-		move.w	(v_framecount).l,d0
+		move.w	(v_framecount).w,d0
 		andi.w	#$F,d0
 		bne.s	.nosound01
 		move.w	#sfx_Saw,d0

@@ -213,9 +213,9 @@ v_anglebuffer2:		ds.b	1		; other angle of collision block that Sonic or object i
 v_opl_routine:		ds.b	1		; ObjPosLoad - routine counter
 v_opl_screen:		ds.w	1		; ObjPosLoad - screen variable
 v_opl_data:		ds.b	$10		; ObjPosLoad - data buffer
-v_ssangle:		ds.w	1		; Special Stage angle
-v_ssrotate:		ds.w	1		; Special Stage rotation speed
-v_ssangleprev:	ds.w	1
+				ds.w	1
+				ds.w	1
+				ds.w	1
 v_btnpushtime1:		ds.w	1		; button push duration - in level
 v_btnpushtime2:		ds.w	1		; button push duration - in demo
 v_palchgspeed:		ds.w	1		; palette fade/transition speed (0 is fastest)
@@ -393,7 +393,10 @@ v_vbla_0e_counter:	ds.b	1		; tracks how many times vertical interrupts routine 0
 			ds.b	$32		; unused
 			ds.b	$3A		; unused
 			ds.b	$40		; unused
-			ds.b	$40		; unused
+			ds.b	$3A		; unused
+v_ssangle:		ds.w	1		; Special Stage angle
+v_ssangleprev:	ds.w	1
+v_ssrotate:		ds.w	1		; Special Stage rotation speed
 v_ngfx_buffer:		ds.b	$200		; Nemesis graphics decompression buffer
 v_ngfx_buffer_end:
 v_spritetablebuffer:	ds.b	$280		; sprite table (last $80 bytes are overwritten by v_palette_water_fading)

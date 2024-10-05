@@ -16,7 +16,7 @@ SolidObject:
 		beq.w	Solid_ChkEnter	; if not, branch
 		move.w	d1,d2
 		add.w	d2,d2
-		lea	(v_player).l,a1
+		lea	(v_player).w,a1
 		btst	#1,obStatus(a1)	; is Sonic in the air?
 		bne.s	.leave		; if yes, branch
 		move.w	obX(a1),d0
@@ -45,7 +45,7 @@ SolidObject71:
 		beq.w	loc_FAD0
 		move.w	d1,d2
 		add.w	d2,d2
-		lea	(v_player).l,a1
+		lea	(v_player).w,a1
 		btst	#1,obStatus(a1)
 		bne.s	.leave
 		move.w	obX(a1),d0
@@ -70,7 +70,7 @@ SolidObject71:
 ; ===========================================================================
 
 SolidObject2F:
-		lea	(v_player).l,a1
+		lea	(v_player).w,a1
 		tst.b	obRender(a0)
 		bpl.w	Solid_Ignore
 		move.w	obX(a1),d0
@@ -114,7 +114,7 @@ Solid_ChkEnter:
 		bpl.w	Solid_Ignore
 
 loc_FAD0:
-		lea	(v_player).l,a1
+		lea	(v_player).w,a1
 		move.w	obX(a1),d0
 		sub.w	obX(a0),d0
 		add.w	d1,d0
@@ -137,7 +137,7 @@ loc_FAD0:
 		bhs.w	Solid_Ignore	; if yes, branch
 
 loc_FB0E:
-		tst.b	(f_playerctrl).l ; are object interactions disabled?
+		tst.b	(f_playerctrl).w ; are object interactions disabled?
 		bmi.w	Solid_Ignore	; if yes, branch
 		cmpi.b	#6,(v_player+obRoutine).l ; is Sonic dying?
 		if Revision=0
@@ -145,7 +145,7 @@ loc_FB0E:
 		else
 			bcc.w	Solid_Debug
 		endif
-		tst.w	(v_debuguse).l	; is debug mode being used?
+		tst.w	(v_debuguse).w	; is debug mode being used?
 		bne.w	Solid_Debug	; if yes, branch
 		move.w	d0,d5
 		cmp.w	d0,d1		; is Sonic right of centre of object?

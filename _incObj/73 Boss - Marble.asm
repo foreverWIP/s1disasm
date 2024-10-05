@@ -265,9 +265,9 @@ loc_18500:
 		clr.w	obVelX(a0)
 		addq.b	#2,ob2ndRout(a0)
 		move.w	#-$26,objoff_3C(a0)
-		tst.b	(v_bossstatus).l
+		tst.b	(v_bossstatus).w
 		bne.s	locret_1852A
-		move.b	#1,(v_bossstatus).l
+		move.b	#1,(v_bossstatus).w
 		clr.w	obVelY(a0)
 
 locret_1852A:
@@ -318,9 +318,9 @@ loc_1857A:
 loc_18582:
 		move.w	#$500,obVelX(a0)
 		move.w	#-$40,obVelY(a0)
-		cmpi.w	#boss_mz_end,(v_limitright2).l
+		cmpi.w	#boss_mz_end,(v_limitright2).w
 		bhs.s	loc_1859C
-		addq.w	#2,(v_limitright2).l
+		addq.w	#2,(v_limitright2).w
 		bra.s	loc_185A2
 ; ===========================================================================
 

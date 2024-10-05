@@ -1,0 +1,18 @@
+#ifndef S1_MCD_GAMEMODE_H
+#define S1_MCD_GAMEMODE_H
+
+enum {
+	MMD_TITLE = 0,
+	MMD_GHZ,
+	MMD_MZ,
+	MMD_SYZ,
+	MMD_LZ,
+	MMD_SLZ,
+	MMD_SBZ,
+	MMD_SS,
+	MMD_CONTINUE,
+	MMD_ENDING,
+	MMD_CREDITS,
+};
+
+#endif

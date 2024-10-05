@@ -67,8 +67,7 @@ disc/ipx.mmd: \
 	ipx_layout.s \
 	ipx_init.s \
 	ipx.c \
-	$(BUILD_PATH)/ip.bin \
-	loadingassets.s
+	$(BUILD_PATH)/ip.bin
 
 disc/ip.bin: $(BUILD_PATH)/ip.bin
 	cp $< $@

@@ -8,9 +8,6 @@ Blk16_SYZ:
 Blk256_GHZ:
 Blk256_MZ:
 				dephase
-				phase $220000
-Art_SSWalls:
-				dephase
 				phase $220400
 Blk16_LZ:
 				dephase
@@ -53,7 +50,7 @@ Nem_SBZ:
 Art_Sonic:
 				dephase
 				else
-				phase $230000
+				phase ramaddr($FFFF058A-$5380+$17A0) ; if this works i'll scream
 Art_Sonic:
 				dephase
 				endif

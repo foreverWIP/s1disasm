@@ -156,7 +156,7 @@ UpdateMusic:
 ; ===========================================================================
 ; loc_71B82:
 .driverinput:
-		lea	(v_snddriver_ram&$FFFFFF).l,a6
+		lea	(v_snddriver_ram&$FFFFFF).w,a6
 		clr.b	SMPS_RAM.f_voice_selector(a6)
 		tst.b	SMPS_RAM.f_pausemusic(a6)		; is music paused?
 		bne.w	PauseMusic				; if yes, branch
@@ -1354,12 +1354,12 @@ StopSpecialSFX:
 ; ---------------------------------------------------------------------------
 ; Sound_E0:
 FadeOutMusic:
-		tst.b	(v_special_trans).l
+		tst.b	(v_special_trans).w
 		bne.s	.nostopsfx
 		jsr	StopSFX(pc)
 .nostopsfx:
 		jsr	StopSpecialSFX(pc)
-		tst.b	(v_fast_fade_out).l
+		tst.b	(v_fast_fade_out).w
 		bne.s	.skipdelayset
 		move.b	#3,SMPS_RAM.v_fadeout_delay(a6)			; Set fadeout delay to 3
 .skipdelayset:
@@ -1381,7 +1381,7 @@ DoFadeOut:
 .continuefade:
 		subq.b	#1,SMPS_RAM.v_fadeout_counter(a6)	; Update fade counter
 		beq.w	StopAllSound				; Branch if fade is done
-		tst.b	(v_fast_fade_out).l
+		tst.b	(v_fast_fade_out).w
 		bne.s	.skipdelayset
 		move.b	#3,SMPS_RAM.v_fadeout_delay(a6)		; Reset fade delay
 .skipdelayset:
@@ -2686,7 +2686,7 @@ Music8B:
 		endif
 		even
 Music8C:
-		if ~~MMD_Is_SBZ
+		if ~~MMD_Is_SBZ&&~~MMD_Is_SS
 		include "sound/music/Mus8C - Boss.asm"
 		endif
 		even

@@ -29,7 +29,7 @@ Swing_Main:	; Routine 0
 		move.b	#8,obHeight(a0)
 		move.w	obY(a0),swing_origY(a0)
 		move.w	obX(a0),swing_origX(a0)
-		cmpi.b	#id_SLZ,(v_zone).l ; check if level is SLZ
+		cmpi.b	#id_SLZ,(v_zone).w ; check if level is SLZ
 		bne.s	.notSLZ
 
 		move.l	#Map_Swing_SLZ,obMap(a0) ; SLZ specific code
@@ -39,7 +39,7 @@ Swing_Main:	; Routine 0
 		move.b	#$99,obColType(a0)
 
 .notSLZ:
-		cmpi.b	#id_SBZ,(v_zone).l ; check if level is SBZ
+		cmpi.b	#id_SBZ,(v_zone).w ; check if level is SBZ
 		bne.s	.length
 
 		move.l	#Map_BBall,obMap(a0) ; SBZ specific code
@@ -113,7 +113,7 @@ Swing_Main:	; Routine 0
 		move.b	#$81,obColType(a0) ; make object hurt when touched
 
 .not1X:
-		cmpi.b	#id_SBZ,(v_zone).l ; is zone SBZ?
+		cmpi.b	#id_SBZ,(v_zone).w ; is zone SBZ?
 		beq.s	Swing_Action	; if yes, branch
 
 Swing_SetSolid:	; Routine 2

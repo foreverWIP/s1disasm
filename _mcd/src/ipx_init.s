@@ -23,3 +23,5 @@ ori #0x700,sr
 #include "main/printval.s"
 #include "main/exception.s"
 #include "kos_cmp_fast.s"
+#include "haven.s"
+#include "loadingassets.s"

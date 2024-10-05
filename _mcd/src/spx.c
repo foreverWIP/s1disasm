@@ -1,10 +1,10 @@
-
 #include "sub/cdrom.h"
 #include "sub/gatearray.h"
 #include "sub/memmap.h"
 #include "sub/pcm.h"
 #include "sub/bios.h"
 #include "memory.h"
+#include "gamemode.h"
 
 extern void sp_fatal();
 
@@ -71,6 +71,10 @@ static u8 cur_sample_frame_counts[4];
 static u8 in_the_middle_of_loading;
 static u8 should_load_splash_sound;
 static u8 sample_queue[4];
+static u8 v_gamemode_backup;
+#define v_ssangle (*(u16*)(_WRDRAM_1M+0x00100))
+#define v_ssangleprev (*(u16*)(_WRDRAM_1M+0x00102))
+#define v_sswallartbuffer ((u8*)(_WRDRAM_1M+0x00106))
 
 #define HZ_TO_FRAMES(hz, samplen) ((samplen) / ((hz) / 60))
 
@@ -134,7 +138,7 @@ inline void update_channel(u8 i)
 	}
 
 	u8 cur_sample_id = cur_sample_ids[i];
-	if ((cur_sample_id != 0) && (cur_sample_frame_counts[i] >= (max_sample_frame_counts[cur_sample_id])))
+	if (cur_sample_id == 0xff || ((cur_sample_id != 0) && (cur_sample_frame_counts[i] >= (max_sample_frame_counts[cur_sample_id]))))
 	{
 		cur_sample_ids[i] = 0;
 		*PCM_CDISABLE |= (1 << i);
@@ -243,8 +247,8 @@ const FileKVP ContinueFiles[] = {
 };
 
 const FileKVP SpecialStageFiles[] = {
-	{ "SSWALL.BIN;1", 0x20000 },
-	{ "ARTSONIC.BIN;1", 0x30000 },
+	// { "SSWALL.BIN;1", 0x20000 },
+	// { "ARTSONIC.BIN;1", 0x35ee0 },
 	{ 0, 0 },
 };
 
@@ -274,6 +278,7 @@ __attribute__((section(".init"))) void main()
 	should_load_splash_sound = 0;
 
 	*(u32*)(_USERCALL2+2) = vblank_sub;
+	v_gamemode_backup = 0;
 
 	do
 	{
@@ -298,40 +303,40 @@ __attribute__((section(".init"))) void main()
 				*PCM_CDISABLE = 0xff;
 				*PCM_CTRL = 0;
 				load_file_wrapper(ACC_OP_LOAD_CDC, filenames[cmd1], (u8 *) _WRDRAM_2M);
+				v_gamemode_backup = cmd1;
 				switch (cmd1)
 				{
-					case 0:
+					case MMD_TITLE:
 						load_file_list(TitleFiles);
 						should_load_splash_sound = 1;
 						break;
-					case 1:
-					case 9:
+					case MMD_GHZ:
+					case MMD_ENDING:
 						load_file_list(GHZFiles);
 						break;
-					case 2:
+					case MMD_MZ:
 						load_file_list(MZFiles);
 						break;
-					case 3:
+					case MMD_SYZ:
 						load_file_list(SYZFiles);
 						break;
-					case 4:
+					case MMD_LZ:
 						load_file_list(LZFiles);
 						break;
-					case 5:
+					case MMD_SLZ:
 						load_file_list(SLZFiles);
 						break;
-					case 6:
+					case MMD_SBZ:
 						load_file_list(SBZFiles);
 						break;
-					case 7:
+					case MMD_SS:
 						load_file_list(SpecialStageFiles);
 						break;
-					case 8:
+					case MMD_CONTINUE:
 						load_file_list(ContinueFiles);
 						break;
 				}
 
-				grant_2m();
 				in_the_middle_of_loading = 0;
 				break;
 			
@@ -344,6 +349,11 @@ __attribute__((section(".init"))) void main()
 			case 0x41:
 				// pcm_playback(1, cmd1);
 				sample_queue[1] = cmd1;
+				break;
+			
+			case 0x50:
+				cur_sample_ids[0] = 0xff;
+				cur_sample_ids[1] = 0xff;
 				break;
 			
 			// play a cd track
@@ -369,27 +379,21 @@ __attribute__((section(".init"))) void main()
 					load_file_wrapper(ACC_OP_LOAD_CDC, "DRUMS.PCM;1", (u8 *) _PRGRAM_1M_2);
 					load_pcm((u8 *)_PRGRAM_1M_2, 0x5000);
 				}
-				grant_2m();
 				break;
 
 			// load IPX
 			case 0xfe:
 				load_file_wrapper(ACC_OP_LOAD_CDC, "IPX.MMD;1", (u8 *) _WRDRAM_2M);
-				grant_2m();
 				break;
 		}
+
+		grant_2m();
 
 		*GA_COMSTAT0 = *GA_COMCMD0;
 		do
 		{
 			cmd0 = *GA_COMCMD0;
 		} while (cmd0 != 0);
-
-		do
-		{
-			cmd0 = *GA_COMCMD0;
-		} while (cmd0 != 0);
-
 		*GA_COMSTAT0 = 0;
 
 	} while (1);

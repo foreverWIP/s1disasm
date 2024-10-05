@@ -84,7 +84,7 @@ loc_AD78:
 ; ===========================================================================
 
 loc_AD84:
-		btst	#2,(v_vbla_byte).l
+		btst	#2,(v_vbla_byte).w
 		beq.s	loc_ADA4
 		subq.b	#2,ob2ndRout(a0)
 		move.w	#59,burro_timedelay(a0)
@@ -128,7 +128,7 @@ Burro_ChkSonic:
 		bcc.s	locret_AE20
 		cmpi.w	#-$80,d0
 		blo.s	locret_AE20
-		tst.w	(v_debuguse).l
+		tst.w	(v_debuguse).w
 		bne.s	locret_AE20
 		subq.b	#2,ob2ndRout(a0)
 		move.w	d1,obVelX(a0)

@@ -6,15 +6,15 @@ hang: macro
 
 undefObjTrap: macro objnum
 		if ("objnum"=="")
-		move.b	(a0),(v_undef_obj_id).l
+		move.b	(a0),(v_undef_obj_id).w
 		else
-		move.b	#objnum,(v_undef_obj_id).l
+		move.b	#objnum,(v_undef_obj_id).w
 		endif
 		jsr		(ReturnToIPX).l
 		endm
 
 undefGmTrap: macro
-		move.b	(v_gamemode).l,(v_undef_gm_id).l
+		move.b	(v_gamemode).w,(v_undef_gm_id).w
 		jsr		(ReturnToIPX).l
 		endm
 
@@ -68,15 +68,15 @@ writeVRAM:	macro source,destination,length
 		move.l	#$96000000+(((source>>1)&$FF00)<<8)+$9500+((source>>1)&$FF),(a5)
 		move.w	#$9700+((((source>>1)&$FF0000)>>16)&$7F),(a5)
 		move.w	#$4000+((destination)&$3FFF),(a5)
-		move.w	#$80+(((destination)&$C000)>>14),(v_vdp_buffer2).l
-		move.w	(v_vdp_buffer2).l,(a5)
+		move.w	#$80+(((destination)&$C000)>>14),(v_vdp_buffer2).w
+		move.w	(v_vdp_buffer2).w,(a5)
 		else
 		move.l	#$94000000+((((.len-2)>>1)&$FF00)<<8)+$9300+(((.len-2)>>1)&$FF),(a5)
 		move.l	#$96000000+((((source+2)>>1)&$FF00)<<8)+$9500+(((source+2)>>1)&$FF),(a5)
 		move.w	#$9700+(((((source+2)>>1)&$FF0000)>>16)&$7F),(a5)
 		move.w	#$4000+((destination)&$3FFF),(a5)
-		move.w	#$80+(((destination)&$C000)>>14),(v_vdp_buffer2).l
-		move.w	(v_vdp_buffer2).l,(a5)
+		move.w	#$80+(((destination)&$C000)>>14),(v_vdp_buffer2).w
+		move.w	(v_vdp_buffer2).w,(a5)
 .wait:
 		move.w	(vdp_control_port).l,d0
 		btst	#1,d0
@@ -98,15 +98,15 @@ writeCRAM:	macro source,destination
 		move.l	#$96000000+(((source>>1)&$FF00)<<8)+$9500+((source>>1)&$FF),(a5)
 		move.w	#$9700+((((source>>1)&$FF0000)>>16)&$7F),(a5)
 		move.w	#$C000+(destination&$3FFF),(a5)
-		move.w	#$80+((destination&$C000)>>14),(v_vdp_buffer2).l
-		move.w	(v_vdp_buffer2).l,(a5)
+		move.w	#$80+((destination&$C000)>>14),(v_vdp_buffer2).w
+		move.w	(v_vdp_buffer2).w,(a5)
 		else
 		move.l	#$94000000+((((source_end-(source+2))>>1)&$FF00)<<8)+$9300+(((source_end-(source+2))>>1)&$FF),(a5)
 		move.l	#$96000000+((((source+2)>>1)&$FF00)<<8)+$9500+(((source+2)>>1)&$FF),(a5)
 		move.w	#$9700+(((((source+2)>>1)&$FF0000)>>16)&$7F),(a5)
 		move.w	#$C000+(destination&$3FFF),(a5)
-		move.w	#$80+((destination&$C000)>>14),(v_vdp_buffer2).l
-		move.w	(v_vdp_buffer2).l,(a5)
+		move.w	#$80+((destination&$C000)>>14),(v_vdp_buffer2).w
+		move.w	(v_vdp_buffer2).w,(a5)
 		move.l	#$C0000000+(destination<<16),(vdp_control_port).l
 		move.w	(source).l,(vdp_data_port).l
 		endif
@@ -320,7 +320,7 @@ out_of_range:	macro exit,pos
 		move.w	obX(a0),d0	; get object position
 		endif
 		andi.w	#$FF80,d0	; round down to nearest $80
-		move.w	(v_screenposx).l,d1 ; get screen position
+		move.w	(v_screenposx).w,d1 ; get screen position
 		subi.w	#128,d1
 		andi.w	#$FF80,d1
 		sub.w	d1,d0		; approx distance between object and screen

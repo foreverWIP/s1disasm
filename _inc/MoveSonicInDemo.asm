@@ -7,7 +7,7 @@
 
 MoveSonicInDemo:
 		if MMD_Is_Level||MMD_Is_Ending||MMD_Is_SS
-		tst.w	(f_demo).l	; is demo mode on?
+		tst.w	(f_demo).w	; is demo mode on?
 		bne.s	MDemo_On	; if yes, branch
 		rts	
 ; ===========================================================================
@@ -18,9 +18,9 @@ MoveSonicInDemo:
 DemoRecorder:
 		; This was likely intended for a deveveloper cartridge that used RAM instead of ROM.
 		lea	(EndOfRom).l,a1 ; Write past the end of the ROM.
-		move.w	(v_btnpushtime1).l,d0
+		move.w	(v_btnpushtime1).w,d0
 		adda.w	d0,a1
-		move.b	(v_jpadhold1).l,d0
+		move.b	(v_jpadhold1).w,d0
 		cmp.b	(a1),d0
 		bne.s	.next
 		addq.b	#1,1(a1)
@@ -31,43 +31,43 @@ DemoRecorder:
 .next:
 		move.b	d0,2(a1)
 		move.b	#0,3(a1)
-		addq.w	#2,(v_btnpushtime1).l
-		andi.w	#$3FF,(v_btnpushtime1).l
+		addq.w	#2,(v_btnpushtime1).w
+		andi.w	#$3FF,(v_btnpushtime1).w
 		rts	
 ; ===========================================================================
 		endif
 
 MDemo_On:
-		tst.b	(v_jpadhold1).l	; is start button pressed?
+		tst.b	(v_jpadhold1).w	; is start button pressed?
 		bpl.s	.dontquit	; if not, branch
-		tst.w	(f_demo).l	; is this an ending sequence demo?
+		tst.w	(f_demo).w	; is this an ending sequence demo?
 		bmi.s	.dontquit	; if yes, branch
-		move.b	#id_Title,(v_gamemode).l ; go to title screen
+		move.b	#id_Title,(v_gamemode).w ; go to title screen
 
 .dontquit:
 		lea	(DemoDataPtr).l,a1
 		moveq	#0,d0
-		move.b	(v_zone).l,d0
-		cmpi.b	#id_Special,(v_gamemode).l ; is this a special stage?
+		move.b	(v_zone).w,d0
+		cmpi.b	#id_Special,(v_gamemode).w ; is this a special stage?
 		bne.s	.notspecial	; if not, branch
 		moveq	#6,d0		; use demo #6
 
 .notspecial:
 		lsl.w	#2,d0
 		movea.l	(a1,d0.w),a1	; fetch address for demo data
-		tst.w	(f_demo).l	; is this an ending sequence demo?
+		tst.w	(f_demo).w	; is this an ending sequence demo?
 		bpl.s	.notcredits	; if not, branch
 		lea	(DemoEndDataPtr).l,a1
-		move.w	(v_creditsnum).l,d0
+		move.w	(v_creditsnum).w,d0
 		subq.w	#1,d0
 		lsl.w	#2,d0
 		movea.l	(a1,d0.w),a1	; fetch address for credits demo
 
 .notcredits:
-		move.w	(v_btnpushtime1).l,d0
+		move.w	(v_btnpushtime1).w,d0
 		adda.w	d0,a1
 		move.b	(a1),d0
-		lea	(v_jpadhold1).l,a0
+		lea	(v_jpadhold1).w,a0
 		move.b	d0,d1
 		if Revision=0
 		move.b	(a0),d2
@@ -78,10 +78,10 @@ MDemo_On:
 		move.b	d1,(a0)+
 		and.b	d1,d0
 		move.b	d0,(a0)+
-		subq.b	#1,(v_btnpushtime2).l
+		subq.b	#1,(v_btnpushtime2).w
 		bcc.s	.end
-		move.b	3(a1),(v_btnpushtime2).l
-		addq.w	#2,(v_btnpushtime1).l
+		move.b	3(a1),(v_btnpushtime2).w
+		addq.w	#2,(v_btnpushtime1).w
 
 .end:
 		rts	

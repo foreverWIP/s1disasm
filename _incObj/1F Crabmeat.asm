@@ -213,7 +213,7 @@ Crab_BallMove:	; Routine 8
 		; deleted, causing a null-pointer dereference.
 		bsr.w	DisplaySprite
 	endif
-		move.w	(v_limitbtm2).l,d0
+		move.w	(v_limitbtm2).w,d0
 		addi.w	#$E0,d0
 		cmp.w	obY(a0),d0	; has object moved below the level boundary?
 	if FixBugs

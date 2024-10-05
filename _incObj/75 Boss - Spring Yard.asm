@@ -355,7 +355,7 @@ loc_19446:
 BossSpringYard_FindBlocks:
 		clr.w	objoff_36(a0)
 	if FixBugs
-		lea	(v_lvlobjspace).l,a1
+		lea	(v_lvlobjspace).w,a1
 		moveq	#(v_lvlobjend-v_lvlobjspace)/object_size-1,d0
 	else
 		lea	(v_objspace+object_size*1).l,a1 ; Nonsensical starting point, since dynamic object allocations begin at v_lvlobjspace.
@@ -396,9 +396,9 @@ loc_1947E:
 		bclr	#7,obStatus(a0)
 		clr.w	obVelX(a0)
 		move.w	#-1,objoff_3C(a0)
-		tst.b	(v_bossstatus).l
+		tst.b	(v_bossstatus).w
 		bne.s	loc_194A8
-		move.b	#1,(v_bossstatus).l
+		move.b	#1,(v_bossstatus).w
 
 loc_194A8:
 		bra.w	loc_19202
@@ -444,9 +444,9 @@ loc_194EE:
 loc_194F2:
 		move.w	#$400,obVelX(a0)
 		move.w	#-$40,obVelY(a0)
-		cmpi.w	#boss_syz_end,(v_limitright2).l
+		cmpi.w	#boss_syz_end,(v_limitright2).w
 		bhs.s	loc_1950C
-		addq.w	#2,(v_limitright2).l
+		addq.w	#2,(v_limitright2).w
 		bra.s	loc_19512
 ; ===========================================================================
 

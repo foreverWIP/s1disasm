@@ -41,13 +41,13 @@ Flap_OpenClose:	; Routine 2
 .nosound:
 		lea	(Ani_Flap).l,a1
 		bsr.w	AnimateSprite
-		clr.b	(f_wtunnelallow).l ; enable wind tunnel
+		clr.b	(f_wtunnelallow).w ; enable wind tunnel
 		tst.b	obFrame(a0)	; is the door open?
 		bne.s	.display	; if yes, branch
 		move.w	(v_player+obX).l,d0
 		cmp.w	obX(a0),d0	; has Sonic passed through the door?
 		bhs.s	.display	; if yes, branch
-		move.b	#1,(f_wtunnelallow).l ; disable wind tunnel
+		move.b	#1,(f_wtunnelallow).w ; disable wind tunnel
 		move.w	#$13,d1
 		move.w	#$20,d2
 		move.w	d2,d3

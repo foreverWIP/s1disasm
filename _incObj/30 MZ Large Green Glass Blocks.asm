@@ -220,7 +220,7 @@ Glass_Type04:
 Glass_ChkSwitch:
 		tst.b	objoff_34(a0)
 		bne.s	loc_B5E0
-		lea	(f_switch).l,a2
+		lea	(f_switch).w,a2
 		moveq	#0,d0
 		move.b	obSubtype(a0),d0 ; load object type number
 		lsr.w	#4,d0		; read only the	first nybble

@@ -11,18 +11,18 @@
 	move.l	#$0,(vdp_data_port).l
 	fillVRAM 0,vram_sprites,vram_sprites+$800
 	lea	(.art).l,a0
-	lea	(v_256x256&$FFFFFF).l,a1
+	lea	($230000).l,a1
 	jsr		(KosDec).l
-	writeVRAM v_256x256,0,$9820
+	writeVRAM $230000,0,$9820
 .dmawait:
 	move.w	(vdp_control_port).l,d0
 	btst	#1,d0
 	bne.s	.dmawait
 	lea		(.mappings).l,a0
-	lea	(v_256x256&$FFFFFF).l,a1
+	lea	($230000).l,a1
 	move.w	#0,d0
 	bsr.w	EniDec
-	writeVRAM v_256x256,$A000,$2000
+	writeVRAM $230000,$A000,$2000
 	moveq	#palid_SplashScreen,d0	; load Sonic's palette
 	jsr		PalLoad_Fade
 
@@ -48,12 +48,12 @@
 	moveq	#0,d2
 	lsl.w	#1,d1
 	move.w	(a2,d1.w),d2
-	move.w	d2,(v_hscrolltablebuffer).l
-	move.w	d2,(v_hscrolltablebuffer+2).l
+	move.w	d2,(v_hscrolltablebuffer).w
+	move.w	d2,(v_hscrolltablebuffer+2).w
 .state_shc_waitframe:
-	move.b	#$16,(v_vbla_routine).l
+	move.b	#$16,(v_vbla_routine).w
 	jsr		WaitForVBla
-	andi.b	#btnStart,(v_jpadpress1).l
+	andi.b	#btnStart,(v_jpadpress1).w
 	bne.s	.state_fadeout
 	dbf		d0,.state_shc_waitframe
 	bra.w	.state_shc_nextframe

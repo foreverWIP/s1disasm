@@ -7,20 +7,7 @@
 #include "system.h"
 #include "memory.h"
 #include "main/printval.h"
-
-enum {
-	MMD_TITLE = 0,
-	MMD_GHZ,
-	MMD_MZ,
-	MMD_SYZ,
-	MMD_LZ,
-	MMD_SLZ,
-	MMD_SBZ,
-	MMD_SS,
-	MMD_CONTINUE,
-	MMD_ENDING,
-	MMD_CREDITS,
-};
+#include "gamemode.h"
 
 /*extern u32 Debugger_BusError;
 extern u32 Debugger_AddressError;

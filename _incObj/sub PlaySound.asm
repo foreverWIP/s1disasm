@@ -9,7 +9,7 @@
 
 
 PlaySound:
-		tst.b	(v_use_cd_audio).l
+		tst.b	(v_use_cd_audio).w
 		beq.s	.playfm
 		cmpi.b	#sfx__First,d0
 		bhs.s	.ret
@@ -31,7 +31,7 @@ PlaySound:
 
 
 PlaySound_Special:
-		tst.b	(v_use_cd_audio).l
+		tst.b	(v_use_cd_audio).w
 		beq.s	.playfm
 		cmpi.b	#sfx__First,d0
 		bhs.s	.ret
@@ -51,7 +51,7 @@ PlaySound_Special:
 ; ---------------------------------------------------------------------------
 
 PlaySound_Unused:
-		tst.b	(v_use_cd_audio).l
+		tst.b	(v_use_cd_audio).w
 		beq.s	.playfm
 		cmpi.b	#sfx__First,d0
 		bhs.s	.ret

@@ -9,7 +9,7 @@
 
 
 FindFreeObj:
-		lea	(v_lvlobjspace).l,a1 ; start address for object RAM
+		lea	(v_lvlobjspace).w,a1 ; start address for object RAM
 		move.w	#(v_lvlobjend-v_lvlobjspace)/object_size-1,d0
 
 FFree_Loop:

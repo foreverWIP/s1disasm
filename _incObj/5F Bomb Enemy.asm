@@ -109,7 +109,7 @@ Bom_Action:	; Routine 2
 .isabove:
 		cmpi.w	#$60,d0
 		bhs.s	.outofrange
-		tst.w	(v_debuguse).l
+		tst.w	(v_debuguse).w
 		bne.s	.outofrange
 
 		move.b	#4,ob2ndRout(a0)

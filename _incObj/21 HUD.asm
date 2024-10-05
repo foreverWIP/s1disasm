@@ -4,7 +4,7 @@
 
 HUD:
 		if MMD_Is_Level||MMD_Is_Ending
-		cmpi.b	#id_Ending,(v_gamemode).l
+		cmpi.b	#id_Ending,(v_gamemode).w
 		bne.s	.notending
 		rts
 .notending:
@@ -27,7 +27,7 @@ HUD_Main:	; Routine 0
 		move.b	#0,obPriority(a0)
 
 HUD_Flash:	; Routine 2
-		tst.w	(v_rings).l	; do you have any rings?
+		tst.w	(v_rings).w	; do you have any rings?
 		beq.s	.norings	; if not, branch
 		clr.b	obFrame(a0)	; make all counters yellow
 		jmp	(DisplaySprite).l
@@ -35,10 +35,10 @@ HUD_Flash:	; Routine 2
 
 .norings:
 		moveq	#0,d0
-		btst	#3,(v_framebyte).l
+		btst	#3,(v_framebyte).w
 		bne.s	.display
 		addq.w	#1,d0		; make ring counter flash red
-		cmpi.b	#9,(v_timemin).l ; have	9 minutes elapsed?
+		cmpi.b	#9,(v_timemin).w ; have	9 minutes elapsed?
 		bne.s	.display	; if not, branch
 		addq.w	#2,d0		; make time counter flash red
 

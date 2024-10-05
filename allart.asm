@@ -34,30 +34,6 @@ Nem_TitleSonic:	bincludealigned	"artnem/Title Screen Sonic.nem",MMD_Is_Title
 Nem_TitleTM:	bincludealigned	"artnem/Title Screen TM.nem",MMD_Is_Title
 
 ; ---------------------------------------------------------------------------
-; Compressed graphics - primary patterns and block mappings
-; ---------------------------------------------------------------------------
-;Blk16_GHZ:		bincludealigned		"map16/GHZ.eni",MMD_Is_GHZ||MMD_Is_Title||MMD_Is_Ending
-;Blk16_LZ:		bincludealigned		"map16/LZ.eni",MMD_Is_LZ
-;Blk16_MZ:		bincludealigned		"map16/MZ.eni",MMD_Is_MZ
-;Blk16_SLZ:		bincludealigned		"map16/SLZ.eni",MMD_Is_SLZ
-;Blk16_SYZ:		bincludealigned		"map16/SYZ.eni",MMD_Is_SYZ
-;Blk16_SBZ:		bincludealigned		"map16/SBZ.eni",MMD_Is_SBZ
-;Blk256_GHZ:		bincludealigned	"map256/GHZ.kos",MMD_Is_GHZ||MMD_Is_Title||MMD_Is_Ending
-;Blk256_LZ:		bincludealigned	"map256/LZ.kos",MMD_Is_LZ
-;Blk256_MZ:		bincludealigned	"map256/MZ (JP1).kos",MMD_Is_MZ
-;Blk256_SLZ:		bincludealigned	"map256/SLZ.kos",MMD_Is_SLZ
-;Blk256_SYZ:		bincludealigned	"map256/SYZ.kos",MMD_Is_SYZ
-;Blk256_SBZ:		bincludealigned	"map256/SBZ (JP1).kos",MMD_Is_SBZ
-
-;Nem_GHZ_1st:	;bincludealigned	"artnem/8x8 - GHZ1.nem",MMD_Is_GHZ||MMD_Is_Title||MMD_Is_Ending
-;Nem_GHZ_2nd:	;bincludealigned	"artnem/8x8 - GHZ2.nem",MMD_Is_GHZ||MMD_Is_Title||MMD_Is_Ending
-;Nem_LZ:			;bincludealigned	"artnem/8x8 - LZ.nem",MMD_Is_LZ
-;Nem_MZ:			;bincludealigned	"artnem/8x8 - MZ.nem",MMD_Is_MZ
-;Nem_SLZ:		;bincludealigned	"artnem/8x8 - SLZ.nem",MMD_Is_SLZ
-;Nem_SYZ:		;bincludealigned	"artnem/8x8 - SYZ.nem",MMD_Is_SYZ
-;Nem_SBZ:		;bincludealigned	"artnem/8x8 - SBZ.nem",MMD_Is_SBZ
-
-; ---------------------------------------------------------------------------
 ; Compressed graphics - various
 ; ---------------------------------------------------------------------------
 Nem_Shield:	bincludealigned	"artnem/Shield.nem",MMD_Is_Level
@@ -218,7 +194,6 @@ Nem_JapNames:	bincludealigned	"artnem/Hidden Japanese Credits.nem",MMD_Is_Title
 ; ---------------------------------------------------------------------------
 ; Compressed graphics - special stage
 ; ---------------------------------------------------------------------------
-;Art_SSWalls:	bincludealigned	"artunc/Special Walls.unc",MMD_Is_SS
 Eni_SSBg1:	bincludealigned	"tilemaps/SS Background 1.eni",MMD_Is_SS
 Nem_SSBgFish:	bincludealigned	"artnem/Special Birds & Fish.nem",MMD_Is_SS
 Eni_SSBg2:	bincludealigned	"tilemaps/SS Background 2.eni",MMD_Is_SS
@@ -254,13 +229,7 @@ Nem_Exhaust:	bincludealigned	"artnem/Boss - Exhaust Flame.nem",MMD_Is_Level
 Nem_EndEm:	bincludealigned	"artnem/Ending - Emeralds.nem",MMD_Is_Ending||MMD_Is_Credits
 Nem_EndSonic:	bincludealigned	"artnem/Ending - Sonic.nem",MMD_Is_Ending
 Nem_TryAgain:	bincludealigned	"artnem/Ending - Try Again.nem",MMD_Is_Credits
-Nem_EndEggman:	;bincludealigned	"artnem/Unused - Eggman Ending.nem",MMD_Is_Ending
 Kos_EndFlowers:	bincludealigned	"artkos/Flowers at Ending.kos",MMD_Is_Ending
 Nem_EndFlower:	bincludealigned	"artnem/Ending - Flowers.nem",MMD_Is_Ending
 Nem_CreditText:	bincludealigned	"artnem/Ending - Credits.nem",MMD_Is_Title||MMD_Is_Credits
 Nem_EndStH:	bincludealigned	"artnem/Ending - StH Logo.nem",MMD_Is_Ending
-
-; ---------------------------------------------------------------------------
-; Uncompressed graphics	- Sonic
-; ---------------------------------------------------------------------------
-;Art_Sonic:	;bincludealigned	"artunc/Sonic.bin",MMD_Has_Sonic

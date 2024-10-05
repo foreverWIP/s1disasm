@@ -24,7 +24,6 @@ cp "./map256/SBZ (JP1).kos" ./_mcd/disc/M256SBZ.KOS
 cp "./artunc/Sonic.bin" ./_mcd/disc/ARTSONIC.BIN
 cat ./sound/mcd/kick.pcm ./sound/mcd/snare.pcm ./sound/mcd/timpani.pcm > ./_mcd/disc/DRUMS.PCM
 cp ./sound/mcd/splshsnd.pcm ./_mcd/disc/SPLSHSND.PCM
-cp "./artunc/Special Walls (Rotated).unc" ./_mcd/disc/SSWALL.BIN
 cd _mcd
 make clean && make disc
 mv ./disc.iso ./build/sonic.iso

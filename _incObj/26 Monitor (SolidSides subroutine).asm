@@ -6,7 +6,7 @@
 
 
 Mon_SolidSides:
-		lea	(v_player).l,a1
+		lea	(v_player).w,a1
 		move.w	obX(a1),d0
 		sub.w	obX(a0),d0
 		add.w	d1,d0
@@ -25,11 +25,11 @@ Mon_SolidSides:
 		add.w	d2,d2
 		cmp.w	d2,d3
 		bhs.s	loc_A4E6
-		tst.b	(f_playerctrl).l
+		tst.b	(f_playerctrl).w
 		bmi.s	loc_A4E6
 		cmpi.b	#6,(v_player+obRoutine).l
 		bhs.s	loc_A4E6
-		tst.w	(v_debuguse).l
+		tst.w	(v_debuguse).w
 		bne.s	loc_A4E6
 		cmp.w	d0,d1
 		bhs.s	loc_A4DC

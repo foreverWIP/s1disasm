@@ -56,7 +56,7 @@ BossLabyrinth_LoadBoss:
 		dbf	d1,BossLabyrinth_Loop
 
 BossLabyrinth_ShipMain:	; Routine 2
-		lea	(v_player).l,a1
+		lea	(v_player).w,a1
 		moveq	#0,d0
 		move.b	ob2ndRout(a0),d0
 		move.w	BossLabyrinth_ShipIndex(pc,d0.w),d1
@@ -276,7 +276,7 @@ loc_18112:
 		move.w	#bgm_LZ,d0
 		jsr	(PlaySound).l		; play LZ music
 		if Revision<>0
-			clr.b	(f_lockscreen).l
+			clr.b	(f_lockscreen).w
 		endif
 		bset	#0,obStatus(a0)
 		addq.b	#2,ob2ndRout(a0)
@@ -303,9 +303,9 @@ loc_1814E:
 ; ===========================================================================
 
 loc_18152:
-		cmpi.w	#boss_lz_end,(v_limitright2).l
+		cmpi.w	#boss_lz_end,(v_limitright2).w
 		bhs.s	loc_18160
-		addq.w	#2,(v_limitright2).l
+		addq.w	#2,(v_limitright2).w
 		bra.s	loc_18166
 ; ===========================================================================
 

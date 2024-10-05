@@ -26,7 +26,7 @@ FindNearestTile:
 		else
 		moveq	#-1,d1
 		endif
-		lea	(v_lvllayout).l,a1
+		lea	(v_lvllayout).w,a1
 		move.b	(a1,d0.w),d1	; get 256x256 tile number
 		beq.s	.blanktile	; branch if 0
 		bmi.s	.specialtile	; branch if >$7F

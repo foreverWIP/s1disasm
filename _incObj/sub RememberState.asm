@@ -7,7 +7,7 @@ RememberState:
 		bra.w	DisplaySprite
 
 .offscreen:
-		lea	(v_objstate).l,a2
+		lea	(v_objstate).w,a2
 		moveq	#0,d0
 		move.b	obRespawnNo(a0),d0
 		beq.s	.delete

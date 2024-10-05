@@ -117,14 +117,14 @@ off_19E80:	dc.w loc_19E90-off_19E80, loc_19EA8-off_19E80
 ; ===========================================================================
 
 loc_19E90:
-		tst.l	(v_plc_buffer).l
+		tst.l	(v_plc_buffer).w
 		bne.s	loc_19EA2
-		cmpi.w	#boss_fz_x,(v_screenposx).l
+		cmpi.w	#boss_fz_x,(v_screenposx).w
 		blo.s	loc_19EA2
 		addq.b	#2,objoff_34(a0)
 
 loc_19EA2:
-		addq.l	#1,(v_random).l
+		addq.l	#1,(v_random).w
 		rts	
 ; ===========================================================================
 
@@ -188,7 +188,7 @@ loc_19F48:
 ; ===========================================================================
 
 loc_19F50:
-		addq.w	#7,(v_random).l
+		addq.w	#7,(v_random).w
 		cmpi.b	#id_Roll,(v_player+obAnim).l
 		bne.s	loc_19F48
 		move.w	#$300,d0
@@ -259,7 +259,7 @@ loc_19FE6:
 
 loc_1A000:
 		moveq	#$F,d0
-		and.w	(v_vbla_word).l,d0
+		and.w	(v_vbla_word).w,d0
 		bne.s	loc_1A00A
 		bsr.s	loc_1A020
 
@@ -300,7 +300,7 @@ loc_1A02A:
 		endif
 		move.w	#$100,obVelX(a0)
 		move.w	#-$100,obVelY(a0)
-		addq.b	#2,(v_dle_routine).l
+		addq.b	#2,(v_dle_routine).w
 
 loc_1A070:
 		bra.w	loc_1A166
@@ -384,9 +384,9 @@ loc_1A15C:
 		jsr	(AnimateSprite).l
 
 loc_1A166:
-		cmpi.w	#boss_fz_end,(v_limitright2).l
+		cmpi.w	#boss_fz_end,(v_limitright2).w
 		bge.s	loc_1A172
-		addq.w	#2,(v_limitright2).l
+		addq.w	#2,(v_limitright2).w
 
 loc_1A172:
 		cmpi.b	#$C,objoff_34(a0)
@@ -445,12 +445,12 @@ loc_1A210:
 loc_1A216:
 		cmpi.w	#boss_fz_end+$90,(v_player+obX).l
 		blt.s	loc_1A23A
-		move.b	#1,(f_lockctrl).l
-		move.w	#0,(v_jpadhold2).l
+		move.b	#1,(f_lockctrl).w
+		move.w	#0,(v_jpadhold2).w
 		clr.w	(v_player+obInertia).l
 		tst.w	obVelY(a0)
 		bpl.s	loc_1A248
-		move.w	#$100,(v_jpadhold2).l
+		move.w	#$100,(v_jpadhold2).w
 
 loc_1A23A:
 		cmpi.w	#boss_fz_end+$E0,(v_player+obX).l
@@ -462,7 +462,7 @@ loc_1A248:
 		blo.s	loc_1A260
 		tst.b	obRender(a0)
 		bmi.s	loc_1A260
-		move.b	#id_Ending,(v_gamemode).l
+		move.b	#id_Ending,(v_gamemode).w
 		bra.w	BossFinal_Delete
 ; ===========================================================================
 
